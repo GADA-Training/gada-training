@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GADA Training — GeoAgri Data Analytics & Solution</title>
+  <meta name="description" content="GADA Training - Formations certifiantes en SIG (QGIS, ArcGIS), Télédétection (Google Earth Engine) et Data Science en République Démocratique du Congo et Afrique centrale.">
+  <meta name="keywords" content="SIG, QGIS, ArcGIS, Télédétection, Google Earth Engine, RStudio, Python, Agriculture, RDC, Goma, Kinshasa">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #f7f9f4;
+      --dark: #0d1a0f;
+      --green: #1a6e2e;
+      --green-light: #2d9e47;
+      --green-pale: #e8f5ec;
+      --orange: #e8620a;
+      --orange-light: #ff7a1f;
+      --blue: #1a4a8a;
+      --blue-light: #2563b8;
+      --text: #1a2014;
+      --muted: #6b7e61;
+      --border: #d4e4c8;
+      --white: #ffffff;
+      --font: 'Outfit', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+    /* TOPBAR */
+    .topbar { background: var(--green); color: rgba(255,255,255,.85); font-size: 12px; padding: 8px 48px; display: flex; justify-content: space-between; align-items: center; }
+    .topbar a { color: rgba(255,255,255,.85); text-decoration: none; }
+    .topbar a:hover { color: #fff; }
+    .topbar-right { display: flex; gap: 24px; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 200; background: var(--white); border-bottom: 1px solid var(--border); padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 68px; box-shadow: 0 2px 16px rgba(26,110,46,.07); }
+    .nav-wordmark { font-size: 22px; font-weight: 900; color: var(--green); letter-spacing: -0.5px; }
+    .nav-wordmark span { color: var(--orange); }
+    nav ul { display: flex; gap: 4px; list-style: none; }
+    nav a { color: var(--text); text-decoration: none; font-size: 14px; font-weight: 500; padding: 8px 14px; border-radius: 8px; transition: all .2s; }
+    nav a:hover { background: var(--green-pale); color: var(--green); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 10px; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; transition: all .2s; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); }
+    .btn-primary { background: var(--green); color: #fff; }
+    .btn-primary:hover { background: var(--green-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,110,46,.3); }
+    .btn-orange { background: var(--orange); color: #fff; }
+    .btn-orange:hover { background: var(--orange-light); transform: translateY(-1px); }
+    .btn-lg { padding: 16px 36px; font-size: 16px; border-radius: 12px; }
+
+    /* HERO */
+    #hero { 
+        min-height: 92vh; 
+        display: grid; 
+        grid-template-columns: 1.1fr 0.9fr; 
+        align-items: center; 
+        padding: 80px 48px; 
+        gap: 64px; 
+        position: relative; 
+        overflow: hidden; 
+        /* Ajout de ton image locale en fond complet */
+        background: url('images/hero1.png') center/cover no-repeat;
+    }
+    #hero::before { 
+        content:''; 
+        position:absolute; 
+        inset:0; 
+        /* Ce dégradé sombre (opacity 0.9) garantit que tes textes restent parfaitement lisibles */
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(240, 247, 241, 0.50) 100%); 
+        pointer-events:none; 
+        z-index: 0;
+    }
+    .hero-blob { position:absolute; right:-80px; top:-60px; width:600px; height:600px; background:radial-gradient(circle, rgba(45,158,71,.12) 0%, transparent 70%); border-radius:50%; pointer-events:none; }
+
+    .hero-badge { display:inline-flex; align-items:center; gap:8px; background:var(--green-pale); border:1px solid rgba(26,110,46,.2); color:var(--green); font-size:12px; font-weight:600; padding:6px 16px; border-radius:100px; margin-bottom:24px; letter-spacing:.05em; text-transform:uppercase; animation:fadeUp .6s ease both; }
+    .badge-dot { width:6px; height:6px; background:var(--green-light); border-radius:50%; animation:pulse 2s infinite; }
+    .hero-title { font-size: clamp(36px, 4.5vw, 62px); font-weight:800; line-height:1.1; letter-spacing:-1.5px; animation:fadeUp .7s .1s ease both; opacity:0; }
+    .hero-title .ag { color:var(--green); }
+    .hero-title .ao { color:var(--orange); }
+    .hero-sub { margin-top:20px; font-size:16px; color:var(--muted); line-height:1.75; max-width:520px; animation:fadeUp .7s .2s ease both; opacity:0; }
+    .hero-actions { margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; animation:fadeUp .7s .3s ease both; opacity:0; }
+    .hero-stats { margin-top:48px; display:flex; gap:40px; animation:fadeUp .7s .4s ease both; opacity:0; }
+    .h-stat-num { font-size:30px; font-weight:800; color:var(--green); line-height:1; }
+    .h-stat-label { font-size:12px; color:var(--muted); margin-top:4px; }
+
+    .hero-visual { display:grid; grid-template-columns:1fr 1fr; gap:16px; animation:fadeUp .8s .3s ease both; opacity:0; position:relative; z-index:1; }
+    .hero-card { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:0 4px 24px rgba(0,0,0,.06); transition:transform .3s; }
+    .hero-card:hover { transform:translateY(-4px); }
+    .hero-card:nth-child(1) { grid-column:span 2; }
+    .hero-card-title { font-size:15px; font-weight:700; margin-bottom:6px; }
+    .hero-card-text { font-size:12px; color:var(--muted); line-height:1.6; }
+    .hero-card-badge { display:inline-block; background:var(--green-pale); color:var(--green); font-size:10px; font-weight:700; padding:3px 10px; border-radius:100px; margin-top:12px; text-transform:uppercase; letter-spacing:.05em; }
+    .hero-card-badge.orange { background:rgba(232,98,10,.1); color:var(--orange); }
+    .hero-card-badge.blue { background:rgba(26,74,138,.1); color:var(--blue); }
+
+   /* Le conteneur visible (la fenêtre de l'affichage) */
+.map-placeholder { 
+    height: 200px; 
+    border-radius: 10px; 
+    position: relative; 
+    overflow: hidden; /* Cache tout ce qui dépasse sur les côtés */
+    margin-bottom: 12px; 
+    background-color: var(--white);
+    border: 1px solid var(--border);
+}
+
+/* Le conteneur interne qui contient les 7 images alignées */
+.map-slider-track {
+    display: flex;
+    width: calc(100% * 7); /* Largeur totale pour contenir les 7 images côte à côte */
+    height: 100%;
+    /* Déclenche l'animation : dure 25 secondes, avance de manière fluide (linear) et tourne en boucle (infinite) */
+    animation: scrollMaps 25s linear infinite;
+}
+
+/* Style appliqué à chacune des 7 images */
+.map-slider-track img {
+    width: calc(100% / 7); /* Chaque image prend exactement la largeur de la fenêtre */
+    height: 100%;
+    object-fit: cover; /* L'image s'adapte ENTIÈREMENT sans être coupée ni déformée */
+    background-color: var(--white); /* Fond blanc propre si l'image a des proportions différentes */
+}
+
+/* Mettre l'animation en pause quand l'utilisateur passe la souris sur la carte */
+.map-placeholder:hover .map-slider-track {
+    animation-play-state: paused;
+}
+
+/* Création du mouvement de translation automatique */
+@keyframes scrollMaps {
+    0% { transform: translateX(0); }
+    14% { transform: translateX(0); } /* Pause sur l'image 1 */
+    14.28% { transform: translateX(-14.28%); } /* Transition vers l'image 2 */
+    28% { transform: translateX(-14.28%); } /* Pause sur l'image 2 */
+    28.57% { transform: translateX(-28.57%); } /* Transition vers l'image 3 */
+    42% { transform: translateX(-28.57%); } /* Pause sur l'image 3 */
+    42.85% { transform: translateX(-42.85%); } /* Transition vers l'image 4 */
+    57% { transform: translateX(-42.85%); } /* Pause sur l'image 4 */
+    57.14% { transform: translateX(-57.14%); } /* Transition vers l'image 5 */
+    71% { transform: translateX(-57.14%); } /* Pause sur l'image 5 */
+    71.42% { transform: translateX(-71.42%); } /* Transition vers l'image 6 */
+    85% { transform: translateX(-71.42%); } /* Pause sur l'image 6 */
+    85.71% { transform: translateX(-85.71%); } /* Transition vers l'image 7 */
+    100% { transform: translateX(-85.71%); } /* Pause sur l'image 7 */
+}
+  
+    /* PARTNERS */
+    #partners { background:var(--dark); padding:28px 48px; display:flex; align-items:center; gap:48px; }
+    .partners-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.4); white-space:nowrap; flex-shrink:0; }
+    .partners-scroll { display:flex; gap:48px; align-items:center; flex-wrap:wrap; }
+    .partner-name { font-size:14px; font-weight:700; color:rgba(255,255,255,.35); white-space:nowrap; letter-spacing:.05em; }
+
+    /* COMMON SECTION */
+    .section-label { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--green); margin-bottom:16px; }
+    .section-label::before { content:''; width:24px; height:2px; background:var(--green); border-radius:2px; }
+    .section-title { font-size:clamp(28px,3vw,44px); font-weight:800; letter-spacing:-1px; line-height:1.15; max-width:520px; }
+    .section-sub { color:var(--muted); margin-top:12px; font-size:15px; max-width:480px; }
+
+    /* SERVICES */
+    #services { padding:100px 48px; }
+    .services-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:56px; }
+    .service-card { background:var(--white); border:1px solid var(--border); border-radius:20px; padding:36px 28px; transition:all .3s; position:relative; overflow:hidden; }
+    .service-card::before { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--green); transform:scaleX(0); transform-origin:left; transition:transform .3s ease; }
+    .service-card:hover { transform:translateY(-6px); box-shadow:0 16px 48px rgba(26,110,46,.12); border-color:rgba(26,110,46,.2); }
+    .service-card:hover::before { transform:scaleX(1); }
+    .service-icon { width:56px; height:56px; background:var(--green-pale); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:20px; }
+    .service-icon.ob { background:rgba(232,98,10,.1); }
+    .service-icon.bb { background:rgba(26,74,138,.1); }
+    .service-title { font-size:18px; font-weight:700; margin-bottom:10px; }
+    .service-desc { font-size:14px; color:var(--muted); line-height:1.7; }
+    .service-tools { margin-top:20px; display:flex; flex-wrap:wrap; gap:8px; }
+    .tool-tag { font-size:11px; font-weight:600; background:var(--green-pale); color:var(--green); padding:4px 12px; border-radius:100px; }
+    .tool-tag.o { background:rgba(232,98,10,.1); color:var(--orange); }
+    .tool-tag.b { background:rgba(26,74,138,.1); color:var(--blue); }
+
+    /* ACADEMY */
+    #academy { padding:100px 48px; background:var(--dark); position:relative; overflow:hidden; }
+    #academy::before { content:''; position:absolute; top:-100px; right:-100px; width:500px; height:500px; background:radial-gradient(circle,rgba(45,158,71,.15) 0%,transparent 70%); pointer-events:none; }
+    #academy .section-label { color:var(--green-light); }
+    #academy .section-label::before { background:var(--green-light); }
+    #academy .section-title { color:#fff; }
+    #academy .section-sub { color:rgba(255,255,255,.5); }
+    .courses-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:56px; }
+    .course-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:20px; overflow:hidden; transition:all .3s; }
+    .course-card:hover { transform:translateY(-6px); border-color:rgba(45,158,71,.4); box-shadow:0 16px 48px rgba(0,0,0,.3); }
+    .course-thumb { height:140px; display:flex; align-items:center; justify-content:center; font-size:52px; }
+    .ct-green { background:linear-gradient(135deg,#0d3d1a 0%,#1a6e2e 100%); }
+    .ct-orange { background:linear-gradient(135deg,#5c2200 0%,#e8620a 100%); }
+    .ct-blue { background:linear-gradient(135deg,#0a1f40 0%,#1a4a8a 100%); }
+    .course-body { padding:24px; }
+    .course-level { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--green-light); margin-bottom:8px; }
+    .course-level.o { color:var(--orange-light); }
+    .course-level.b { color:#5b9bff; }
+    .course-title { font-size:17px; font-weight:700; color:#fff; margin-bottom:8px; }
+    .course-desc { font-size:13px; color:rgba(255,255,255,.5); line-height:1.65; }
+    .course-meta { display:flex; gap:16px; margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,.08); }
+    .course-meta span { font-size:12px; color:rgba(255,255,255,.4); }
+
+    /* COMMUNITIES */
+    #communities { padding:100px 48px; }
+    .communities-layout { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; margin-top:56px; }
+    .community-list { display:flex; flex-direction:column; gap:16px; }
+    .community-item { display:flex; align-items:center; gap:20px; background:var(--white); border:1px solid var(--border); border-radius:16px; padding:20px 24px; transition:all .25s; cursor:pointer; }
+    .community-item:hover { border-color:var(--green); box-shadow:0 4px 20px rgba(26,110,46,.1); transform:translateX(4px); }
+    .ci-icon { font-size:32px; flex-shrink:0; }
+    .ci-name { font-size:16px; font-weight:700; }
+    .ci-count { font-size:13px; color:var(--muted); margin-top:2px; }
+    .ci-arrow { margin-left:auto; color:var(--muted); font-size:18px; transition:transform .2s; }
+    .community-item:hover .ci-arrow { transform:translateX(4px); color:var(--green); }
+    .community-visual { background:var(--white); border:1px solid var(--border); border-radius:24px; padding:36px; box-shadow:0 8px 40px rgba(0,0,0,.06); }
+    .cv-title { font-size:18px; font-weight:700; margin-bottom:8px; }
+    .cv-sub { font-size:14px; color:var(--muted); margin-bottom:24px; }
+    .discussion-feed { display:flex; flex-direction:column; gap:16px; }
+    .disc-item { display:flex; gap:14px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+    .disc-item:last-child { border-bottom:none; padding-bottom:0; }
+    .disc-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; flex-shrink:0; }
+    .disc-name { font-size:13px; font-weight:700; }
+    .disc-text { font-size:12px; color:var(--muted); margin-top:2px; line-height:1.5; }
+    .disc-time { font-size:11px; color:rgba(107,126,97,.6); margin-top:4px; }
+
+    /* GAMIFICATION */
+    #gamification { padding:100px 48px; background:linear-gradient(135deg,#f0f8f2 0%,#e8f5ec 100%); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .levels-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-top:56px; }
+    .level-card { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:24px 16px; text-align:center; transition:all .3s; position:relative; }
+    .level-card:hover { transform:translateY(-6px); box-shadow:0 12px 32px rgba(26,110,46,.15); }
+    .level-dot { position:absolute; top:12px; right:12px; width:8px; height:8px; border-radius:50%; }
+    .level-num { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:12px; }
+    .level-icon { font-size:36px; margin-bottom:12px; }
+    .level-name { font-size:14px; font-weight:800; margin-bottom:6px; }
+    .level-desc { font-size:11px; color:var(--muted); line-height:1.5; }
+
+    /* PROCESS */
+    #process { padding:100px 48px; }
+    .process-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:56px; position:relative; }
+    .process-connector { position:absolute; top:32px; left:calc(12.5% + 16px); right:calc(12.5% + 16px); height:2px; background:linear-gradient(90deg,var(--green),var(--green-light)); opacity:.25; }
+    .process-step { padding:0 24px; text-align:center; }
+    .process-num { width:64px; height:64px; background:var(--green); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; margin:0 auto 24px; position:relative; z-index:1; box-shadow:0 4px 20px rgba(26,110,46,.3); }
+    .process-title { font-size:17px; font-weight:700; margin-bottom:10px; }
+    .process-desc { font-size:13px; color:var(--muted); line-height:1.7; }
+
+    /* DELIVERY */
+    #delivery { padding:80px 48px; background:var(--dark); }
+    .delivery-inner { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
+    #delivery .section-label { color:var(--green-light); }
+    #delivery .section-label::before { background:var(--green-light); }
+    #delivery .section-title { color:#fff; }
+    #delivery .section-sub { color:rgba(255,255,255,.5); }
+    .delivery-list { display:flex; flex-direction:column; gap:16px; margin-top:32px; }
+    .delivery-item { display:flex; gap:16px; align-items:flex-start; }
+    .delivery-check { width:28px; height:28px; background:rgba(45,158,71,.2); border-radius:8px; display:flex; align-items:center; justify-content:center; color:var(--green-light); font-size:14px; flex-shrink:0; margin-top:2px; }
+    .delivery-text { font-size:14px; color:rgba(255,255,255,.7); line-height:1.65; }
+    .delivery-visual { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:32px; }
+    .dv-title { font-size:15px; font-weight:700; color:#fff; margin-bottom:20px; }
+    .dv-item { display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,.07); }
+    .dv-item:last-child { border-bottom:none; }
+    .dv-icon { font-size:22px; }
+    .dv-label { font-size:14px; color:rgba(255,255,255,.7); }
+    .dv-badge { margin-left:auto; font-size:11px; font-weight:700; padding:3px 10px; border-radius:100px; }
+    .dv-badge.g { background:rgba(45,158,71,.2); color:var(--green-light); }
+    .dv-badge.o { background:rgba(232,98,10,.2); color:var(--orange-light); }
+
+    /* TESTIMONIALS */
+    #testimonials { padding:100px 48px; }
+    .testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:56px; }
+    .testi-card { background:var(--white); border:1px solid var(--border); border-radius:20px; padding:32px; transition:all .3s; }
+    .testi-card:hover { box-shadow:0 12px 40px rgba(26,110,46,.1); transform:translateY(-4px); }
+    .testi-stars { color:#f59e0b; font-size:16px; margin-bottom:16px; letter-spacing:2px; }
+    .testi-text { font-size:14px; color:var(--text); line-height:1.8; font-style:italic; }
+    .testi-author { display:flex; align-items:center; gap:12px; margin-top:24px; padding-top:20px; border-top:1px solid var(--border); }
+    .testi-avatar { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; color:#fff; }
+    .testi-name { font-size:14px; font-weight:700; }
+    .testi-role { font-size:12px; color:var(--muted); }
+
+    /* CONTACT */
+    #contact { padding:100px 48px; background:var(--green-pale); border-top:1px solid var(--border); }
+    .contact-grid { display:grid; grid-template-columns:1fr 1.2fr; gap:80px; align-items:start; }
+    .contact-details { display:flex; flex-direction:column; gap:16px; margin-top:36px; }
+    .contact-detail { display:flex; align-items:center; gap:16px; background:var(--white); border:1px solid var(--border); border-radius:14px; padding:18px 20px; text-decoration:none; color:var(--text); transition:all .2s; }
+    .contact-detail:hover { border-color:var(--green); box-shadow:0 4px 16px rgba(26,110,46,.1); }
+    .cd-icon { width:44px; height:44px; background:var(--green-pale); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .cd-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+    .cd-value { font-size:15px; font-weight:600; margin-top:2px; }
+    .contact-form { background:var(--white); border:1px solid var(--border); border-radius:24px; padding:40px; box-shadow:0 8px 40px rgba(26,110,46,.08); }
+    .form-title { font-size:20px; font-weight:700; margin-bottom:8px; }
+    .form-sub { font-size:14px; color:var(--muted); margin-bottom:28px; }
+    .form-group { display:flex; flex-direction:column; gap:6px; margin-bottom:18px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    label { font-size:12px; font-weight:600; color:var(--text); text-transform:uppercase; letter-spacing:.07em; }
+    input, textarea, select { background:var(--bg); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-family:var(--font); font-size:14px; padding:12px 16px; outline:none; transition:border-color .2s; -webkit-appearance:none; resize:none; }
+    input:focus, textarea:focus, select:focus { border-color:var(--green); background:#fff; }
+    input::placeholder, textarea::placeholder { color:var(--muted); }
+    .form-submit { width:100%; margin-top:8px; }
+    .form-success { display:none; background:rgba(26,110,46,.08); border:1px solid rgba(26,110,46,.2); border-radius:10px; padding:16px; color:var(--green); font-size:14px; font-weight:600; text-align:center; margin-top:16px; }
+    .form-success.visible { display:block; }
+
+    /* FOOTER */
+    footer { background:var(--dark); color:rgba(255,255,255,.7); padding:64px 48px 32px; }
+    .footer-top { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px; }
+    .footer-wordmark { font-size:24px; font-weight:900; color:#fff; margin-bottom:16px; display:block; }
+    .footer-wordmark span { color:var(--green-light); }
+    .footer-tagline { font-size:13px; color:rgba(255,255,255,.4); line-height:1.7; }
+    .footer-col-title { font-size:13px; font-weight:700; color:#fff; text-transform:uppercase; letter-spacing:.1em; margin-bottom:20px; }
+    .footer-links { display:flex; flex-direction:column; gap:10px; }
+    .footer-links a { font-size:13px; color:rgba(255,255,255,.4); text-decoration:none; transition:color .2s; }
+    .footer-links a:hover { color:var(--green-light); }
+    .footer-bottom { border-top:1px solid rgba(255,255,255,.08); padding-top:28px; display:flex; justify-content:space-between; align-items:center; }
+    .footer-copy { font-size:12px; color:rgba(255,255,255,.3); }
+    .footer-langs { display:flex; gap:12px; }
+    .lang-btn { font-size:11px; font-weight:600; background:transparent; border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.4); padding:4px 12px; border-radius:100px; cursor:pointer; transition:all .2s; font-family:var(--font); }
+    .lang-btn.active, .lang-btn:hover { border-color:var(--green-light); color:var(--green-light); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulse { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(1.4); opacity:.7; } }
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* MOBILE */
+    @media (max-width:900px) {
+      .topbar, nav ul { display:none; }
+      nav { padding:0 20px; }
+      #hero { grid-template-columns:1fr; padding:100px 20px 60px; }
+      .hero-visual { display:none; }
+      .services-grid, .courses-grid, .testi-grid { grid-template-columns:1fr; }
+      .levels-grid { grid-template-columns:repeat(2,1fr); }
+      .process-grid, .contact-grid, .delivery-inner, .communities-layout { grid-template-columns:1fr; }
+      .footer-top { grid-template-columns:1fr 1fr; }
+      section { padding-left:20px !important; padding-right:20px !important; }
+      .form-row { grid-template-columns:1fr; }
+      .process-connector { display:none; }
+      #partners { display:none; }
+    }
+  /* Style de base pour cacher le bouton sur ordinateur */
+  .mobile-menu-toggle { display: none; }
+
+  /* Règles appliquées uniquement sur Mobile (moins de 900px) */
+  @media (max-width: 900px) {
+    /* Style du bouton Hamburger */
+    .mobile-menu-toggle {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 21px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 1010;
+    }
+    .mobile-menu-toggle span {
+      width: 100%;
+      height: 3px;
+      background-color: var(--dark);
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    /* Transformation du menu en liste déroulante sur mobile */
+    nav ul {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      right: -100%; /* Caché à droite par défaut */
+      width: 250px;
+      height: 100vh;
+      background-color: var(--white);
+      padding: 80px 20px 20px 20px;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+      transition: right 0.3s ease;
+      z-index: 1000;
+    }
+
+    /* Quand le menu est ouvert */
+    nav ul.active {
+      right: 0; /* Il glisse vers l'écran */
+    }
+
+    nav ul li {
+      margin: 15px 0;
+    }
+
+    /* Animation du bouton Hamburger en "X" quand il est actif */
+    .mobile-menu-toggle.active span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+    .mobile-menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .mobile-menu-toggle.active span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+  }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span>🌍 Formation SIG &amp; Data Science pour l'Afrique centrale</span>
+  <div class="topbar-right">
+    <a href="https://wa.me/243898383148?text=Bonjour%20GADA%20Training,%20je%20souhaite%20avoir%20des%20informations..." target="_blank">📞 Discuter sur WhatsApp</a>
+    <a href="mailto:gadasolution.rdc@gmail.com">✉ gadasolution.rdc@gmail.com</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-wordmark">GADA<span>.</span>Training</div>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#academy">Académie</a></li>
+    <li><a href="#communities">Communautés</a></li>
+    <li><a href="#gamification">Niveaux</a></li>
+    <li><a href="#process">Méthode</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="#contact" class="btn btn-outline">Se connecter</a>
+    <a href="#contact" class="btn btn-primary">S'inscrire</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-blob"></div>
+  <div>
+    <div class="hero-badge"><div class="badge-dot"></div>GeoAgri Data Analytics &amp; Solution</div>
+    <h1 class="hero-title">
+      Exploitez la puissance<br>
+      des données pour<br>
+      <span class="ag">l'agriculture</span> &amp;<br>
+      <span class="ao">l'environnement</span>
+    </h1>
+    <p class="hero-sub">Formation, analyse et innovation en SIG, télédétection et data science appliquée. Spécialisé pour les réalités de l'Afrique centrale.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn btn-primary btn-lg">Rejoindre la communauté →</a>
+      <a href="#academy" class="btn btn-outline btn-lg">Voir les formations</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="h-stat-num">500+</div><div class="h-stat-label">Apprenants formés</div></div>
+      <div><div class="h-stat-num">48+</div><div class="h-stat-label">Projets livrés</div></div>
+      <div><div class="h-stat-num">12</div><div class="h-stat-label">Pays couverts</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card">
+     <div class="map-placeholder">
+          <div class="map-slider-track">
+              <img src="images/carte1.jpg" alt="Analyse SIG 1">
+              <img src="images/carte2.jpg" alt="Analyse SIG 2">
+              <img src="images/carte3.jpg" alt="Analyse SIG 3">
+              <img src="images/carte4.jpg" alt="Analyse SIG 4">
+              <img src="images/carte5.jpg" alt="Analyse SIG 5">
+              <img src="images/carte6.jpg" alt="Analyse SIG 6">
+              <img src="images/carte7.jpg" alt="Analyse SIG 7">
+          </div>
+      </div>
+      <div class="hero-card-title">🗺️ Analyse SIG — RDC</div>
+      <div class="hero-card-text">Cartographie des zones agricoles, suivi de la déforestation, modélisation spatiale.</div>
+      <span class="hero-card-badge">QGIS · ArcGIS</span>
+    </div>
+
+    <div class="hero-card">
+      <div style="font-size:32px;margin-bottom:12px">🛰️</div>
+      <div class="hero-card-title">Télédétection</div>
+      <div class="hero-card-text">Sentinel-2, Landsat, Google Earth Engine</div>
+      <span class="hero-card-badge blue">GEE</span>
+    </div>
+
+    <div class="hero-card">
+      <div style="font-size:32px;margin-bottom:12px">📊</div>
+      <div class="hero-card-title">Data Science</div>
+      <div class="hero-card-text">Python, R, Machine Learning appliqué</div>
+      <span class="hero-card-badge orange">Python · R</span>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<div id="partners">
+  <span class="partners-label">Reconnus par</span>
+  <div class="partners-scroll">
+    <span class="partner-name">FAO</span>
+    <span class="partner-name">CIFOR</span>
+    <span class="partner-name">INERA-RDC</span>
+    <span class="partner-name">CGIAR</span>
+    <span class="partner-name">UNIKIS</span>
+    <span class="partner-name">ESRI Africa</span>
+    <span class="partner-name">UNDP</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-label">Ce que nous faisons</div>
+  <h2 class="section-title">Nos services spécialisés</h2>
+  <p class="section-sub">Des solutions complètes, du terrain aux données, adaptées aux enjeux africains.</p>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-icon">🗺️</div>
+      <div class="service-title">Analyse SIG &amp; Spatiale</div>
+      <p class="service-desc">Cartographie, analyse de données géoréférencées, modélisation spatiale et production de cartes thématiques professionnelles.</p>
+      <div class="service-tools"><span class="tool-tag">QGIS</span><span class="tool-tag">ArcGIS</span><span class="tool-tag">PostGIS</span><span class="tool-tag">Leaflet</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🛰️</div>
+      <div class="service-title">Télédétection &amp; Satellite</div>
+      <p class="service-desc">Traitement d'images satellites, suivi du couvert végétal (NDVI), détection de changements et cartographie de l'occupation des sols.</p>
+      <div class="service-tools"><span class="tool-tag">Google Earth Engine</span><span class="tool-tag">Sentinel</span><span class="tool-tag">Landsat</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon ob">🌾</div>
+      <div class="service-title">Agriculture de Précision</div>
+      <p class="service-desc">Monitoring des cultures, prévisions de rendement, gestion des ressources en eau et optimisation des intrants agricoles.</p>
+      <div class="service-tools"><span class="tool-tag o">Drone</span><span class="tool-tag o">IoT</span><span class="tool-tag o">ML</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon bb">🤖</div>
+      <div class="service-title">Data Science Appliquée</div>
+      <p class="service-desc">Modèles prédictifs, analyse statistique, machine learning appliqué aux données agronomiques et environnementales.</p>
+      <div class="service-tools"><span class="tool-tag b">Python</span><span class="tool-tag b">R</span><span class="tool-tag b">TensorFlow</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔄</div>
+      <div class="service-title">Pipelines &amp; Bases de Données</div>
+      <p class="service-desc">Architecture de bases de données spatiales, ETL automatisés, dashboards temps réel pour le suivi environnemental.</p>
+      <div class="service-tools"><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Airflow</span><span class="tool-tag">dbt</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon ob">🎓</div>
+      <div class="service-title">Formation &amp; Conseil</div>
+      <p class="service-desc">Formation terrain aux outils SIG et data science, audit de maturité data, stratégie analytique pour organisations et institutions.</p>
+      <div class="service-tools"><span class="tool-tag o">Audit</span><span class="tool-tag o">Formation</span><span class="tool-tag o">Stratégie</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACADEMY -->
+<section id="academy">
+  <div class="section-label">Académie GADA</div>
+  <h2 class="section-title">Formations pratiques &amp; certifiantes</h2>
+  <p class="section-sub">Des cours construits sur des données réelles d'Afrique centrale, par des praticiens terrain.</p>
+  <div class="courses-grid reveal">
+    <div class="course-card">
+      <div class="course-thumb ct-green">🗺️</div>
+      <div class="course-body">
+        <div class="course-level">Débutant → Expert</div>
+        <div class="course-title">SIG avec QGIS &amp; ArcGIS</div>
+        <p class="course-desc">Maîtrisez les outils SIG de référence à travers des projets concrets en RDC et en Afrique centrale.</p>
+        <div class="course-meta"><span>📚 12 modules</span><span>⏱ 40h</span><span>🏆 Certifié</span></div>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb ct-orange">🛰️</div>
+      <div class="course-body">
+        <div class="course-level o">Intermédiaire</div>
+        <div class="course-title">Télédétection &amp; Google Earth Engine</div>
+        <p class="course-desc">Analyse d'images satellites, calcul NDVI, suivi déforestation. Données Sentinel et Landsat.</p>
+        <div class="course-meta"><span>📚 8 modules</span><span>⏱ 28h</span><span>🏆 Certifié</span></div>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb ct-blue">📊</div>
+      <div class="course-body">
+        <div class="course-level b">Tous niveaux</div>
+        <div class="course-title">Analyse Statistique (R &amp; Python)</div>
+        <p class="course-desc">Statistiques appliquées à l'agronomie, machine learning, visualisation de données environnementales.</p>
+        <div class="course-meta"><span>📚 10 modules</span><span>⏱ 35h</span><span>🏆 Certifié</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:40px">
+    <a href="#contact" class="btn btn-primary btn-lg">Voir tous les cours →</a>
+  </div>
+</section>
+
+<!-- COMMUNITIES -->
+<section id="communities">
+  <div class="section-label">Réseau professionnel</div>
+  <h2 class="section-title">Communautés thématiques</h2>
+  <p class="section-sub">Rejoignez des groupes de praticiens partageant vos problématiques de terrain.</p>
+  <div class="communities-layout reveal">
+    <div class="community-list">
+      <div class="community-item"><div class="ci-icon">🌾</div><div><div class="ci-name">Agriculture Intelligente</div><div class="ci-count">342 membres · 28 discussions actives</div></div><div class="ci-arrow">→</div></div>
+      <div class="community-item"><div class="ci-icon">🌲</div><div><div class="ci-name">Déforestation &amp; Forêts</div><div class="ci-count">218 membres · 15 discussions actives</div></div><div class="ci-arrow">→</div></div>
+      <div class="community-item"><div class="ci-icon">🌱</div><div><div class="ci-name">Gestion des Sols</div><div class="ci-count">196 membres · 12 discussions actives</div></div><div class="ci-arrow">→</div></div>
+      <div class="community-item"><div class="ci-icon">🌦️</div><div><div class="ci-name">Climat &amp; Environnement</div><div class="ci-count">275 membres · 22 discussions actives</div></div><div class="ci-arrow">→</div></div>
+    </div>
+    <div class="community-visual">
+      <div class="cv-title">💬 Discussions récentes</div>
+      <div class="cv-sub">Forum — Agriculture Intelligente</div>
+      <div class="discussion-feed">
+        <div class="disc-item">
+          <div class="disc-avatar" style="background:var(--green)">JM</div>
+          <div><div class="disc-name">Jean-Marie K.</div><div class="disc-text">Quelqu'un a déjà utilisé GEE pour le suivi du maïs au Kasaï ? Partage de script bienvenu.</div><div class="disc-time">Il y a 2 heures</div></div>
+        </div>
+        <div class="disc-item">
+          <div class="disc-avatar" style="background:var(--orange)">AM</div>
+          <div><div class="disc-name">Amina M.</div><div class="disc-text">Nouveau dataset : données pluviométriques RDC 2015–2024 en format CSV + shapefile disponible.</div><div class="disc-time">Il y a 5 heures</div></div>
+        </div>
+        <div class="disc-item">
+          <div class="disc-avatar" style="background:var(--blue)">PL</div>
+          <div><div class="disc-name">Patrick L.</div><div class="disc-text">Résultats NDVI sur le Bas-Congo — chute de 8% du couvert végétal entre 2020 et 2024.</div><div class="disc-time">Hier</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAMIFICATION -->
+<section id="gamification">
+  <div class="section-label">Progression</div>
+  <h2 class="section-title">Votre parcours dans GADA Training</h2>
+  <p class="section-sub">Progressez à travers 5 niveaux et devenez un expert reconnu de la communauté.</p>
+  <div class="levels-grid reveal">
+    <div class="level-card"><div class="level-dot" style="background:#94a3b8"></div><div class="level-num">Niveau 1</div><div class="level-icon">👁️</div><div class="level-name">Observateur</div><p class="level-desc">Découvrez les bases du SIG et de l'analyse de données.</p></div>
+    <div class="level-card"><div class="level-dot" style="background:var(--green-light)"></div><div class="level-num">Niveau 2</div><div class="level-icon">📊</div><div class="level-name">Analyste</div><p class="level-desc">Maîtrisez QGIS et les analyses statistiques de base.</p></div>
+    <div class="level-card"><div class="level-dot" style="background:var(--blue)"></div><div class="level-num">Niveau 3</div><div class="level-icon">🗺️</div><div class="level-name">Expert SIG</div><p class="level-desc">Projets complexes, télédétection, données satellite.</p></div>
+    <div class="level-card"><div class="level-dot" style="background:var(--orange)"></div><div class="level-num">Niveau 4</div><div class="level-icon">🤖</div><div class="level-name">Data Scientist</div><p class="level-desc">Machine learning, modèles prédictifs, pipelines avancés.</p></div>
+    <div class="level-card" style="border-color:rgba(232,98,10,.3);background:linear-gradient(135deg,#fff 0%,rgba(232,98,10,.04) 100%)"><div class="level-dot" style="background:gold"></div><div class="level-num">Niveau 5</div><div class="level-icon">🏆</div><div class="level-name">Visionnaire GADA</div><p class="level-desc">Leader reconnu, mentor de la communauté, contributeur expert.</p></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-label">Notre méthode</div>
+  <h2 class="section-title">Du besoin au livrable</h2>
+  <p class="section-sub">Un processus clair, transparent et adapté à votre contexte.</p>
+  <div class="process-grid reveal">
+    <div class="process-connector"></div>
+    <div class="process-step"><div class="process-num">01</div><div class="process-title">Découverte</div><p class="process-desc">Analyse de votre besoin, de vos données disponibles et de vos objectifs terrain.</p></div>
+    <div class="process-step"><div class="process-num">02</div><div class="process-title">Proposition</div><p class="process-desc">Devis clair, périmètre défini, délai et tarif fixés. Aucune surprise.</p></div>
+    <div class="process-step"><div class="process-num">03</div><div class="process-title">Analyse</div><p class="process-desc">Traitement, modélisation, visualisation avec points d'étape réguliers.</p></div>
+    <div class="process-step"><div class="process-num">04</div><div class="process-title">Livraison</div><p class="process-desc">Livrable documenté, présentation des résultats, support post-livraison inclus.</p></div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section id="delivery">
+  <div class="delivery-inner">
+    <div>
+      <div class="section-label">Collaboration</div>
+      <h2 class="section-title">Comment nous livrons vos travaux</h2>
+      <p class="section-sub">Des livrables clairs, accessibles même en basse connexion.</p>
+      <div class="delivery-list">
+        <div class="delivery-item"><div class="delivery-check">✓</div><div class="delivery-text">Partage de fichiers via Google Drive ou lien sécurisé — accessible depuis n'importe quel appareil.</div></div>
+        <div class="delivery-item"><div class="delivery-check">✓</div><div class="delivery-text">Rapports PDF, cartes SIG exportées, notebooks Jupyter commentés, dashboards déployés en ligne.</div></div>
+        <div class="delivery-item"><div class="delivery-check">✓</div><div class="delivery-text">Suivi de projet par e-mail et WhatsApp avec mises à jour à chaque étape clé.</div></div>
+        <div class="delivery-item"><div class="delivery-check">✓</div><div class="delivery-text">Mode hors-ligne disponible : cours et données téléchargeables pour zones à faible connectivité.</div></div>
+        <div class="delivery-item"><div class="delivery-check">✓</div><div class="delivery-text">Documentation complète fournie en français (et anglais sur demande) avec chaque livrable.</div></div>
+      </div>
+    </div>
+    <div class="delivery-visual">
+      <div class="dv-title">📦 Types de livrables</div>
+      <div class="dv-item"><div class="dv-icon">🗺️</div><div class="dv-label">Cartes SIG (PDF / Shapefile)</div><div class="dv-badge g">Inclus</div></div>
+      <div class="dv-item"><div class="dv-icon">📊</div><div class="dv-label">Dashboards interactifs</div><div class="dv-badge g">Inclus</div></div>
+      <div class="dv-item"><div class="dv-icon">📋</div><div class="dv-label">Rapport d'analyse (PDF)</div><div class="dv-badge g">Inclus</div></div>
+      <div class="dv-item"><div class="dv-icon">💻</div><div class="dv-label">Notebooks Python / R</div><div class="dv-badge g">Inclus</div></div>
+      <div class="dv-item"><div class="dv-icon">🎓</div><div class="dv-label">Certificat de formation</div><div class="dv-badge o">Sur validation</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-label">Témoignages</div>
+  <h2 class="section-title">Ce que disent nos clients</h2>
+  <div class="testi-grid reveal">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"GADA Training a transformé notre capacité à analyser les données agricoles. La formation SIG était précise, pratique et directement applicable à notre projet au Kivu."</p>
+      <div class="testi-author"><div class="testi-avatar" style="background:var(--green)">MK</div><div><div class="testi-name">Moïse Kabila</div><div class="testi-role">Agronome, INERA-RDC</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Le dashboard SIG livré par GADA a révolutionné notre suivi de la déforestation. Résultats précis, livrés dans les délais, parfaitement documentés."</p>
+      <div class="testi-author"><div class="testi-avatar" style="background:var(--orange)">SN</div><div><div class="testi-name">Sarah Nzinga</div><div class="testi-role">Coordinatrice, ONG Forêt Congo</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"La communauté GADA est unique en Afrique centrale. Échanges de qualité, datasets partagés, et une équipe vraiment disponible pour nos projets."</p>
+      <div class="testi-author"><div class="testi-avatar" style="background:var(--blue)">EB</div><div><div class="testi-name">Eric Bongonga</div><div class="testi-role">Chercheur, Université de Kisangani</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div>
+      <div class="section-label">Travaillons ensemble</div>
+      <h2 class="section-title">Parlons de votre projet</h2>
+      <p class="section-sub" style="margin-top:12px">Que ce soit pour une formation, une mission d'analyse ou un partenariat, contactez-nous. Réponse sous 24h.</p>
+      <div class="contact-details">
+        <a href="https://wa.me/243898383148?text=Bonjour%20GADA%20Training,%20je%20souhaite%20avoir%20des%20informations..." target="_blank" class="contact-detail">
+  <div class="cd-icon">💬</div>
+  <div><div class="cd-label">WhatsApp (Direct)</div><div class="cd-value">+243 898 383 148</div></div>
+</a>
+          <div class="cd-icon">📞</div>
+          <div><div class="cd-label">Téléphone / WhatsApp</div><div class="cd-value">+243 898 383 148</div></div>
+        </a>
+        <a href="mailto:gadasolution.rdc@gmail.com" class="contact-detail">
+          <div class="cd-icon">✉️</div>
+          <div><div class="cd-label">Email</div><div class="cd-value">gadasolution.rdc@gmail.com</div></div>
+        </a>
+        <div class="contact-detail">
+          <div class="cd-icon">📍</div>
+          <div><div class="cd-label">Localisation</div><div class="cd-value">République Démocratique du Congo</div></div>
+        </div>
+      </div>
+    </div>
+    <form class="contact-form" action="https://formspree.io/f/mwvzeyql" method="POST" id="contactForm">
+      <div class="form-title">Envoyer une demande</div>
+      <div class="form-sub">Décrivez votre besoin et nous vous répondons rapidement.</div>
+      <div class="form-row">
+        <div class="form-group"><label for="name">Nom complet</label><input type="text" id="name" name="name" placeholder="Jean Dupont" required/></div>
+        <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" placeholder="jean@exemple.com" required/></div>
+      </div>
+      <div class="form-group">
+        <label for="service">Type de demande</label>
+        <select id="service" name="service">
+          <option value="">— Sélectionner —</option>
+          <option>Formation SIG (QGIS / ArcGIS)</option>
+          <option>Télédétection &amp; Google Earth Engine</option>
+          <option>Analyse Data Science (Python / R)</option>
+          <option>Projet d'analyse &amp; cartographie</option>
+          <option>Partenariat institutionnel</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group"><label for="pays">Pays</label><input type="text" id="pays" name="pays" placeholder="RDC, Cameroun, Congo…"/></div>
+      <div class="form-group"><label for="message">Votre message</label><textarea id="message" name="message" rows="4" placeholder="Décrivez votre besoin, vos données disponibles, le livrable attendu…" required></textarea></div>
+      <button type="submit" class="btn btn-primary btn-lg form-submit">Envoyer la demande →</button>
+      <div class="form-success" id="formSuccess">✓ Message envoyé ! Nous vous répondons sous 24h.</div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="footer-wordmark">GADA<span>.Training</span></span>
+      <p class="footer-tagline">GeoAgri Data Analytics &amp; Solution — Formation, analyse et innovation en SIG, télédétection et data science pour l'Afrique centrale.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Services</div>
+      <div class="footer-links">
+        <a href="#services">Analyse SIG</a>
+        <a href="#services">Télédétection</a>
+        <a href="#services">Data Science</a>
+        <a href="#services">Agriculture de Précision</a>
+        <a href="#services">Formation &amp; Conseil</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Académie</div>
+      <div class="footer-links">
+        <a href="#academy">Cours QGIS</a>
+        <a href="#academy">Google Earth Engine</a>
+        <a href="#academy">Python &amp; R</a>
+        <a href="#communities">Communautés</a>
+        <a href="#gamification">Niveaux &amp; Certifiants</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <div class="footer-links">
+        <a href="https://wa.me/243898383148?text=Bonjour%20GADA%20Training,%20je%20souhaite%20avoir%20des%20informations..." target="_blank">💬 WhatsApp : +243 898 383 148</a>
+        <a href="mailto:gadasolution.rdc@gmail.com">✉ gadasolution.rdc@gmail.com</a>
+        <a href="#contact">Formulaire de contact</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 GADA Training — GeoAgri Data Analytics &amp; Solution · RDC · Hébergé sur GitHub Pages</div>
+    <div class="footer-langs">
+      <button class="lang-btn active">FR</button>
+      <button class="lang-btn">EN</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: .15 });
+  reveals.forEach(r => obs.observe(r));
+
+  // Fix hero opacity animations
+  document.querySelectorAll('.hero-title,.hero-sub,.hero-actions,.hero-stats,.hero-visual').forEach(el => {
+    el.addEventListener('animationend', () => el.style.opacity = '1');
+  });
+
+  // Form submit via Formspree
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    try {
+      const res = await fetch(form.action, { method:'POST', body:new FormData(form), headers:{'Accept':'application/json'} });
+      if (res.ok) { form.reset(); success.classList.add('visible'); }
+    } catch { alert('Erreur réseau. Veuillez réessayer.'); }
+  });
+
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+    document.querySelectorAll('nav a').forEach(a => {
+      const active = a.getAttribute('href') === '#' + cur;
+      a.style.color = active ? 'var(--green)' : '';
+      a.style.background = active ? 'var(--green-pale)' : '';
+    });
+  });
+</script>
+</body>
+</html>
