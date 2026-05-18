@@ -222,48 +222,41 @@
         <div class="footer-brand">GeoAgri Data Analytics & Solution (GADA Sol)</div>
         <p>&copy; 2026 GADA Training. Tous droits réservés.</p>
         <p>Formons les meilleurs du futur.</p>
-    </footer>
+   </footer>
 
 <script>
-    function ouvrirZone() {
-        document.getElementById('btn-open').style.display = 'none';
-        document.getElementById('folder-zone').classList.add('open');
+    function ouvrirZoneDossiers() {
+        var zoneDossier = document.getElementById('zone-dossiers-interactive');
+        var btnPrincipal = document.getElementById('btn-principal-supports');
+        
+        // Affiche la zone du dossier
+        zoneDossier.style.display = 'block';
+        // Cache le bouton principal pour un rendu ultra propre
+        btnPrincipal.style.display = 'none';
     }
 
-    function toggleDossier(id) {
-        const header = document.getElementById('fh-' + id);
-        const files  = document.getElementById('fl-' + id);
-        const icon   = document.getElementById('fi-' + id);
-        if (!files) return;
-
-        const isOpen = files.classList.contains('open');
-
-        // Referme les autres fichiers et dossiers ouverts pour un effet accordéon propre
-        document.querySelectorAll('.file-list.open').forEach(el => el.classList.remove('open'));
-        document.querySelectorAll('.folder-row.active').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('[id^="fi-"]').forEach(el => {
-            el.className = 'fa-solid fa-folder folder-icon';
-        });
-
-        // Ouvre le dossier cliqué s'il était fermé
-        if (!isOpen) {
-            files.classList.add('open');
-            header.classList.add('active');
-            icon.className = 'fa-solid fa-folder-open folder-icon';
-            icon.style.color = '#c9973a';
+    function ouvrirContenuDossier() {
+        var contenuFichiers = document.getElementById('contenu-fichiers-jour1');
+        
+        // Si c'est caché, on l'affiche, si c'est affiché, on le cache
+        if (contenuFichiers.style.display === 'none' || contenuFichiers.style.display === '') {
+            contenuFichiers.style.display = 'block';
+        } else {
+            contenuFichiers.style.display = 'none';
         }
     }
 </script>
-    <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs61r';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    })();
-    </script>
-    </body>
+
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs61r';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+</body>
 </html>
