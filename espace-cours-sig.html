@@ -225,24 +225,34 @@
    </footer>
 
 <script>
-    function ouvrirZoneDossiers() {
-        var zoneDossier = document.getElementById('zone-dossiers-interactive');
-        var btnPrincipal = document.getElementById('btn-principal-supports');
-        
-        // Affiche la zone du dossier
-        zoneDossier.style.display = 'block';
-        // Cache le bouton principal pour un rendu ultra propre
-        btnPrincipal.style.display = 'none';
+    function ouvrirZone() {
+        // Cache le bouton principal
+        document.getElementById('btn-open').style.display = 'none';
+        // Affiche la zone contenant le dossier
+        document.getElementById('folder-zone').classList.add('open');
     }
 
-    function ouvrirContenuDossier() {
-        var contenuFichiers = document.getElementById('contenu-fichiers-jour1');
-        
-        // Si c'est caché, on l'affiche, si c'est affiché, on le cache
-        if (contenuFichiers.style.display === 'none' || contenuFichiers.style.display === '') {
-            contenuFichiers.style.display = 'block';
-        } else {
-            contenuFichiers.style.display = 'none';
+    function toggleDossier(id) {
+        const header = document.getElementById('fh-' + id);
+        const files  = document.getElementById('fl-' + id);
+        const icon   = document.getElementById('fi-' + id);
+        if (!files) return;
+
+        const isOpen = files.classList.contains('open');
+
+        // Referme les autres dossiers ouverts pour un effet accordéon propre
+        document.querySelectorAll('.file-list.open').forEach(el => el.classList.remove('open'));
+        document.querySelectorAll('.folder-row.active').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('[id^="fi-"]').forEach(el => {
+            el.className = 'fa-solid fa-folder folder-icon';
+        });
+
+        // Ouvre le dossier cliqué s'il était fermé
+        if (!isOpen) {
+            files.classList.add('open');
+            header.classList.add('active');
+            icon.className = 'fa-solid fa-folder-open folder-icon';
+            icon.style.color = '#c9973a';
         }
     }
 </script>
@@ -258,5 +268,6 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
+
 </body>
 </html>
