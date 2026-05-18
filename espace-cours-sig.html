@@ -1,91 +1,214 @@
-<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Privé - GADA Training</title>
+    <title>Espace Privé Apprenants — GADA Training</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        /* Styles Globaux basés sur la charte GADA Training */
+        :root {
+            --green: #1e3f20;
+            --green-light: #2da14c;
+            --green-pale: #eef7f0;
+            --text-dark: #2c3e50;
+            --bg-light: #f4f7f6;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
             margin: 0;
             padding: 0;
         }
-        .header {
-            background-color: #1e3f20; /* Vert GADA */
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
+
+        /* Barre de navigation (Header identique) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .welcome-msg {
-            border-left: 5px solid #2ecc71;
-            padding-left: 15px;
+        .logo-area {
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-status {
+            background-color: var(--green-light);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Conteneur principal */
+        .main-content {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: 60vh;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--green-light);
             margin-bottom: 30px;
         }
-        .section-cours {
-            background: #f9f9f9;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            border: 1px solid #eee;
+        .welcome-card h2 {
+            margin-top: 0;
+            color: var(--green);
         }
-        .btn-download {
-            display: inline-block;
-            background-color: #27ae60;
+
+        /* Grille des sections de cours */
+        .course-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .course-grid { grid-template-columns: 1fr; }
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+        .course-card h3 {
+            color: var(--green);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .course-card ul {
+            padding-left: 20px;
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Boutons GADA Style */
+        .btn-gada {
+            display: block;
+            background-color: var(--green);
             color: white;
-            padding: 10px 15px;
             text-align: center;
+            padding: 12px;
             text-decoration: none;
-            border-radius: 4px;
-            margin-top: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.3s;
         }
-        .btn-download:hover {
-            background-color: #219653;
+        .btn-gada:hover {
+            background-color: var(--green-light);
+        }
+
+        /* Pied de page (Footer identique) */
+        .footer {
+            background-color: #112212;
+            color: #a0aec0;
+            padding: 40px 5% 20px 5%;
+            margin-top: 60px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .footer p { margin: 5px 0; }
+        .footer-brand {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>GADA Training — Espace Privé Apprenants</h1>
-        <p>Contenu exclusif réservé aux membres validés</p>
-    </div>
+    <nav class="navbar">
+        <div class="logo-area">
+            <span style="color: #f39c12;">■</span> GADA.Training
+        </div>
+        <div class="nav-status">
+            <i class="fa-solid fa-user-shield"></i> Espace Privé Validé
+        </div>
+    </nav>
 
-    <div class="container">
-        <div class="welcome-msg">
+    <div class="main-content">
+        
+        <div class="welcome-card">
             <h2>Bienvenue dans votre espace de formation !</h2>
-            <p>Cet espace regroupe toutes les ressources nécessaires pour votre apprentissage en Modélisation Spatiale, Cartographie numérique et Statistique (ArcGIS & RStudio).</p>
+            <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
         </div>
 
-        <div class="section-cours">
-            <h3>🛠️ 1. Téléchargement des logiciels & outils</h3>
-            <p>Téléchargez et installez les outils indispensables pour la formation :</p>
-            <ul>
-                <li><strong>ArcGIS Pro / ArcMap :</strong> Guide d'installation et paquets requis.</li>
-                <li><strong>R & RStudio :</strong> Liens vers les versions stables pour l'analyse statistique.</li>
-            </ul>
-            <a href="#" class="btn-download">Accéder aux liens de téléchargement</a>
+        <div class="course-grid">
+            
+            <div class="course-card">
+                <div>
+                    <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
+                    <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
+                    <ul>
+                        <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
+                        <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
+                    </ul>
+                </div>
+                <a href="#" class="btn-gada">Accéder aux téléchargements</a>
+            </div>
+
+            <div class="course-card">
+                <div>
+                    <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
+                    <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) :</p>
+                    <ul>
+                        <li><strong>Module I</strong> : Fondements théoriques de la modélisation en Agriculture et Santé.</li>
+                        <li><strong>Module II</strong> : Pratiques guidées et manipulations sous RStudio.</li>
+                    </ul>
+                </div>
+                <a href="#" class="btn-gada">Télécharger les supports (.zip)</a>
+            </div>
+
         </div>
 
-        <div class="section-cours">
-            <h3>📚 2. Vos Modules de cours et Données (Syllabus)</h3>
-            <p>Retrouvez ici les fichiers de données spatiales (Shapefiles, images satellites) pour vos travaux pratiques :</p>
-            <ul>
-                <li>Module I : Fondements de la Modélisation Spatiale en Agriculture, Environnement et Santé (One Health).</li>
-                <li>Module II : Manipulation des bases de données vectorielles et matricielles.</li>
-            </ul>
-            <a href="#" class="btn-download">Télécharger les supports (.pdf / .zip)</a>
-        </div>
     </div>
 
-</body>
+    <footer class="footer">
+        <div class="footer-brand">GeoAgri Data Analytics & Solution (GADA Sol)</div>
+        <p>&copy; 2026 GADA Training. Tous droits réservés.</p>
+        <p>Formons les meilleurs du futur.</p>
+    </footer>
+
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs61r';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    </body>
 </html>
