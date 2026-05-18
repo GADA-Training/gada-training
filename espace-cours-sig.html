@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -5,55 +6,58 @@
     <title>Espace Privé Apprenants — GADA Training</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Styles Globaux basés sur la charte GADA Training */
+        /* ==========================================================================
+           CHARTE GRAPHIQUE GADA TRAINING & VARIABLES
+           ========================================================================== */
         :root {
             --green: #1e3f20;
             --green-light: #2da14c;
             --green-pale: #eef7f0;
-            --text-dark: #2c3e50;
+            --green-border: #c2e2c8;
+            --text-dark: #1c2b1e;
             --bg-light: #f4f7f6;
+            --white: #ffffff;
+            --border: #e2e8e4;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-light);
             color: var(--text-dark);
             margin: 0;
             padding: 0;
         }
 
-        /* Barre de navigation (Header identique) */
+        /* Barre de navigation */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
-            background: white;
+            background: var(--white);
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
-        .logo-area {
-            font-weight: bold;
-            font-size: 20px;
-            color: var(--green);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .logo-area img {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
         }
         .nav-status {
             background-color: var(--green-light);
-            color: white;
+            color: var(--white);
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 500;
         }
 
-        /* Conteneur principal */
+        /* Layout principal */
         .main-content {
             max-width: 1000px;
             margin: 40px auto;
@@ -62,7 +66,7 @@
         }
 
         .welcome-card {
-            background: white;
+            background: var(--white);
             border-radius: 12px;
             padding: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -74,7 +78,7 @@
             color: var(--green);
         }
 
-        /* Grille des sections de cours */
+        /* Grille des cartes de cours */
         .course-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -85,7 +89,7 @@
         }
 
         .course-card {
-            background: white;
+            background: var(--white);
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -111,11 +115,11 @@
             line-height: 1.6;
         }
 
-        /* Boutons GADA Style */
+        /* Boutons GADA */
         .btn-gada {
             display: block;
             background-color: var(--green);
-            color: white;
+            color: var(--white);
             text-align: center;
             padding: 12px;
             text-decoration: none;
@@ -127,7 +131,42 @@
             background-color: var(--green-light);
         }
 
-        /* Pied de page (Footer identique) */
+        /* ==========================================================================
+           SYSTÈME DE CLASSES POUR EVITER LA SURCHARGE INTERFACE (ACCORDÉON)
+           ========================================================================== */
+        .folder-zone {
+            display: none; /* Masqué par défaut */
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: left;
+        }
+        /* Classe ajoutée par JS pour afficher la zone */
+        .folder-zone.open {
+            display: block;
+        }
+
+        /* Liste des fichiers (masquée par défaut, s'ouvre avec .open) */
+        .file-list {
+            display: none;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 2px dashed var(--green-border);
+        }
+        .file-list.open {
+            display: block;
+        }
+
+        /* État actif de la ligne de dossier cliquée */
+        .folder-row.active {
+            background-color: var(--green-pale) !important;
+            border-color: var(--green-light) !important;
+        }
+
+        /* Pied de page */
         .footer {
             background-color: #112212;
             color: #a0aec0;
@@ -136,9 +175,8 @@
             text-align: center;
             font-size: 14px;
         }
-        .footer p { margin: 5px 0; }
         .footer-brand {
-            color: white;
+            color: var(--white);
             font-weight: bold;
             font-size: 16px;
             margin-bottom: 15px;
@@ -147,9 +185,9 @@
 </head>
 <body>
 
-   <nav class="navbar">
+    <nav class="navbar">
         <div class="logo-area">
-            <img src="images/logo-gada.png" alt="GADA Training Logo" style="height: 55px; width: auto; object-fit: contain; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; display: block; padding: 2px 0;">
+            <img src="images/logo-gada.png" alt="GADA Training Logo">
         </div>
         <div class="nav-status">
             <i class="fa-solid fa-user-shield"></i> Espace Privé Validé
@@ -163,7 +201,7 @@
             <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
         </div>
 
-       <div class="course-grid">
+        <div class="course-grid">
             
             <div class="course-card">
                 <div>
@@ -177,7 +215,7 @@
                 <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
             </div>
 
-          <div class="course-card">
+            <div class="course-card">
                 <div>
                     <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
                     <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) :</p>
@@ -187,16 +225,22 @@
                     </ul>
                 </div>
                 
-                <button onclick="ouvrirZoneDossiers()" class="btn-gada" style="width: 100%; border: none; cursor: pointer; text-align: center; display: block;" id="btn-principal-supports">Accéder aux téléchargements</button>
+                <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">Accéder aux téléchargements</button>
 
-                <div id="zone-dossiers-interactive" style="display: none; background: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left;">
-                    
-                    <div onclick="ouvrirContenuDossier()" style="display: flex; align-items: center; font-weight: 600; color: #1e3f20; background: #ffffff; border: 1px solid #c2e2c8; border-radius: 6px; padding: 12px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#eef7f0'" onmouseout="this.style.background='#ffffff'">
-                        <i class="fa-solid fa-folder" style="color: #f39c12; font-size: 22px; margin-right: 10px;"></i> 
-                        Dossier : Jour 1 — Fondations RStudio
+                <div id="folder-zone" class="folder-zone">
+
+                    <div id="fh-semaine1" class="folder-row" onclick="toggleDossier('semaine1')" style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; cursor: pointer; transition: 0.2s; margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fa-solid fa-folder" id="fi-semaine1" style="color: #f39c12; font-size: 22px; margin-right: 12px;"></i>
+                            <div>
+                                <div style="font-weight: 600; color: #1e3f20; font-size: 14px;">Semaine 1 : Fondements &amp; SIG (17 mai - 23 mai)</div>
+                                <div style="font-size: 12px; color: #666;">Introduction à RStudio, manipulation des vecteurs et rasters</div>
+                            </div>
+                        </div>
+                        <span style="background: #eef7f0; color: #2da14c; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600;">2 fichiers</span>
                     </div>
-                    
-                    <div id="contenu-fichiers-jour1" style="display: none; margin-top: 12px; padding-left: 10px; border-left: 2px dashed #c2e2c8;">
+
+                    <div id="fl-semaine1" class="file-list">
                         <ul style="list-style: none; padding-left: 0; margin: 0;">
                             <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; background: white; padding: 8px 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
                                 <span><i class="fa-solid fa-file-pdf" style="color: #e74c3c; margin-right: 6px;"></i> GADA_Formation_RStudio_Jour1.pdf</span>
@@ -209,65 +253,93 @@
                         </ul>
                     </div>
 
-                </div>
-            </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 8px; opacity: 0.6;">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fa-solid fa-folder" style="color: #ccc; font-size: 22px; margin-right: 12px;"></i>
+                            <div>
+                                <div style="font-weight: 600; color: #999; font-size: 14px;">Semaine 2 : Modélisation Spatiale (24 mai - 30 mai)</div>
+                                <div style="font-size: 12px; color: #aaa;">Interpolation et statistiques de zone sous ArcGIS Pro</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-lock" style="color:#bbb; font-size:14px; margin-right: 5px;"></i>
+                    </div>
 
-        </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 8px; opacity: 0.6;">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fa-solid fa-folder" style="color: #ccc; font-size: 22px; margin-right: 12px;"></i>
+                            <div>
+                                <div style="font-weight: 600; color: #999; font-size: 14px;">Semaine 3 : Intégration One Health (31 mai - 6 juin)</div>
+                                <div style="font-size: 12px; color: #aaa;">Modélisation des risques et Télédétection (GEE)</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-lock" style="color:#bbb; font-size:14px; margin-right: 5px;"></i>
+                    </div>
 
-        </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; opacity: 0.6;">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fa-solid fa-folder" style="color: #ccc; font-size: 22px; margin-right: 12px;"></i>
+                            <div>
+                                <div style="font-weight: 600; color: #999; font-size: 14px;">Semaine 4 : Projet Intégré &amp; Décision (7 juin - 17 juin)</div>
+                                <div style="font-size: 12px; color: #aaa;">R Markdown, cartes décisionnelles et livrables finaux</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-lock" style="color:#bbb; font-size:14px; margin-right: 5px;"></i>
+                    </div>
 
-    </div>
-
-    <footer class="footer">
+                </div> </div> </div> </div> <footer class="footer">
         <div class="footer-brand">GeoAgri Data Analytics & Solution (GADA Sol)</div>
         <p>&copy; 2026 GADA Training. Tous droits réservés.</p>
         <p>Formons les meilleurs du futur.</p>
-   </footer>
+    </footer>
 
-<script>
-    function ouvrirZone() {
-        // Cache le bouton principal
-        document.getElementById('btn-open').style.display = 'none';
-        // Affiche la zone contenant le dossier
-        document.getElementById('folder-zone').classList.add('open');
-    }
-
-    function toggleDossier(id) {
-        const header = document.getElementById('fh-' + id);
-        const files  = document.getElementById('fl-' + id);
-        const icon   = document.getElementById('fi-' + id);
-        if (!files) return;
-
-        const isOpen = files.classList.contains('open');
-
-        // Referme les autres dossiers ouverts pour un effet accordéon propre
-        document.querySelectorAll('.file-list.open').forEach(el => el.classList.remove('open'));
-        document.querySelectorAll('.folder-row.active').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('[id^="fi-"]').forEach(el => {
-            el.className = 'fa-solid fa-folder folder-icon';
-        });
-
-        // Ouvre le dossier cliqué s'il était fermé
-        if (!isOpen) {
-            files.classList.add('open');
-            header.classList.add('active');
-            icon.className = 'fa-solid fa-folder-open folder-icon';
-            icon.style.color = '#c9973a';
+    <script>
+        // ÉTAPE 1 : Déclenche l'affichage du bloc général des documents
+        function ouvrirZone() {
+            document.getElementById('btn-open').style.display = 'none';
+            document.getElementById('folder-zone').classList.add('open'); // Ajoute la classe .open pour afficher le conteneur
         }
-    }
-</script>
 
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs61r';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
+        // ÉTAPE 2 : Gestion de l'affichage des dossiers par semaine (Système anti-surcharge)
+        function toggleDossier(id) {
+            const header = document.getElementById('fh-' + id);
+            const files  = document.getElementById('fl-' + id);
+            const icon   = document.getElementById('fi-' + id);
+            if (!files) return;
+
+            // Vérifie si le dossier cliqué est déjà ouvert
+            const isOpen = files.classList.contains('open');
+
+            // --- NETTOYAGE (Anti-surcharge) ---
+            // Referme automatiquement TOUS les autres dossiers ouverts avant d'ouvrir le nouveau
+            document.querySelectorAll('.file-list.open').forEach(el => el.classList.remove('open'));
+            document.querySelectorAll('.folder-row.active').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('[id^="fi-"]').forEach(el => {
+                el.className = 'fa-solid fa-folder'; // Remet l'icône fermée par défaut
+                el.style.color = '#f39c12';
+            });
+
+            // --- ACTION ---
+            // Si le dossier cliqué était fermé, on l'ouvre proprement
+            if (!isOpen) {
+                files.classList.add('open');          // Affiche les fichiers du dossier actuel
+                header.classList.add('active');        // Change la couleur du fond du dossier
+                icon.className = 'fa-solid fa-folder-open'; // Change l'icône en dossier ouvert
+                icon.style.color = '#c9973a';         // Applique la couleur dorée
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs61r';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
 
 </body>
 </html>
