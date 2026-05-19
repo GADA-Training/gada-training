@@ -788,6 +788,21 @@
   </div>
 </div>
 
+<script>
+  // Masquer tawk.to sauf sur la page Communauté
+  window.Tawk_API = window.Tawk_API || {};
+  window.Tawk_API.onLoad = function() {
+    var currentPage = window.location.pathname + window.location.hash;
+    var isCommunityPage = currentPage.includes('communaute') || 
+                          currentPage.includes('community') ||
+                          currentPage.includes('#communaute');
+    
+    if (!isCommunityPage) {
+      window.Tawk_API.hideWidget();
+    }
+  };
+</script>
+
 <!-- Tawk.to Widget - Personnalisé pour GADA Academy (placé ici pour charger après le DOM) -->
 <script type="text/javascript">
 var Tawk_API = Tawk_API || {};
