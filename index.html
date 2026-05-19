@@ -3,759 +3,1079 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GADA Training — GeoAgri Data Analytics & Solution</title>
-  <meta name="description" content="GADA Training - Formations certifiantes en SIG (QGIS, ArcGIS), Télédétection (Google Earth Engine) et Data Science en République Démocratique du Congo et Afrique centrale.">
+  <title>GADA Academy — Formations SIG & Data Science Afrique</title>
+  <meta name="description" content="Formations certifiantes en SIG, télédétection et data science pour l'agriculture et l'environnement en Afrique centrale.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* ============================================================
-       CHARTE PRO : Vert (agri) + Bleu (tech/data) + Brun (terre)
-       Ombres douces, coins arrondis, dégradés subtils
-       ============================================================ */
     :root {
-      --green-deep: #1a4d2a;
-      --green: #2a7a3e;
-      --green-light: #3f9e55;
-      --green-pale: #eef5e9;
-      --blue-deep: #1a4c6e;
-      --blue: #256fa0;
-      --blue-light: #448cbd;
-      --blue-pale: #e8f0f7;
-      --brown: #7a5a4b;
-      --brown-light: #9e7b66;
-      --brown-pale: #f8f2ea;
-      --dark: #1a2418;
-      --dark-soft: #2a3626;
-      --text: #2c3a2a;
-      --text-light: #5a6e55;
+      --primary-blue: #0066b3;
+      --primary-blue-dark: #004c8a;
+      --primary-blue-light: #e6f2fa;
+      --accent-coral: #e85d04;
+      --gray-bg: #f7f9fc;
       --white: #ffffff;
-      --border: #dfe6da;
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 20px 32px -12px rgba(0, 0, 0, 0.1);
-      --radius-sm: 12px;
-      --radius-md: 18px;
-      --radius-lg: 28px;
+      --gray-border: #e9ecef;
+      --gray-text: #4a5568;
+      --gray-text-light: #718096;
+      --gray-dark: #1a202c;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 32px -12px rgba(0,0,0,0.1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: #f5f7f2;
-      color: var(--text);
+      background: var(--gray-bg);
+      color: var(--gray-dark);
       line-height: 1.5;
       scroll-behavior: smooth;
     }
 
-    /* Navigation */
-    .topbar {
-      background: var(--green-deep);
-      color: rgba(255,255,255,0.75);
-      font-size: 0.75rem;
-      padding: 8px 5%;
+    .global-topbar {
+      background: var(--gray-dark);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.7rem;
+      padding: 6px 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .topbar a { color: rgba(255,255,255,0.8); text-decoration: none; transition: color 0.2s; }
-    .topbar a:hover { color: white; }
-    .topbar-right { display: flex; gap: 24px; }
+    .global-topbar a { color: rgba(255,255,255,0.7); text-decoration: none; }
+    .global-topbar a:hover { color: white; }
+    .global-topbar-right { display: flex; gap: 24px; }
 
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
+    .academy-nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-border);
       padding: 0 5%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 70px;
-    }
-    .nav-wordmark {
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--green) 0%, var(--blue) 100%);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      letter-spacing: -0.5px;
-    }
-    .nav-wordmark span { color: var(--brown); background: none; background-clip: unset; -webkit-background-clip: unset; }
-    nav ul { display: flex; gap: 0.5rem; list-style: none; }
-    nav a {
-      text-decoration: none;
-      color: var(--text);
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 40px;
-      transition: all 0.2s;
-    }
-    nav a:hover { background: var(--green-pale); color: var(--green); }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 24px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: all 0.25s;
-      cursor: pointer;
-      text-decoration: none;
-      border: none;
-    }
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--text);
-    }
-    .btn-outline:hover { border-color: var(--green); color: var(--green); }
-    .btn-primary {
-      background: linear-gradient(105deg, var(--green) 0%, var(--blue) 100%);
-      color: white;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       box-shadow: var(--shadow-sm);
     }
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(42,122,62,0.25);
-    }
-    .btn-lg { padding: 14px 32px; font-size: 0.9rem; }
+    .nav-brand { font-size: 1.4rem; font-weight: 700; color: var(--primary-blue); letter-spacing: -0.3px; }
+    .nav-brand span { color: var(--accent-coral); }
+    .nav-links { display: flex; gap: 0.25rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--gray-text); font-size: 0.85rem; font-weight: 500; padding: 8px 16px; border-radius: 6px; transition: all 0.2s; }
+    .nav-links a:hover { background: var(--primary-blue-light); color: var(--primary-blue); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-nav { padding: 8px 18px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; border: none; background: transparent; font-family: inherit; text-decoration: none; display: inline-block; }
+    .btn-nav-outline { border: 1px solid var(--gray-border); color: var(--gray-dark); background: transparent; }
+    .btn-nav-outline:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+    .btn-nav-primary { background: var(--primary-blue); color: white; }
+    .btn-nav-primary:hover { background: var(--primary-blue-dark); transform: translateY(-1px); }
+    .user-avatar { display: flex; align-items: center; gap: 8px; background: var(--primary-blue-light); padding: 6px 14px; border-radius: 40px; cursor: pointer; }
 
-    /* Hero avec image de fond */
-    #hero {
-      min-height: 92vh;
+    .hero {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1fr 1fr;
       align-items: center;
-      padding: 80px 5%;
-      gap: 64px;
+      gap: 48px;
+      padding: 60px 5%;
       position: relative;
       overflow: hidden;
-      /* Image de fond locale */
       background: url('images/hero1.png') center/cover no-repeat;
     }
-    /* Overlay léger pour la lisibilité du texte */
-    #hero::before {
+    .hero::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(255,255,245,0.75) 0%, rgba(240,245,235,0.7) 100%);
+      background: linear-gradient(105deg, rgba(255,255,255,0.50) 0%, rgba(240,245,250,0.55) 100%);
       pointer-events: none;
       z-index: 0;
     }
-    #hero > * {
-      position: relative;
-      z-index: 1;
-    }
-
+    .hero > * { position: relative; z-index: 1; }
+    .hero-content { max-width: 560px; }
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(4px);
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 40px;
       font-size: 0.7rem;
       font-weight: 600;
-      color: var(--green);
+      color: var(--primary-blue);
       margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
     }
-    .hero-badge i { font-size: 0.75rem; }
     .hero-title {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
-      font-weight: 800;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 700;
       line-height: 1.2;
       letter-spacing: -0.02em;
       margin-bottom: 20px;
-      color: var(--dark);
+      color: var(--gray-dark);
     }
-    .hero-title .ag { color: var(--green); }
-    .hero-title .ao { color: var(--brown); }
+    .hero-title .highlight { color: var(--primary-blue); }
+    .hero-title .highlight2 { color: var(--accent-coral); }
     .hero-sub {
-      color: var(--text);
+      color: var(--gray-dark);
       font-size: 1rem;
-      max-width: 520px;
       margin-bottom: 32px;
+      line-height: 1.6;
       text-shadow: 0 1px 1px rgba(255,255,255,0.5);
     }
-    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
-    .hero-stats { display: flex; gap: 40px; }
-    .h-stat-num { font-size: 1.8rem; font-weight: 800; color: var(--green); line-height: 1; }
-    .h-stat-label { font-size: 0.7rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-
-    /* Cartes visuelles hero */
-    .hero-visual {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .hero-card {
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(4px);
-      border-radius: var(--radius-md);
-      padding: 20px;
-      box-shadow: var(--shadow-md);
-      border: 1px solid var(--border);
-      transition: transform 0.25s;
-    }
-    .hero-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.98); }
-    .hero-card-title {
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--blue);
-      margin-bottom: 8px;
+    .hero-stats {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      gap: 32px;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0,0,0,0.08);
     }
-    .hero-card-text { font-size: 0.75rem; color: var(--text-light); margin-bottom: 12px; line-height: 1.5; }
-    .hero-card-badge {
-      display: inline-block;
-      background: var(--green-pale);
-      padding: 4px 12px;
-      border-radius: 40px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: var(--green);
-    }
-    .hero-card-badge.blue { background: var(--blue-pale); color: var(--blue); }
-    .hero-card-badge.brown { background: var(--brown-pale); color: var(--brown); }
+    .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--primary-blue); line-height: 1; }
+    .stat-label { font-size: 0.7rem; color: var(--gray-text-light); text-transform: uppercase; font-weight: 500; }
 
-    /* Carte slider */
-    .map-placeholder {
-      height: 140px;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      margin-bottom: 12px;
-      background: #eef0ea;
-    }
-    .map-slider-track {
-      display: flex;
-      width: 700%;
-      height: 100%;
-      animation: scrollMaps 22s linear infinite;
-    }
-    .map-slider-track img {
-      width: calc(100% / 7);
-      height: 100%;
-      object-fit: cover;
-    }
-    .map-placeholder:hover .map-slider-track { animation-play-state: paused; }
-    @keyframes scrollMaps {
-      0%, 12% { transform: translateX(0); }
-      14%, 26% { transform: translateX(-14.28%); }
-      28%, 40% { transform: translateX(-28.57%); }
-      42%, 54% { transform: translateX(-42.85%); }
-      56%, 68% { transform: translateX(-57.14%); }
-      70%, 82% { transform: translateX(-71.42%); }
-      84%, 100% { transform: translateX(-85.71%); }
-    }
-
-    /* Ticker */
-    #partners {
-      background: var(--dark);
-      padding: 14px 0;
-      overflow: hidden;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .ticker-track {
-      display: inline-flex;
-      white-space: nowrap;
-      animation: tickerScroll 35s linear infinite;
-      padding-left: 100%;
-    }
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      color: rgba(255,255,255,0.7);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      margin-right: 48px;
-    }
-    .ticker-item i { color: var(--green-light); font-size: 0.8rem; }
-    @keyframes tickerScroll {
-      0% { transform: translate3d(0, 0, 0); }
-      100% { transform: translate3d(-100%, 0, 0); }
-    }
-    #partners:hover .ticker-track { animation-play-state: paused; }
-
-    /* Sections communes */
-    .section-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--green);
-      margin-bottom: 16px;
-    }
-    .section-label::before {
-      content: '';
-      width: 28px;
-      height: 2px;
-      background: var(--green);
-      border-radius: 2px;
-    }
-    .section-title {
-      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 12px;
-    }
-    .section-sub {
-      color: var(--text-light);
-      font-size: 0.9rem;
-      max-width: 550px;
-    }
-    section { padding: 80px 5%; }
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* Grilles */
-    .services-grid, .courses-grid, .testi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
-      margin-top: 56px;
-    }
-    @media (max-width: 900px) {
-      .services-grid, .courses-grid, .testi-grid { grid-template-columns: 1fr; }
-    }
-    .service-card, .course-card, .testi-card {
+    .hero-visuals { display: flex; flex-direction: column; gap: 20px; }
+    .visu-row { display: flex; gap: 20px; justify-content: flex-end; }
+    .visu-card {
       background: var(--white);
       border-radius: var(--radius-md);
-      padding: 28px;
+      padding: 18px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-border);
+      width: 100%;
+    }
+    .visu-card:hover { transform: translateY(-4px); }
+    .visu-card-title { font-weight: 700; font-size: 0.85rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .visu-card-text { font-size: 0.7rem; color: var(--gray-text-light); }
+    .visu-badge {
+      display: inline-block;
+      background: var(--primary-blue-light);
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-top: 10px;
+    }
+    .visu-badge.orange { background: rgba(232,93,4,0.1); color: var(--accent-coral); }
+
+    .search-section { background: var(--white); padding: 32px 5%; border-bottom: 1px solid var(--gray-border); }
+    .search-container { max-width: 700px; margin: 0 auto; text-align: center; }
+    .search-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-text-light); margin-bottom: 12px; }
+    .search-box {
+      display: flex;
+      gap: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: 60px;
+      padding: 4px 4px 4px 20px;
+    }
+    .search-box:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0,102,179,0.1); }
+    .search-box input { flex: 1; border: none; padding: 14px 0; font-size: 0.9rem; outline: none; background: transparent; }
+    .search-box button { background: var(--primary-blue); border: none; padding: 10px 28px; border-radius: 50px; color: white; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .search-box button:hover { background: var(--primary-blue-dark); }
+
+    .quick-nav { background: var(--primary-blue); padding: 20px 5%; }
+    .quick-grid { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .quick-item { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.85rem; font-weight: 500; }
+    .quick-item:hover { color: white; transform: translateY(-2px); }
+
+    .section-container { padding: 64px 5%; }
+    .section-header { text-align: center; max-width: 700px; margin: 0 auto 48px; }
+    .section-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary-blue); font-weight: 600; margin-bottom: 12px; }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; }
+    .grid-2cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .grid-3cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    @media (max-width: 900px) {
+      .grid-2cols, .grid-3cols { grid-template-columns: 1fr; }
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .hero-content { margin: 0 auto; }
+      .hero-stats { justify-content: center; }
+    }
+
+    .service-card, .course-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
       box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border);
+      border: 1px solid var(--gray-border);
       transition: all 0.25s;
     }
-    .service-card:hover, .course-card:hover, .testi-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--green-light);
-    }
-    .service-icon {
-      width: 52px;
-      height: 52px;
-      background: var(--green-pale);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      color: var(--green);
-    }
-    .service-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; }
-    .service-desc { font-size: 0.8rem; color: var(--text-light); line-height: 1.6; margin-bottom: 16px; }
-    .tool-tag {
-      display: inline-block;
-      background: var(--green-pale);
-      padding: 4px 10px;
-      border-radius: 40px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: var(--green);
-      margin-right: 6px;
-      margin-bottom: 6px;
-    }
+    .service-card:hover, .course-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-blue-light); }
+    .service-card img, .course-card img { width: 100%; height: 160px; object-fit: cover; }
+    .service-card div, .course-body { padding: 20px; }
+    .service-title, .course-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .service-desc, .course-desc { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; margin-bottom: 12px; }
+    .tool-tag { display: inline-block; background: var(--primary-blue-light); padding: 4px 10px; border-radius: 40px; font-size: 0.65rem; font-weight: 600; color: var(--primary-blue); margin-right: 6px; margin-top: 8px; }
+    .course-level { font-size: 0.65rem; font-weight: 700; color: var(--primary-blue); text-transform: uppercase; margin-bottom: 8px; }
+    .course-meta { display: flex; gap: 16px; font-size: 0.7rem; color: var(--gray-text-light); border-top: 1px solid var(--gray-border); padding-top: 12px; margin-top: 12px; }
 
-    /* Academy */
-    #academy {
-      background: linear-gradient(125deg, var(--dark) 0%, #1e2a1c 100%);
-      color: white;
+    .level-card {
+      text-align: center;
+      padding: 24px;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--gray-border);
+      transition: all 0.2s;
     }
-    #academy .section-label { color: var(--green-light); }
-    #academy .section-label::before { background: var(--green-light); }
-    #academy .section-sub { color: rgba(255,255,255,0.6); }
-    .course-thumb {
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      border-radius: var(--radius-sm);
-      margin-bottom: 20px;
-    }
-    .ct-green { background: linear-gradient(135deg, #0d3d1a, #1a6e2e); }
-    .ct-brown { background: linear-gradient(135deg, #4a2e22, #7a5a4b); }
-    .ct-blue { background: linear-gradient(135deg, #0a2a44, #1a4c6e); }
-    .course-level { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--green-light); margin-bottom: 8px; }
-    .course-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
-    .course-desc { font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 16px; }
-    .course-meta { display: flex; gap: 16px; font-size: 0.7rem; color: rgba(255,255,255,0.45); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; }
+    .level-card:hover { transform: translateY(-4px); border-color: var(--primary-blue-light); }
+    .level-num { font-size: 0.65rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 12px; }
+    .level-icon { font-size: 2rem; margin-bottom: 12px; }
 
-    /* Communautés */
-    .communities-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      margin-top: 56px;
-    }
     .community-item {
       display: flex;
       align-items: center;
-      gap: 16px;
+      justify-content: space-between;
       background: var(--white);
-      border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: 18px 20px;
       margin-bottom: 12px;
-      transition: all 0.2s;
+      border: 1px solid var(--gray-border);
       cursor: pointer;
-    }
-    .community-item:hover {
-      border-color: var(--green);
-      transform: translateX(5px);
-      box-shadow: var(--shadow-sm);
-    }
-    .ci-icon { font-size: 1.6rem; }
-    .ci-name { font-weight: 700; font-size: 0.9rem; }
-    .ci-count { font-size: 0.7rem; color: var(--text-light); }
-    .community-visual {
-      background: var(--white);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-    }
-    .cv-title { font-weight: 700; margin-bottom: 6px; }
-    .cv-sub { font-size: 0.75rem; color: var(--text-light); margin-bottom: 20px; }
-    .disc-item {
-      display: flex;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .disc-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: white;
-      flex-shrink: 0;
-    }
-    .disc-name { font-size: 0.8rem; font-weight: 600; }
-    .disc-text { font-size: 0.75rem; color: var(--text-light); }
-    .disc-time { font-size: 0.65rem; color: var(--text-light); margin-top: 4px; }
-
-    /* Niveaux */
-    .levels-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-      margin-top: 56px;
-    }
-    @media (max-width: 900px) { .levels-grid { grid-template-columns: repeat(2, 1fr); } }
-    .level-card {
-      background: var(--white);
-      border-radius: var(--radius-md);
-      padding: 24px 16px;
-      text-align: center;
-      border: 1px solid var(--border);
       transition: all 0.2s;
     }
-    .level-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--green-light); }
-    .level-num { font-size: 0.7rem; font-weight: 700; color: var(--green); margin-bottom: 12px; }
-    .level-icon { font-size: 2rem; margin-bottom: 12px; }
-    .level-name { font-weight: 800; margin-bottom: 8px; }
-    .level-desc { font-size: 0.7rem; color: var(--text-light); line-height: 1.5; }
+    .community-item:hover { border-color: var(--primary-blue); transform: translateX(4px); }
+    .community-info { display: flex; align-items: center; gap: 16px; }
+    .community-icon { width: 32px; text-align: center; color: var(--primary-blue); font-size: 1.2rem; }
+    .community-name { font-weight: 700; }
+    .community-count { font-size: 0.7rem; color: var(--gray-text-light); }
+    .community-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 40px; font-weight: 600; }
+    .badge-free { background: #e6f2fa; color: #0066b3; }
+    .badge-paid { background: #fef3e8; color: #e85d04; }
 
-    /* Process */
-    .process-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin-top: 56px;
-      position: relative;
-    }
-    @media (max-width: 900px) { .process-grid { grid-template-columns: 1fr; } }
-    .process-step { text-align: center; }
-    .process-num {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, var(--green), var(--blue));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 800;
-      font-size: 1.4rem;
-      margin: 0 auto 20px;
-      box-shadow: var(--shadow-md);
-    }
-    .process-title { font-weight: 700; margin-bottom: 8px; }
-    .process-desc { font-size: 0.8rem; color: var(--text-light); line-height: 1.5; }
+    .transition-block { text-align: center; padding: 40px 5% 0; max-width: 800px; margin: 0 auto; }
+    .transition-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; color: var(--gray-dark); }
+    .transition-text { color: var(--gray-text); font-size: 0.95rem; line-height: 1.6; }
 
-    /* Delivery */
-    #delivery {
-      background: var(--dark);
-      color: white;
-    }
-    .delivery-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-    .delivery-list { margin-top: 32px; display: flex; flex-direction: column; gap: 16px; }
-    .delivery-item { display: flex; gap: 14px; align-items: flex-start; }
-    .delivery-check {
-      width: 26px;
-      height: 26px;
-      background: rgba(63,158,85,0.2);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--green-light);
-      font-size: 0.8rem;
-    }
-    .delivery-text { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.5; }
-    .delivery-visual {
-      background: rgba(255,255,255,0.05);
+    .feature-card {
+      background: var(--white);
       border-radius: var(--radius-md);
       padding: 28px;
-      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-border);
+      transition: all 0.25s;
     }
-    .dv-title { font-weight: 700; margin-bottom: 20px; }
-    .dv-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .dv-icon { font-size: 1.2rem; }
-    .dv-label { font-size: 0.8rem; color: rgba(255,255,255,0.7); flex: 1; }
-    .dv-badge { font-size: 0.65rem; padding: 2px 10px; border-radius: 40px; font-weight: 600; }
-    .dv-badge.green { background: rgba(63,158,85,0.2); color: var(--green-light); }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-blue-light); }
+    .card-icon { width: 52px; height: 52px; background: var(--primary-blue-light); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--primary-blue); margin-bottom: 20px; }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+    .card-desc { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; }
+    .card-meta { display: flex; gap: 16px; font-size: 0.7rem; color: var(--gray-text-light); border-top: 1px solid var(--gray-border); padding-top: 14px; margin-top: 14px; }
 
-    /* Contact */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 60px;
-    }
-    .contact-detail {
-      display: flex;
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
       align-items: center;
-      gap: 16px;
-      background: var(--white);
-      padding: 18px 20px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      text-decoration: none;
-      color: var(--text);
-      margin-bottom: 12px;
-      transition: all 0.2s;
     }
-    .contact-detail:hover { border-color: var(--green); box-shadow: var(--shadow-sm); }
-    .cd-icon { width: 44px; height: 44px; background: var(--green-pale); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-    .cd-label { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; }
-    .cd-value { font-size: 0.9rem; font-weight: 600; }
-    .contact-form {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      padding: 36px;
-      box-shadow: var(--shadow-md);
-      border: 1px solid var(--border);
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
     }
-    .form-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
-    .form-sub { font-size: 0.8rem; color: var(--text-light); margin-bottom: 24px; }
-    .form-group { margin-bottom: 18px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--text-light); display: block; margin-bottom: 6px; }
-    input, select, textarea {
+    .modal-content input {
       width: 100%;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid var(--gray-border);
+      border-radius: 8px;
       font-family: inherit;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-      background: var(--white);
     }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green); }
-    .form-success { display: none; background: var(--green-pale); padding: 14px; border-radius: var(--radius-sm); margin-top: 20px; text-align: center; color: var(--green); font-size: 0.8rem; font-weight: 500; }
+    .modal-content button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .close-modal { float: right; font-size: 1.5rem; cursor: pointer; }
 
-    /* Footer */
-    footer {
-      background: #121a10;
-      padding: 56px 5% 32px;
-      color: rgba(255,255,255,0.5);
+    /* ============================================
+       CHAT PROFESSIONNEL GADA CHAT
+       ============================================ */
+    .chat-floating {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
     }
-    .footer-top {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 48px;
-      margin-bottom: 48px;
+    .chat-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #0066b3, #004c8a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,102,179,0.3);
+      transition: transform 0.2s;
+      position: relative;
     }
-    .footer-wordmark {
-      font-size: 1.4rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--green-light), var(--blue-light));
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      display: inline-block;
-      margin-bottom: 16px;
+    .chat-icon:hover { transform: scale(1.05); }
+    .chat-icon i { font-size: 1.5rem; color: white; }
+    .chat-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #e85d04;
+      color: white;
+      font-size: 0.6rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
     }
-    .footer-tagline { font-size: 0.8rem; line-height: 1.6; }
-    .footer-col-title { font-size: 0.8rem; font-weight: 700; color: white; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .footer-links { display: flex; flex-direction: column; gap: 12px; }
-    .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--green-light); }
-    .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 28px;
+    .chat-window {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 360px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e9ecef;
+    }
+    .chat-window.open { display: flex; }
+    .chat-header {
+      background: linear-gradient(135deg, #0066b3, #004c8a);
+      color: white;
+      padding: 14px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.7rem;
     }
-    .lang-btn {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 4px 12px;
-      border-radius: 40px;
-      color: rgba(255,255,255,0.5);
+    .chat-header-info { display: flex; align-items: center; gap: 10px; }
+    .chat-header-info i { font-size: 1.2rem; }
+    .chat-header-info span { font-weight: 600; font-size: 0.9rem; }
+    .chat-header-info small { font-size: 0.7rem; opacity: 0.8; }
+    .chat-header-actions { display: flex; gap: 12px; }
+    .chat-header-actions i { cursor: pointer; opacity: 0.8; transition: opacity 0.2s; }
+    .chat-header-actions i:hover { opacity: 1; }
+    .chat-messages-area {
+      height: 350px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #f7f9fc;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-message {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: fadeInUp 0.3s ease;
+    }
+    .chat-message.user { flex-direction: row-reverse; }
+    .chat-message.user .message-content { background: #0066b3; color: white; border-radius: 16px 16px 4px 16px; }
+    .chat-message.bot .message-content { background: white; border: 1px solid #e9ecef; border-radius: 16px 16px 16px 4px; }
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .chat-message.bot .message-avatar { background: #e6f2fa; color: #0066b3; }
+    .chat-message.user .message-avatar { background: #e85d04; color: white; }
+    .message-content {
+      max-width: 75%;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    .message-name {
+      font-weight: 700;
       font-size: 0.7rem;
+      margin-bottom: 4px;
+    }
+    .chat-message.bot .message-name { color: #0066b3; }
+    .chat-message.user .message-name { color: #e85d04; text-align: right; }
+    .message-text { word-break: break-word; }
+    .typing::after {
+      content: '▊';
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .chat-actions {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .chat-btn {
+      flex: 1;
+      padding: 8px;
+      background: #e6f2fa;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #0066b3;
       cursor: pointer;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
-    .lang-btn.active, .lang-btn:hover { border-color: var(--green-light); color: var(--green-light); }
+    .chat-btn:hover { background: #0066b3; color: white; }
+    .chat-input {
+      display: flex;
+      padding: 12px 16px;
+      background: white;
+      gap: 10px;
+      border-top: 1px solid #e9ecef;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #e9ecef;
+      border-radius: 25px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .chat-input input:focus { border-color: #0066b3; }
+    .chat-input button {
+      width: 36px;
+      height: 36px;
+      background: #0066b3;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .chat-input button:hover { background: #004c8a; }
 
-    @media (max-width: 900px) {
-      .hero-visual { display: none; }
-      #hero { grid-template-columns: 1fr; text-align: center; padding: 60px 5%; min-height: auto; }
-      .hero-stats { justify-content: center; }
-      .communities-layout, .delivery-inner, .contact-grid, .footer-top { grid-template-columns: 1fr; }
-      nav ul { display: none; }
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--gray-border);
+      padding: 56px 5% 32px;
+      margin-top: 40px;
     }
+    .footer-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 40px; margin-bottom: 48px; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+    .footer-col h4 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 20px; color: var(--gray-dark); }
+    .footer-links { display: flex; flex-direction: column; gap: 12px; }
+    .footer-links a { color: var(--gray-text-light); text-decoration: none; font-size: 0.8rem; }
+    .footer-links a:hover { color: var(--primary-blue); }
+    .footer-bottom { border-top: 1px solid var(--gray-border); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--gray-text-light); }
+    .social-links { display: flex; gap: 20px; }
+    .social-links a { color: var(--gray-text-light); font-size: 1rem; }
+    .social-links a:hover { color: var(--primary-blue); }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
 
-<div class="topbar">
-  <span><i class="fas fa-map-marker-alt" style="margin-right: 6px;"></i> Formation SIG & Data Science pour l'Afrique centrale</span>
-  <div class="topbar-right">
-    <a href="https://wa.me/243898383148" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-    <a href="mailto:gadasolution.rdc@gmail.com"><i class="far fa-envelope"></i> gadasolution.rdc@gmail.com</a>
+<div class="global-topbar">
+  <span><i class="fas fa-map-marker-alt"></i> GADA — GeoAgri Data Analytics & Solution</span>
+  <div class="global-topbar-right">
+    <a href="https://wa.me/243898383148"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    <a href="mailto:gadasolution.rdc@gmail.com"><i class="far fa-envelope"></i> Email</a>
   </div>
 </div>
 
-<nav>
-  <div class="nav-wordmark">GADA<span>.</span>Training</div>
-  <ul>
+<!-- Navigation Academy -->
+<nav class="academy-nav">
+  <div class="nav-brand">GADA<span>Academy</span></div>
+  <ul class="nav-links">
     <li><a href="#services">Services</a></li>
-    <li><a href="#academy">Académie</a></li>
-    <li><a href="#communities">Communautés</a></li>
-    <li><a href="#gamification">Niveaux</a></li>
-    <li><a href="#process">Méthode</a></li>
+    <li><a href="#formations">Formations</a></li>
+    <li><a href="#communities">Communauté</a></li>
+    <li><a href="#parcours">Parcours</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <div class="nav-actions">
-    <a href="#contact" class="btn btn-outline">Se connecter</a>
-    <a href="#contact" class="btn btn-primary">S'inscrire</a>
-  </div>
+  <div class="nav-actions" id="navActions"></div>
 </nav>
 
-<section id="hero">
-  <div>
-    <div class="hero-badge"><i class="fas fa-leaf"></i> GeoAgri Data Analytics & Solution</div>
-    <h1 class="hero-title">
-      Exploitez la puissance<br>des données pour<br>
-      <span class="ag">l'agriculture</span> & <span class="ao">l'environnement</span>
-    </h1>
-    <p class="hero-sub">Formation, analyse et innovation en SIG, télédétection et data science appliquée. Spécialisé pour les réalités de l'Afrique centrale.</p>
-    <div class="hero-actions">
-      <a href="#contact" class="btn btn-primary btn-lg">Rejoindre la communauté →</a>
-      <a href="#academy" class="btn btn-outline btn-lg">Voir les formations</a>
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><i class="fas fa-graduation-cap"></i> GeoAgri Data Analytics & Solution</div>
+    <h1 class="hero-title">Maîtrisez le SIG & la Data Science pour<br><span class="highlight">l'Agriculture</span> et <span class="highlight2">l'Environnement</span></h1>
+    <p class="hero-sub">Des formations pratiques et certifiantes conçues pour relever les défis environnementaux en Afrique centrale.</p>
+    <div style="display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap;">
+      <a href="#contact" class="btn-nav btn-nav-primary" style="padding: 12px 28px;">Explorer les formations →</a>
+      <a href="#formations" class="btn-nav btn-nav-outline" style="padding: 12px 28px;">En savoir plus</a>
     </div>
     <div class="hero-stats">
-      <div><div class="h-stat-num">500+</div><div class="h-stat-label">Apprenants formés</div></div>
-      <div><div class="h-stat-num">48+</div><div class="h-stat-label">Projets livrés</div></div>
-      <div><div class="h-stat-num">12</div><div class="h-stat-label">Pays couverts</div></div>
+      <div><div class="stat-number">500+</div><div class="stat-label">Apprenants formés</div></div>
+      <div><div class="stat-number">48+</div><div class="stat-label">Projets livrés</div></div>
+      <div><div class="stat-number">12</div><div class="stat-label">Pays couverts</div></div>
     </div>
   </div>
-  <div class="hero-visual">
-    <div class="hero-card">
-      <div class="map-placeholder"><div class="map-slider-track"><img src="images/carte1.jpg" alt="carte"><img src="images/carte2.jpg" alt="carte"><img src="images/carte3.jpg" alt="carte"><img src="images/carte4.jpg" alt="carte"><img src="images/carte5.jpg" alt="carte"><img src="images/carte6.jpg" alt="carte"><img src="images/carte7.jpg" alt="carte"></div></div>
-      <div class="hero-card-title"><i class="fas fa-map"></i> Analyse SIG — Monde</div>
-      <div class="hero-card-text">Cartographie agricole, suivi de la déforestation, modélisation spatiale.</div>
-      <span class="hero-card-badge">QGIS · ArcGIS</span>
+  <div class="hero-visuals">
+    <div class="visu-row">
+      <div class="visu-card"><div class="visu-card-title"><i class="fas fa-map"></i> Analyse SIG</div><div class="visu-card-text">Cartographie, modélisation spatiale, analyses territoriales.</div><span class="visu-badge">QGIS · ArcGIS</span></div>
+      <div class="visu-card"><div class="visu-card-title"><i class="fas fa-satellite"></i> Télédétection</div><div class="visu-card-text">Suivi déforestation, indices NDVI, données Sentinel/Landsat.</div><span class="visu-badge orange">Google Earth Engine</span></div>
     </div>
-    <div class="hero-card">
-      <div class="hero-card-title"><i class="fas fa-satellite"></i> Télédétection</div>
-      <div class="hero-card-text">Sentinel, Landsat, GEE, indices spectraux, suivi environnemental.</div>
-      <span class="hero-card-badge blue">Google Earth Engine</span>
-    </div>
-    <div class="hero-card">
-      <div class="hero-card-title"><i class="fas fa-chart-line"></i> Data Science</div>
-      <div class="hero-card-text">Python, R, Machine Learning appliqué aux données agricoles.</div>
-      <span class="hero-card-badge brown">Python · R</span>
+    <div class="visu-row">
+      <div class="visu-card"><div class="visu-card-title"><i class="fas fa-chart-line"></i> Data Science</div><div class="visu-card-text">Python, R, Machine learning appliqué aux données agricoles.</div><span class="visu-badge">Python · R · TensorFlow</span></div>
     </div>
   </div>
 </section>
 
-<div id="partners"><div class="ticker-track"><span class="ticker-item"><i class="fas fa-certificate"></i> FORMATION CERTIFIANTE SIG & DATA SCIENCE</span><span class="ticker-item"><i class="fas fa-chart-simple"></i> AGRICULTURE DE PRÉCISION & SUIVI PAR SATELLITE</span><span class="ticker-item"><i class="fas fa-globe"></i> RÉSEAU D'EXPERTS EN AFRIQUE CENTRALE</span><span class="ticker-item"><i class="fas fa-tree"></i> SURVEILLANCE DE LA DÉFORESTATION</span></div></div>
+<div class="search-section">
+  <div class="search-container">
+    <div class="search-label"><i class="fas fa-search"></i> Rechercher la formation dont vous avez besoin</div>
+    <div class="search-box">
+      <input type="text" placeholder="Rechercher un cours, un outil (QGIS, GEE, Python)...">
+      <button>RECHERCHER</button>
+    </div>
+  </div>
+</div>
 
-<section id="services"><div class="section-label">Expertises</div><h2 class="section-title">Nos services spécialisés</h2><p class="section-sub">Des solutions complètes, du terrain aux données, adaptées aux enjeux africains.</p><div class="services-grid reveal"><div class="service-card"><div class="service-icon"><i class="fas fa-map"></i></div><div class="service-title">Analyse SIG & Spatiale</div><p class="service-desc">Cartographie, analyse géoréférencée, modélisation spatiale et cartes thématiques.</p><div><span class="tool-tag">QGIS</span><span class="tool-tag">ArcGIS</span><span class="tool-tag">PostGIS</span></div></div><div class="service-card"><div class="service-icon"><i class="fas fa-satellite-dish"></i></div><div class="service-title">Télédétection</div><p class="service-desc">Traitement d'images satellites, NDVI, détection de changements, occupation des sols.</p><div><span class="tool-tag">GEE</span><span class="tool-tag">Sentinel</span><span class="tool-tag">Landsat</span></div></div><div class="service-card"><div class="service-icon"><i class="fas fa-tractor"></i></div><div class="service-title">Agriculture de Précision</div><p class="service-desc">Monitoring des cultures, prévisions de rendement, optimisation des intrants.</p><div><span class="tool-tag">Drone</span><span class="tool-tag">IoT</span><span class="tool-tag">ML</span></div></div><div class="service-card"><div class="service-icon"><i class="fas fa-chart-simple"></i></div><div class="service-title">Data Science Appliquée</div><p class="service-desc">Modèles prédictifs, analyse statistique, machine learning agricole.</p><div><span class="tool-tag">Python</span><span class="tool-tag">R</span><span class="tool-tag">TensorFlow</span></div></div><div class="service-card"><div class="service-icon"><i class="fas fa-database"></i></div><div class="service-title">Pipelines & Bases de Données</div><p class="service-desc">Bases spatiales, ETL automatisés, dashboards temps réel.</p><div><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Airflow</span></div></div><div class="service-card"><div class="service-icon"><i class="fas fa-chalkboard-user"></i></div><div class="service-title">Formation & Conseil</div><p class="service-desc">Formation terrain aux outils SIG et data science, audit, stratégie.</p><div><span class="tool-tag">Audit</span><span class="tool-tag">Certification</span></div></div></div></section>
+<div class="quick-nav">
+  <div class="quick-grid">
+    <a href="#" class="quick-item"><i class="fas fa-book-open"></i> Catalogue</a>
+    <a href="#" class="quick-item"><i class="fas fa-calendar-alt"></i> Calendrier</a>
+    <a href="#" class="quick-item"><i class="fas fa-chalkboard-user"></i> Formateurs</a>
+    <a href="#" class="quick-item"><i class="fas fa-certificate"></i> Certifications</a>
+    <a href="#" class="quick-item"><i class="fas fa-tachometer-alt"></i> Mon tableau de bord</a>
+  </div>
+</div>
 
-<section id="academy"><div class="section-label">Académie GADA</div><h2 class="section-title">Formations pratiques & certifiantes</h2><p class="section-sub">Des cours construits sur des données réelles d'Afrique centrale.</p><div class="courses-grid reveal"><div class="course-card"><div class="course-thumb ct-green"><i class="fas fa-map"></i></div><div class="course-body"><div class="course-level">Débutant → Expert</div><div class="course-title">SIG avec QGIS & ArcGIS</div><p class="course-desc">Maîtrisez les outils SIG sur des projets concrets en RDC.</p><div class="course-meta"><span><i class="far fa-clock"></i> 40h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div><div class="course-card"><div class="course-thumb ct-brown"><i class="fas fa-satellite"></i></div><div class="course-body"><div class="course-level">Intermédiaire</div><div class="course-title">Télédétection & GEE</div><p class="course-desc">Analyse d'images satellites, suivi déforestation, NDVI.</p><div class="course-meta"><span><i class="far fa-clock"></i> 28h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div><div class="course-card"><div class="course-thumb ct-blue"><i class="fas fa-chart-line"></i></div><div class="course-body"><div class="course-level">Tous niveaux</div><div class="course-title">Analyse Statistique (R & Python)</div><p class="course-desc">Statistiques appliquées à l'agronomie, machine learning.</p><div class="course-meta"><span><i class="far fa-clock"></i> 35h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div></div><div style="text-align:center; margin-top:40px"><a href="#contact" class="btn btn-primary btn-lg">Voir tous les cours →</a></div></section>
+<div class="transition-block reveal">
+  <h3 class="transition-title">Nous sommes là pour faciliter votre parcours de formation.</h3>
+  <p class="transition-text">Que vous soyez débutant sur QGIS ou analyste chevronné cherchant à maîtriser Google Earth Engine et RStudio, nos ressources vous aident à atteindre vos objectifs professionnels.</p>
+</div>
 
-<section id="communities"><div class="section-label">Réseau professionnel</div><h2 class="section-title">Communautés thématiques</h2><p class="section-sub">Rejoignez des groupes de praticiens partageant vos problématiques.</p><div class="communities-layout reveal"><div class="community-list"><div class="community-item"><div class="ci-icon"><i class="fas fa-seedling"></i></div><div><div class="ci-name">Agriculture Intelligente</div><div class="ci-count">342 membres · 28 discussions</div></div><i class="fas fa-arrow-right" style="margin-left:auto; color:var(--text-light);"></i></div><div class="community-item"><div class="ci-icon"><i class="fas fa-tree"></i></div><div><div class="ci-name">Déforestation & Forêts</div><div class="ci-count">218 membres · 15 discussions</div></div><i class="fas fa-arrow-right" style="margin-left:auto; color:var(--text-light);"></i></div><div class="community-item"><div class="ci-icon"><i class="fas fa-mountain"></i></div><div><div class="ci-name">Gestion des Sols</div><div class="ci-count">196 membres · 12 discussions</div></div><i class="fas fa-arrow-right" style="margin-left:auto; color:var(--text-light);"></i></div></div><div class="community-visual"><div class="cv-title"><i class="fas fa-comments"></i> Discussions récentes</div><div class="cv-sub">Forum — Agriculture Intelligente</div><div class="disc-item"><div class="disc-avatar" style="background:var(--green);">JM</div><div><div class="disc-name">Jean-Marie K.</div><div class="disc-text">Utilisation de GEE pour le suivi du maïs au Kasaï ?</div><div class="disc-time">Il y a 2h</div></div></div><div class="disc-item"><div class="disc-avatar" style="background:var(--brown);">AM</div><div><div class="disc-name">Amina M.</div><div class="disc-text">Nouveau jeu de données pluviométriques RDC disponible</div><div class="disc-time">Il y a 5h</div></div></div></div></div></div></section>
+<!-- SECTION SERVICES -->
+<section id="services" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Nos expertises</div>
+    <h2 class="section-title">Services spécialisés</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="service-card"><img src="images/sig.jpg" alt="SIG"><div><div class="service-title">Analyse SIG & Spatiale</div><p class="service-desc">Cartographie, analyse géoréférencée, modélisation spatiale.</p><span class="tool-tag">QGIS</span><span class="tool-tag">ArcGIS</span></div></div>
+    <div class="service-card"><img src="images/gee.png" alt="GEE"><div><div class="service-title">Télédétection</div><p class="service-desc">Traitement d'images satellites, NDVI, occupation des sols.</p><span class="tool-tag">GEE</span><span class="tool-tag">Sentinel</span></div></div>
+    <div class="service-card"><img src="images/drone.jpg" alt="Drone"><div><div class="service-title">Agriculture de Précision</div><p class="service-desc">Monitoring des cultures, prévisions de rendement.</p><span class="tool-tag">Drone</span><span class="tool-tag">IoT</span></div></div>
+    <div class="service-card"><img src="images/python.webp" alt="Python"><div><div class="service-title">Data Science Appliquée</div><p class="service-desc">Modèles prédictifs, machine learning agricole.</p><span class="tool-tag">Python</span><span class="tool-tag">R</span></div></div>
+    <div class="service-card"><img src="images/database.png" alt="Database"><div><div class="service-title">Pipelines & Bases de Données</div><p class="service-desc">Bases spatiales, ETL automatisés, dashboards.</p><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Airflow</span></div></div>
+    <div class="service-card"><img src="images/formation.jpg" alt="Formation"><div><div class="service-title">Formation & Conseil</div><p class="service-desc">Formation terrain, audit, stratégie analytique.</p><span class="tool-tag">Certification</span><span class="tool-tag">Ateliers</span></div></div>
+  </div>
+</section>
 
-<section id="gamification"><div class="section-label">Progression</div><h2 class="section-title">Votre parcours GADA Training</h2><p class="section-sub">5 niveaux pour devenir expert reconnu.</p><div class="levels-grid reveal"><div class="level-card"><div class="level-num">Niveau 1</div><div class="level-icon"><i class="fas fa-eye"></i></div><div class="level-name">Observateur</div><p class="level-desc">Découvrez les bases du SIG</p></div><div class="level-card"><div class="level-num">Niveau 2</div><div class="level-icon"><i class="fas fa-chart-simple"></i></div><div class="level-name">Analyste</div><p class="level-desc">Maîtrisez QGIS et statistiques</p></div><div class="level-card"><div class="level-num">Niveau 3</div><div class="level-icon"><i class="fas fa-globe"></i></div><div class="level-name">Expert SIG</div><p class="level-desc">Télédétection, données satellite</p></div><div class="level-card"><div class="level-num">Niveau 4</div><div class="level-icon"><i class="fas fa-microchip"></i></div><div class="level-name">Data Scientist</div><p class="level-desc">Machine learning, pipelines</p></div><div class="level-card"><div class="level-num">Niveau 5</div><div class="level-icon"><i class="fas fa-trophy"></i></div><div class="level-name">Visionnaire GADA</div><p class="level-desc">Leader & mentor</p></div></div></section>
+<!-- SECTION FORMATIONS -->
+<section id="formations" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Académie GADA</div>
+    <h2 class="section-title">Formations certifiantes</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="course-card"><img src="images/formations/formation-sig.png" alt="Formation SIG"><div class="course-body"><div class="course-level">Débutant → Expert</div><div class="course-title">SIG avec QGIS & ArcGIS</div><p class="course-desc">Maîtrisez les outils SIG sur des projets concrets en RDC.</p><div class="course-meta"><span><i class="far fa-clock"></i> 40h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div>
+    <div class="course-card"><img src="images/formations/formation-gee.png" alt="Formation GEE"><div class="course-body"><div class="course-level">Intermédiaire</div><div class="course-title">Télédétection & Google Earth Engine</div><p class="course-desc">Analyse d'images satellites, suivi déforestation, NDVI.</p><div class="course-meta"><span><i class="far fa-clock"></i> 28h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div>
+    <div class="course-card"><img src="images/formations/formation-data.jpg" alt="Formation Data"><div class="course-body"><div class="course-level">Tous niveaux</div><div class="course-title">Analyse Statistique (R & Python)</div><p class="course-desc">Statistiques appliquées à l'agronomie, machine learning.</p><div class="course-meta"><span><i class="far fa-clock"></i> 35h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div>
+  </div>
+</section>
 
-<section id="process"><div class="section-label">Méthodologie</div><h2 class="section-title">Du besoin au livrable</h2><div class="process-grid reveal"><div class="process-step"><div class="process-num">01</div><div class="process-title">Découverte</div><p class="process-desc">Analyse de vos besoins et données</p></div><div class="process-step"><div class="process-num">02</div><div class="process-title">Proposition</div><p class="process-desc">Devis clair, délai et tarif fixes</p></div><div class="process-step"><div class="process-num">03</div><div class="process-title">Analyse</div><p class="process-desc">Traitement & modélisation itérative</p></div><div class="process-step"><div class="process-num">04</div><div class="process-title">Livraison</div><p class="process-desc">Documentation + support inclus</p></div></div></section>
+<!-- SECTION COMMUNAUTÉS -->
+<section id="communities" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Réseau professionnel</div>
+    <h2 class="section-title">Communautés thématiques</h2>
+    <p class="section-sub">Rejoignez des groupes de praticiens partageant vos problématiques.</p>
+  </div>
+  <div id="communitiesContainer"></div>
+  <div id="communityPrivateArea" style="display:none; margin-top:32px; padding:24px; background:white; border-radius:12px; border:1px solid var(--gray-border);">
+    <h3 id="currentCommunityTitle"></h3>
+    <div id="communityDiscussions"></div>
+  </div>
+</section>
 
-<section id="delivery"><div class="delivery-inner"><div><div class="section-label">Collaboration</div><h2 class="section-title" style="color:white;">Comment nous livrons</h2><p class="section-sub" style="color:rgba(255,255,255,0.6);">Des livrables clairs, accessibles même en faible connexion.</p><div class="delivery-list"><div class="delivery-item"><div class="delivery-check"><i class="fas fa-check"></i></div><div class="delivery-text">Partage via Google Drive ou lien sécurisé</div></div><div class="delivery-item"><div class="delivery-check"><i class="fas fa-check"></i></div><div class="delivery-text">Rapports PDF, cartes SIG, notebooks commentés</div></div><div class="delivery-item"><div class="delivery-check"><i class="fas fa-check"></i></div><div class="delivery-text">Suivi WhatsApp & email à chaque étape</div></div><div class="delivery-item"><div class="delivery-check"><i class="fas fa-check"></i></div><div class="delivery-text">Mode hors-ligne disponible</div></div></div></div><div class="delivery-visual"><div class="dv-title"><i class="fas fa-box"></i> Types de livrables</div><div class="dv-item"><div class="dv-icon"><i class="fas fa-map"></i></div><div class="dv-label">Cartes SIG (PDF / Shapefile)</div><div class="dv-badge green">Inclus</div></div><div class="dv-item"><div class="dv-icon"><i class="fas fa-chart-line"></i></div><div class="dv-label">Dashboards interactifs</div><div class="dv-badge green">Inclus</div></div><div class="dv-item"><div class="dv-icon"><i class="fas fa-file-alt"></i></div><div class="dv-label">Rapport d'analyse</div><div class="dv-badge green">Inclus</div></div></div></div></section>
+<!-- SECTION PARCOURS -->
+<section id="parcours" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Votre progression</div>
+    <h2 class="section-title">Du débutant à l'expert reconnu</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="level-card"><div class="level-num">NIVEAU 1</div><div class="level-icon"><i class="fas fa-eye"></i></div><div class="card-title" style="font-size:1rem;">Observateur</div><p class="card-desc">Découvrez les bases du SIG et de l'analyse de données.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 2</div><div class="level-icon"><i class="fas fa-chart-simple"></i></div><div class="card-title" style="font-size:1rem;">Analyste</div><p class="card-desc">Maîtrisez QGIS et les analyses statistiques de base.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 3</div><div class="level-icon"><i class="fas fa-globe"></i></div><div class="card-title" style="font-size:1rem;">Expert SIG</div><p class="card-desc">Projets complexes, télédétection, données satellite.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 4</div><div class="level-icon"><i class="fas fa-microchip"></i></div><div class="card-title" style="font-size:1rem;">Data Scientist</div><p class="card-desc">Machine learning, modèles prédictifs, pipelines avancés.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 5</div><div class="level-icon"><i class="fas fa-trophy"></i></div><div class="card-title" style="font-size:1rem;">Visionnaire GADA</div><p class="card-desc">Leader reconnu, mentor de la communauté.</p></div>
+  </div>
+</section>
 
-<section id="contact"><div class="contact-grid"><div><div class="section-label">Contactez-nous</div><h2 class="section-title">Parlons de votre projet</h2><p class="section-sub">Formation, analyse ou partenariat, réponse sous 24h.</p><div class="contact-details"><a href="https://wa.me/243898383148" target="_blank" class="contact-detail"><div class="cd-icon"><i class="fab fa-whatsapp"></i></div><div><div class="cd-label">WhatsApp</div><div class="cd-value">+243 898 383 148</div></div></a><a href="mailto:gadasolution.rdc@gmail.com" class="contact-detail"><div class="cd-icon"><i class="far fa-envelope"></i></div><div><div class="cd-label">Email</div><div class="cd-value">gadasolution.rdc@gmail.com</div></div></a><div class="contact-detail"><div class="cd-icon"><i class="fas fa-map-pin"></i></div><div><div class="cd-label">Localisation</div><div class="cd-value">République Démocratique du Congo</div></div></div></div></div><form class="contact-form" action="https://formspree.io/f/mwvzeyql" method="POST" id="contactForm"><div class="form-title">Envoyer une demande</div><div class="form-sub">Décrivez votre besoin, nous vous répondons rapidement.</div><div class="form-row"><div class="form-group"><label>Nom complet</label><input type="text" name="name" required/></div><div class="form-group"><label>Email</label><input type="email" name="email" required/></div></div><div class="form-group"><label>Service</label><select name="service"><option>Formation SIG</option><option>Télédétection & GEE</option><option>Data Science</option><option>Projet d'analyse</option></select></div><div class="form-group"><label>Message</label><textarea rows="4" name="message" required></textarea></div><button type="submit" class="btn btn-primary form-submit">Envoyer →</button><div class="form-success" id="formSuccess">✓ Message envoyé ! Réponse sous 24h.</div></form></div></section>
+<!-- TÉMOIGNAGES -->
+<section id="testimonials" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Ils nous font confiance</div>
+    <h2 class="section-title">Ce que disent nos apprenants</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="feature-card"><div style="color:var(--accent-coral); margin-bottom:16px;">★★★★★</div><p class="card-desc">"GADA Academy a transformé notre capacité à analyser les données agricoles. La formation SIG était précise et directement applicable."</p><div style="margin-top:20px; font-weight:600;">— Moïse Kabila, INERA-RDC</div></div>
+    <div class="feature-card"><div style="color:var(--accent-coral); margin-bottom:16px;">★★★★★</div><p class="card-desc">"Le dashboard SIG livré par GADA a révolutionné notre suivi de la déforestation. Résultats précis, livrés dans les délais."</p><div style="margin-top:20px; font-weight:600;">— Sarah Nzinga, ONG Forêt Congo</div></div>
+    <div class="feature-card"><div style="color:var(--accent-coral); margin-bottom:16px;">★★★★★</div><p class="card-desc">"La communauté GADA est unique en Afrique centrale. Échanges de qualité, datasets partagés, équipe disponible."</p><div style="margin-top:20px; font-weight:600;">— Eric Bongonga, Université de Kisangani</div></div>
+  </div>
+</section>
 
-<footer><div class="footer-top"><div><div class="footer-wordmark">GADA<span>.Training</span></div><p class="footer-tagline">GeoAgri Data Analytics & Solution — Formation, analyse et innovation en SIG, télédétection et data science pour l'Afrique centrale.</p></div><div><div class="footer-col-title">Services</div><div class="footer-links"><a href="#services">Analyse SIG</a><a href="#services">Télédétection</a><a href="#services">Data Science</a><a href="#services">Formation</a></div></div><div><div class="footer-col-title">Académie</div><div class="footer-links"><a href="#academy">Cours QGIS</a><a href="#academy">Google Earth Engine</a><a href="#academy">Python & R</a></div></div><div><div class="footer-col-title">Contact</div><div class="footer-links"><a href="https://wa.me/243898383148">WhatsApp</a><a href="mailto:gadasolution.rdc@gmail.com">Email</a></div></div></div><div class="footer-bottom"><div class="footer-copy">© 2025 GADA Training — RDC</div><div class="footer-langs"><button class="lang-btn active">FR</button><button class="lang-btn">EN</button></div></div></footer>
+<!-- CONTACT -->
+<section id="contact" class="section-container">
+  <div class="grid-2cols reveal">
+    <div><div class="section-tag">Contactez-nous</div><h2 class="section-title">Parlons de votre projet</h2><p class="card-desc" style="margin-top:16px;">Une question sur une formation ? Un besoin d'accompagnement ? Écrivez-nous, nous vous répondons sous 24h.</p><div style="margin-top:32px;"><div style="display:flex; gap:16px; align-items:center; margin-bottom:16px;"><i class="fab fa-whatsapp" style="font-size:1.4rem; color:var(--primary-blue);"></i><span>+243 898 383 148</span></div><div style="display:flex; gap:16px; align-items:center;"><i class="far fa-envelope" style="font-size:1.4rem; color:var(--primary-blue);"></i><span>gadasolution.rdc@gmail.com</span></div></div></div>
+    <form class="feature-card" style="padding:32px;" action="https://formspree.io/f/mwvzeyql" method="POST" id="contactForm"><div class="card-title">Envoyer une demande</div><input type="text" name="name" placeholder="Nom complet" style="width:100%; padding:12px; margin:10px 0; border:1px solid var(--gray-border); border-radius:8px;"><input type="email" name="email" placeholder="Email" style="width:100%; padding:12px; margin:10px 0; border:1px solid var(--gray-border); border-radius:8px;"><textarea name="message" rows="4" placeholder="Décrivez votre besoin..." style="width:100%; padding:12px; margin:10px 0; border:1px solid var(--gray-border); border-radius:8px;"></textarea><button type="submit" class="btn-nav btn-nav-primary" style="width:100%;">Envoyer →</button><div id="formSuccess" style="display:none; margin-top:16px; color:green;">✓ Message envoyé !</div></form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div><h4>GADA Academy</h4><div class="footer-links"><a href="#">À propos</a><a href="#">Nos valeurs</a><a href="#">Équipe</a></div></div>
+    <div><h4>Formations</h4><div class="footer-links"><a href="#">SIG & Cartographie</a><a href="#">Télédétection GEE</a><a href="#">Data Science</a><a href="#">Agriculture précision</a></div></div>
+    <div><h4>Ressources</h4><div class="footer-links"><a href="#">Blog & articles</a><a href="#">Webinaires</a><a href="#">Documentation</a><a href="#">Communauté</a></div></div>
+    <div><h4>Support</h4><div class="footer-links"><a href="#">FAQ</a><a href="#">Contact technique</a><a href="#">Devis</a></div></div>
+    <div><h4>Légal</h4><div class="footer-links"><a href="#">Mentions légales</a><a href="#">Confidentialité</a><a href="#">CGU</a></div></div>
+  </div>
+  <div class="footer-bottom"><div>© 2025 GADA Academy — GeoAgri Data Analytics & Solution · RDC</div><div class="social-links"><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-github"></i></a></div></div>
+</footer>
+
+<!-- CHAT PROFESSIONNEL GADA CHAT -->
+<div class="chat-floating" id="chatFloating">
+  <div class="chat-icon" id="chatIcon">
+    <i class="fas fa-comments"></i>
+    <span class="chat-badge">1</span>
+  </div>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <i class="fas fa-robot"></i>
+        <span>GADA Chat <small>Assistant formation</small></span>
+      </div>
+      <div class="chat-header-actions">
+        <i class="fas fa-minus" id="chatMinimize"></i>
+        <i class="fas fa-times" id="chatClose"></i>
+      </div>
+    </div>
+    <div class="chat-messages-area" id="chatMessagesArea">
+      <div class="chat-message bot">
+        <div class="message-avatar"><i class="fas fa-robot"></i></div>
+        <div class="message-content">
+          <div class="message-name">GADA Chat</div>
+          <div class="message-text" id="welcomeMessage"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-actions">
+      <button class="chat-btn" id="btnResume"><i class="fas fa-graduation-cap"></i> Formations</button>
+      <button class="chat-btn" id="btnAlerts"><i class="fas fa-bell"></i> Alertes</button>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Posez votre question sur les formations...">
+      <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONNEXION -->
+<div id="authModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <div id="modalLogin">
+      <h3>Connexion</h3>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Mot de passe" />
+      <button onclick="login()">Se connecter</button>
+      <p style="margin-top:12px; text-align:center;"><a href="#" onclick="showRegister()">Créer un compte</a></p>
+    </div>
+    <div id="modalRegister" style="display:none;">
+      <h3>Inscription</h3>
+      <input type="text" id="regName" placeholder="Nom complet" />
+      <input type="email" id="regEmail" placeholder="Email" />
+      <input type="password" id="regPassword" placeholder="Mot de passe" />
+      <button onclick="register()">S'inscrire</button>
+      <p style="margin-top:12px; text-align:center;"><a href="#" onclick="showLogin()">Déjà inscrit ? Se connecter</a></p>
+    </div>
+  </div>
+</div>
 
 <script>
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  reveals.forEach(r => observer.observe(r));
-  const form = document.getElementById('contactForm');
-  const successDiv = document.getElementById('formSuccess');
-  if (form) {
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      try {
-        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
-        if (res.ok) { form.reset(); successDiv.style.display = 'block'; setTimeout(() => successDiv.style.display = 'none', 5000); }
-      } catch { alert('Erreur réseau, veuillez réessayer.'); }
-    });
+  // ============================================================
+  // DONNÉES DES COMMUNAUTÉS (icônes vectorielles sobres)
+  // ============================================================
+  const communities = [
+    { id: 1, name: "Agriculture Intelligente", icon: '<i class="fas fa-seedling"></i>', access: "free", members: 342, description: "Discussions sur les pratiques agricoles durables." },
+    { id: 2, name: "Déforestation & Forêts", icon: '<i class="fas fa-tree"></i>', access: "free", members: 218, description: "Analyses satellites, alertes déforestation." },
+    { id: 3, name: "Gestion des Sols", icon: '<i class="fas fa-mountain"></i>', access: "paid", members: 196, description: "Cartes détaillées, rapports experts." },
+    { id: 4, name: "Climat & Environnement", icon: '<i class="fas fa-cloud-sun"></i>', access: "paid", members: 275, description: "Modèles climatiques, formations avancées." }
+  ];
+
+  const discussions = {
+    1: ["📢 Nouveau dataset NDVI disponible", "💡 Astuce GEE : utiliser ee.Reducer.percentile()", "❓ Comment masquer les nuages sur Sentinel-2 ?"],
+    2: ["🛰️ Alerte : baisse de 8% du couvert forestier au Kasaï", "📊 Script GEE pour analyse déforestation", "🗺️ Carte interactive des zones protégées"],
+    3: ["🔒 Accès réservé aux membres payants", "📈 Rapport mensuel sur l'érosion des sols"],
+    4: ["🔒 Prévisions climatiques mensuelles", "🌡️ Modèle CMIP6 pour l'Afrique centrale"]
+  };
+
+  let currentUser = null;
+
+  function checkSession() {
+    const saved = localStorage.getItem('gada_user');
+    if (saved) {
+      currentUser = JSON.parse(saved);
+      updateNav();
+      loadCommunities();
+    } else {
+      updateNavLoggedOut();
+      loadCommunitiesPublic();
+    }
   }
+
+  function updateNav() {
+    const navActions = document.getElementById('navActions');
+    navActions.innerHTML = `<div class="user-avatar" onclick="openDashboard()"><i class="fas fa-user-circle"></i><span>${currentUser.name}</span></div>`;
+  }
+
+  function updateNavLoggedOut() {
+    const navActions = document.getElementById('navActions');
+    navActions.innerHTML = `<button class="btn-nav btn-nav-outline" onclick="openModal('login')">Se connecter</button>
+                            <button class="btn-nav btn-nav-primary" onclick="openModal('register')">S'inscrire</button>`;
+  }
+
+  function openModal(type) {
+    document.getElementById('authModal').style.display = 'flex';
+    if (type === 'login') {
+      document.getElementById('modalLogin').style.display = 'block';
+      document.getElementById('modalRegister').style.display = 'none';
+    } else {
+      document.getElementById('modalLogin').style.display = 'none';
+      document.getElementById('modalRegister').style.display = 'block';
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('authModal').style.display = 'none';
+  }
+
+  function showRegister() {
+    document.getElementById('modalLogin').style.display = 'none';
+    document.getElementById('modalRegister').style.display = 'block';
+  }
+
+  function showLogin() {
+    document.getElementById('modalLogin').style.display = 'block';
+    document.getElementById('modalRegister').style.display = 'none';
+  }
+
+  function register() {
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    if (!name || !email || !password) { alert("Tous les champs sont requis"); return; }
+    currentUser = { name, email, password, paid: false };
+    localStorage.setItem('gada_user', JSON.stringify(currentUser));
+    closeModal();
+    updateNav();
+    loadCommunities();
+  }
+
+  function login() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const saved = localStorage.getItem('gada_user');
+    if (saved) {
+      const user = JSON.parse(saved);
+      if (user.email === email && user.password === password) {
+        currentUser = user;
+        localStorage.setItem('gada_user', JSON.stringify(currentUser));
+        closeModal();
+        updateNav();
+        loadCommunities();
+        return;
+      }
+    }
+    alert("Email ou mot de passe incorrect");
+  }
+
+  function openDashboard() {
+    alert(`Bienvenue ${currentUser.name} !\nEspace privé en construction.`);
+  }
+
+  function loadCommunitiesPublic() {
+    const container = document.getElementById('communitiesContainer');
+    container.innerHTML = `<div class="grid-2cols">` + communities.map(comm => `
+      <div class="community-item" onclick="showCommunityPreview(${comm.id})">
+        <div class="community-info">
+          <div class="community-icon">${comm.icon}</div>
+          <div>
+            <div class="community-name">${comm.name}</div>
+            <div class="community-count">${comm.members} membres</div>
+          </div>
+        </div>
+        <span class="community-badge badge-free">🔒 Connexion requise</span>
+      </div>
+    `).join('') + `</div><p style="text-align:center; margin-top:24px;"><strong>🔐 Connectez-vous pour accéder aux discussions et ressources</strong></p>`;
+  }
+
+  function loadCommunities() {
+    const container = document.getElementById('communitiesContainer');
+    container.innerHTML = `<div class="grid-2cols">` + communities.map(comm => `
+      <div class="community-item" onclick="openCommunity(${comm.id})">
+        <div class="community-info">
+          <div class="community-icon">${comm.icon}</div>
+          <div>
+            <div class="community-name">${comm.name}</div>
+            <div class="community-count">${comm.members} membres</div>
+            <div class="community-count">${comm.description.substring(0,60)}...</div>
+          </div>
+        </div>
+        <span class="community-badge ${comm.access === 'free' ? 'badge-free' : 'badge-paid'}">${comm.access === 'free' ? 'Gratuit' : 'Payant ⭐'}</span>
+      </div>
+    `).join('') + `</div>`;
+  }
+
+  function openCommunity(id) {
+    const comm = communities.find(c => c.id === id);
+    if (!comm) return;
+    const privateArea = document.getElementById('communityPrivateArea');
+    const content = document.getElementById('communityDiscussions');
+    document.getElementById('currentCommunityTitle').innerHTML = `${comm.icon} ${comm.name}`;
+    
+    if (comm.access === 'paid' && (!currentUser || !currentUser.paid)) {
+      content.innerHTML = `<div style="text-align:center; padding:40px;"><i class="fas fa-lock" style="font-size:3rem; color:#e85d04;"></i>
+        <h3>Accès réservé aux membres payants</h3><p>Cette communauté nécessite un abonnement premium.</p>
+        <button class="btn-nav btn-nav-primary" onclick="alert('Fonctionnalité à venir : paiement sécurisé')">Devenir membre premium →</button></div>`;
+      privateArea.style.display = 'block';
+      return;
+    }
+    
+    const posts = discussions[id] || ["Bienvenue dans la communauté !"];
+    content.innerHTML = posts.map(post => `<div style="padding:12px; border-bottom:1px solid #eee;"><i class="fas fa-comment" style="margin-right:12px; color:#0066b3;"></i>${post}</div>`).join('');
+    privateArea.style.display = 'block';
+  }
+
+  function showCommunityPreview(id) {
+    alert("🔐 Veuillez vous connecter pour accéder à cette communauté.\nInscrivez-vous gratuitement pour découvrir les discussions.");
+    openModal('login');
+  }
+
+  // ============================================================
+  // CHAT PROFESSIONNEL GADA CHAT (adapté au domaine formation SIG)
+  // ============================================================
+  const chatIcon = document.getElementById('chatIcon');
+  const chatWindow = document.getElementById('chatWindow');
+  const chatMinimize = document.getElementById('chatMinimize');
+  const chatClose = document.getElementById('chatClose');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
+  const messagesArea = document.getElementById('chatMessagesArea');
+  const btnResume = document.getElementById('btnResume');
+  const btnAlerts = document.getElementById('btnAlerts');
+  const welcomeMsgDiv = document.getElementById('welcomeMessage');
+
+  let isChatOpen = false;
+
+  // Message de bienvenue
+  function typeWelcomeMessage() {
+    const text = "Bonjour 😊 Je suis GADA Chat. Comment puis-je vous aider dans votre parcours de formation ?";
+    let i = 0;
+    welcomeMsgDiv.classList.add('typing');
+    function typeWriter() {
+      if (i < text.length) {
+        welcomeMsgDiv.innerHTML = text.substring(0, i + 1);
+        i++;
+        setTimeout(typeWriter, 40);
+      } else {
+        welcomeMsgDiv.classList.remove('typing');
+      }
+    }
+    typeWriter();
+  }
+
+  // Ajouter un message avec effet machine à écrire
+  function addMessageWithTyping(content, isUser = false, userName = null, userColor = null) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
+    
+    const name = isUser ? (userName || 'Vous') : 'GADA Chat';
+    const msgColor = isUser ? (userColor || '#0066b3') : '#0066b3';
+    
+    messageDiv.innerHTML = `
+      <div class="message-avatar" style="${!isUser ? 'background:#e6f2fa; color:#0066b3;' : `background:${msgColor}; color:white;`}">
+        ${isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>'}
+      </div>
+      <div class="message-content" style="${isUser ? `background:${msgColor}; color:white; border-radius:16px 16px 4px 16px;` : 'background:white; border:1px solid #e9ecef; border-radius:16px 16px 16px 4px;'}">
+        <div class="message-name" style="${isUser ? `color:${msgColor}; text-align:right;` : 'color:#0066b3;'}">${name}</div>
+        <div class="message-text typing" id="typingText"></div>
+      </div>
+    `;
+    
+    messagesArea.appendChild(messageDiv);
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+    
+    const textDiv = messageDiv.querySelector('#typingText');
+    let i = 0;
+    function typeWriter() {
+      if (i < content.length) {
+        textDiv.innerHTML = content.substring(0, i + 1);
+        i++;
+        setTimeout(typeWriter, 30);
+      } else {
+        textDiv.classList.remove('typing');
+      }
+    }
+    typeWriter();
+  }
+
+  // Ajouter message utilisateur
+  function addUserMessage(message) {
+    addMessageWithTyping(message, true, 'Vous', '#0066b3');
+  }
+
+  // Profils vectoriels sobres (sans émojis IA)
+  const simulatedUsers = [
+    { name: "Jean-Marc", color: "#e85d04", icon: '<i class="fas fa-user-tie"></i>' },
+    { name: "Amina", color: "#0066b3", icon: '<i class="fas fa-user-graduate"></i>' },
+    { name: "Dr. Kamanda", color: "#2a7a3e", icon: '<i class="fas fa-chalkboard-user"></i>' },
+    { name: "Claire", color: "#6b3fa0", icon: '<i class="fas fa-user-astronaut"></i>' }
+  ];
+
+  // Messages adaptés au domaine SIG / formation
+  const randomMessages = [
+    "Quelqu'un peut m'aider sur l'utilisation de GEE pour le NDVI au Kasaï ?",
+    "Nouveau dataset : données pluviométriques RDC 2024 disponibles dans la communauté !",
+    "Formation GEE gratuite ce week-end, les places sont limitées, qui est intéressé ?",
+    "Besoin d'aide pour exporter une carte QGIS en PDF de qualité publication.",
+    "Le nouveau module sur la télédétection est excellent ! Merci GADA Academy.",
+    "Comment masquer efficacement les nuages sur les images Sentinel-2 ?",
+    "Quelqu'un a un script Python pour calculer le NDVI sur une série temporelle ?"
+  ];
+
+  function simulateRandomMessage() {
+    if (isChatOpen) {
+      const randomUser = simulatedUsers[Math.floor(Math.random() * simulatedUsers.length)];
+      const randomMsg = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message bot`;
+      messageDiv.innerHTML = `
+        <div class="message-avatar" style="background:${randomUser.color}20; color:${randomUser.color};">
+          ${randomUser.icon}
+        </div>
+        <div class="message-content" style="background:white; border:1px solid #e9ecef; border-radius:16px 16px 16px 4px;">
+          <div class="message-name" style="color:${randomUser.color};">${randomUser.name}</div>
+          <div class="message-text typing" id="randMsg"></div>
+        </div>
+      `;
+      messagesArea.appendChild(messageDiv);
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+      
+      const textDiv = messageDiv.querySelector('#randMsg');
+      let i = 0;
+      function typeRand() {
+        if (i < randomMsg.length) {
+          textDiv.innerHTML = randomMsg.substring(0, i + 1);
+          i++;
+          setTimeout(typeRand, 25);
+        } else {
+          textDiv.classList.remove('typing');
+        }
+      }
+      typeRand();
+    }
+  }
+
+  // Résumé des formations disponibles
+  function showResume() {
+    addMessageWithTyping("📚 Formations GADA Academy disponibles :\n• SIG avec QGIS & ArcGIS (40h, certifié)\n• Télédétection & Google Earth Engine (28h)\n• Analyse Statistique R & Python (35h)\n• Agriculture de précision & drones\n\n👉 Contactez-nous pour un devis personnalisé !", false, 'GADA Chat', '#0066b3');
+  }
+
+  // Alertes formations / communautés
+  function showAlerts() {
+    addMessageWithTyping("⚠️ Alertes GADA :\n• Nouvelle session QGIS début le 15 juin (10 places)\n• Webinaire gratuit sur GEE le 22 mai\n• Communauté Gestion des Sols : nouveau rapport mensuel\n• Promotion -20% sur la formation Data Science jusqu'au 30 mai", false, 'GADA Chat', '#0066b3');
+  }
+
+  // Gestion du chat
+  chatIcon.addEventListener('click', () => {
+    isChatOpen = !isChatOpen;
+    if (isChatOpen) {
+      chatWindow.classList.add('open');
+      if (messagesArea.children.length === 1) {
+        typeWelcomeMessage();
+      }
+    } else {
+      chatWindow.classList.remove('open');
+    }
+  });
+
+  chatMinimize.addEventListener('click', () => {
+    chatWindow.classList.remove('open');
+    isChatOpen = false;
+  });
+
+  chatClose.addEventListener('click', () => {
+    chatWindow.classList.remove('open');
+    isChatOpen = false;
+  });
+
+  chatSend.addEventListener('click', () => {
+    const message = chatInput.value.trim();
+    if (message) {
+      addUserMessage(message);
+      chatInput.value = '';
+      setTimeout(() => {
+        addMessageWithTyping("Merci pour votre message ! Un conseiller pédagogique vous répondra dans les plus brefs délais. En attendant, consultez notre catalogue de formations sur notre site.", false, 'GADA Chat', '#0066b3');
+      }, 1000);
+    }
+  });
+
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') chatSend.click();
+  });
+
+  btnResume.addEventListener('click', showResume);
+  btnAlerts.addEventListener('click', showAlerts);
+
+  // Simuler des messages aléatoires toutes les 30 secondes
+  setInterval(simulateRandomMessage, 30000);
+
+  // Initialisation
+  window.onclick = function(e) { if (e.target === document.getElementById('authModal')) closeModal(); };
+  checkSession();
+
+  // Reveal animations
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Formulaire contact
+  const form = document.getElementById('contactForm');
+  if(form) form.addEventListener('submit', async e => {
+    e.preventDefault();
+    try {
+      const res = await fetch(form.action, { method:'POST', body:new FormData(form), headers:{'Accept':'application/json'} });
+      if(res.ok) { form.reset(); document.getElementById('formSuccess').style.display='block'; setTimeout(()=>document.getElementById('formSuccess').style.display='none',5000); }
+    } catch { alert('Erreur réseau'); }
+  });
 </script>
 <script type="text/javascript">var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();(function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];s1.async=true;s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs6lr';s1.charset='UTF-8';s1.setAttribute('crossorigin','*');s0.parentNode.insertBefore(s1,s0);})();</script>
 </body>
