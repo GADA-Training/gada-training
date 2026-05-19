@@ -788,22 +788,9 @@
   </div>
 </div>
 
-<script>
-  // Masquer tawk.to sauf sur la page Communauté
-  window.Tawk_API = window.Tawk_API || {};
-  window.Tawk_API.onLoad = function() {
-    var currentPage = window.location.pathname + window.location.hash;
-    var isCommunityPage = currentPage.includes('communaute') || 
-                          currentPage.includes('community') ||
-                          currentPage.includes('#communaute');
-    
-    if (!isCommunityPage) {
-      window.Tawk_API.hideWidget();
-    }
-  };
-</script>
-
-<!-- Tawk.to Widget - Personnalisé pour GADA Academy (placé ici pour charger après le DOM) -->
+<!-- ============================================================ -->
+<!-- Tawk.to Widget avec CONTROLE D'AFFICHAGE : visible uniquement dans la section Communauté -->
+<!-- ============================================================ -->
 <script type="text/javascript">
 var Tawk_API = Tawk_API || {};
 var Tawk_LoadStart = new Date();
@@ -814,7 +801,7 @@ Tawk_API.visitor = {
   email: ""
 };
 
-// Style personnalisé (sera appliqué via le dashboard Tawk)
+// Style personnalisé
 Tawk_API.customStyle = {
   primaryColor: "#0066b3",
   secondaryColor: "#004c8a",
@@ -831,6 +818,53 @@ s1.src = 'https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs6lr';
 s1.charset = 'UTF-8';
 s1.setAttribute('crossorigin', '*');
 s0.parentNode.insertBefore(s1, s0);
+})();
+</script>
+
+<!-- CONTROLE : Masquer Tawk.to sur toutes les pages sauf la section Communauté -->
+<script>
+(function() {
+  var checkInterval = setInterval(function() {
+    if (typeof Tawk_API !== 'undefined' && Tawk_API && Tawk_API.hideWidget && Tawk_API.showWidget) {
+      clearInterval(checkInterval);
+      
+      // Fonction pour vérifier si on est dans la section Communauté
+      function isCommunityActive() {
+        // Vérifier par hash
+        if (window.location.hash === '#communities') {
+          return true;
+        }
+        // Vérifier si la section communities est visible à l'écran
+        var communitiesSection = document.getElementById('communities');
+        if (communitiesSection) {
+          var rect = communitiesSection.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 100 && rect.bottom > 0) {
+            return true;
+          }
+        }
+        return false;
+      }
+      
+      // Fonction de mise à jour
+      function updateTawkVisibility() {
+        if (isCommunityActive()) {
+          Tawk_API.showWidget();
+        } else {
+          Tawk_API.hideWidget();
+        }
+      }
+      
+      // Masquer par défaut
+      Tawk_API.hideWidget();
+      
+      // Écouter les changements
+      window.addEventListener('hashchange', updateTawkVisibility);
+      window.addEventListener('scroll', updateTawkVisibility);
+      
+      // Vérifier au chargement
+      setTimeout(updateTawkVisibility, 500);
+    }
+  }, 200);
 })();
 </script>
 
