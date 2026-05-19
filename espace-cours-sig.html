@@ -49,6 +49,118 @@
             min-height: 100vh;
         }
 
+        /* Styles d'authentification */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-card {
+            max-width: 500px;
+            width: 90%;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-header h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(130deg, var(--blue-tech) 0%, var(--green-agri) 60%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--blue-tech);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2dcd5;
+            border-radius: 16px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--green-agri);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(95deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .auth-switch a {
+            color: var(--green-agri);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .auth-message {
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .auth-message.error {
+            background: #fee2e2;
+            color: #dc2626;
+            display: block;
+        }
+
+        .auth-message.success {
+            background: #dcfce7;
+            color: #166534;
+            display: block;
+        }
+
+        .main-wrapper {
+            display: none;
+        }
+
+        .main-wrapper.authenticated {
+            display: block;
+        }
+
         .floating-bg {
             position: fixed;
             top: 0; left: 0;
@@ -82,7 +194,6 @@
             100% { transform: translateX(60px) translateY(30px); opacity: 0.45; }
         }
 
-        /* NAVBAR */
         .navbar {
             position: relative;
             z-index: 20;
@@ -112,6 +223,18 @@
             font-weight: 600;
             letter-spacing: -0.2px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
         }
 
         .main-content {
@@ -210,9 +333,6 @@
             box-shadow: 0 8px 18px rgba(43,110,60,0.2);
         }
 
-        /* ================================================================
-           ZONE DOSSIERS HORIZONTALE — INLINE COLUMN EXPAND (MACOS FINDER STYLE)
-           ================================================================ */
         .folder-zone {
             display: none;
             margin-top: 20px;
@@ -226,7 +346,6 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* Wrapper avec scroll horizontal discret */
         .h-folder-wrapper {
             overflow-x: auto;
             overflow-y: visible;
@@ -240,7 +359,6 @@
         .h-folder-wrapper::-webkit-scrollbar-track { background: transparent; }
         .h-folder-wrapper::-webkit-scrollbar-thumb { background: #c9bfb2; border-radius: 10px; }
 
-        /* Rangée flexible inline-flex pour que les panneaux s'intercalent */
         .h-folder-row {
             display: inline-flex;
             flex-direction: row;
@@ -248,7 +366,6 @@
             min-width: 100%;
         }
 
-        /* Chaque cellule dossier (card) */
         .h-folder-item {
             display: flex;
             flex-direction: column;
@@ -307,7 +424,9 @@
             color: #7a5a4b;
             border-radius: 20px;
             padding: 2px 8px;
-            display: flex; align-items: center; gap: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .h-folder-title {
@@ -325,7 +444,6 @@
             line-height: 1.3;
         }
 
-        /* ── PANNEAU EXPANSIBLE (glisse horizontalement depuis le dossier actif) ── */
         .h-expand-panel {
             flex-shrink: 0;
             overflow: hidden;
@@ -334,11 +452,7 @@
             opacity: 0;
             border-left: 2px solid transparent;
             background: white;
-            transition:
-                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.25s ease,
-                border-left-color 0.25s ease;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, border-left-color 0.25s ease;
             display: flex;
             flex-direction: column;
             box-shadow: 4px 0 12px rgba(0,0,0,0.02);
@@ -367,7 +481,6 @@
             padding-bottom: 8px;
         }
 
-        /* Fichiers dans le panneau */
         .h-file-item {
             display: flex;
             align-items: center;
@@ -429,180 +542,1052 @@
             color: transparent;
             margin-bottom: 12px;
         }
+
+        /* ============ CHAT STYLE CORRIGÉ ============ */
+        .chat-toggle {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 24px rgba(43, 110, 60, 0.4);
+            z-index: 1000;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 26px;
+            color: white;
+        }
+        .chat-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 28px rgba(43, 110, 60, 0.5);
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 96px;
+            right: 28px;
+            width: 380px;
+            height: 540px;
+            background: #fdfcf9;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid rgba(180, 200, 170, 0.3);
+        }
+        .chat-window.open {
+            display: flex;
+            animation: slideInChat 0.3s ease-out;
+        }
+        
+        @keyframes slideInChat {
+            from {
+                opacity: 0;
+                transform: translateX(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
+            padding: 16px 20px;
+            flex-shrink: 0;
+        }
+        
+        .chat-header-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .chat-header-info {
+            flex: 1;
+        }
+        
+        .chat-header-title {
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: -0.3px;
+        }
+        
+        .chat-header-status {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #7dff9a;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .chat-close {
+            cursor: pointer;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.2s;
+        }
+        
+        .chat-close:hover {
+            color: white;
+        }
+        
+        .progress-bar {
+            background: #f4f8f2;
+            padding: 6px 16px;
+            border-bottom: 1px solid #e8ede5;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .progress-module {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: #dde5d8;
+        }
+        
+        .progress-module.active {
+            background: linear-gradient(90deg, #2b6e3c, #3f9e55);
+        }
+        
+        .progress-label {
+            font-size: 10px;
+            color: #7a9a7e;
+            margin-left: 4px;
+            white-space: nowrap;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+        
+        /* Message styles - PAS de conflit avec .bubble du background ! */
+        .message-bot {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            animation: fadeInMessage 0.3s ease-out;
+        }
+        
+        .message-bot .bot-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .message-bot .chat-bubble {
+            background: white;
+            border-radius: 4px 18px 18px 18px;
+            padding: 10px 14px;
+            font-size: 12.5px;
+            line-height: 1.55;
+            color: #2d3a2f;
+            border: 1px solid #e8e0d8;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            white-space: pre-wrap;
+            max-width: 85%;
+        }
+        
+        .message-user {
+            display: flex;
+            justify-content: flex-end;
+            animation: fadeInMessage 0.3s ease-out;
+        }
+        
+        .message-user .chat-bubble {
+            background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
+            color: white;
+            border-radius: 18px 4px 18px 18px;
+            padding: 9px 14px;
+            font-size: 12.5px;
+            max-width: 78%;
+            box-shadow: 0 2px 8px rgba(43, 110, 60, 0.25);
+        }
+        
+        @keyframes fadeInMessage {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .chat-options {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .chat-option-btn {
+            background: white;
+            border: 1.5px solid #dae6d5;
+            border-radius: 12px;
+            padding: 7px 12px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #2b4a2e;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.18s;
+        }
+        
+        .chat-option-btn:hover:not(:disabled) {
+            background: linear-gradient(90deg, #edf7ea, #eef3fc);
+            transform: translateX(3px);
+        }
+        
+        .chat-option-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        
+        .documents-list {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .doc-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, #eef7ea, #f0f5ff);
+            border-radius: 10px;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #1a4c6e;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #dce8d8;
+            transition: all 0.2s;
+        }
+        
+        .doc-link:hover {
+            background: linear-gradient(90deg, #e0f0da, #e6eef8);
+            transform: translateX(2px);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            width: fit-content;
+            border: 1px solid #e8e0d8;
+        }
+        
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2b6e3c;
+            animation: bounceDot 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes bounceDot {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+        }
+        
+        .chat-input-area {
+            padding: 10px 14px;
+            border-top: 1px solid #e8e0d8;
+            background: white;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .chat-input-area input {
+            flex: 1;
+            padding: 9px 14px;
+            border-radius: 20px;
+            border: 1.5px solid #cde0c9;
+            outline: none;
+            font-size: 12.5px;
+            font-family: 'Inter', sans-serif;
+            background: #f8fdf8;
+        }
+        
+        .chat-input-area input:focus {
+            border-color: var(--green-agri);
+        }
+        
+        .chat-input-area button {
+            background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 9px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.18s;
+        }
+        
+        .chat-input-area button:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+        
+        .chat-footer {
+            padding: 6px 14px;
+            background: #f4f8f2;
+            border-top: 1px solid #e8ede5;
+            text-align: center;
+            font-size: 10px;
+            color: #8aaa8e;
+        }
     </style>
 </head>
 <body>
 
-<!-- ARRIÈRE-PLAN FLOTTANT AVEC VECTORIELS -->
-<div class="floating-bg">
-    <div class="bubble" style="width: 260px; height: 260px; top: 7%; left: -70px; background: rgba(63,158,85,0.05);"></div>
-    <div class="bubble" style="width: 380px; height: 380px; bottom: 10%; right: -90px; background: rgba(26,76,110,0.04);"></div>
-    <div class="bubble" style="width: 180px; height: 180px; top: 40%; left: 70%; background: rgba(122,90,75,0.06);"></div>
-    <div class="bubble" style="width: 300px; height: 200px; bottom: 20%; left: 5%; background: rgba(43,110,60,0.04);"></div>
-    <i class="fa-solid fa-tree vector-icon-bg" style="top: 18%; left: 12%; font-size: 3rem;"></i>
-    <i class="fa-solid fa-map vector-icon-bg" style="top: 70%; left: 85%; font-size: 2.6rem; animation-duration: 38s;"></i>
-    <i class="fa-solid fa-chart-line vector-icon-bg" style="top: 30%; right: 5%; font-size: 2.4rem; animation-duration: 26s;"></i>
-    <i class="fa-solid fa-seedling vector-icon-bg" style="bottom: 12%; left: 20%; font-size: 2.9rem; opacity: 0.3;"></i>
-    <i class="fa-solid fa-draw-polygon vector-icon-bg" style="top: 55%; left: 45%; font-size: 2.2rem; opacity: 0.2;"></i>
-    <i class="fa-solid fa-globe vector-icon-bg" style="top: 82%; left: 68%; font-size: 3.1rem; animation-duration: 44s;"></i>
-    <i class="fa-solid fa-leaf vector-icon-bg" style="top: 12%; right: 18%; font-size: 2rem;"></i>
+<div id="authOverlay" class="auth-overlay">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>GADA Training</h2>
+            <p style="color: #666;">Espace privé des apprenants</p>
+        </div>
+        <div id="authMessage" class="auth-message"></div>
+        <form id="authForm">
+            <div id="authFields"></div>
+            <button type="submit" class="btn-primary" id="authSubmitBtn">Se connecter</button>
+        </form>
+        <div class="auth-switch">
+            <span id="authSwitchText">Pas encore de compte ?</span>
+            <a id="authSwitchLink">Créer un compte</a>
+        </div>
+    </div>
 </div>
 
-<nav class="navbar">
-    <div class="logo-area">
-        <!-- VOTRE LOGO : chemin correct images/logo-gada.png -->
-        <img src="images/logo-gada.png" alt="GADA Training Logo" onerror="this.src='https://placehold.co/160x60/2b6e3c/ffffff?text=GADA+Training'; this.onerror=null;">
+<div class="main-wrapper" id="mainWrapper">
+    <div class="floating-bg">
+        <div class="bubble" style="width: 260px; height: 260px; top: 7%; left: -70px; background: rgba(63,158,85,0.05);"></div>
+        <div class="bubble" style="width: 380px; height: 380px; bottom: 10%; right: -90px; background: rgba(26,76,110,0.04);"></div>
+        <div class="bubble" style="width: 180px; height: 180px; top: 40%; left: 70%; background: rgba(122,90,75,0.06);"></div>
+        <div class="bubble" style="width: 300px; height: 200px; bottom: 20%; left: 5%; background: rgba(43,110,60,0.04);"></div>
+        <i class="fa-solid fa-tree vector-icon-bg" style="top: 18%; left: 12%; font-size: 3rem;"></i>
+        <i class="fa-solid fa-map vector-icon-bg" style="top: 70%; left: 85%; font-size: 2.6rem; animation-duration: 38s;"></i>
+        <i class="fa-solid fa-chart-line vector-icon-bg" style="top: 30%; right: 5%; font-size: 2.4rem; animation-duration: 26s;"></i>
+        <i class="fa-solid fa-seedling vector-icon-bg" style="bottom: 12%; left: 20%; font-size: 2.9rem; opacity: 0.3;"></i>
+        <i class="fa-solid fa-draw-polygon vector-icon-bg" style="top: 55%; left: 45%; font-size: 2.2rem; opacity: 0.2;"></i>
+        <i class="fa-solid fa-globe vector-icon-bg" style="top: 82%; left: 68%; font-size: 3.1rem; animation-duration: 44s;"></i>
+        <i class="fa-solid fa-leaf vector-icon-bg" style="top: 12%; right: 18%; font-size: 2rem;"></i>
     </div>
-    <div class="nav-status">
-        <i class="fa-solid fa-user-shield"></i> Espace Privé Validé
-    </div>
-</nav>
 
-<div class="main-content">
-    <div class="welcome-card">
-        <h2>Bienvenue dans votre espace de formation !</h2>
-        <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
-    </div>
+    <nav class="navbar">
+        <div class="logo-area">
+            <img src="images/logo-gada.png" alt="GADA Training Logo" onerror="this.src='https://placehold.co/160x60/2b6e3c/ffffff?text=GADA+Training'; this.onerror=null;">
+        </div>
+        <div class="nav-status">
+            <i class="fa-solid fa-user-shield"></i> Espace Privé Validé
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Quitter</button>
+        </div>
+    </nav>
 
-    <div class="course-grid">
-
-        <!-- Carte 1 : Logiciels & Outils -->
-        <div class="course-card">
-            <div>
-                <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
-                <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
-                <ul>
-                    <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
-                    <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
-                </ul>
-            </div>
-            <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
+    <div class="main-content">
+        <div class="welcome-card">
+            <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
+            <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
         </div>
 
-        <!-- Carte 2 : Modules & Données avec inline expand horizontal -->
-        <div class="course-card">
-            <div>
-                <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
-                <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
-                <ul>
-                    <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
-                    <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
-                    <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
-                    <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
-                </ul>
+        <div class="course-grid">
+            <div class="course-card">
+                <div>
+                    <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
+                    <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
+                    <ul>
+                        <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
+                        <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
+                    </ul>
+                </div>
+                <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
             </div>
 
-            <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
-                Accéder aux téléchargements
-            </button>
+            <div class="course-card">
+                <div>
+                    <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
+                    <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
+                    <ul>
+                        <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
+                        <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
+                        <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
+                        <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
+                    </ul>
+                </div>
+                <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
+                    Accéder aux téléchargements
+                </button>
 
-            <!-- ZONE DOSSIERS HORIZONTALE (STYLE FINDER COLUMN) -->
-            <div id="folder-zone" class="folder-zone">
-                <div class="h-folder-wrapper">
-                    <div class="h-folder-row">
-
-                        <!-- SEMAINE 1 : Dossier actif avec panneau coulissant horizontal -->
-                        <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
-                            <div class="h-folder-top">
-                                <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                <span class="h-badge">3 fichiers</span>
-                            </div>
-                            <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
-                            <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
-                        </div>
-
-                        <!-- Panneau expansible pour S1 (contenu original avec 3 PDF) -->
-                        <div class="h-expand-panel" id="hp-s1">
-                            <div class="h-expand-inner">
-                                <div class="h-expand-title">
-                                    <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
-                                    Semaine 1 – Documents
+                <div id="folder-zone" class="folder-zone">
+                    <div class="h-folder-wrapper">
+                        <div class="h-folder-row">
+                            <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
+                                <div class="h-folder-top">
+                                    <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
+                                    <span class="h-badge">3 fichiers</span>
                                 </div>
-                                <div class="h-file-item">
-                                    <div class="h-file-name">
-                                        <i class="fa-solid fa-file-pdf"></i>
-                                        GADA_Plan_Formation_2026.pdf
+                                <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
+                                <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
+                            </div>
+
+                            <div class="h-expand-panel" id="hp-s1">
+                                <div class="h-expand-inner">
+                                    <div class="h-expand-title">
+                                        <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
+                                        Semaine 1 – Documents
                                     </div>
-                                    <a href="documents/GADA_Plan_Formation_2026.pdf" download class="h-file-dl">
-                                        <i class="fa-solid fa-download"></i>
-                                    </a>
-                                </div>
-                                <div class="h-file-item">
-                                    <div class="h-file-name">
-                                        <i class="fa-solid fa-file-pdf"></i>
-                                        GADA_Formation_RStudio_Jour1.pdf
+                                    <div class="h-file-item">
+                                        <div class="h-file-name">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            GADA_Plan_Formation_2026.pdf
+                                        </div>
+                                        <a href="documents/GADA_Plan_Formation_2026.pdf" download class="h-file-dl">
+                                            <i class="fa-solid fa-download"></i>
+                                        </a>
                                     </div>
-                                    <a href="documents/GADA_Formation_RStudio_Jour1.pdf" download class="h-file-dl">
-                                        <i class="fa-solid fa-download"></i>
-                                    </a>
-                                </div>
-                                <div class="h-file-item">
-                                    <div class="h-file-name">
-                                        <i class="fa-solid fa-file-pdf"></i>
-                                        Aide utilisation R (Méthodes).pdf
+                                    <div class="h-file-item">
+                                        <div class="h-file-name">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            GADA_Formation_RStudio_Jour1.pdf
+                                        </div>
+                                        <a href="documents/GADA_Formation_RStudio_Jour1.pdf" download class="h-file-dl">
+                                            <i class="fa-solid fa-download"></i>
+                                        </a>
                                     </div>
-                                    <a href="documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" download class="h-file-dl">
-                                        <i class="fa-solid fa-download"></i>
-                                    </a>
+                                    <div class="h-file-item">
+                                        <div class="h-file-name">
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            Aide utilisation R (Méthodes).pdf
+                                        </div>
+                                        <a href="documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" download class="h-file-dl">
+                                            <i class="fa-solid fa-download"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- SEMAINE 2 : verrouillée (à venir) -->
-                        <div class="h-folder-item locked">
-                            <div class="h-folder-top">
-                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                            <div class="h-folder-item locked">
+                                <div class="h-folder-top">
+                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                </div>
+                                <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
+                                <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
                             </div>
-                            <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
-                            <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
-                        </div>
 
-                        <!-- SEMAINE 3 : verrouillée -->
-                        <div class="h-folder-item locked">
-                            <div class="h-folder-top">
-                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                            <div class="h-folder-item locked">
+                                <div class="h-folder-top">
+                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                </div>
+                                <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
+                                <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
                             </div>
-                            <div class="h-folder-title">Semaine 3 :  ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
-                            <div class="h-folder-sub"> Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
-                        </div>
 
-                        <!-- SEMAINE 4 : verrouillée -->
-                        <div class="h-folder-item locked">
-                            <div class="h-folder-top">
-                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                            <div class="h-folder-item locked">
+                                <div class="h-folder-top">
+                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                </div>
+                                <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
+                                <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
                             </div>
-                            <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
-                            <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    </div><!-- /.h-folder-row -->
-                </div><!-- /.h-folder-wrapper -->
-            </div><!-- /.folder-zone -->
-        </div><!-- /.course-card -->
-    </div><!-- /.course-grid -->
-</div><!-- /.main-content -->
+    <footer class="footer">
+        <div class="footer-brand">GeoAgri Data Analytics & Solution (GADA Sol)</div>
+        <p>&copy; 2026 GADA Training. Tous droits réservés.</p>
+        <p>Formons les meilleurs du futur.</p>
+    </footer>
+</div>
 
-<footer class="footer">
-    <div class="footer-brand">GeoAgri Data Analytics & Solution (GADA Sol)</div>
-    <p>&copy; 2026 GADA Training. Tous droits réservés.</p>
-    <p>Formons les meilleurs du futur.</p>
-</footer>
+<!-- CHAT TOGGLE -->
+<div class="chat-toggle" id="chatToggle">
+    <i class="fa-regular fa-comment-dots"></i>
+</div>
+
+<!-- CHAT WINDOW -->
+<div id="chatWindow" class="chat-window">
+    <div class="chat-header">
+        <div class="chat-header-content">
+            <div class="chat-avatar">
+                <i class="fa-solid fa-leaf"></i>
+            </div>
+            <div class="chat-header-info">
+                <div class="chat-header-title">GADA Assistant IA</div>
+                <div class="chat-header-status">
+                    <span class="status-dot"></span>
+                    <span>Guide pédagogique · One Health</span>
+                </div>
+            </div>
+            <span class="chat-close" id="chatClose">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+        </div>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-module active"></div>
+        <div class="progress-module"></div>
+        <div class="progress-module"></div>
+        <div class="progress-module"></div>
+        <span class="progress-label"><i class="fa-regular fa-clock"></i> M1 actif</span>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <!-- Les messages seront insérés dynamiquement -->
+    </div>
+    
+    <div class="chat-input-area" id="chatInputArea" style="display: none;">
+        <input type="text" id="chatInput" placeholder="Votre question...">
+        <button id="chatSend">
+            <i class="fa-regular fa-paper-plane"></i>
+        </button>
+    </div>
+    
+    <div class="chat-footer">
+        <i class="fa-regular fa-chart-line"></i> GADA Training · Modélisation Spatiale & One Health · 2026
+    </div>
+</div>
 
 <script>
-    // Ouvre la zone dossiers et masque le bouton déclencheur
+    // ==================== BASE DE CONNAISSANCES GADA ====================
+    const GADA_KNOWLEDGE = {
+        formation: {
+            titre: "Modélisation Spatiale & Statistique — Approche One Health",
+            duree: "4 semaines (17 mai – 17 juin 2026)",
+        },
+        modules: [
+            {
+                id: "M1",
+                titre: "Module I — R : Fondements & Exploration",
+                semaine: "Semaine 1 : 17–23 mai",
+                statut: "actif",
+                couleur: "#2b6e3c",
+                objectifs: [
+                    "Maîtriser les bases de R et RStudio",
+                    "Manipuler et nettoyer des données avec dplyr & tidyr",
+                    "Produire des visualisations avancées avec ggplot2",
+                    "Appliquer des statistiques descriptives et des tests (t-test, ANOVA)",
+                    "Construire des modèles linéaires et logistiques en santé/agriculture",
+                ],
+                documents: [
+                    { nom: "GADA_Plan_Formation_2026.pdf", type: "pdf", url: "documents/GADA_Plan_Formation_2026.pdf" },
+                    { nom: "GADA_Formation_RStudio_Jour1.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour1.pdf" },
+                    { nom: "Aide utilisation R (Méthodes).pdf", type: "pdf", url: "documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" },
+                ],
+                concepts: ["vecteurs", "dataframes", "dplyr", "ggplot2", "GLM", "t-test", "ANOVA", "regression logistique"],
+            },
+            {
+                id: "M2",
+                titre: "Module II — R : One Health & Modélisation Avancée",
+                semaine: "Semaine 2 : 24–30 mai",
+                statut: "a_venir",
+                couleur: "#1a4c6e",
+                objectifs: [
+                    "Calculer et interpréter NDVI, NDWI, SAVI, LST",
+                    "Analyser les corrélations spatiales avec les maladies vectorielles",
+                    "Comprendre l'impact des pesticides via des modèles prédictifs",
+                    "Modéliser la distribution d'espèces avec MaxEnt sous RStudio",
+                    "Construire un modèle prédictif intégré (Random Forest & GLM)",
+                ],
+                documents: [],
+                concepts: ["NDVI", "NDWI", "SAVI", "LST", "MaxEnt", "Random Forest", "One Health", "maladies vectorielles"],
+            },
+            {
+                id: "M3",
+                titre: "Module III — ArcGIS : Fondements & Cartographie",
+                semaine: "Semaine 3 : 31 mai – 6 juin",
+                statut: "a_venir",
+                couleur: "#7a5a4b",
+                objectifs: [
+                    "Maîtriser l'interface ArcGIS Pro et la gestion de projets SIG",
+                    "Géoréférencer et digitaliser des données spatiales",
+                    "Comprendre les systèmes de coordonnées et projections",
+                    "Produire des cartes thématiques de qualité professionnelle",
+                    "Analyser la densité et les clusters avec KDE",
+                ],
+                documents: [],
+                concepts: ["ArcGIS Pro", "SIG", "Géoréférencement", "KDE", "Shapefiles", "Rasters", "projections"],
+            },
+            {
+                id: "M4",
+                titre: "Module IV — ArcGIS : Analyse Avancée & Projet Intégré",
+                semaine: "Semaine 4 : 7–17 juin",
+                statut: "a_venir",
+                couleur: "#4a3060",
+                objectifs: [
+                    "Appliquer l'analyse multicritère AHP pour les cartes de vulnérabilité",
+                    "Préparer les données spatiales pour Random Forest (rasters, points)",
+                    "Modéliser avec MaxEnt pour prédire la distribution des espèces",
+                    "Intégrer R et ArcGIS pour une analyse complète",
+                    "Réaliser et présenter un projet de fin de formation",
+                ],
+                documents: [],
+                concepts: ["AHP", "multicritère", "Random Forest spatial", "MaxEnt ArcGIS", "cartes de vulnérabilité", "projet intégré"],
+            },
+        ],
+        contacts: {
+            email: "gadasolution.rdc@gmail.com",
+            assistance: "Pour toute question technique ou administrative, écrivez à gadasolution.rdc@gmail.com",
+        },
+    };
+
+    // ========== ARBRE DE DÉCISION ==========
+    const DECISION_TREE = {
+        root: {
+            id: "root",
+            message: "<i class='fa-regular fa-hand-peace'></i> Bonjour ! Je suis <strong>GADA Assistant</strong>, votre guide pédagogique intelligent.\n\nComment puis-je vous aider aujourd'hui ?",
+            options: [
+                { label: "<i class='fa-regular fa-folder-open'></i> Explorer les modules de formation", next: "modules" },
+                { label: "<i class='fa-regular fa-file-lines'></i> Accéder aux documents", next: "documents" },
+                { label: "<i class='fa-regular fa-lightbulb'></i> Comprendre un concept", next: "concepts" },
+                { label: "<i class='fa-regular fa-pen-to-square'></i> Tester mes connaissances", next: "quiz" },
+                { label: "<i class='fa-regular fa-headset'></i> Assistance & contact", next: "contact" },
+            ],
+        },
+        modules: {
+            id: "modules",
+            message: "Quel module souhaitez-vous explorer ?",
+            options: GADA_KNOWLEDGE.modules.map((m) => ({
+                label: `${m.statut === "actif" ? "<i class='fa-regular fa-circle-check'></i>" : "<i class='fa-regular fa-lock'></i>"} ${m.titre.split("—")[0].trim()}`,
+                next: `module_${m.id}`,
+                disabled: m.statut !== "actif",
+                data: m,
+            })),
+            backTo: "root",
+        },
+        ...Object.fromEntries(
+            GADA_KNOWLEDGE.modules.map((m) => [
+                `module_${m.id}`,
+                {
+                    id: `module_${m.id}`,
+                    message: `<strong>${m.titre}</strong>\n<i class='fa-regular fa-calendar'></i> ${m.semaine}\n\nQue souhaitez-vous savoir sur ce module ?`,
+                    options: [
+                        { label: "<i class='fa-regular fa-bullseye'></i> Voir les objectifs", next: `obj_${m.id}`, data: m },
+                        { label: "<i class='fa-regular fa-file-lines'></i> Voir les documents disponibles", next: `docs_${m.id}`, data: m },
+                        { label: "<i class='fa-regular fa-brain'></i> Concepts clés", next: `concepts_${m.id}`, data: m },
+                        { label: "<i class='fa-regular fa-arrow-left'></i> Retour aux modules", next: "modules" },
+                    ],
+                    backTo: "modules",
+                },
+            ])
+        ),
+        documents: {
+            id: "documents",
+            message: "<i class='fa-regular fa-folder'></i> Choisissez un module pour accéder à ses documents :",
+            options: [
+                { label: "<i class='fa-regular fa-folder-open'></i> Semaine 1 — Documents disponibles", next: "docs_M1" },
+                { label: "<i class='fa-regular fa-lock'></i> Semaine 2 — À venir", next: "locked_docs", disabled: true },
+                { label: "<i class='fa-regular fa-lock'></i> Semaine 3 — À venir", next: "locked_docs", disabled: true },
+                { label: "<i class='fa-regular fa-lock'></i> Semaine 4 — À venir", next: "locked_docs", disabled: true },
+                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "root" },
+            ],
+            backTo: "root",
+        },
+        locked_docs: {
+            id: "locked_docs",
+            message: "<i class='fa-regular fa-lock'></i> Ces documents seront disponibles quand la semaine correspondante débutera. Revenez prochainement !",
+            options: [{ label: "<i class='fa-regular fa-arrow-left'></i> Retour aux documents", next: "documents" }],
+            backTo: "documents",
+        },
+        concepts: {
+            id: "concepts",
+            message: "<i class='fa-regular fa-lightbulb'></i> Sur quel domaine souhaitez-vous approfondir vos connaissances ?",
+            options: [
+                { label: "<i class='fa-regular fa-chart-line'></i> Indices spectraux (NDVI, NDWI…)", next: "concept_indices" },
+                { label: "<i class='fa-regular fa-microchip'></i> Modèles ML (Random Forest, MaxEnt…)", next: "concept_ml" },
+                { label: "<i class='fa-regular fa-hand-holding-heart'></i> Approche One Health", next: "concept_onehealth" },
+                { label: "<i class='fa-regular fa-map'></i> Analyse spatiale (SIG)", next: "concept_sig" },
+                { label: "<i class='fa-regular fa-comment'></i> Autre question (IA)", next: "ai_open" },
+                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "root" },
+            ],
+            backTo: "root",
+        },
+        concept_indices: {
+            id: "concept_indices",
+            message: "<i class='fa-regular fa-chart-line'></i> <strong>Indices spectraux — Quel index vous intéresse ?</strong>",
+            options: [
+                { label: "<i class='fa-regular fa-tree'></i> NDVI — Végétation", next: "ai_ndvi" },
+                { label: "<i class='fa-regular fa-droplet'></i> NDWI — Eau", next: "ai_ndwi" },
+                { label: "<i class='fa-regular fa-mountain'></i> SAVI — Sol aride", next: "ai_savi" },
+                { label: "<i class='fa-regular fa-temperature-high'></i> LST — Température de surface", next: "ai_lst" },
+                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
+            ],
+            backTo: "concepts",
+        },
+        concept_ml: {
+            id: "concept_ml",
+            message: "<i class='fa-regular fa-microchip'></i> <strong>Machine Learning — Choisissez un algorithme :</strong>",
+            options: [
+                { label: "<i class='fa-regular fa-tree'></i> Random Forest", next: "ai_rf" },
+                { label: "<i class='fa-regular fa-chart-line'></i> MaxEnt", next: "ai_maxent" },
+                { label: "<i class='fa-regular fa-chart-simple'></i> GLM — Modèles linéaires généralisés", next: "ai_glm" },
+                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
+            ],
+            backTo: "concepts",
+        },
+        concept_onehealth: {
+            id: "concept_onehealth",
+            message: "<i class='fa-regular fa-hand-holding-heart'></i> <strong>Approche One Health — Que souhaitez-vous savoir ?</strong>",
+            options: [
+                { label: "<i class='fa-regular fa-book'></i> Définition et principes", next: "ai_oh_def" },
+                { label: "<i class='fa-regular fa-globe'></i> Lien avec la modélisation spatiale", next: "ai_oh_spatial" },
+                { label: "<i class='fa-regular fa-bug'></i> Application aux maladies vectorielles", next: "ai_oh_vect" },
+                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
+            ],
+            backTo: "concepts",
+        },
+        concept_sig: {
+            id: "concept_sig",
+            message: "<i class='fa-regular fa-map'></i> <strong>Analyse Spatiale & SIG — Choisissez un thème :</strong>",
+            options: [
+                { label: "<i class='fa-regular fa-crosshairs'></i> Géoréférencement", next: "ai_georef" },
+                { label: "<i class='fa-regular fa-chart-scatter'></i> Analyse KDE (densité)", next: "ai_kde" },
+                { label: "<i class='fa-regular fa-chart-pie'></i> Analyse multicritère AHP", next: "ai_ahp" },
+                { label: "<i class='fa-regular fa-cubes'></i> Shapefiles & Rasters", next: "ai_shp" },
+                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
+            ],
+            backTo: "concepts",
+        },
+        quiz: {
+            id: "quiz",
+            message: "<i class='fa-regular fa-pen-to-square'></i> Testez vos connaissances ! Sur quel module souhaitez-vous être évalué ?",
+            options: GADA_KNOWLEDGE.modules.map((m) => ({
+                label: `${m.statut === "actif" ? "<i class='fa-regular fa-circle-check'></i>" : "<i class='fa-regular fa-lock'></i>"} Quiz ${m.titre.split("—")[0].trim()}`,
+                next: `quiz_${m.id}`,
+                disabled: m.statut !== "actif",
+                data: m,
+            })).concat([{ label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "root" }]),
+            backTo: "root",
+        },
+        contact: {
+            id: "contact",
+            message: `<i class='fa-regular fa-headset'></i> <strong>Assistance GADA Training</strong>\n\n<i class='fa-regular fa-envelope'></i> Email : gadasolution.rdc@gmail.com\n\nNotre équipe répond dans les 24h. N'hésitez pas à nous écrire pour :\n• Questions techniques sur les logiciels\n• Problèmes de paiement ou d'accès\n• Informations sur la prochaine session`,
+            options: [{ label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" }],
+            backTo: "root",
+        },
+        ai_open: {
+            id: "ai_open",
+            message: "<i class='fa-regular fa-comment'></i> Posez votre question librement — l'IA GADA va vous répondre :",
+            freeInput: true,
+            backTo: "concepts",
+        },
+    };
+
+    // Réponses IA locales
+    const AI_RESPONSES = {
+        ai_ndvi: "<i class='fa-regular fa-tree'></i> <strong>NDVI (Normalized Difference Vegetation Index)</strong>\n\nFormule : NDVI = (NIR - R) / (NIR + R)\n\nInterprétation :\n• Valeurs proches de -1 : eau\n• Valeurs proches de 0 : sol nu\n• Valeurs entre 0.2 et 0.5 : végétation éparse\n• Valeurs > 0.6 : végétation dense et saine\n\nApplications : suivi des cultures, détection de stress hydrique, modélisation des habitats.",
+        ai_ndwi: "<i class='fa-regular fa-droplet'></i> <strong>NDWI (Normalized Difference Water Index)</strong>\n\nFormule : NDWI = (G - NIR) / (G + NIR)\n\nUtilité : Détection des surfaces en eau, humidité du sol. Lien avec les maladies vectorielles : zones d'eau stagnante = habitats des moustiques.",
+        ai_savi: "<i class='fa-regular fa-mountain'></i> <strong>SAVI (Soil-Adjusted Vegetation Index)</strong>\n\nFormule : SAVI = ((NIR - R) / (NIR + R + L)) × (1 + L)\n\nL facteur d'ajustement du sol (souvent 0.5). Corrige le NDVI dans les zones à sol nu ou végétation éparse.",
+        ai_lst: "<i class='fa-regular fa-temperature-high'></i> <strong>LST (Land Surface Temperature)</strong>\n\nTempérature de surface terrestre calculée depuis satellites (Landsat, MODIS). Essentiel pour : stress hydrique des cultures, îlots de chaleur urbains, modélisation des maladies vectorielles.",
+        ai_rf: "<i class='fa-regular fa-tree'></i> <strong>Random Forest (Forêt Aléatoire)</strong>\n\nMéthode d'apprentissage supervisé combinant plusieurs arbres de décision (bagging).\n\nAvantages : robuste au bruit, gère données manquantes, fournit l'importance des variables.\n\nApplications : classification d'occupation du sol, prédiction de distribution d'espèces.",
+        ai_maxent: "<i class='fa-regular fa-chart-line'></i> <strong>MaxEnt (Maximum Entropy)</strong>\n\nAlgorithme pour modéliser la distribution d'espèces à partir de données d'occurrence.\n\nInputs : points de présence + variables environnementales.\n\nOutput : carte de probabilité de présence.\n\nUtilité : zones à risque de maladies vectorielles, conservation.",
+        ai_glm: "<i class='fa-regular fa-chart-simple'></i> <strong>GLM (Modèles Linéaires Généralisés)</strong>\n\nExtension de la régression linéaire : lien entre moyenne de Y et prédicteurs via fonction de lien.\n\nTypes : logit (binaire), log (comptage), identité (normal).\n\nApplications : épidémiologie, analyse de survie, agriculture.",
+        ai_oh_def: "<i class='fa-regular fa-hand-holding-heart'></i> <strong>One Health — Définition</strong>\n\nApproche intégrée reconnaissant l'interconnexion entre santé humaine, animale et environnementale.\n\nPrincipes : collaboration multidisciplinaire, prévention plutôt que cure, gestion durable des écosystèmes.\n\nExemple africain : surveillance de la trypanosomose intégrant faune sauvage, bétail, humains.",
+        ai_oh_spatial: "<i class='fa-regular fa-globe'></i> <strong>One Health & Modélisation spatiale</strong>\n\nLe SIG permet de :\n• Cartographier les facteurs de risque environnementaux\n• Analyser les corrélations NDVI/LST avec les cas de maladie\n• Modéliser la distribution des vecteurs (MaxEnt)\n• Produire des cartes de vulnérabilité (AHP multicritère)",
+        ai_oh_vect: "<i class='fa-regular fa-bug'></i> <strong>One Health & Maladies vectorielles</strong>\n\nFacteurs environnementaux clés :\n• NDVI (végétation → habitats vecteurs)\n• LST (température → développement larvaire)\n• NDWI (eau → sites de reproduction)\n\nModélisation avec MaxEnt prédit les zones à risque.",
+        ai_georef: "<i class='fa-regular fa-crosshairs'></i> <strong>Géoréférencement</strong>\n\nProcessus d'alignement d'une image raster sur un système de coordonnées.\n\nMéthodes : transformation affine (mise à l'échelle, rotation, translation) ou polynomiale.\n\nPoints de contrôle (GCP) et calcul de l'erreur RMS.",
+        ai_kde: "<i class='fa-regular fa-chart-scatter'></i> <strong>KDE (Kernel Density Estimation)</strong>\n\nMéthode d'estimation de densité pour visualiser la concentration d'événements ponctuels.\n\nParamètre : bande passante (taille du voisinage).\n\nApplications : hotspots de criminalité, densité de cas de maladies, concentration de cultures.",
+        ai_ahp: "<i class='fa-regular fa-chart-pie'></i> <strong>AHP (Analytic Hierarchy Process)</strong>\n\nMéthode d'aide à la décision multicritère :\n1. Décomposition du problème en hiérarchie\n2. Comparaisons par paires des critères\n3. Calcul des poids et indice de cohérence\n\nApplication : cartes de vulnérabilité, zonage agricole.",
+        ai_shp: "<i class='fa-regular fa-cubes'></i> <strong>Shapefile vs Raster</strong>\n\n<strong>Shapefile (vecteur)</strong> : points, lignes, polygones. Idéal pour limites administratives, réseaux, localisations.\n\n<strong>Raster</strong> : grille de cellules (pixels). Idéal pour indices spectraux, altitude, température.\n\nChoisir selon l'analyse : vecteur pour requêtes spatiales, raster pour calculs mathématiques.",
+    };
+
+    function getAIResponse(nodeId, module) {
+        if (AI_RESPONSES[nodeId]) return AI_RESPONSES[nodeId];
+        
+        if (nodeId && nodeId.startsWith("obj_") && module) {
+            return `<i class='fa-regular fa-bullseye'></i> <strong>Objectifs du ${module.titre}</strong>\n\n${module.objectifs.map((obj, i) => `${i+1}. ${obj}`).join("\n\n")}`;
+        }
+        if (nodeId && nodeId.startsWith("docs_") && module) {
+            if (module.documents.length === 0) {
+                return `<i class='fa-regular fa-folder'></i> Les documents du ${module.titre} seront disponibles à partir du ${module.semaine}. Revenez bientôt ! <i class='fa-regular fa-calendar'></i>`;
+            }
+            return `<i class='fa-regular fa-file-lines'></i> <strong>Documents disponibles</strong>\n\n${module.documents.map(d => `• ${d.nom}`).join("\n")}\n\nCliquez sur les liens ci-dessous pour télécharger.`;
+        }
+        if (nodeId && nodeId.startsWith("concepts_") && module) {
+            return `<i class='fa-regular fa-brain'></i> <strong>Concepts clés du ${module.titre}</strong>\n\n${module.concepts.map(c => `• <strong>${c}</strong>`).join("\n")}\n\nCes notions seront approfondies dans les exercices pratiques.`;
+        }
+        if (nodeId && nodeId.startsWith("quiz_") && module) {
+            return `<i class='fa-regular fa-pen-to-square'></i> <strong>Quiz - ${module.titre}</strong>\n\n<strong>Question 1 :</strong> Qu'est-ce que ${module.concepts[0]} ?\nA. Une méthode statistique\nB. Un indice spectral\nC. Un logiciel SIG\nD. Un type de donnée\n\n<strong>Réponse : B</strong>\n\n<strong>Question 2 :</strong> Dans quel contexte utilise-t-on MaxEnt ?\nA. Cartographie 3D\nB. Modélisation de distribution d'espèces\nC. Analyse de séquences ADN\nD. Rendu graphique\n\n<strong>Réponse : B</strong>\n\n<strong>Question 3 :</strong> Que signifie One Health ?\nA. Un régime alimentaire\nB. L'interconnexion santé humaine/animale/environnementale\nC. Un protocole médical\nD. Une application mobile\n\n<strong>Réponse : B</strong>\n\nContactez votre formateur pour le corrigé détaillé ! <i class='fa-regular fa-book'></i>`;
+        }
+        
+        return "<i class='fa-regular fa-face-meh'></i> Je n'ai pas trouvé d'information spécifique. Essayez de reformuler, ou demandez 'aide' pour voir ce que je peux faire.";
+    }
+
+    // ==================== AUTHENTIFICATION ====================
+    const ELIGIBLE_EMAILS = [
+        "faziliarsene2@gmail.com",
+        "josuekalegamire4@gmail.com",
+        "stevenkusinza@gmail.com",
+        "stevenamampa7@gmail.com",
+        "stevenamampa15@gmail.com",
+        "lukunatowangevehugues2006@gmail.com",
+        "niyoyitakasomo@gmail.com",
+        "hwabalygie@gmail.com"
+    ];
+    
+    const TEAM_EMAILS = ["gadasolution.rdc@gmail.com"];
+    const ALLOWED_EMAILS = [...ELIGIBLE_EMAILS, ...TEAM_EMAILS];
+    
+    let users = JSON.parse(localStorage.getItem('gada_users')) || [];
+    let currentUser = JSON.parse(sessionStorage.getItem('gada_current_user')) || null;
+    let isLoginMode = true;
+    
+    function isEmailAllowed(email) {
+        return ALLOWED_EMAILS.includes(email.toLowerCase());
+    }
+    
+    function showAuthMessage(msg, isError) {
+        const msgDiv = document.getElementById('authMessage');
+        msgDiv.textContent = msg;
+        msgDiv.className = 'auth-message ' + (isError ? 'error' : 'success');
+        setTimeout(() => {
+            msgDiv.className = 'auth-message';
+        }, 5000);
+    }
+    
+    function renderAuthForm() {
+        const fieldsDiv = document.getElementById('authFields');
+        const submitBtn = document.getElementById('authSubmitBtn');
+        const switchText = document.getElementById('authSwitchText');
+        const switchLink = document.getElementById('authSwitchLink');
+        
+        if (isLoginMode) {
+            submitBtn.textContent = 'Se connecter';
+            switchText.textContent = 'Pas encore de compte ?';
+            switchLink.textContent = 'Créer un compte';
+            fieldsDiv.innerHTML = `
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" required placeholder="votre@email.com">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Mot de passe</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+            `;
+        } else {
+            submitBtn.textContent = 'Créer mon compte';
+            switchText.textContent = 'Déjà un compte ?';
+            switchLink.textContent = 'Se connecter';
+            fieldsDiv.innerHTML = `
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Nom</label>
+                    <input type="text" id="regNom" required placeholder="Votre nom">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Post-nom / Prénom</label>
+                    <input type="text" id="regPrenom" required placeholder="Post-nom ou Prénom">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-map-marker-alt"></i> Pays</label>
+                    <input type="text" id="regPays" required placeholder="Votre pays">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Téléphone</label>
+                    <input type="tel" id="regPhone" required placeholder="+243 XX XXX XXXX">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="regEmail" required placeholder="exemple@email.com">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Mot de passe</label>
+                    <input type="password" id="regPassword" required placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-check-circle"></i> Vérification mot de passe</label>
+                    <input type="password" id="regPasswordConfirm" required placeholder="Confirmez votre mot de passe">
+                </div>
+            `;
+        }
+    }
+    
+    function handleAuthSubmit(e) {
+        e.preventDefault();
+        
+        if (isLoginMode) {
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            const user = users.find(u => u.email === email && atob(u.password) === password);
+            
+            if (user) {
+                if (!isEmailAllowed(email)) {
+                    showAuthMessage('❌ Accès refusé. Veuillez finaliser votre paiement ou contacter gadasolution.rdc@gmail.com', true);
+                    return;
+                }
+                currentUser = user;
+                sessionStorage.setItem('gada_current_user', JSON.stringify(user));
+                showDashboard();
+            } else {
+                showAuthMessage('❌ Email ou mot de passe incorrect', true);
+            }
+        } else {
+            const nom = document.getElementById('regNom').value.trim();
+            const prenom = document.getElementById('regPrenom').value.trim();
+            const pays = document.getElementById('regPays').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const password = document.getElementById('regPassword').value;
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+            
+            if (password !== passwordConfirm) {
+                showAuthMessage('❌ Les mots de passe ne correspondent pas !', true);
+                return;
+            }
+            if (password.length < 6) {
+                showAuthMessage('❌ Le mot de passe doit contenir au moins 6 caractères', true);
+                return;
+            }
+            if (!isEmailAllowed(email)) {
+                showAuthMessage('❌ Désolé, vous n\'êtes pas éligible à prendre part à cette section. Veuillez finaliser votre paiement ou contacter l\'assistance technique de GADA Solution : gadasolution.rdc@gmail.com', true);
+                return;
+            }
+            if (users.find(u => u.email === email)) {
+                showAuthMessage('❌ Un compte existe déjà avec cet email', true);
+                return;
+            }
+            
+            const newUser = { id: Date.now(), nom, prenom, pays, phone, email, password: btoa(password) };
+            users.push(newUser);
+            localStorage.setItem('gada_users', JSON.stringify(users));
+            showAuthMessage('✅ Compte créé avec succès ! Connectez-vous maintenant.', false);
+            setTimeout(() => {
+                isLoginMode = true;
+                renderAuthForm();
+            }, 2000);
+        }
+    }
+    
+    function showDashboard() {
+        document.getElementById('authOverlay').style.display = 'none';
+        document.getElementById('mainWrapper').classList.add('authenticated');
+        document.getElementById('chatToggle').style.display = 'flex';
+        const userName = `${currentUser.nom} ${currentUser.prenom}`;
+        const welcomeTitle = document.getElementById('welcomeTitle');
+        if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${userName} dans votre espace de formation !`;
+    }
+    
+    function logout() {
+        sessionStorage.removeItem('gada_current_user');
+        currentUser = null;
+        document.getElementById('authOverlay').style.display = 'flex';
+        document.getElementById('mainWrapper').classList.remove('authenticated');
+        document.getElementById('chatToggle').style.display = 'none';
+        document.getElementById('chatWindow').classList.remove('open');
+        isLoginMode = true;
+        renderAuthForm();
+    }
+    
+    if (currentUser && isEmailAllowed(currentUser.email)) {
+        document.getElementById('authOverlay').style.display = 'none';
+        document.getElementById('mainWrapper').classList.add('authenticated');
+        document.getElementById('chatToggle').style.display = 'flex';
+        const userName = `${currentUser.nom} ${currentUser.prenom}`;
+        const welcomeTitle = document.getElementById('welcomeTitle');
+        if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${userName} dans votre espace de formation !`;
+    } else {
+        document.getElementById('authOverlay').style.display = 'flex';
+        document.getElementById('mainWrapper').classList.remove('authenticated');
+        document.getElementById('chatToggle').style.display = 'none';
+        renderAuthForm();
+    }
+    
+    document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
+    document.getElementById('authSwitchLink').addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        renderAuthForm();
+    });
+    
+    // ==================== FONCTIONS ORIGINALES ====================
     function ouvrirZone() {
         const btn = document.getElementById('btn-open');
         const zone = document.getElementById('folder-zone');
         if (btn) btn.style.display = 'none';
         if (zone) zone.classList.add('open');
     }
-
-    // Bascule le panneau horizontal pour le dossier sélectionné (inline expand)
+    
     let currentOpenPanelId = null;
-
+    
     function toggleHFolder(id) {
         const panel = document.getElementById('hp-' + id);
         const folderItem = document.getElementById('hf-' + id);
@@ -612,7 +1597,6 @@
         
         const isOpen = panel.classList.contains('open');
         
-        // Fermer tous les panneaux ouverts et réinitialiser les icones / états actifs
         document.querySelectorAll('.h-expand-panel.open').forEach(p => {
             if (p.id !== ('hp-' + id)) p.classList.remove('open');
         });
@@ -620,21 +1604,18 @@
             if (item.id !== ('hf-' + id)) item.classList.remove('active');
         });
         
-        // Réinitialiser les icônes de dossier (fermée) pour tous
         document.querySelectorAll('[id^="hfi-"]').forEach(ic => {
             ic.className = 'fa-solid fa-folder h-folder-icon';
             ic.style.color = '#b5824e';
         });
         
         if (!isOpen) {
-            // OUVERTURE : on ouvre le panneau sélectionné
             panel.classList.add('open');
             folderItem.classList.add('active');
             icon.className = 'fa-solid fa-folder-open h-folder-icon';
             icon.style.color = '#4f7a3b';
             currentOpenPanelId = 'hp-' + id;
             
-            // Scroll doux pour rendre le panneau visible horizontalement
             setTimeout(() => {
                 const wrapper = document.querySelector('.h-folder-wrapper');
                 if (wrapper) {
@@ -646,7 +1627,6 @@
                 }
             }, 50);
         } else {
-            // FERMETURE : on referme le panneau (optionnel si clic sur dossier déjà ouvert)
             panel.classList.remove('open');
             folderItem.classList.remove('active');
             icon.className = 'fa-solid fa-folder h-folder-icon';
@@ -654,19 +1634,259 @@
             currentOpenPanelId = null;
         }
     }
-</script>
-
-<!-- Tawk.to Chat -->
-<script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;
-        s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs61r';
-        s1.charset='UTF-8';
-        s1.setAttribute('crossorigin','*');
-        s0.parentNode.insertBefore(s1,s0);
-    })();
+    
+    // ==================== CHAT GADA ASSISTANT IA CORRIGÉ ====================
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatInputArea = document.getElementById('chatInputArea');
+    
+    let currentNodeId = "root";
+    let isWaitingForFreeInput = false;
+    let currentModuleForDocs = null;
+    
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function stripHtmlTags(html) {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        return div.textContent || div.innerText || '';
+    }
+    
+    function formatMessageText(text) {
+        return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function addBotMessage(text, options = null, documents = null) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message-bot';
+        
+        let contentHtml = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>`;
+        messageDiv.innerHTML = contentHtml;
+        chatMessages.appendChild(messageDiv);
+        
+        if (documents && documents.length > 0) {
+            const docsDiv = document.createElement('div');
+            docsDiv.className = 'documents-list';
+            docsDiv.style.marginTop = '8px';
+            docsDiv.style.marginLeft = '36px';
+            documents.forEach(doc => {
+                const docLink = document.createElement('a');
+                docLink.href = doc.url;
+                docLink.download = true;
+                docLink.className = 'doc-link';
+                docLink.innerHTML = `<i class="fa-regular fa-download"></i><span>${doc.nom}</span>`;
+                docsDiv.appendChild(docLink);
+            });
+            messageDiv.appendChild(docsDiv);
+        }
+        
+        if (options && options.length > 0) {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'chat-options';
+            optionsDiv.style.marginLeft = '36px';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'chat-option-btn';
+                btn.innerHTML = opt.label;
+                if (opt.disabled) btn.disabled = true;
+                btn.onclick = () => handleOptionClick(opt);
+                optionsDiv.appendChild(btn);
+            });
+            messageDiv.appendChild(optionsDiv);
+        }
+        
+        scrollToBottom();
+    }
+    
+    function addUserMessage(text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message-user';
+        messageDiv.innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
+        chatMessages.appendChild(messageDiv);
+        scrollToBottom();
+    }
+    
+    function showTypingIndicator() {
+        removeTypingIndicator();
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typingIndicator';
+        typingDiv.className = 'message-bot';
+        typingDiv.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+        chatMessages.appendChild(typingDiv);
+        scrollToBottom();
+    }
+    
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typingIndicator');
+        if (indicator) indicator.remove();
+    }
+    
+    async function handleOptionClick(option) {
+        if (option.disabled) return;
+        
+        const labelText = stripHtmlTags(option.label);
+        addUserMessage(labelText);
+        
+        if (option.freeMode) {
+            isWaitingForFreeInput = true;
+            chatInputArea.style.display = 'flex';
+            chatInput.focus();
+            return;
+        }
+        
+        const nextId = option.next;
+        const moduleData = option.data || GADA_KNOWLEDGE.modules.find(m => nextId && nextId.includes(m.id));
+        
+        if (nextId && nextId.startsWith("docs_") && moduleData && moduleData.documents && moduleData.documents.length > 0) {
+            showTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            removeTypingIndicator();
+            addBotMessage(`<i class="fa-regular fa-folder-open"></i> <strong>Documents disponibles — ${moduleData.titre}</strong><br><br>Cliquez sur les liens ci-dessous pour télécharger :`, null, moduleData.documents);
+            addBotMessage("<i class='fa-regular fa-arrow-left'></i> Que souhaitez-vous faire ensuite ?", [
+                { label: "<i class='fa-regular fa-arrow-left'></i> Retour au module", next: `module_${moduleData.id}` },
+                { label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" }
+            ]);
+            currentNodeId = nextId;
+            return;
+        }
+        
+        if (nextId && (AI_RESPONSES[nextId] || nextId.startsWith("obj_") || nextId.startsWith("concepts_") || nextId.startsWith("quiz_"))) {
+            showTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 600));
+            removeTypingIndicator();
+            const response = getAIResponse(nextId, moduleData);
+            addBotMessage(response);
+            
+            if (nextId === "ai_open") {
+                isWaitingForFreeInput = true;
+                chatInputArea.style.display = 'flex';
+                chatInput.focus();
+            } else {
+                addBotMessage("<i class='fa-regular fa-compass'></i> Que souhaitez-vous faire ?", [
+                    { label: "<i class='fa-regular fa-comment'></i> Autre question", next: "ai_open", freeMode: true },
+                    { label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" },
+                    { label: "<i class='fa-regular fa-folder-open'></i> Voir les modules", next: "modules" }
+                ]);
+            }
+            currentNodeId = nextId;
+            return;
+        }
+        
+        const node = DECISION_TREE[nextId];
+        if (node) {
+            currentNodeId = nextId;
+            showTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 300));
+            removeTypingIndicator();
+            
+            if (node.freeInput) {
+                addBotMessage(node.message);
+                isWaitingForFreeInput = true;
+                chatInputArea.style.display = 'flex';
+                chatInput.focus();
+            } else {
+                addBotMessage(node.message, node.options);
+            }
+        }
+    }
+    
+    async function handleFreeSubmit() {
+        const question = chatInput.value.trim();
+        if (!question) return;
+        
+        addUserMessage(question);
+        chatInput.value = '';
+        chatInputArea.style.display = 'none';
+        isWaitingForFreeInput = false;
+        
+        showTypingIndicator();
+        await new Promise(resolve => setTimeout(resolve, 800));
+        removeTypingIndicator();
+        
+        let response = "<i class='fa-regular fa-face-meh'></i> Je n'ai pas trouvé d'information sur ce sujet. Essayez de reformuler, ou demandez 'aide' pour voir ce que je peux faire.";
+        const q = question.toLowerCase();
+        
+        if (q.includes('ndvi')) response = AI_RESPONSES.ai_ndvi;
+        else if (q.includes('ndwi')) response = AI_RESPONSES.ai_ndwi;
+        else if (q.includes('savi')) response = AI_RESPONSES.ai_savi;
+        else if (q.includes('lst')) response = AI_RESPONSES.ai_lst;
+        else if (q.includes('random forest') || q.includes('forêt aléatoire')) response = AI_RESPONSES.ai_rf;
+        else if (q.includes('maxent')) response = AI_RESPONSES.ai_maxent;
+        else if (q.includes('glm')) response = AI_RESPONSES.ai_glm;
+        else if (q.includes('one health') || q.includes('une seule santé')) {
+            if (q.includes('définition') || q.includes('principe')) response = AI_RESPONSES.ai_oh_def;
+            else if (q.includes('spatial') || q.includes('sig')) response = AI_RESPONSES.ai_oh_spatial;
+            else if (q.includes('vectorielle') || q.includes('paludisme')) response = AI_RESPONSES.ai_oh_vect;
+            else response = AI_RESPONSES.ai_oh_def;
+        }
+        else if (q.includes('géoréférencement') || q.includes('georeferencement')) response = AI_RESPONSES.ai_georef;
+        else if (q.includes('kde')) response = AI_RESPONSES.ai_kde;
+        else if (q.includes('ahp')) response = AI_RESPONSES.ai_ahp;
+        else if (q.includes('shapefile') || q.includes('raster')) response = AI_RESPONSES.ai_shp;
+        else if (q.includes('module 1') || q.includes('module i')) {
+            const m1 = GADA_KNOWLEDGE.modules[0];
+            response = `<i class='fa-regular fa-folder-open'></i> <strong>${m1.titre}</strong><br><i class='fa-regular fa-calendar'></i> ${m1.semaine}<br><br><strong>Objectifs :</strong> ${m1.objectifs.slice(0,3).join(", ")}...<br><br><strong>Concepts :</strong> ${m1.concepts.slice(0,5).join(", ")}`;
+        }
+        else if (q.includes('module 2') || q.includes('module ii')) {
+            const m2 = GADA_KNOWLEDGE.modules[1];
+            response = `<i class='fa-regular fa-folder'></i> <strong>${m2.titre}</strong><br><i class='fa-regular fa-calendar'></i> ${m2.semaine}<br><br><strong>Objectifs :</strong> ${m2.objectifs.slice(0,3).join(", ")}...<br><br><strong>Concepts :</strong> ${m2.concepts.slice(0,5).join(", ")}`;
+        }
+        else if (q.includes('contact') || q.includes('assistance') || q.includes('email')) {
+            response = `<i class='fa-regular fa-headset'></i> <strong>Assistance GADA Training</strong><br><br><i class='fa-regular fa-envelope'></i> Email : gadasolution.rdc@gmail.com<br><br>Notre équipe répond dans les 24h.`;
+        }
+        else if (q.includes('aide')) {
+            response = "<i class='fa-regular fa-lightbulb'></i> <strong>Aide GADA Assistant</strong><br><br>• <strong>Modules</strong> : dites 'Module 1', 'Module 2', etc.<br>• <strong>Concepts</strong> : 'NDVI', 'MaxEnt', 'Random Forest', 'One Health'<br>• <strong>Assistance</strong> : 'contact', 'support'<br>• <strong>Quiz</strong> : 'quiz'";
+        }
+        
+        addBotMessage(response);
+        addBotMessage("<i class='fa-regular fa-compass'></i> Que souhaitez-vous faire ?", [
+            { label: "<i class='fa-regular fa-comment'></i> Autre question", next: "ai_open", freeMode: true },
+            { label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" },
+            { label: "<i class='fa-regular fa-folder-open'></i> Explorer les modules", next: "modules" }
+        ]);
+    }
+    
+    function initChat() {
+        chatMessages.innerHTML = '';
+        const rootNode = DECISION_TREE.root;
+        addBotMessage(rootNode.message, rootNode.options);
+        currentNodeId = "root";
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && isWaitingForFreeInput) {
+                e.preventDefault();
+                handleFreeSubmit();
+            }
+        });
+        
+        chatSend.addEventListener('click', () => {
+            if (isWaitingForFreeInput) handleFreeSubmit();
+        });
+    }
+    
+    chatToggle.addEventListener('click', () => {
+        const wasOpen = chatWindow.classList.contains('open');
+        chatWindow.classList.toggle('open');
+        if (!wasOpen && chatMessages.children.length === 0) {
+            initChat();
+        } else if (!wasOpen) {
+            scrollToBottom();
+        }
+    });
+    
+    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
 </script>
 </body>
 </html>
