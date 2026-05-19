@@ -303,9 +303,57 @@
     }
     .close-modal { float: right; font-size: 1.5rem; cursor: pointer; }
 
-    /* ============================================
-       CHAT PROFESSIONNEL GADA CHAT
-       ============================================ */
+    /* Widget Tawk.to personnalisé */
+    .tawk-custom-widget {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-top: 40px;
+      border: 1px solid var(--gray-border);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    .tawk-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-border);
+    }
+    .tawk-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .tawk-icon i { font-size: 1.5rem; color: white; }
+    .tawk-title h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; color: var(--gray-dark); }
+    .tawk-title p { font-size: 0.7rem; color: var(--gray-text-light); }
+    .tawk-description { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; margin-bottom: 20px; }
+    .tawk-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-blue-light);
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--primary-blue);
+    }
+    .tawk-status i { font-size: 0.7rem; }
+
+    /* Personnalisation iframe Tawk.to */
+    iframe[src*="tawk.to"] {
+      border-radius: 16px !important;
+      box-shadow: 0 8px 24px rgba(0,102,179,0.15) !important;
+    }
+
     .chat-floating {
       position: fixed;
       bottom: 20px;
@@ -598,7 +646,7 @@
   </div>
 </section>
 
-<!-- SECTION COMMUNAUTÉS -->
+<!-- SECTION COMMUNAUTÉS AVEC Tawk.to INTÉGRÉ -->
 <section id="communities" class="section-container">
   <div class="section-header">
     <div class="section-tag">Réseau professionnel</div>
@@ -609,6 +657,28 @@
   <div id="communityPrivateArea" style="display:none; margin-top:32px; padding:24px; background:white; border-radius:12px; border:1px solid var(--gray-border);">
     <h3 id="currentCommunityTitle"></h3>
     <div id="communityDiscussions"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- WIDGET Tawk.to INTÉGRÉ DANS LA COMMUNAUTÉ -->
+  <!-- ============================================================ -->
+  <div class="tawk-custom-widget">
+    <div class="tawk-header">
+      <div class="tawk-icon">
+        <i class="fas fa-headset"></i>
+      </div>
+      <div class="tawk-title">
+        <h3>Support communautaire</h3>
+        <p>Assistance GADA Academy</p>
+      </div>
+    </div>
+    <div class="tawk-description">
+      <p>Une question sur une formation, un accès, un module ou un projet ? Notre équipe est disponible pour vous accompagner.</p>
+    </div>
+    <div class="tawk-status">
+      <i class="fas fa-circle" style="color: #10b981; font-size: 0.6rem;"></i>
+      <span>Équipe disponible en ligne</span>
+    </div>
   </div>
 </section>
 
@@ -659,7 +729,7 @@
   <div class="footer-bottom"><div>© 2025 GADA Academy — GeoAgri Data Analytics & Solution · RDC</div><div class="social-links"><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-github"></i></a></div></div>
 </footer>
 
-<!-- CHAT PROFESSIONNEL GADA CHAT -->
+<!-- CHAT PROFESSIONNEL GADA CHAT (flottant) -->
 <div class="chat-floating" id="chatFloating">
   <div class="chat-icon" id="chatIcon">
     <i class="fas fa-comments"></i>
@@ -717,6 +787,57 @@
     </div>
   </div>
 </div>
+
+<!-- Tawk.to Widget - Personnalisé pour GADA Academy (placé ici pour charger après le DOM) -->
+<script type="text/javascript">
+var Tawk_API = Tawk_API || {};
+var Tawk_LoadStart = new Date();
+
+// Personnalisation des paramètres Tawk.to
+Tawk_API.visitor = {
+  name: "Visiteur GADA Academy",
+  email: ""
+};
+
+// Style personnalisé (sera appliqué via le dashboard Tawk)
+Tawk_API.customStyle = {
+  primaryColor: "#0066b3",
+  secondaryColor: "#004c8a",
+  chatBubbleTitle: "Support GADA Academy"
+};
+</script>
+
+<script type="text/javascript">
+(function(){
+var s1 = document.createElement("script");
+var s0 = document.getElementsByTagName("script")[0];
+s1.async = true;
+s1.src = 'https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs6lr';
+s1.charset = 'UTF-8';
+s1.setAttribute('crossorigin', '*');
+s0.parentNode.insertBefore(s1, s0);
+})();
+</script>
+
+<!-- Style additionnel pour harmoniser Tawk.to -->
+<style>
+  /* Personnalisation du widget Tawk.to */
+  iframe[src*="tawk.to"] {
+    border-radius: 16px !important;
+    box-shadow: 0 8px 24px rgba(0,102,179,0.15) !important;
+  }
+  
+  /* Style du bouton flottant Tawk.to */
+  .tawk-button-circle {
+    background: linear-gradient(135deg, #0066b3, #004c8a) !important;
+    box-shadow: 0 4px 15px rgba(0,102,179,0.3) !important;
+  }
+  
+  /* Style des messages */
+  .tawk-custom-style {
+    font-family: 'Inter', sans-serif !important;
+  }
+</style>
 
 <script>
   // ============================================================
@@ -879,7 +1000,7 @@
   }
 
   // ============================================================
-  // CHAT PROFESSIONNEL GADA CHAT (adapté au domaine formation SIG)
+  // CHAT PROFESSIONNEL GADA CHAT
   // ============================================================
   const chatIcon = document.getElementById('chatIcon');
   const chatWindow = document.getElementById('chatWindow');
@@ -894,9 +1015,8 @@
 
   let isChatOpen = false;
 
-  // Message de bienvenue
   function typeWelcomeMessage() {
-    const text = "Bonjour 😊 Je suis GADA Chat. Comment puis-je vous aider dans votre parcours de formation ?";
+    const text = "Bonjour, je suis GADA Chat. Comment puis-je vous aider dans votre parcours de formation ?";
     let i = 0;
     welcomeMsgDiv.classList.add('typing');
     function typeWriter() {
@@ -911,7 +1031,6 @@
     typeWriter();
   }
 
-  // Ajouter un message avec effet machine à écrire
   function addMessageWithTyping(content, isUser = false, userName = null, userColor = null) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
@@ -946,12 +1065,10 @@
     typeWriter();
   }
 
-  // Ajouter message utilisateur
   function addUserMessage(message) {
     addMessageWithTyping(message, true, 'Vous', '#0066b3');
   }
 
-  // Profils vectoriels sobres (sans émojis IA)
   const simulatedUsers = [
     { name: "Jean-Marc", color: "#e85d04", icon: '<i class="fas fa-user-tie"></i>' },
     { name: "Amina", color: "#0066b3", icon: '<i class="fas fa-user-graduate"></i>' },
@@ -959,7 +1076,6 @@
     { name: "Claire", color: "#6b3fa0", icon: '<i class="fas fa-user-astronaut"></i>' }
   ];
 
-  // Messages adaptés au domaine SIG / formation
   const randomMessages = [
     "Quelqu'un peut m'aider sur l'utilisation de GEE pour le NDVI au Kasaï ?",
     "Nouveau dataset : données pluviométriques RDC 2024 disponibles dans la communauté !",
@@ -1004,17 +1120,14 @@
     }
   }
 
-  // Résumé des formations disponibles
   function showResume() {
-    addMessageWithTyping("📚 Formations GADA Academy disponibles :\n• SIG avec QGIS & ArcGIS (40h, certifié)\n• Télédétection & Google Earth Engine (28h)\n• Analyse Statistique R & Python (35h)\n• Agriculture de précision & drones\n\n👉 Contactez-nous pour un devis personnalisé !", false, 'GADA Chat', '#0066b3');
+    addMessageWithTyping("Formations GADA Academy disponibles :\n• SIG avec QGIS & ArcGIS (40h, certifié)\n• Télédétection & Google Earth Engine (28h)\n• Analyse Statistique R & Python (35h)\n• Agriculture de précision & drones\n\nContactez-nous pour un devis personnalisé !", false, 'GADA Chat', '#0066b3');
   }
 
-  // Alertes formations / communautés
   function showAlerts() {
-    addMessageWithTyping("⚠️ Alertes GADA :\n• Nouvelle session QGIS début le 15 juin (10 places)\n• Webinaire gratuit sur GEE le 22 mai\n• Communauté Gestion des Sols : nouveau rapport mensuel\n• Promotion -20% sur la formation Data Science jusqu'au 30 mai", false, 'GADA Chat', '#0066b3');
+    addMessageWithTyping("Alertes GADA :\n• Nouvelle session QGIS début le 15 juin (10 places)\n• Webinaire gratuit sur GEE le 22 mai\n• Communauté Gestion des Sols : nouveau rapport mensuel\n• Promotion -20% sur la formation Data Science jusqu'au 30 mai", false, 'GADA Chat', '#0066b3');
   }
 
-  // Gestion du chat
   chatIcon.addEventListener('click', () => {
     isChatOpen = !isChatOpen;
     if (isChatOpen) {
@@ -1055,19 +1168,15 @@
   btnResume.addEventListener('click', showResume);
   btnAlerts.addEventListener('click', showAlerts);
 
-  // Simuler des messages aléatoires toutes les 30 secondes
   setInterval(simulateRandomMessage, 30000);
 
-  // Initialisation
   window.onclick = function(e) { if (e.target === document.getElementById('authModal')) closeModal(); };
   checkSession();
 
-  // Reveal animations
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
   reveals.forEach(r => observer.observe(r));
 
-  // Formulaire contact
   const form = document.getElementById('contactForm');
   if(form) form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -1077,6 +1186,5 @@
     } catch { alert('Erreur réseau'); }
   });
 </script>
-<script type="text/javascript">var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();(function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];s1.async=true;s1.src='https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs6lr';s1.charset='UTF-8';s1.setAttribute('crossorigin','*');s0.parentNode.insertBefore(s1,s0);})();</script>
 </body>
 </html>
