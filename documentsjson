@@ -1,86 +1,64 @@
 {
-  "$schema": "v1",
-  "derniere_maj": "2026-05-20",
   "semaine1": {
     "titre": "Semaine 1 : Fondements R",
     "date": "17 mai – 23 mai",
-    "resume": "Bases de R, statistiques descriptives, visualisation et modèles linéaires",
     "description": "Rappel des bases, Introduction & statistiques descriptives, Nettoyage et structuration des données, Analyse exploratoire des données (AED), visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture",
-    "locked": false,
-    "themes": ["R", "statistiques", "ggplot2", "GLM", "dplyr"],
+    "badge": "6 fichiers",
     "fichiers": [
       {
         "nom": "GADA_Plan_Formation_2026.pdf",
-        "icone": "fa-file-pdf",
-        "url": "documents/GADA_Plan_Formation_2026.pdf",
-        "taille": "1.2 Mo",
-        "date_maj": "2026-05-10"
+        "type": "pdf",
+        "icone": "fa-file-pdf"
       },
       {
         "nom": "GADA_Formation_RStudio_Jour1.pdf",
-        "icone": "fa-file-pdf",
-        "url": "documents/GADA_Formation_RStudio_Jour1.pdf",
-        "taille": "3.8 Mo",
-        "date_maj": "2026-05-15"
+        "type": "pdf",
+        "icone": "fa-file-pdf"
       },
       {
         "nom": "Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf",
-        "icone": "fa-file-pdf",
-        "url": "documents/Aide%20%C3%A0%20l'utilisation%20de%20R%20pour%20mettre%20en%20oeuvre%20les%20m%C3%A9thodes.pdf",
-        "taille": "1.5 Mo",
-        "date_maj": "2026-05-15"
+        "type": "pdf",
+        "icone": "fa-file-pdf"
       },
       {
         "nom": "GADA_Formation_RStudio_Jour2.pdf",
-        "icone": "fa-file-pdf",
-        "url": "documents/GADA_Formation_RStudio_Jour2.pdf",
-        "taille": "4.1 Mo",
-        "date_maj": "2026-05-17"
+        "type": "pdf",
+        "icone": "fa-file-pdf"
       },
       {
         "nom": "Script_Jour2.R",
-        "icone": "fa-file-code",
-        "url": "documents/Script_Jour2.R",
-        "taille": "8 Ko",
-        "date_maj": "2026-05-17"
+        "type": "r",
+        "icone": "fa-file-code"
       },
       {
         "nom": "Donnees_sorgho_Benoit_kajora_complet.xlsx",
-        "icone": "fa-file-excel",
-        "url": "documents/Donnees_sorgho_Benoit_kajora_complet.xlsx",
-        "taille": "2.1 Mo",
-        "date_maj": "2026-05-17"
+        "type": "excel",
+        "icone": "fa-file-excel"
       }
     ]
   },
   "semaine2": {
+    "locked": true,
     "titre": "Semaine 2 : Modélisation R",
     "date": "24 mai – 30 mai",
-    "resume": "Corrélations spatiales, indices satellitaires et modèles prédictifs One Health",
     "description": "Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles, Analyse One Health, impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt, distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)",
-    "locked": true,
-    "date_ouverture": "2026-05-24",
-    "themes": ["NDVI", "NDWI", "SAVI", "LST", "MaxEnt", "Random Forest", "One Health"],
+    "badge": "À venir",
     "fichiers": []
   },
   "semaine3": {
+    "locked": true,
     "titre": "Semaine 3 : ArcGIS Bases",
     "date": "31 mai – 6 juin",
-    "resume": "Prise en main d'ArcGIS Pro, géoréférencement et analyse spatiale de base",
     "description": "Interface ArcGIS Pro & gestion de projets SIG, Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère",
-    "locked": true,
-    "date_ouverture": "2026-05-31",
-    "themes": ["ArcGIS Pro", "SIG", "Géoréférencement", "KDE", "Shapefiles"],
+    "badge": "À venir",
     "fichiers": []
   },
   "semaine4": {
+    "locked": true,
     "titre": "Semaine 4 : ArcGIS Avancé",
     "date": "7 juin – 17 juin",
-    "resume": "Analyse multicritère, modélisation spatiale avancée et projet intégré final",
     "description": "Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points), Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables",
-    "locked": true,
-    "date_ouverture": "2026-06-07",
-    "themes": ["AHP", "multicritère", "Random Forest spatial", "MaxEnt ArcGIS"],
+    "badge": "À venir",
     "fichiers": []
   }
 }
