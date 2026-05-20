@@ -1592,7 +1592,10 @@ function genererAffichageDocuments() {
     if (!documentsData) return;
     
     const semaine1 = documentsData.semaine1;
+    const badgeElem = document.querySelector('#hf-s1 .h-badge');
     const panelInner = document.querySelector('#hp-s1 .h-expand-inner');
+    
+    if (badgeElem) badgeElem.textContent = semaine1.badge;
     
     if (panelInner) {
         let fichiersHtml = `
@@ -1603,19 +1606,14 @@ function genererAffichageDocuments() {
         `;
         
         semaine1.fichiers.forEach(fichier => {
-            // Encoder le nom du fichier pour l'URL
-            const encodedFileName = encodeURIComponent(fichier.nom);
-            
             fichiersHtml += `
                 <div class="h-file-item">
                     <div class="h-file-name">
                         <i class="fa-solid ${fichier.icone}"></i>
                         ${fichier.nom}
                     </div>
-                    <a href="documents/${encodedFileName}" 
-                       class="h-file-dl" 
-                       download="${fichier.nom}">
-                        <i class="fa-solid fa-download"></i> Télécharger
+                    <a href="documents/${encodeURIComponent(fichier.nom)}" class="h-file-dl">
+                        <i class="fa-solid fa-download"></i>
                     </a>
                 </div>
             `;
