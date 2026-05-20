@@ -997,47 +997,86 @@
                             <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
                                 <div class="h-folder-top">
                                     <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                    <span class="h-badge">3 fichiers</span>
+                                    <span class="h-badge">6 fichiers</span>
                                 </div>
                                 <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
                                 <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
                             </div>
 
                             <div class="h-expand-panel" id="hp-s1">
-                                <div class="h-expand-inner">
-                                    <div class="h-expand-title">
-                                        <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
-                                        Semaine 1 – Documents
-                                    </div>
-                                    <div class="h-file-item">
-                                        <div class="h-file-name">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            GADA_Plan_Formation_2026.pdf
-                                        </div>
-                                        <a href="documents/GADA_Plan_Formation_2026.pdf" download class="h-file-dl">
-                                            <i class="fa-solid fa-download"></i>
-                                        </a>
-                                    </div>
-                                    <div class="h-file-item">
-                                        <div class="h-file-name">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            GADA_Formation_RStudio_Jour1.pdf
-                                        </div>
-                                        <a href="documents/GADA_Formation_RStudio_Jour1.pdf" download class="h-file-dl">
-                                            <i class="fa-solid fa-download"></i>
-                                        </a>
-                                    </div>
-                                    <div class="h-file-item">
-                                        <div class="h-file-name">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            Aide utilisation R (Méthodes).pdf
-                                        </div>
-                                        <a href="documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" download class="h-file-dl">
-                                            <i class="fa-solid fa-download"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="h-expand-inner">
+        <div class="h-expand-title">
+            <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
+            Semaine 1 – Documents
+        </div>
+        
+        <!-- Document 1 -->
+        <div class="h-file-item">
+            <div class="h-file-name">
+                <i class="fa-solid fa-file-pdf"></i>
+                GADA_Plan_Formation_2026.pdf
+            </div>
+            <a href="documents/GADA_Plan_Formation_2026.pdf" download class="h-file-dl">
+                <i class="fa-solid fa-download"></i>
+            </a>
+        </div>
+        
+        <!-- Document 2 -->
+        <div class="h-file-item">
+            <div class="h-file-name">
+                <i class="fa-solid fa-file-pdf"></i>
+                GADA_Formation_RStudio_Jour1.pdf
+            </div>
+            <a href="documents/GADA_Formation_RStudio_Jour1.pdf" download class="h-file-dl">
+                <i class="fa-solid fa-download"></i>
+            </a>
+        </div>
+        
+        <!-- Document 3 -->
+        <div class="h-file-item">
+            <div class="h-file-name">
+                <i class="fa-solid fa-file-pdf"></i>
+                Aide utilisation R (Méthodes).pdf
+            </div>
+            <a href="documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" download class="h-file-dl">
+                <i class="fa-solid fa-download"></i>
+            </a>
+        </div>
+        
+        <!-- NOUVEAU Document 4 : GADA_Formation_RStudio_Jour2.pdf -->
+        <div class="h-file-item">
+            <div class="h-file-name">
+                <i class="fa-solid fa-file-pdf"></i>
+                GADA_Formation_RStudio_Jour2.pdf
+            </div>
+            <a href="documents/GADA_Formation_RStudio_Jour2.pdf" download class="h-file-dl">
+                <i class="fa-solid fa-download"></i>
+            </a>
+        </div>
+        
+        <!-- NOUVEAU Document 5 : Script_Jour2.R -->
+        <div class="h-file-item">
+            <div class="h-file-name">
+                <i class="fa-solid fa-file-code"></i>
+                Script_Jour2.R
+            </div>
+            <a href="documents/Script_Jour2.R" download class="h-file-dl">
+                <i class="fa-solid fa-download"></i>
+            </a>
+        </div>
+        
+        <!-- NOUVEAU Document 6 : Donnees_sorgho_Benoit_kajora_complet.xlsx -->
+        <div class="h-file-item">
+            <div class="h-file-name">
+                <i class="fa-solid fa-file-excel"></i>
+                Donnees_sorgho_Benoit_kajora_complet.xlsx
+            </div>
+            <a href="documents/Donnees_sorgho_Benoit_kajora_complet.xlsx" download class="h-file-dl">
+                <i class="fa-solid fa-download"></i>
+            </a>
+        </div>
+    </div>
+</div>
 
                             <div class="h-folder-item locked">
                                 <div class="h-folder-top">
@@ -1150,10 +1189,13 @@
                     "Construire des modèles linéaires et logistiques en santé/agriculture",
                 ],
                 documents: [
-                    { nom: "GADA_Plan_Formation_2026.pdf", type: "pdf", url: "documents/GADA_Plan_Formation_2026.pdf" },
-                    { nom: "GADA_Formation_RStudio_Jour1.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour1.pdf" },
-                    { nom: "Aide utilisation R (Méthodes).pdf", type: "pdf", url: "documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" },
-                ],
+    { nom: "GADA_Plan_Formation_2026.pdf", type: "pdf", url: "documents/GADA_Plan_Formation_2026.pdf" },
+    { nom: "GADA_Formation_RStudio_Jour1.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour1.pdf" },
+    { nom: "Aide utilisation R (Méthodes).pdf", type: "pdf", url: "documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" },
+    { nom: "GADA_Formation_RStudio_Jour2.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour2.pdf" },
+    { nom: "Script_Jour2.R", type: "r", url: "documents/Script_Jour2.R" },
+    { nom: "Donnees_sorgho_Benoit_kajora_complet.xlsx", type: "excel", url: "documents/Donnees_sorgho_Benoit_kajora_complet.xlsx" },
+],
                 concepts: ["vecteurs", "dataframes", "dplyr", "ggplot2", "GLM", "t-test", "ANOVA", "regression logistique"],
             },
             {
@@ -1858,45 +1900,47 @@
         ]);
     }
     
-    function initChat() {
-    chatMessages.innerHTML = '';
-    const rootNode = DECISION_TREE.root;
-    addBotMessage(rootNode.message, rootNode.options);
-    
-    setTimeout(() => {
-        addBotMessage("<i class='fa-regular fa-bell-slash'></i> **Actualisation des documents**", [
-            { 
-                label: "<i class='fa-solid fa-arrow-rotate-right'></i> Actualiser maintenant", 
-                action: () => location.reload()
+        function initChat() {
+        chatMessages.innerHTML = '';
+        const rootNode = DECISION_TREE.root;
+        addBotMessage(rootNode.message, rootNode.options);
+        
+        // AJOUTEZ CE BLOC POUR LE BOUTON D'ACTUALISATION
+        setTimeout(() => {
+            addBotMessage("<i class='fa-regular fa-bell-slash'></i> **Actualisation des documents**", [
+                { 
+                    label: "<i class='fa-solid fa-arrow-rotate-right'></i> Actualiser maintenant", 
+                    action: () => location.reload()
+                }
+            ]);
+        }, 1000);
+        // FIN DE L'AJOUT
+        
+        currentNodeId = "root";
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && isWaitingForFreeInput) {
+                e.preventDefault();
+                handleFreeSubmit();
             }
-        ]);
-    }, 1000);
+        });
+        
+        chatSend.addEventListener('click', () => {
+            if (isWaitingForFreeInput) handleFreeSubmit();
+        });
+    }
     
-    currentNodeId = "root";
-    
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && isWaitingForFreeInput) {
-            e.preventDefault();
-            handleFreeSubmit();
+    chatToggle.addEventListener('click', () => {
+        const wasOpen = chatWindow.classList.contains('open');
+        chatWindow.classList.toggle('open');
+        if (!wasOpen && chatMessages.children.length === 0) {
+            initChat();
+        } else if (!wasOpen) {
+            scrollToBottom();
         }
     });
     
-    chatSend.addEventListener('click', () => {
-        if (isWaitingForFreeInput) handleFreeSubmit();
-    });
-}
-
-chatToggle.addEventListener('click', () => {
-    const wasOpen = chatWindow.classList.contains('open');
-    chatWindow.classList.toggle('open');
-    if (!wasOpen && chatMessages.children.length === 0) {
-        initChat();
-    } else if (!wasOpen) {
-        scrollToBottom();
-    }
-});
-
-chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
 </script>
 </body>
 </html>
