@@ -1859,17 +1859,32 @@
     }
     
     function initChat() {
-        chatMessages.innerHTML = '';
-        const rootNode = DECISION_TREE.root;
-        addBotMessage(rootNode.message, rootNode.options);
-        currentNodeId = "root";
-        
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && isWaitingForFreeInput) {
-                e.preventDefault();
-                handleFreeSubmit();
+    chatMessages.innerHTML = '';
+    const rootNode = DECISION_TREE.root;
+    addBotMessage(rootNode.message, rootNode.options);
+    
+    setTimeout(() => {
+        addBotMessage("<i class='fa-regular fa-bell-slash'></i> **Actualisation des documents**", [
+            { 
+                label: "<i class='fa-solid fa-arrow-rotate-right'></i> Actualiser maintenant", 
+                action: () => location.reload()
             }
-        });
+        ]);
+    }, 1000);
+    
+    currentNodeId = "root";
+    
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && isWaitingForFreeInput) {
+            e.preventDefault();
+            handleFreeSubmit();
+        }
+    });
+    
+    chatSend.addEventListener('click', () => {
+        if (isWaitingForFreeInput) handleFreeSubmit();
+    });
+}
         
         chatSend.addEventListener('click', () => {
             if (isWaitingForFreeInput) handleFreeSubmit();
