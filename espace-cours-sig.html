@@ -97,16 +97,17 @@
             color: var(--blue-tech);
         }
 
-        .form-group input {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 14px 16px;
             border: 2px solid #e2dcd5;
             border-radius: 16px;
             font-size: 0.95rem;
             transition: border-color 0.2s;
+            font-family: 'Inter', sans-serif;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             outline: none;
             border-color: var(--green-agri);
         }
@@ -168,12 +169,11 @@
             display: block;
         }
 
+        /* Floating Background */
         .floating-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
@@ -203,6 +203,7 @@
             100% { transform: translateX(60px) translateY(30px); opacity: 0.45; }
         }
 
+        /* Navigation */
         .navbar {
             position: relative;
             z-index: 20;
@@ -250,6 +251,36 @@
             background: rgba(255,255,255,0.3);
         }
 
+        /* Profile Section in Navbar */
+        .profile-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 40px;
+            transition: background 0.2s;
+        }
+        .profile-nav:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .profile-avatar-small {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        .profile-avatar-small.placeholder {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Main Content */
         .main-content {
             position: relative;
             z-index: 10;
@@ -258,6 +289,387 @@
             padding: 0 24px;
         }
 
+        /* Tab Navigation */
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid rgba(210, 190, 170, 0.3);
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--neutral-600);
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-btn:hover {
+            background: rgba(43, 110, 60, 0.1);
+            color: var(--green-agri);
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            color: white;
+            box-shadow: 0 4px 12px rgba(43, 110, 60, 0.3);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Profile Card */
+        .profile-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(210, 190, 170, 0.3);
+        }
+        .profile-header {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid rgba(210, 190, 170, 0.2);
+        }
+        .profile-avatar-large {
+            position: relative;
+            text-align: center;
+        }
+        .profile-avatar-large img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--green-agri);
+            box-shadow: var(--shadow-md);
+        }
+        .profile-avatar-large .placeholder {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            color: white;
+            border: 4px solid var(--green-agri);
+        }
+        .change-photo-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--green-agri);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .change-photo-btn:hover {
+            transform: scale(1.1);
+        }
+        .profile-info {
+            flex: 1;
+        }
+        .profile-info h2 {
+            font-size: 1.8rem;
+            color: var(--blue-tech);
+            margin-bottom: 8px;
+        }
+        .profile-badge {
+            display: inline-block;
+            background: var(--green-agri-pale);
+            color: var(--green-agri);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+        .profile-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .profile-social a {
+            color: var(--blue-tech);
+            background: var(--blue-tech-pale);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .profile-social a:hover {
+            background: var(--green-agri);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .profile-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .detail-card {
+            background: var(--neutral-200);
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+        }
+        .detail-card label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--neutral-600);
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .detail-card p {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--blue-tech);
+        }
+        .edit-profile-btn {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .edit-profile-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Modal d'édition de profil */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 32px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2dcd5;
+        }
+        .modal-header h3 {
+            color: var(--blue-tech);
+            font-size: 1.4rem;
+        }
+        .modal-close {
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--neutral-600);
+        }
+
+        /* Document Upload Section */
+        .upload-hub {
+            background: linear-gradient(135deg, #f8fbf8, #fefcf9);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(210, 190, 170, 0.3);
+        }
+        .upload-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .upload-tab {
+            background: transparent;
+            border: 2px solid #e2dcd5;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--neutral-600);
+            transition: all 0.2s;
+        }
+        .upload-tab.active {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            border-color: transparent;
+            color: white;
+        }
+        .upload-panel {
+            display: none;
+        }
+        .upload-panel.active {
+            display: block;
+        }
+        .upload-area {
+            border: 2px dashed #c9bfb2;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .upload-area:hover {
+            border-color: var(--green-agri);
+            background: rgba(43, 110, 60, 0.05);
+        }
+        .upload-area i {
+            font-size: 48px;
+            color: var(--green-agri);
+            margin-bottom: 12px;
+        }
+        .github-input-group, .cloud-input-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .github-input-group input, .cloud-input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2dcd5;
+            border-radius: 40px;
+        }
+        .submit-upload-btn {
+            background: var(--green-agri);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Student Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .project-card {
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            border: 1px solid rgba(210, 190, 170, 0.3);
+        }
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        .project-thumbnail {
+            height: 180px;
+            background: linear-gradient(135deg, var(--blue-tech-pale), var(--green-agri-pale));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--blue-tech);
+        }
+        .project-info {
+            padding: 20px;
+        }
+        .project-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--blue-tech);
+            margin-bottom: 8px;
+        }
+        .project-author {
+            font-size: 0.8rem;
+            color: var(--neutral-600);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .project-author img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+        .project-description {
+            font-size: 0.85rem;
+            color: var(--neutral-800);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .project-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .project-btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .project-btn-view {
+            background: var(--green-agri-pale);
+            color: var(--green-agri);
+        }
+        .project-btn-view:hover {
+            background: var(--green-agri);
+            color: white;
+        }
+        .project-btn-code {
+            background: var(--blue-tech-pale);
+            color: var(--blue-tech);
+        }
+        .project-btn-code:hover {
+            background: var(--blue-tech);
+            color: white;
+        }
+
+        /* Formation Container */
         .formation-container {
             display: flex;
             gap: 28px;
@@ -409,6 +821,14 @@
                 width: 100%; 
                 height: 480px;
                 position: static;
+            }
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .profile-social {
+                justify-content: center;
             }
         }
 
@@ -707,6 +1127,7 @@
             margin-bottom: 12px;
         }
 
+        /* Chatbot */
         .chat-toggle {
             position: fixed;
             bottom: 28px;
@@ -1002,111 +1423,182 @@
             <img src="images/logo-gada.png" alt="GADA Training Logo" onerror="this.src='https://placehold.co/160x60/2b6e3c/ffffff?text=GADA+Training'; this.onerror=null;">
         </div>
         <div class="nav-status">
-            <i class="fa-solid fa-user-shield"></i> Espace Privé Validé
+            <div class="profile-nav" id="profileNavBtn">
+                <div id="navAvatarPlaceholder" class="profile-avatar-small placeholder">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span id="navUserName">Chargement...</span>
+            </div>
             <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Quitter</button>
         </div>
     </nav>
 
     <div class="main-content">
-        <div class="formation-container">
-            <div class="chat-sidebar">
-                <div class="chat-header">
-                    <h3><i class="fa-regular fa-comments"></i> Espace Discussion</h3>
-                    <p>Connecté en tant que : <span id="user-display">Chargement...</span></p>
-                </div>
-                
-                <div class="forum-chat-messages" id="forum-chat-messages">
-                    <div style="text-align:center; padding:20px; color:#999;">
-                        <i class="fa-regular fa-spinner fa-spin"></i> Connexion...
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="formation">📚 Formation & Ressources</button>
+            <button class="tab-btn" data-tab="profile">👤 Mon Profil</button>
+            <button class="tab-btn" data-tab="projects">📁 Mes Projets</button>
+        </div>
+
+        <!-- Tab 1: Formation & Ressources -->
+        <div id="tab-formation" class="tab-content active">
+            <div class="formation-container">
+                <div class="chat-sidebar">
+                    <div class="chat-header">
+                        <h3><i class="fa-regular fa-comments"></i> Espace Discussion</h3>
+                        <p>Connecté en tant que : <span id="user-display">Chargement...</span></p>
+                    </div>
+                    
+                    <div class="forum-chat-messages" id="forum-chat-messages">
+                        <div style="text-align:center; padding:20px; color:#999;">
+                            <i class="fa-regular fa-spinner fa-spin"></i> Connexion...
+                        </div>
+                    </div>
+                    
+                    <div class="forum-chat-input-area" id="forum-chat-input-area">
+                        <input type="text" id="forum-chat-input" placeholder="Écrivez votre message ici..." autocomplete="off">
+                        <button id="forum-chat-send-btn"><i class="fa-regular fa-paper-plane"></i> Envoyer</button>
                     </div>
                 </div>
-                
-                <div class="forum-chat-input-area" id="forum-chat-input-area">
-                    <input type="text" id="forum-chat-input" placeholder="Écrivez votre message ici..." autocomplete="off">
-                    <button id="forum-chat-send-btn"><i class="fa-regular fa-paper-plane"></i> Envoyer</button>
-                </div>
-            </div>
 
-            <div class="main-content-blocks">
-                <div class="welcome-card">
-                    <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
-                    <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
-                </div>
-
-                <div class="course-grid">
-                    <div class="course-card">
-                        <div>
-                            <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
-                            <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
-                            <ul>
-                                <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
-                                <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
-                            </ul>
-                        </div>
-                        <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
+                <div class="main-content-blocks">
+                    <div class="welcome-card">
+                        <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
+                        <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
                     </div>
 
-                    <div class="course-card">
-                        <div>
-                            <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
-                            <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
-                            <ul>
-                                <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
-                                <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
-                                <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
-                                <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
-                            </ul>
+                    <div class="course-grid">
+                        <div class="course-card">
+                            <div>
+                                <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
+                                <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
+                                <ul>
+                                    <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
+                                    <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
+                                </ul>
+                            </div>
+                            <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
                         </div>
-                        <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
-                            Accéder aux téléchargements
-                        </button>
 
-                        <div id="folder-zone" class="folder-zone">
-                            <div class="h-folder-wrapper">
-                                <div class="h-folder-row">
-                                    <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
-                                        <div class="h-folder-top">
-                                            <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                            <span class="h-badge">6 fichiers</span>
+                        <div class="course-card">
+                            <div>
+                                <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
+                                <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
+                                <ul>
+                                    <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
+                                    <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
+                                    <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
+                                    <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
+                                </ul>
+                            </div>
+                            <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
+                                Accéder aux téléchargements
+                            </button>
+
+                            <div id="folder-zone" class="folder-zone">
+                                <div class="h-folder-wrapper">
+                                    <div class="h-folder-row">
+                                        <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
+                                            <div class="h-folder-top">
+                                                <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
+                                                <span class="h-badge">6 fichiers</span>
+                                            </div>
+                                            <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
+                                            <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
                                         </div>
-                                        <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
-                                        <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
-                                    </div>
 
-                                    <div class="h-expand-panel" id="hp-s1">
-                                        <div class="h-expand-inner"></div>
-                                    </div>
-
-                                    <div class="h-folder-item locked" id="hf-s2">
-                                        <div class="h-folder-top">
-                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        <div class="h-expand-panel" id="hp-s1">
+                                            <div class="h-expand-inner"></div>
                                         </div>
-                                        <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
-                                        <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
-                                    </div>
 
-                                    <div class="h-folder-item locked" id="hf-s3">
-                                        <div class="h-folder-top">
-                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        <div class="h-folder-item locked" id="hf-s2">
+                                            <div class="h-folder-top">
+                                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                            </div>
+                                            <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
+                                            <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
                                         </div>
-                                        <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
-                                        <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
-                                    </div>
 
-                                    <div class="h-folder-item locked" id="hf-s4">
-                                        <div class="h-folder-top">
-                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        <div class="h-folder-item locked" id="hf-s3">
+                                            <div class="h-folder-top">
+                                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                            </div>
+                                            <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
+                                            <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
                                         </div>
-                                        <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
-                                        <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
+
+                                        <div class="h-folder-item locked" id="hf-s4">
+                                            <div class="h-folder-top">
+                                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                            </div>
+                                            <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
+                                            <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Mon Profil -->
+        <div id="tab-profile" class="tab-content">
+            <div class="profile-container" id="profileContainer">
+                <!-- Le contenu du profil sera chargé dynamiquement -->
+            </div>
+        </div>
+
+        <!-- Tab 3: Mes Projets -->
+        <div id="tab-projects" class="tab-content">
+            <div class="profile-container">
+                <h3 style="color: var(--blue-tech); margin-bottom: 24px;">
+                    <i class="fa-solid fa-upload"></i> Publier un nouveau projet / document
+                </h3>
+                
+                <!-- Hub de publication -->
+                <div class="upload-hub">
+                    <div class="upload-tabs">
+                        <button class="upload-tab active" data-upload="local">📁 Depuis mon PC</button>
+                        <button class="upload-tab" data-upload="github">🐙 Depuis GitHub</button>
+                        <button class="upload-tab" data-upload="cloud">☁️ Lien Cloud (Drive)</button>
+                    </div>
+                    
+                    <div id="upload-local" class="upload-panel active">
+                        <div class="upload-area" id="localUploadArea">
+                            <i class="fa-solid fa-cloud-upload-alt"></i>
+                            <p>Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
+                            <p style="font-size: 0.7rem; color: #999;">Formats acceptés : PDF, ZIP, R, PY, SHP, TIFF, DOCX</p>
+                            <input type="file" id="localFileInput" multiple style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <div id="upload-github" class="upload-panel">
+                        <div class="github-input-group">
+                            <input type="text" id="githubRepoUrl" placeholder="URL du repository GitHub (ex: https://github.com/user/repo)">
+                            <button class="submit-upload-btn" onclick="submitGitHubProject()">Importer</button>
+                        </div>
+                    </div>
+                    
+                    <div id="upload-cloud" class="upload-panel">
+                        <div class="cloud-input-group">
+                            <input type="text" id="cloudUrl" placeholder="Lien Google Drive / OneDrive / Dropbox">
+                            <button class="submit-upload-btn" onclick="submitCloudProject()">Ajouter le lien</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section des projets existants -->
+                <h3 style="color: var(--blue-tech); margin-bottom: 24px; margin-top: 32px;">
+                    <i class="fa-solid fa-folder-open"></i> Mes projets et contributions
+                </h3>
+                <div id="projectsGrid" class="projects-grid">
+                    <!-- Les projets seront chargés dynamiquement -->
                 </div>
             </div>
         </div>
@@ -1117,6 +1609,47 @@
         <p>&copy; 2026 GADA Training. Tous droits réservés.</p>
         <p>Formons les meilleurs du futur.</p>
     </footer>
+</div>
+
+<!-- Modal d'édition de profil -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-user-pen"></i> Modifier mon profil</h3>
+            <span class="modal-close" onclick="closeProfileModal()">&times;</span>
+        </div>
+        <form id="editProfileForm">
+            <div class="form-group">
+                <label>Nom complet</label>
+                <input type="text" id="editFullName" required>
+            </div>
+            <div class="form-group">
+                <label>Titre / Spécialité</label>
+                <input type="text" id="editTitle" placeholder="Ex: Géomaticien, Data Scientist">
+            </div>
+            <div class="form-group">
+                <label>Bio / Description</label>
+                <textarea id="editBio" rows="3" placeholder="Parlez-nous de vous, vos intérêts en modélisation spatiale..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>LinkedIn (URL)</label>
+                <input type="url" id="editLinkedin" placeholder="https://linkedin.com/in/...">
+            </div>
+            <div class="form-group">
+                <label>GitHub (URL)</label>
+                <input type="url" id="editGithub" placeholder="https://github.com/...">
+            </div>
+            <div class="form-group">
+                <label>Pays</label>
+                <input type="text" id="editPays">
+            </div>
+            <div class="form-group">
+                <label>Téléphone</label>
+                <input type="tel" id="editPhone">
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 16px;">Enregistrer les modifications</button>
+        </form>
+    </div>
 </div>
 
 <div class="chat-toggle" id="chatToggle">
@@ -1177,10 +1710,12 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const messagesRef = database.ref('forum_messages');
+    const projectsRef = database.ref('user_projects');
     
     // Variables globales
     let currentUser = null;
     let isLoginMode = true;
+    let currentUserProfile = {};
     
     // Éligibilité des emails
     const ELIGIBLE_EMAILS = [
@@ -1280,6 +1815,7 @@
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     currentUser = userCredential.user;
+                    loadUserProfile();
                     document.getElementById('authOverlay').style.display = 'none';
                     showDashboard();
                 })
@@ -1322,14 +1858,22 @@
                 .then((userCredential) => {
                     const user = userCredential.user;
                     
-                    // Stocker les informations supplémentaires dans localStorage
+                    // Stocker les informations supplémentaires
                     const userProfile = {
                         uid: user.uid,
                         fullName: fullName,
                         pays: pays,
                         phone: phone,
-                        email: email
+                        email: email,
+                        title: "",
+                        bio: "",
+                        linkedin: "",
+                        github: "",
+                        avatar: "",
+                        createdAt: Date.now()
                     };
+                    
+                    database.ref('user_profiles/' + user.uid).set(userProfile);
                     localStorage.setItem('gada_user_profile_' + user.uid, JSON.stringify(userProfile));
                     
                     showAuthMessage("✅ Compte créé avec succès ! Vous pouvez maintenant vous connecter.", false);
@@ -1349,34 +1893,318 @@
         }
     }
     
-    function getUserProfile(user) {
-        if (!user) return null;
-        const profile = localStorage.getItem('gada_user_profile_' + user.uid);
-        if (profile) {
-            return JSON.parse(profile);
+    function loadUserProfile() {
+        if (!currentUser) return;
+        
+        database.ref('user_profiles/' + currentUser.uid).once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                currentUserProfile = snapshot.val();
+            } else {
+                // Créer un profil par défaut
+                currentUserProfile = {
+                    uid: currentUser.uid,
+                    fullName: currentUser.email.split('@')[0],
+                    email: currentUser.email,
+                    title: "Apprenant GADA",
+                    bio: "Passionné(e) par la modélisation spatiale et l'approche One Health.",
+                    pays: "",
+                    phone: "",
+                    linkedin: "",
+                    github: "",
+                    avatar: "",
+                    createdAt: Date.now()
+                };
+                database.ref('user_profiles/' + currentUser.uid).set(currentUserProfile);
+            }
+            updateUIWithProfile();
+        });
+    }
+    
+    function updateUIWithProfile() {
+        const displayName = currentUserProfile.fullName || currentUser.email.split('@')[0];
+        const welcomeTitle = document.getElementById('welcomeTitle');
+        if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${displayName} dans votre espace de formation !`;
+        
+        // Mettre à jour la navbar
+        const navUserName = document.getElementById('navUserName');
+        if (navUserName) navUserName.textContent = displayName;
+        
+        const userDisplay = document.getElementById('user-display');
+        if (userDisplay) {
+            const isAdmin = currentUser.email === "gadasolution.rdc@gmail.com";
+            userDisplay.textContent = `${displayName}${isAdmin ? ' (Formateur)' : ''}`;
         }
-        return {
-            fullName: user.email.split('@')[0],
-            email: user.email
+        
+        // Mettre à jour l'avatar dans la navbar
+        updateNavAvatar();
+        
+        // Rendre le profil
+        renderProfilePage();
+        
+        // Charger les projets
+        loadUserProjects();
+    }
+    
+    function updateNavAvatar() {
+        const navAvatarContainer = document.getElementById('navAvatarPlaceholder');
+        if (currentUserProfile.avatar) {
+            navAvatarContainer.innerHTML = `<img src="${currentUserProfile.avatar}" class="profile-avatar-small" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`;
+            navAvatarContainer.classList.remove('placeholder');
+        } else {
+            navAvatarContainer.innerHTML = '<i class="fa-solid fa-user"></i>';
+            navAvatarContainer.classList.add('placeholder');
+        }
+    }
+    
+    function renderProfilePage() {
+        const container = document.getElementById('profileContainer');
+        if (!container) return;
+        
+        const avatarHtml = currentUserProfile.avatar 
+            ? `<img src="${currentUserProfile.avatar}" alt="Photo de profil">`
+            : `<div class="placeholder"><i class="fa-solid fa-user fa-4x"></i></div>`;
+        
+        container.innerHTML = `
+            <div class="profile-header">
+                <div class="profile-avatar-large">
+                    ${avatarHtml}
+                    <button class="change-photo-btn" onclick="triggerAvatarUpload()">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this)">
+                </div>
+                <div class="profile-info">
+                    <h2>${currentUserProfile.fullName || currentUser.email.split('@')[0]}</h2>
+                    <div class="profile-badge">
+                        <i class="fa-solid fa-graduation-cap"></i> ${currentUserProfile.title || "Apprenant GADA"}
+                    </div>
+                    <div class="profile-social">
+                        ${currentUserProfile.linkedin ? `<a href="${currentUserProfile.linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : ''}
+                        ${currentUserProfile.github ? `<a href="${currentUserProfile.github}" target="_blank"><i class="fab fa-github"></i></a>` : ''}
+                        <a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-pen"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-details-grid">
+                <div class="detail-card">
+                    <label><i class="fa-regular fa-envelope"></i> Email</label>
+                    <p>${currentUserProfile.email}</p>
+                </div>
+                <div class="detail-card">
+                    <label><i class="fa-regular fa-address-card"></i> Bio</label>
+                    <p>${currentUserProfile.bio || "Aucune bio renseignée"}</p>
+                </div>
+                <div class="detail-card">
+                    <label><i class="fa-solid fa-location-dot"></i> Pays</label>
+                    <p>${currentUserProfile.pays || "Non renseigné"}</p>
+                </div>
+                <div class="detail-card">
+                    <label><i class="fa-solid fa-phone"></i> Téléphone</label>
+                    <p>${currentUserProfile.phone || "Non renseigné"}</p>
+                </div>
+            </div>
+            <button class="edit-profile-btn" onclick="openProfileModal()">
+                <i class="fa-solid fa-user-pen"></i> Modifier mon profil
+            </button>
+        `;
+    }
+    
+    function openProfileModal() {
+        document.getElementById('editFullName').value = currentUserProfile.fullName || '';
+        document.getElementById('editTitle').value = currentUserProfile.title || '';
+        document.getElementById('editBio').value = currentUserProfile.bio || '';
+        document.getElementById('editLinkedin').value = currentUserProfile.linkedin || '';
+        document.getElementById('editGithub').value = currentUserProfile.github || '';
+        document.getElementById('editPays').value = currentUserProfile.pays || '';
+        document.getElementById('editPhone').value = currentUserProfile.phone || '';
+        
+        document.getElementById('profileModal').classList.add('active');
+    }
+    
+    function closeProfileModal() {
+        document.getElementById('profileModal').classList.remove('active');
+    }
+    
+    function triggerAvatarUpload() {
+        document.getElementById('avatarInput').click();
+    }
+    
+    function uploadAvatar(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const avatarUrl = e.target.result;
+                currentUserProfile.avatar = avatarUrl;
+                database.ref('user_profiles/' + currentUser.uid + '/avatar').set(avatarUrl);
+                updateUIWithProfile();
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    
+    document.getElementById('editProfileForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        currentUserProfile.fullName = document.getElementById('editFullName').value;
+        currentUserProfile.title = document.getElementById('editTitle').value;
+        currentUserProfile.bio = document.getElementById('editBio').value;
+        currentUserProfile.linkedin = document.getElementById('editLinkedin').value;
+        currentUserProfile.github = document.getElementById('editGithub').value;
+        currentUserProfile.pays = document.getElementById('editPays').value;
+        currentUserProfile.phone = document.getElementById('editPhone').value;
+        
+        database.ref('user_profiles/' + currentUser.uid).update(currentUserProfile);
+        updateUIWithProfile();
+        closeProfileModal();
+        showAuthMessage("✅ Profil mis à jour avec succès !", false);
+    });
+    
+    // Gestion des projets
+    function submitLocalProject(file) {
+        if (!currentUser) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const project = {
+                id: Date.now(),
+                userId: currentUser.uid,
+                userName: currentUserProfile.fullName || currentUser.email.split('@')[0],
+                userAvatar: currentUserProfile.avatar || '',
+                title: file.name,
+                description: "Document téléchargé depuis mon PC",
+                type: "file",
+                url: e.target.result,
+                fileType: file.type,
+                fileName: file.name,
+                timestamp: Date.now()
+            };
+            
+            projectsRef.push(project);
+            showAuthMessage("✅ Fichier téléchargé avec succès !", false);
+            loadUserProjects();
         };
+        reader.readAsDataURL(file);
+    }
+    
+    function submitGitHubProject() {
+        const url = document.getElementById('githubRepoUrl').value.trim();
+        if (!url) {
+            showAuthMessage("❌ Veuillez entrer une URL GitHub valide", true);
+            return;
+        }
+        
+        const project = {
+            id: Date.now(),
+            userId: currentUser.uid,
+            userName: currentUserProfile.fullName || currentUser.email.split('@')[0],
+            userAvatar: currentUserProfile.avatar || '',
+            title: "Projet GitHub",
+            description: "Repository GitHub",
+            type: "github",
+            url: url,
+            timestamp: Date.now()
+        };
+        
+        projectsRef.push(project);
+        document.getElementById('githubRepoUrl').value = '';
+        showAuthMessage("✅ Projet GitHub ajouté avec succès !", false);
+        loadUserProjects();
+    }
+    
+    function submitCloudProject() {
+        const url = document.getElementById('cloudUrl').value.trim();
+        if (!url) {
+            showAuthMessage("❌ Veuillez entrer un lien valide", true);
+            return;
+        }
+        
+        const project = {
+            id: Date.now(),
+            userId: currentUser.uid,
+            userName: currentUserProfile.fullName || currentUser.email.split('@')[0],
+            userAvatar: currentUserProfile.avatar || '',
+            title: "Document Cloud",
+            description: "Document partagé via lien cloud",
+            type: "cloud",
+            url: url,
+            timestamp: Date.now()
+        };
+        
+        projectsRef.push(project);
+        document.getElementById('cloudUrl').value = '';
+        showAuthMessage("✅ Lien ajouté avec succès !", false);
+        loadUserProjects();
+    }
+    
+    function loadUserProjects() {
+        projectsRef.orderByChild('userId').equalTo(currentUser?.uid).on('value', (snapshot) => {
+            const projects = [];
+            snapshot.forEach((childSnapshot) => {
+                projects.push({ id: childSnapshot.key, ...childSnapshot.val() });
+            });
+            projects.sort((a, b) => b.timestamp - a.timestamp);
+            renderProjects(projects);
+        });
+    }
+    
+    function renderProjects(projects) {
+        const grid = document.getElementById('projectsGrid');
+        if (!grid) return;
+        
+        if (projects.length === 0) {
+            grid.innerHTML = `<div style="text-align:center; padding:40px; color:#999;">
+                <i class="fa-regular fa-folder-open fa-3x"></i>
+                <p>Aucun projet pour le moment. Commencez par partager votre travail !</p>
+            </div>`;
+            return;
+        }
+        
+        grid.innerHTML = projects.map(project => `
+            <div class="project-card">
+                <div class="project-thumbnail">
+                    ${project.type === 'github' ? '<i class="fab fa-github fa-3x"></i>' : 
+                      project.type === 'cloud' ? '<i class="fa-solid fa-cloud fa-3x"></i>' : 
+                      '<i class="fa-regular fa-file fa-3x"></i>'}
+                </div>
+                <div class="project-info">
+                    <div class="project-title">${escapeHtml(project.title)}</div>
+                    <div class="project-author">
+                        ${project.userAvatar ? `<img src="${project.userAvatar}" alt="avatar">` : '<i class="fa-solid fa-user"></i>'}
+                        ${escapeHtml(project.userName)}
+                    </div>
+                    <div class="project-description">${escapeHtml(project.description)}</div>
+                    <div class="project-actions">
+                        <a href="${project.url}" class="project-btn project-btn-view" target="_blank">
+                            <i class="fa-regular fa-eye"></i> Voir
+                        </a>
+                        ${project.type === 'github' ? 
+                            `<a href="${project.url}" class="project-btn project-btn-code" target="_blank">
+                                <i class="fab fa-github"></i> Code
+                            </a>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
     
     function showDashboard() {
         document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('mainWrapper').classList.add('authenticated');
         document.getElementById('chatToggle').style.display = 'flex';
-        
-        const profile = getUserProfile(currentUser);
-        const displayName = profile ? profile.fullName : currentUser.email.split('@')[0];
-        const welcomeTitle = document.getElementById('welcomeTitle');
-        if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${displayName} dans votre espace de formation !`;
-        
-        updateUserDisplay();
+        updateUIWithProfile();
     }
     
     function logout() {
         firebase.auth().signOut().then(() => {
             currentUser = null;
+            currentUserProfile = {};
             document.getElementById('authOverlay').style.display = 'flex';
             document.getElementById('mainWrapper').classList.remove('authenticated');
             document.getElementById('chatToggle').style.display = 'none';
@@ -1386,19 +2214,7 @@
         });
     }
     
-    function updateUserDisplay() {
-        const userDisplay = document.getElementById('user-display');
-        if (currentUser && userDisplay) {
-            const profile = getUserProfile(currentUser);
-            const name = profile ? profile.fullName : currentUser.email.split('@')[0];
-            const isAdmin = currentUser.email === "gadasolution.rdc@gmail.com";
-            userDisplay.textContent = `${name}${isAdmin ? ' (Formateur)' : ''}`;
-        } else if (userDisplay) {
-            userDisplay.textContent = "Non connecté";
-        }
-    }
-    
-    // Écouteur automatique de session Firebase
+    // Écouteur de session Firebase
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             if (!isEmailAllowed(user.email)) {
@@ -1407,10 +2223,12 @@
                 return;
             }
             currentUser = user;
+            loadUserProfile();
             document.getElementById('authOverlay').style.display = 'none';
             showDashboard();
         } else {
             currentUser = null;
+            currentUserProfile = {};
             document.getElementById('authOverlay').style.display = 'flex';
             document.getElementById('mainWrapper').classList.remove('authenticated');
             document.getElementById('chatToggle').style.display = 'none';
@@ -1418,18 +2236,61 @@
         }
     });
     
-    // Gestionnaire du formulaire
-    document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
-    document.getElementById('authSwitchLink').addEventListener('click', () => {
+    // Gestionnaires d'événements
+    document.getElementById('authForm')?.addEventListener('submit', handleAuthSubmit);
+    document.getElementById('authSwitchLink')?.addEventListener('click', () => {
         isLoginMode = !isLoginMode;
         renderAuthForm();
     });
     
-    // Fonctions du chat forum
-    function getCurrentUserFirebase() {
-        return currentUser;
-    }
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+    });
     
+    // Upload tabs
+    document.querySelectorAll('.upload-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.upload-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.upload-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(`upload-${btn.dataset.upload}`).classList.add('active');
+        });
+    });
+    
+    // Local file upload
+    const localUploadArea = document.getElementById('localUploadArea');
+    const localFileInput = document.getElementById('localFileInput');
+    
+    localUploadArea?.addEventListener('click', () => localFileInput.click());
+    localFileInput?.addEventListener('change', (e) => {
+        Array.from(e.target.files).forEach(file => submitLocalProject(file));
+        localFileInput.value = '';
+    });
+    
+    localUploadArea?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        localUploadArea.style.borderColor = 'var(--green-agri)';
+    });
+    
+    localUploadArea?.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        localUploadArea.style.borderColor = '#c9bfb2';
+    });
+    
+    localUploadArea?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        localUploadArea.style.borderColor = '#c9bfb2';
+        const files = Array.from(e.dataTransfer.files);
+        files.forEach(file => submitLocalProject(file));
+    });
+    
+    // Chat functions
     function sendForumMessage() {
         const forumInput = document.getElementById('forum-chat-input');
         const text = forumInput.value.trim();
@@ -1440,8 +2301,7 @@
             return;
         }
         
-        const profile = getUserProfile(currentUser);
-        const senderName = profile ? profile.fullName : currentUser.email.split('@')[0];
+        const senderName = currentUserProfile.fullName || currentUser.email.split('@')[0];
         
         const messageData = {
             email: currentUser.email,
@@ -1491,7 +2351,7 @@
         forumMessagesContainer.scrollTop = forumMessagesContainer.scrollHeight;
     });
     
-    // Fonctions pour les dossiers
+    // Folder functions
     function ouvrirZone() {
         const btn = document.getElementById('btn-open');
         const zone = document.getElementById('folder-zone');
@@ -1537,7 +2397,7 @@
         }
     }
     
-    // Données des documents
+    // Documents data
     const documentsData = {
         "semaine1": {
             "titre": "Semaine 1 : Fondements R",
@@ -1657,16 +2517,9 @@
     const chatClose = document.getElementById('chatClose');
     
     let isWaitingForFreeInput = false;
-    let currentNodeId = "root";
     
     function scrollChatbotBottom() {
         if (chatbotMessages) chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    }
-    
-    function escapeChatbotHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
     
     function addChatbotMessage(text, options = null) {
@@ -1695,7 +2548,7 @@
     function addUserChatbotMessage(text) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message-user';
-        messageDiv.innerHTML = `<div class="chat-bubble">${escapeChatbotHtml(text)}</div>`;
+        messageDiv.innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
         chatbotMessages.appendChild(messageDiv);
         scrollChatbotBottom();
     }
@@ -1707,8 +2560,14 @@
         const nextId = option.next;
         const node = DECISION_TREE[nextId];
         if (node) {
-            currentNodeId = nextId;
-            addChatbotMessage(node.message, node.options);
+            if (node.freeInput) {
+                addChatbotMessage(node.message);
+                isWaitingForFreeInput = true;
+                chatbotInputArea.style.display = 'flex';
+                chatbotInput.focus();
+            } else {
+                addChatbotMessage(node.message, node.options);
+            }
         }
     }
     
@@ -1745,7 +2604,12 @@
         chatbotMessages.innerHTML = '';
         const rootNode = DECISION_TREE.root;
         addChatbotMessage(rootNode.message, rootNode.options);
-        currentNodeId = "root";
+        
+        DECISION_TREE.ai_open = {
+            id: "ai_open",
+            message: "Posez votre question sur la formation, les concepts ou les outils.",
+            freeInput: true
+        };
         
         chatbotInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && isWaitingForFreeInput) {
@@ -1757,14 +2621,6 @@
         chatbotSend.addEventListener('click', () => {
             if (isWaitingForFreeInput) handleChatbotFreeSubmit();
         });
-        
-        // Ajouter l'option de question libre
-        const aiOpenNode = {
-            id: "ai_open",
-            message: "Posez votre question sur la formation, les concepts ou les outils.",
-            freeInput: true
-        };
-        DECISION_TREE.ai_open = aiOpenNode;
     }
     
     chatToggle.addEventListener('click', () => {
@@ -1778,6 +2634,17 @@
     });
     
     chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+    
+    // Expose functions globally
+    window.ouvrirZone = ouvrirZone;
+    window.toggleHFolder = toggleHFolder;
+    window.openProfileModal = openProfileModal;
+    window.closeProfileModal = closeProfileModal;
+    window.triggerAvatarUpload = triggerAvatarUpload;
+    window.uploadAvatar = uploadAvatar;
+    window.submitGitHubProject = submitGitHubProject;
+    window.submitCloudProject = submitCloudProject;
+    window.logout = logout;
 </script>
 </body>
 </html>
