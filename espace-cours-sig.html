@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Espace Privé Apprenants — GADA Training | Modélisation Spatiale & One Health</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -252,17 +252,19 @@
             margin: 0 auto;
             align-items: flex-start;
         }
-        
+
         .main-content-blocks {
-            flex: 2.5;
+            flex: 3;
             display: flex;
             flex-direction: column;
             gap: 28px;
+            min-width: 0;
         }
-        
+
         .chat-sidebar {
             flex: 1;
-            min-width: 320px;
+            min-width: 280px;
+            max-width: 380px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(2px);
             border-radius: var(--radius-lg);
@@ -275,27 +277,27 @@
             position: sticky;
             top: 20px;
         }
-        
+
         .chat-header {
             background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
             color: white;
             padding: 18px 20px;
         }
-        
-        .chat-header h3 { 
-            margin: 0; 
+
+        .chat-header h3 {
+            margin: 0;
             font-size: 1.15rem;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
-        .chat-header p { 
-            margin: 6px 0 0 0; 
-            font-size: 0.7rem; 
-            opacity: 0.85; 
+
+        .chat-header p {
+            margin: 6px 0 0 0;
+            font-size: 0.7rem;
+            opacity: 0.85;
         }
-        
+
         .forum-chat-messages {
             flex: 1;
             padding: 16px;
@@ -305,7 +307,7 @@
             gap: 12px;
             background: var(--neutral-200);
         }
-        
+
         .message {
             padding: 10px 14px;
             border-radius: 18px;
@@ -314,14 +316,14 @@
             line-height: 1.45;
             animation: fadeInMsg 0.2s ease;
         }
-        
+
         .message .meta {
             font-size: 0.65rem;
             font-weight: 600;
             margin-bottom: 5px;
             display: block;
         }
-        
+
         .msg-student {
             background: white;
             border: 1px solid #e2ddd5;
@@ -329,18 +331,18 @@
             color: var(--neutral-800);
             border-bottom-left-radius: 4px;
         }
-        
+
         .msg-admin {
             background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
             align-self: flex-end;
             color: white;
             border-bottom-right-radius: 4px;
         }
-        
+
         .msg-admin .meta {
             color: rgba(255, 255, 255, 0.8);
         }
-        
+
         .forum-chat-input-area {
             display: flex;
             padding: 14px;
@@ -348,7 +350,7 @@
             border-top: 1px solid #eee8e0;
             gap: 10px;
         }
-        
+
         #forum-chat-input {
             flex: 1;
             padding: 10px 14px;
@@ -359,11 +361,11 @@
             background: #fefcf9;
             font-family: 'Inter', sans-serif;
         }
-        
+
         #forum-chat-input:focus {
             border-color: var(--green-agri);
         }
-        
+
         #forum-chat-send-btn {
             background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
             color: white;
@@ -374,29 +376,40 @@
             font-weight: 600;
             font-family: 'Inter', sans-serif;
             transition: all 0.2s;
+            white-space: nowrap;
         }
-        
+
         #forum-chat-send-btn:hover {
             transform: scale(1.02);
             filter: brightness(1.05);
         }
-        
+
+        #forum-chat-send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         @keyframes fadeInMsg {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        @media (max-width: 900px) {
-            .formation-container { 
-                flex-direction: column; 
+
+        @media (max-width: 1024px) {
+            .formation-container {
+                flex-direction: column;
             }
-            .main-content-blocks { 
-                width: 100%; 
+            .main-content-blocks {
+                width: 100%;
             }
-            .chat-sidebar { 
-                width: 100%; 
+            .chat-sidebar {
+                width: 100%;
+                max-width: 100%;
                 height: 480px;
                 position: static;
+            }
+            .nav-status span.nav-label {
+                display: none;
             }
         }
 
@@ -653,8 +666,18 @@
             color: #3a4a3c;
             line-height: 1.3;
             flex: 1;
+            min-width: 0;
+            word-break: break-word;
         }
         .h-file-name i { color: #e74c3c; flex-shrink: 0; }
+
+        .h-file-meta {
+            font-size: 0.6rem;
+            color: #8a9a8e;
+            margin-left: 24px;
+            display: block;
+            white-space: nowrap;
+        }
 
         .h-file-dl {
             flex-shrink: 0;
@@ -706,7 +729,7 @@
             height: 58px;
             background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
             border-radius: 50%;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             cursor: pointer;
@@ -741,7 +764,7 @@
             display: flex;
             animation: slideInChat 0.3s ease-out;
         }
-        
+
         @keyframes slideInChat {
             from {
                 opacity: 0;
@@ -758,13 +781,13 @@
             padding: 16px 20px;
             flex-shrink: 0;
         }
-        
+
         .chat-header-content {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .chat-avatar {
             width: 38px;
             height: 38px;
@@ -776,18 +799,18 @@
             font-size: 20px;
             backdrop-filter: blur(4px);
         }
-        
+
         .chat-header-info {
             flex: 1;
         }
-        
+
         .chat-header-title {
             color: white;
             font-weight: 700;
             font-size: 14px;
             letter-spacing: -0.3px;
         }
-        
+
         .chat-header-status {
             color: rgba(255, 255, 255, 0.7);
             font-size: 11px;
@@ -795,7 +818,7 @@
             align-items: center;
             gap: 4px;
         }
-        
+
         .status-dot {
             width: 6px;
             height: 6px;
@@ -803,23 +826,23 @@
             background: #7dff9a;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        
+
         .chat-close {
             cursor: pointer;
             font-size: 24px;
             color: rgba(255, 255, 255, 0.8);
             transition: color 0.2s;
         }
-        
+
         .chat-close:hover {
             color: white;
         }
-        
+
         .progress-bar {
             background: #f4f8f2;
             padding: 6px 16px;
@@ -828,25 +851,25 @@
             gap: 4px;
             align-items: center;
         }
-        
+
         .progress-module {
             flex: 1;
             height: 4px;
             border-radius: 4px;
             background: #dde5d8;
         }
-        
+
         .progress-module.active {
             background: linear-gradient(90deg, #2b6e3c, #3f9e55);
         }
-        
+
         .progress-label {
             font-size: 10px;
             color: #7a9a7e;
             margin-left: 4px;
             white-space: nowrap;
         }
-        
+
         .chatbot-messages {
             flex: 1;
             overflow-y: auto;
@@ -855,27 +878,27 @@
             flex-direction: column;
             gap: 14px;
         }
-        
+
         .chatbot-messages::-webkit-scrollbar {
             width: 4px;
         }
-        
+
         .chatbot-messages::-webkit-scrollbar-track {
             background: transparent;
         }
-        
+
         .chatbot-messages::-webkit-scrollbar-thumb {
             background: #ccc;
             border-radius: 4px;
         }
-        
+
         .message-bot {
             display: flex;
             gap: 8px;
             align-items: flex-start;
             animation: fadeInMessage 0.3s ease-out;
         }
-        
+
         .message-bot .bot-avatar {
             width: 28px;
             height: 28px;
@@ -888,7 +911,7 @@
             flex-shrink: 0;
             margin-top: 2px;
         }
-        
+
         .message-bot .chat-bubble {
             background: white;
             border-radius: 4px 18px 18px 18px;
@@ -901,13 +924,13 @@
             white-space: pre-wrap;
             max-width: 85%;
         }
-        
+
         .message-user {
             display: flex;
             justify-content: flex-end;
             animation: fadeInMessage 0.3s ease-out;
         }
-        
+
         .message-user .chat-bubble {
             background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
             color: white;
@@ -917,7 +940,7 @@
             max-width: 78%;
             box-shadow: 0 2px 8px rgba(43, 110, 60, 0.25);
         }
-        
+
         @keyframes fadeInMessage {
             from {
                 opacity: 0;
@@ -928,14 +951,14 @@
                 transform: translateY(0);
             }
         }
-        
+
         .chat-options {
             margin-top: 8px;
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
-        
+
         .chat-option-btn {
             background: white;
             border: 1.5px solid #dae6d5;
@@ -949,24 +972,24 @@
             font-family: 'Inter', sans-serif;
             transition: all 0.18s;
         }
-        
+
         .chat-option-btn:hover:not(:disabled) {
             background: linear-gradient(90deg, #edf7ea, #eef3fc);
             transform: translateX(3px);
         }
-        
+
         .chat-option-btn:disabled {
             opacity: 0.45;
             cursor: not-allowed;
         }
-        
+
         .documents-list {
             margin-top: 10px;
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
-        
+
         .doc-link {
             display: flex;
             align-items: center;
@@ -981,12 +1004,12 @@
             border: 1px solid #dce8d8;
             transition: all 0.2s;
         }
-        
+
         .doc-link:hover {
             background: linear-gradient(90deg, #e0f0da, #e6eef8);
             transform: translateX(2px);
         }
-        
+
         .typing-indicator {
             display: flex;
             gap: 4px;
@@ -996,7 +1019,7 @@
             width: fit-content;
             border: 1px solid #e8e0d8;
         }
-        
+
         .typing-dot {
             width: 7px;
             height: 7px;
@@ -1004,16 +1027,16 @@
             background: #2b6e3c;
             animation: bounceDot 1.4s infinite ease-in-out;
         }
-        
+
         .typing-dot:nth-child(1) { animation-delay: 0s; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
+
         @keyframes bounceDot {
             0%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-8px); }
         }
-        
+
         .chatbot-input-area {
             padding: 10px 14px;
             border-top: 1px solid #e8e0d8;
@@ -1022,7 +1045,7 @@
             gap: 8px;
             align-items: center;
         }
-        
+
         .chatbot-input-area input {
             flex: 1;
             padding: 9px 14px;
@@ -1033,11 +1056,11 @@
             font-family: 'Inter', sans-serif;
             background: #f8fdf8;
         }
-        
+
         .chatbot-input-area input:focus {
             border-color: var(--green-agri);
         }
-        
+
         .chatbot-input-area button {
             background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
             color: white;
@@ -1049,12 +1072,12 @@
             font-weight: 700;
             transition: all 0.18s;
         }
-        
+
         .chatbot-input-area button:hover {
             filter: brightness(1.05);
             transform: translateY(-1px);
         }
-        
+
         .chat-footer {
             padding: 6px 14px;
             background: #f4f8f2;
@@ -1062,6 +1085,23 @@
             text-align: center;
             font-size: 10px;
             color: #8aaa8e;
+        }
+
+        /* ============ LOADING ============ */
+        .loading-docs {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+        .loading-docs i {
+            margin-right: 8px;
+        }
+        .error-docs {
+            text-align: center;
+            padding: 20px;
+            color: #dc2626;
+            background: #fee2e2;
+            border-radius: 12px;
         }
     </style>
 </head>
@@ -1105,33 +1145,33 @@
             <img src="images/logo-gada.png" alt="GADA Training Logo" onerror="this.src='https://placehold.co/160x60/2b6e3c/ffffff?text=GADA+Training'; this.onerror=null;">
         </div>
         <div class="nav-status">
-            <i class="fa-solid fa-user-shield"></i> Espace Privé Validé
+            <i class="fa-solid fa-user-shield"></i> <span class="nav-label">Espace Privé</span>
             <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Quitter</button>
         </div>
     </nav>
 
     <div class="main-content">
         <div class="formation-container">
-            <!-- CHAT SIDEBAR (GAUCHE) -->
+            <!-- CHAT SIDEBAR -->
             <div class="chat-sidebar">
                 <div class="chat-header">
                     <h3><i class="fa-regular fa-comments"></i> Espace Discussion</h3>
                     <p>Connecté en tant que : <span id="user-display">Chargement...</span></p>
                 </div>
-                
+
                 <div class="forum-chat-messages" id="forum-chat-messages">
                     <div style="text-align:center; padding:20px; color:#999;">
                         <i class="fa-regular fa-spinner fa-spin"></i> Connexion...
                     </div>
                 </div>
-                
+
                 <div class="forum-chat-input-area" id="forum-chat-input-area">
                     <input type="text" id="forum-chat-input" placeholder="Écrivez votre message ici..." autocomplete="off">
                     <button id="forum-chat-send-btn"><i class="fa-regular fa-paper-plane"></i> Envoyer</button>
                 </div>
             </div>
 
-            <!-- BLOCS PRINCIPAUX (DROITE) -->
+            <!-- BLOCS PRINCIPAUX -->
             <div class="main-content-blocks">
                 <div class="welcome-card">
                     <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
@@ -1172,43 +1212,43 @@
                                     <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
                                         <div class="h-folder-top">
                                             <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                            <span class="h-badge">6 fichiers</span>
+                                            <span class="h-badge" id="badge-s1">—</span>
                                         </div>
-                                        <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
-                                        <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
+                                        <div class="h-folder-title" id="title-s1">Semaine 1 : Fondements R</div>
+                                        <div class="h-folder-sub" id="sub-s1">Chargement...</div>
                                     </div>
 
                                     <div class="h-expand-panel" id="hp-s1">
-                                        <div class="h-expand-inner">
-                                            <!-- Le contenu sera chargé automatiquement par JavaScript -->
+                                        <div class="h-expand-inner" id="panel-s1">
+                                            <div class="loading-docs"><i class="fa-regular fa-spinner fa-spin"></i> Chargement des documents...</div>
                                         </div>
                                     </div>
 
                                     <div class="h-folder-item locked" id="hf-s2">
                                         <div class="h-folder-top">
                                             <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                            <span class="h-lock-badge" id="badge-s2"><i class="fa-solid fa-lock"></i> À venir</span>
                                         </div>
-                                        <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
-                                        <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
+                                        <div class="h-folder-title" id="title-s2">Semaine 2 : Modélisation R</div>
+                                        <div class="h-folder-sub" id="sub-s2">Chargement...</div>
                                     </div>
 
                                     <div class="h-folder-item locked" id="hf-s3">
                                         <div class="h-folder-top">
                                             <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                            <span class="h-lock-badge" id="badge-s3"><i class="fa-solid fa-lock"></i> À venir</span>
                                         </div>
-                                        <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
-                                        <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
+                                        <div class="h-folder-title" id="title-s3">Semaine 3 : ArcGIS Bases</div>
+                                        <div class="h-folder-sub" id="sub-s3">Chargement...</div>
                                     </div>
 
                                     <div class="h-folder-item locked" id="hf-s4">
                                         <div class="h-folder-top">
                                             <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                            <span class="h-lock-badge" id="badge-s4"><i class="fa-solid fa-lock"></i> À venir</span>
                                         </div>
-                                        <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
-                                        <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
+                                        <div class="h-folder-title" id="title-s4">Semaine 4 : ArcGIS Avancé</div>
+                                        <div class="h-folder-sub" id="sub-s4">Chargement...</div>
                                     </div>
                                 </div>
                             </div>
@@ -1250,7 +1290,7 @@
             </span>
         </div>
     </div>
-    
+
     <div class="progress-bar">
         <div class="progress-module active"></div>
         <div class="progress-module"></div>
@@ -1258,395 +1298,460 @@
         <div class="progress-module"></div>
         <span class="progress-label"><i class="fa-regular fa-clock"></i> M1 actif</span>
     </div>
-    
-    <div class="chatbot-messages" id="chatbotMessages">
-        <!-- Les messages seront insérés dynamiquement -->
-    </div>
-    
+
+    <div class="chatbot-messages" id="chatbotMessages"></div>
+
     <div class="chatbot-input-area" id="chatbotInputArea" style="display: none;">
         <input type="text" id="chatbotInput" placeholder="Votre question...">
         <button id="chatbotSend">
             <i class="fa-regular fa-paper-plane"></i>
         </button>
     </div>
-    
+
     <div class="chat-footer">
         <i class="fa-regular fa-chart-line"></i> GADA Training · Modélisation Spatiale & One Health · 2026
     </div>
 </div>
 
 <script>
-    // ==================== AUTHENTIFICATION ====================
-    const ELIGIBLE_EMAILS = [
-        "faziliarsene2@gmail.com",
-        "josuekalegamire4@gmail.com",
-        "stevenkusinza@gmail.com",
-        "stevenamampa7@gmail.com",
-        "stevenamampa15@gmail.com",
-        "lukunatowangevehugues2006@gmail.com",
-        "niyoyitakasomo@gmail.com",
-        "hwabalygie@gmail.com"
-    ];
-    
-    const TEAM_EMAILS = ["gadasolution.rdc@gmail.com"];
-    const ALLOWED_EMAILS = [...ELIGIBLE_EMAILS, ...TEAM_EMAILS];
-    
-    let users = JSON.parse(localStorage.getItem('gada_users')) || [];
-    let currentUser = JSON.parse(sessionStorage.getItem('gada_current_user')) || null;
-    let isLoginMode = true;
-    
-    function isEmailAllowed(email) {
-        return ALLOWED_EMAILS.includes(email.toLowerCase());
-    }
-    
-    function showAuthMessage(msg, isError) {
-        const msgDiv = document.getElementById('authMessage');
-        msgDiv.textContent = msg;
-        msgDiv.className = 'auth-message ' + (isError ? 'error' : 'success');
-        setTimeout(() => {
-            msgDiv.className = 'auth-message';
-        }, 5000);
-    }
-    
-    function renderAuthForm() {
-        const fieldsDiv = document.getElementById('authFields');
-        const submitBtn = document.getElementById('authSubmitBtn');
-        const switchText = document.getElementById('authSwitchText');
-        const switchLink = document.getElementById('authSwitchLink');
-        
-        if (isLoginMode) {
-            submitBtn.textContent = 'Se connecter';
-            switchText.textContent = 'Pas encore de compte ?';
-            switchLink.textContent = 'Créer un compte';
-            fieldsDiv.innerHTML = `
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="loginEmail" required placeholder="votre@email.com">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Mot de passe</label>
-                    <input type="password" id="loginPassword" required placeholder="••••••••">
-                </div>
-            `;
-        } else {
-            submitBtn.textContent = 'Créer mon compte';
-            switchText.textContent = 'Déjà un compte ?';
-            switchLink.textContent = 'Se connecter';
-            fieldsDiv.innerHTML = `
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Nom</label>
-                    <input type="text" id="regNom" required placeholder="Votre nom">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Post-nom / Prénom</label>
-                    <input type="text" id="regPrenom" required placeholder="Post-nom ou Prénom">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-map-marker-alt"></i> Pays</label>
-                    <input type="text" id="regPays" required placeholder="Votre pays">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-phone"></i> Téléphone</label>
-                    <input type="tel" id="regPhone" required placeholder="+243 XX XXX XXXX">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="regEmail" required placeholder="exemple@email.com">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Mot de passe</label>
-                    <input type="password" id="regPassword" required placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-check-circle"></i> Vérification mot de passe</label>
-                    <input type="password" id="regPasswordConfirm" required placeholder="Confirmez votre mot de passe">
-                </div>
-            `;
-        }
-    }
-    
-    function handleAuthSubmit(e) {
-        e.preventDefault();
-        
-        if (isLoginMode) {
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const password = document.getElementById('loginPassword').value;
-            const user = users.find(u => u.email === email && atob(u.password) === password);
-            
-            if (user) {
-                if (!isEmailAllowed(email)) {
-                    showAuthMessage('❌ Accès refusé. Veuillez finaliser votre paiement ou contacter gadasolution.rdc@gmail.com', true);
-                    return;
-                }
-                currentUser = user;
-                sessionStorage.setItem('gada_current_user', JSON.stringify(user));
-                showDashboard();
-            } else {
-                showAuthMessage('❌ Email ou mot de passe incorrect', true);
-            }
-        } else {
-            const nom = document.getElementById('regNom').value.trim();
-            const prenom = document.getElementById('regPrenom').value.trim();
-            const pays = document.getElementById('regPays').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const email = document.getElementById('regEmail').value.trim().toLowerCase();
-            const password = document.getElementById('regPassword').value;
-            const passwordConfirm = document.getElementById('regPasswordConfirm').value;
-            
-            if (password !== passwordConfirm) {
-                showAuthMessage('❌ Les mots de passe ne correspondent pas !', true);
-                return;
-            }
-            if (password.length < 6) {
-                showAuthMessage('❌ Le mot de passe doit contenir au moins 6 caractères', true);
-                return;
-            }
-            if (!isEmailAllowed(email)) {
-                showAuthMessage('❌ Désolé, vous n\'êtes pas éligible à prendre part à cette section. Veuillez finaliser votre paiement ou contacter l\'assistance technique de GADA Solution : gadasolution.rdc@gmail.com', true);
-                return;
-            }
-            if (users.find(u => u.email === email)) {
-                showAuthMessage('❌ Un compte existe déjà avec cet email', true);
-                return;
-            }
-            
-            const newUser = { id: Date.now(), nom, prenom, pays, phone, email, password: btoa(password) };
-            users.push(newUser);
-            localStorage.setItem('gada_users', JSON.stringify(users));
-            showAuthMessage('✅ Compte créé avec succès ! Connectez-vous maintenant.', false);
-            setTimeout(() => {
-                isLoginMode = true;
-                renderAuthForm();
-            }, 2000);
-        }
-    }
-    
-    function showDashboard() {
-        document.getElementById('authOverlay').style.display = 'none';
-        document.getElementById('mainWrapper').classList.add('authenticated');
-        document.getElementById('chatToggle').style.display = 'flex';
-        const userName = `${currentUser.nom} ${currentUser.prenom}`;
-        const welcomeTitle = document.getElementById('welcomeTitle');
-        if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${userName} dans votre espace de formation !`;
-    }
-    
-    function logout() {
-        sessionStorage.removeItem('gada_current_user');
-        currentUser = null;
-        document.getElementById('authOverlay').style.display = 'flex';
-        document.getElementById('mainWrapper').classList.remove('authenticated');
-        document.getElementById('chatToggle').style.display = 'none';
-        document.getElementById('chatWindow').classList.remove('open');
-        isLoginMode = true;
-        renderAuthForm();
-    }
-    
-    if (currentUser && isEmailAllowed(currentUser.email)) {
-        document.getElementById('authOverlay').style.display = 'none';
-        document.getElementById('mainWrapper').classList.add('authenticated');
-        document.getElementById('chatToggle').style.display = 'flex';
-        const userName = `${currentUser.nom} ${currentUser.prenom}`;
-        const welcomeTitle = document.getElementById('welcomeTitle');
-        if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${userName} dans votre espace de formation !`;
-    } else {
-        document.getElementById('authOverlay').style.display = 'flex';
-        document.getElementById('mainWrapper').classList.remove('authenticated');
-        document.getElementById('chatToggle').style.display = 'none';
-        renderAuthForm();
-    }
-    
-    document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
-    document.getElementById('authSwitchLink').addEventListener('click', () => {
-        isLoginMode = !isLoginMode;
-        renderAuthForm();
-    });
-    
-    // ==================== FONCTIONS ORIGINALES ====================
-    function ouvrirZone() {
-        const btn = document.getElementById('btn-open');
-        const zone = document.getElementById('folder-zone');
-        if (btn) btn.style.display = 'none';
-        if (zone) zone.classList.add('open');
-    }
-    
-    let currentOpenPanelId = null;
-    
-    function toggleHFolder(id) {
-        const panel = document.getElementById('hp-' + id);
-        const folderItem = document.getElementById('hf-' + id);
-        const icon = document.getElementById('hfi-' + id);
-        
-        if (!panel || !folderItem) return;
-        
-        const isOpen = panel.classList.contains('open');
-        
-        document.querySelectorAll('.h-expand-panel.open').forEach(p => {
-            if (p.id !== ('hp-' + id)) p.classList.remove('open');
-        });
-        document.querySelectorAll('.h-folder-item.active').forEach(item => {
-            if (item.id !== ('hf-' + id)) item.classList.remove('active');
-        });
-        
-        document.querySelectorAll('[id^="hfi-"]').forEach(ic => {
-            ic.className = 'fa-solid fa-folder h-folder-icon';
-            ic.style.color = '#b5824e';
-        });
-        
-        if (!isOpen) {
-            panel.classList.add('open');
-            folderItem.classList.add('active');
-            icon.className = 'fa-solid fa-folder-open h-folder-icon';
-            icon.style.color = '#4f7a3b';
-            currentOpenPanelId = 'hp-' + id;
-            
-            setTimeout(() => {
-                const wrapper = document.querySelector('.h-folder-wrapper');
-                if (wrapper) {
-                    const panelRect = panel.getBoundingClientRect();
-                    const wrapperRect = wrapper.getBoundingClientRect();
-                    if (panelRect.right > wrapperRect.right) {
-                        wrapper.scrollBy({ left: panelRect.right - wrapperRect.right + 20, behavior: 'smooth' });
-                    }
-                }
-            }, 50);
-        } else {
-            panel.classList.remove('open');
-            folderItem.classList.remove('active');
-            icon.className = 'fa-solid fa-folder h-folder-icon';
-            icon.style.color = '#b5824e';
-            currentOpenPanelId = null;
-        }
-    }
-    
-    // ==================== CHARGEMENT DES DOCUMENTS (VERSION INTÉGRÉE) ====================
-let documentsData = {
-    "semaine1": {
-        "titre": "Semaine 1 : Fondements R",
-        "date": "17 mai – 23 mai",
-        "description": "Rappel des bases, Introduction & statistiques descriptives, Nettoyage et structuration des données, Analyse exploratoire des données (AED), visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture",
-        "badge": "6 fichiers",
-        "fichiers": [
-            {
-                "nom": "GADA_Plan_Formation_2026.pdf",
-                "type": "pdf",
-                "icone": "fa-file-pdf"
-            },
-            {
-                "nom": "GADA_Formation_RStudio_Jour1.pdf",
-                "type": "pdf",
-                "icone": "fa-file-pdf"
-            },
-            {
-                "nom": "Aide a l'utilisation de R pour mettre en oeuvre les methodes.pdf",
-                "type": "pdf",
-                "icone": "fa-file-pdf"
-            },
-            {
-                "nom": "GADA_Formation_RStudio_Jour2.pdf",
-                "type": "pdf",
-                "icone": "fa-file-pdf"
-            },
-            {
-                "nom": "Script_Jour2.R",
-                "type": "r",
-                "icone": "fa-file-code"
-            },
-            {
-                "nom": "Donnees_sorgho_Benoit_kajora_complet.xlsx",
-                "type": "excel",
-                "icone": "fa-file-excel"
-            }
-        ]
-    },
-    "semaine2": {
-        "locked": true,
-        "titre": "Semaine 2 : Modélisation R",
-        "date": "24 mai – 30 mai",
-        "description": "Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles, Analyse One Health, impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt, distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)",
-        "badge": "À venir",
-        "fichiers": []
-    },
-    "semaine3": {
-        "locked": true,
-        "titre": "Semaine 3 : ArcGIS Bases",
-        "date": "31 mai – 6 juin",
-        "description": "Interface ArcGIS Pro & gestion de projets SIG, Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère",
-        "badge": "À venir",
-        "fichiers": []
-    },
-    "semaine4": {
-        "locked": true,
-        "titre": "Semaine 4 : ArcGIS Avancé",
-        "date": "7 juin – 17 juin",
-        "description": "Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points), Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables",
-        "badge": "À venir",
-        "fichiers": []
-    }
-};
+// ==================== AUTHENTIFICATION ====================
+const ELIGIBLE_EMAILS = [
+    "faziliarsene2@gmail.com",
+    "josuekalegamire4@gmail.com",
+    "stevenkusinza@gmail.com",
+    "stevenamampa7@gmail.com",
+    "stevenamampa15@gmail.com",
+    "lukunatowangevehugues2006@gmail.com",
+    "niyoyitakasomo@gmail.com",
+    "hwabalygie@gmail.com"
+];
 
-function chargerDocuments() {
+const TEAM_EMAILS = ["gadasolution.rdc@gmail.com"];
+const ALLOWED_EMAILS = [...ELIGIBLE_EMAILS, ...TEAM_EMAILS];
+
+let users = JSON.parse(localStorage.getItem('gada_users')) || [];
+let currentUser = JSON.parse(sessionStorage.getItem('gada_current_user')) || null;
+let isLoginMode = true;
+
+function isEmailAllowed(email) {
+    return ALLOWED_EMAILS.includes(email.toLowerCase());
+}
+
+function showAuthMessage(msg, isError) {
+    const msgDiv = document.getElementById('authMessage');
+    msgDiv.textContent = msg;
+    msgDiv.className = 'auth-message ' + (isError ? 'error' : 'success');
+    setTimeout(() => {
+        msgDiv.className = 'auth-message';
+    }, 5000);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function renderAuthForm() {
+    const fieldsDiv = document.getElementById('authFields');
+    const submitBtn = document.getElementById('authSubmitBtn');
+    const switchText = document.getElementById('authSwitchText');
+    const switchLink = document.getElementById('authSwitchLink');
+
+    if (isLoginMode) {
+        submitBtn.textContent = 'Se connecter';
+        switchText.textContent = 'Pas encore de compte ?';
+        switchLink.textContent = 'Créer un compte';
+        fieldsDiv.innerHTML = `
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="loginEmail" required placeholder="votre@email.com">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Mot de passe</label>
+                <input type="password" id="loginPassword" required placeholder="••••••••">
+            </div>
+        `;
+    } else {
+        submitBtn.textContent = 'Créer mon compte';
+        switchText.textContent = 'Déjà un compte ?';
+        switchLink.textContent = 'Se connecter';
+        fieldsDiv.innerHTML = `
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Nom</label>
+                <input type="text" id="regNom" required placeholder="Votre nom">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Post-nom / Prénom</label>
+                <input type="text" id="regPrenom" required placeholder="Post-nom ou Prénom">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Pays</label>
+                <input type="text" id="regPays" required placeholder="Votre pays">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-phone"></i> Téléphone</label>
+                <input type="tel" id="regPhone" required placeholder="+243 XX XXX XXXX">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="regEmail" required placeholder="exemple@email.com">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Mot de passe</label>
+                <input type="password" id="regPassword" required placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-check-circle"></i> Vérification mot de passe</label>
+                <input type="password" id="regPasswordConfirm" required placeholder="Confirmez votre mot de passe">
+            </div>
+        `;
+    }
+}
+
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function handleAuthSubmit(e) {
+    e.preventDefault();
+
+    if (isLoginMode) {
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+        const password = document.getElementById('loginPassword').value;
+
+        const user = users.find(u => u.email === email);
+        if (user) {
+            // Vérifier si le mot de passe est en Base64 (ancien format) ou SHA-256 (nouveau)
+            const isBase64 = user.password && !user.password.match(/^[0-9a-f]{64}$/);
+            let passwordValid = false;
+
+            if (isBase64) {
+                passwordValid = atob(user.password) === password;
+                // Migrer automatiquement vers SHA-256
+                if (passwordValid) {
+                    hashPassword(password).then(hash => {
+                        user.password = hash;
+                        localStorage.setItem('gada_users', JSON.stringify(users));
+                    });
+                }
+            } else {
+                // Nouveau format SHA-256
+                passwordValid = hashPassword(password).then(hash => {
+                    return hash === user.password;
+                });
+            }
+
+            // Gestion synchrone pour Base64, async pour SHA-256
+            if (isBase64) {
+                if (passwordValid) {
+                    if (!isEmailAllowed(email)) {
+                        showAuthMessage('❌ Accès refusé. Veuillez finaliser votre paiement ou contacter gadasolution.rdc@gmail.com', true);
+                        return;
+                    }
+                    currentUser = user;
+                    sessionStorage.setItem('gada_current_user', JSON.stringify(user));
+                    showDashboard();
+                } else {
+                    showAuthMessage('❌ Email ou mot de passe incorrect', true);
+                }
+            } else {
+                // Nouveau format - async
+                hashPassword(password).then(hash => {
+                    if (hash === user.password) {
+                        if (!isEmailAllowed(email)) {
+                            showAuthMessage('❌ Accès refusé. Veuillez finaliser votre paiement ou contacter gadasolution.rdc@gmail.com', true);
+                            return;
+                        }
+                        currentUser = user;
+                        sessionStorage.setItem('gada_current_user', JSON.stringify(user));
+                        showDashboard();
+                    } else {
+                        showAuthMessage('❌ Email ou mot de passe incorrect', true);
+                    }
+                });
+                return; // Sortir en attendant la promesse
+            }
+        } else {
+            showAuthMessage('❌ Email ou mot de passe incorrect', true);
+        }
+        return;
+    }
+
+    // Mode inscription
+    const nom = document.getElementById('regNom').value.trim();
+    const prenom = document.getElementById('regPrenom').value.trim();
+    const pays = document.getElementById('regPays').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const email = document.getElementById('regEmail').value.trim().toLowerCase();
+    const password = document.getElementById('regPassword').value;
+    const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+
+    if (password !== passwordConfirm) {
+        showAuthMessage('❌ Les mots de passe ne correspondent pas !', true);
+        return;
+    }
+    if (password.length < 6) {
+        showAuthMessage('❌ Le mot de passe doit contenir au moins 6 caractères', true);
+        return;
+    }
+    if (!isEmailAllowed(email)) {
+        showAuthMessage('❌ Désolé, vous n\'êtes pas éligible à prendre part à cette section. Veuillez finaliser votre paiement ou contacter l\'assistance technique de GADA Solution : gadasolution.rdc@gmail.com', true);
+        return;
+    }
+    if (users.find(u => u.email === email)) {
+        showAuthMessage('❌ Un compte existe déjà avec cet email', true);
+        return;
+    }
+
+    // Hash du mot de passe avec SHA-256 avant stockage
+    showAuthMessage('⏳ Création du compte...', false);
+
+    hashPassword(password).then(hash => {
+        const newUser = {
+            id: Date.now(),
+            nom,
+            prenom,
+            pays,
+            phone,
+            email,
+            password: hash,  // Stocké en SHA-256, plus en Base64
+            date_creation: new Date().toISOString()
+        };
+        users.push(newUser);
+        localStorage.setItem('gada_users', JSON.stringify(users));
+        showAuthMessage('✅ Compte créé avec succès ! Connectez-vous maintenant.', false);
+        setTimeout(() => {
+            isLoginMode = true;
+            renderAuthForm();
+        }, 2000);
+    });
+}
+
+function showDashboard() {
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('mainWrapper').classList.add('authenticated');
+    document.getElementById('chatToggle').style.display = 'flex';
+    const userName = `${currentUser.nom} ${currentUser.prenom}`;
+    const welcomeTitle = document.getElementById('welcomeTitle');
+    if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${escapeHtml(userName)} dans votre espace de formation !`;
+    // Rafraîchir l'affichage utilisateur du chat
+    updateUserDisplay();
+}
+
+function logout() {
+    sessionStorage.removeItem('gada_current_user');
+    currentUser = null;
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('mainWrapper').classList.remove('authenticated');
+    document.getElementById('chatToggle').style.display = 'none';
+    document.getElementById('chatWindow').classList.remove('open');
+    isLoginMode = true;
+    renderAuthForm();
+}
+
+// Auto-login si session valide
+if (currentUser && isEmailAllowed(currentUser.email)) {
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('mainWrapper').classList.add('authenticated');
+    document.getElementById('chatToggle').style.display = 'flex';
+    const userName = `${currentUser.nom} ${currentUser.prenom}`;
+    const welcomeTitle = document.getElementById('welcomeTitle');
+    if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${escapeHtml(userName)} dans votre espace de formation !`;
+} else {
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('mainWrapper').classList.remove('authenticated');
+    document.getElementById('chatToggle').style.display = 'none';
+    renderAuthForm();
+}
+
+document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
+document.getElementById('authSwitchLink').addEventListener('click', () => {
+    isLoginMode = !isLoginMode;
+    renderAuthForm();
+});
+
+// ==================== FONCTIONS ORIGINALES ====================
+function ouvrirZone() {
+    const btn = document.getElementById('btn-open');
+    const zone = document.getElementById('folder-zone');
+    if (btn) btn.style.display = 'none';
+    if (zone) zone.classList.add('open');
+}
+
+let currentOpenPanelId = null;
+
+function toggleHFolder(id) {
+    const panel = document.getElementById('hp-' + id);
+    const folderItem = document.getElementById('hf-' + id);
+    const icon = document.getElementById('hfi-' + id);
+
+    if (!panel || !folderItem) return;
+
+    const isOpen = panel.classList.contains('open');
+
+    document.querySelectorAll('.h-expand-panel.open').forEach(p => {
+        if (p.id !== ('hp-' + id)) p.classList.remove('open');
+    });
+    document.querySelectorAll('.h-folder-item.active').forEach(item => {
+        if (item.id !== ('hf-' + id)) item.classList.remove('active');
+    });
+
+    document.querySelectorAll('[id^="hfi-"]').forEach(ic => {
+        ic.className = 'fa-solid fa-folder h-folder-icon';
+        ic.style.color = '#b5824e';
+    });
+
+    if (!isOpen) {
+        panel.classList.add('open');
+        folderItem.classList.add('active');
+        icon.className = 'fa-solid fa-folder-open h-folder-icon';
+        icon.style.color = '#4f7a3b';
+        currentOpenPanelId = 'hp-' + id;
+
+        setTimeout(() => {
+            const wrapper = document.querySelector('.h-folder-wrapper');
+            if (wrapper) {
+                const panelRect = panel.getBoundingClientRect();
+                const wrapperRect = wrapper.getBoundingClientRect();
+                if (panelRect.right > wrapperRect.right) {
+                    wrapper.scrollBy({ left: panelRect.right - wrapperRect.right + 20, behavior: 'smooth' });
+                }
+            }
+        }, 50);
+    } else {
+        panel.classList.remove('open');
+        folderItem.classList.remove('active');
+        icon.className = 'fa-solid fa-folder h-folder-icon';
+        icon.style.color = '#b5824e';
+        currentOpenPanelId = null;
+    }
+}
+
+// ==================== CHARGEMENT DYNAMIQUE DU JSON ====================
+let documentsData = null;
+
+async function chargerDocuments() {
+    const fallbackData = {
+        "semaine1": {
+            "titre": "Semaine 1 : Fondements R",
+            "date": "17 mai – 23 mai",
+            "description": "Données temporairement indisponibles.",
+            "locked": false,
+            "fichiers": []
+        },
+        "semaine2": { "titre": "Semaine 2", "date": "24 mai – 30 mai", "locked": true, "fichiers": [] },
+        "semaine3": { "titre": "Semaine 3", "date": "31 mai – 6 juin", "locked": true, "fichiers": [] },
+        "semaine4": { "titre": "Semaine 4", "date": "7 juin – 17 juin", "locked": true, "fichiers": [] }
+    };
+
+    try {
+        // Cache-busting avec timestamp
+        const url = 'documents.json?v=' + Date.now();
+        const reponse = await fetch(url);
+        if (!reponse.ok) throw new Error('HTTP ' + reponse.status);
+        const data = await reponse.json();
+        documentsData = data;
+        console.log('✅ Documents chargés depuis le serveur');
+    } catch (e) {
+        console.warn('⚠️ Impossible de charger documents.json, utilisation des données de secours', e);
+        documentsData = fallbackData;
+    }
+
     genererAffichageDocuments();
 }
 
 function genererAffichageDocuments() {
     if (!documentsData) return;
-    
-    const semaine1 = documentsData.semaine1;
-    const badgeElem = document.querySelector('#hf-s1 .h-badge');
-    const panelInner = document.querySelector('#hp-s1 .h-expand-inner');
-    
-    if (badgeElem) badgeElem.textContent = semaine1.badge;
-    
-    if (panelInner) {
-        let fichiersHtml = `
-            <div class="h-expand-title">
-                <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
-                ${semaine1.titre} – Documents
-            </div>
-        `;
-        
-        semaine1.fichiers.forEach(fichier => {
-            fichiersHtml += `
-                <div class="h-file-item">
-                    <div class="h-file-name">
-                        <i class="fa-solid ${fichier.icone}"></i>
-                        ${fichier.nom}
-                    </div>
-                    <a href="documents/${encodeURIComponent(fichier.nom)}" class="h-file-dl">
-                        <i class="fa-solid fa-download"></i>
-                    </a>
-                </div>
-            `;
-        });
-        
-        panelInner.innerHTML = fichiersHtml;
-    }
-    
-    mettreAJourSemaine('s2', documentsData.semaine2);
-    mettreAJourSemaine('s3', documentsData.semaine3);
-    mettreAJourSemaine('s4', documentsData.semaine4);
+
+    const mapping = {
+        's1': 'semaine1',
+        's2': 'semaine2',
+        's3': 'semaine3',
+        's4': 'semaine4'
+    };
+
+    Object.keys(mapping).forEach(function(suffix) {
+        const semaineKey = mapping[suffix];
+        const data = documentsData[semaineKey];
+        if (!data) return;
+
+        const folderItem = document.getElementById('hf-' + suffix);
+        const badgeElem = document.getElementById('badge-' + suffix);
+        const titleElem = document.getElementById('title-' + suffix);
+        const subElem = document.getElementById('sub-' + suffix);
+
+        if (!folderItem) return;
+
+        // Verrouillage
+        if (data.locked) {
+            folderItem.classList.add('locked');
+            folderItem.onclick = null;
+            if (badgeElem) {
+                badgeElem.className = 'h-lock-badge';
+                badgeElem.innerHTML = '<i class="fa-solid fa-lock"></i> ' + (data.badge || 'À venir');
+            }
+        } else {
+            folderItem.classList.remove('locked');
+            folderItem.onclick = function() { toggleHFolder(suffix); };
+            // Calcul automatique du nombre de fichiers
+            const nbFichiers = data.fichiers ? data.fichiers.length : 0;
+            if (badgeElem) {
+                if (data.badge && data.badge.includes('fichier')) {
+                    badgeElem.textContent = data.badge;
+                } else {
+                    badgeElem.textContent = nbFichiers + ' fichier' + (nbFichiers > 1 ? 's' : '');
+                }
+                badgeElem.className = 'h-badge';
+            }
+        }
+
+        // Titre
+        if (titleElem) {
+            titleElem.innerHTML = data.titre + '<br><span style="font-weight:500; color:#4a7a52;">' + (data.date || '') + '</span>';
+        }
+
+        // Description
+        if (subElem) {
+            subElem.textContent = data.resume || data.description || '';
+        }
+
+        // Panneau de fichiers (uniquement pour la semaine 1 - déverrouillée)
+        if (suffix === 's1' && !data.locked) {
+            const panelInner = document.getElementById('panel-s1');
+            if (panelInner && data.fichiers && data.fichiers.length > 0) {
+                let fichiersHtml = '';
+                fichiersHtml += '<div class="h-expand-title">';
+                fichiersHtml += '<i class="fa-solid fa-folder-open" style="color:#b5824e;"></i> ';
+                fichiersHtml += data.titre + ' — Documents</div>';
+
+                data.fichiers.forEach(function(fichier) {
+                    const fileUrl = fichier.url || 'documents/' + encodeURIComponent(fichier.nom);
+                    const tailleInfo = fichier.taille ? '<span class="h-file-meta">' + fichier.taille + '</span>' : '';
+                    fichiersHtml += '<div class="h-file-item">';
+                    fichiersHtml += '<div class="h-file-name">';
+                    fichiersHtml += '<i class="fa-solid ' + (fichier.icone || 'fa-file') + '"></i> ';
+                    fichiersHtml += escapeHtml(fichier.nom) + tailleInfo;
+                    fichiersHtml += '</div>';
+                    fichiersHtml += '<a href="' + fileUrl + '" class="h-file-dl" download>';
+                    fichiersHtml += '<i class="fa-solid fa-download"></i></a>';
+                    fichiersHtml += '</div>';
+                });
+
+                panelInner.innerHTML = fichiersHtml;
+            } else if (panelInner) {
+                panelInner.innerHTML = '<p style="color:#999; padding:10px;">📁 Aucun fichier disponible pour cette semaine.</p>';
+            }
+        }
+    });
 }
 
-function mettreAJourSemaine(id, data) {
-    const folderItem = document.getElementById(`hf-${id}`);
-    if (!folderItem) return;
-    
-    if (data.locked) {
-        folderItem.classList.add('locked');
-    } else {
-        folderItem.classList.remove('locked');
-    }
-    
-    const titleSpan = folderItem.querySelector('.h-folder-title');
-    if (titleSpan) {
-        titleSpan.innerHTML = `${data.titre}<br><span style="font-weight:500; color:#4a7a52;">${data.date}</span>`;
-    }
-    
-    const subDiv = folderItem.querySelector('.h-folder-sub');
-    if (subDiv) subDiv.textContent = data.description;
-}
-
-chargerDocuments();
+// Lancer le chargement des documents au démarrage
+document.addEventListener('DOMContentLoaded', chargerDocuments);
 </script>
 
 <!-- Firebase SDK -->
@@ -1654,416 +1759,492 @@ chargerDocuments();
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
-    // Configuration Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyC_G2Fu6ZN4tzavRzfKo9fjXj5R_Un0PyE",
-        authDomain: "gada-training-chat.firebaseapp.com",
-        projectId: "gada-training-chat",
-        storageBucket: "gada-training-chat.firebasestorage.app",
-        messagingSenderId: "251680805573",
-        appId: "1:251680805573:web:a7a9e6b88c0b2844be96ac",
-        measurementId: "G-DXY25B5ZWK",
-        databaseURL: "https://gada-training-chat-default-rtdb.firebaseio.com/"
+// ==================== FIREBASE CHAT EN DIRECT ====================
+const firebaseConfig = {
+    apiKey: "AIzaSyC_G2Fu6ZN4tzavRzfKo9fjXj5R_Un0PyE",
+    authDomain: "gada-training-chat.firebaseapp.com",
+    projectId: "gada-training-chat",
+    storageBucket: "gada-training-chat.firebasestorage.app",
+    messagingSenderId: "251680805573",
+    appId: "1:251680805573:web:a7a9e6b88c0b2844be96ac",
+    measurementId: "G-DXY25B5ZWK",
+    databaseURL: "https://gada-training-chat-default-rtdb.firebaseio.com/"
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const messagesRef = database.ref('forum_messages').limitToLast(100);
+
+function getCurrentUserFirebase() {
+    return JSON.parse(sessionStorage.getItem('gada_current_user'));
+}
+
+function updateUserDisplay() {
+    const current = getCurrentUserFirebase();
+    const userDisplay = document.getElementById('user-display');
+    if (current && userDisplay) {
+        const isFormateur = current.email === "gadasolution.rdc@gmail.com";
+        userDisplay.textContent = escapeHtml(current.nom) + ' ' + escapeHtml(current.prenom) + (isFormateur ? ' (Formateur)' : '');
+    } else if (userDisplay) {
+        userDisplay.textContent = "Non connecté";
+    }
+}
+updateUserDisplay();
+
+const forumMessagesContainer = document.getElementById('forum-chat-messages');
+const forumInput = document.getElementById('forum-chat-input');
+const forumSendBtn = document.getElementById('forum-chat-send-btn');
+
+function escapeForumHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function sendForumMessage() {
+    const text = forumInput.value.trim();
+    if (text === "") return;
+
+    const current = getCurrentUserFirebase();
+    if (!current) {
+        alert("Veuillez vous connecter pour envoyer un message");
+        return;
+    }
+
+    // Feedback visuel : désactiver le bouton
+    forumSendBtn.disabled = true;
+    forumSendBtn.innerHTML = '<i class="fa-regular fa-spinner fa-spin"></i> Envoi...';
+
+    // Nettoyer le senderName (sécurité XSS)
+    const cleanName = escapeForumHtml(current.nom + ' ' + current.prenom);
+
+    const messageData = {
+        email: current.email,
+        senderName: cleanName,
+        text: text,
+        timestamp: Date.now(),
+        timeStr: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
     };
-    
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const messagesRef = database.ref('forum_messages');
-    
-    function getCurrentUserFirebase() {
-        return JSON.parse(sessionStorage.getItem('gada_current_user'));
-    }
-    
-    function updateUserDisplay() {
-        const current = getCurrentUserFirebase();
-        const userDisplay = document.getElementById('user-display');
-        if (current && userDisplay) {
-            userDisplay.textContent = `${current.nom} ${current.prenom}${current.email === "gadasolution.rdc@gmail.com" ? ' (Formateur)' : ''}`;
-        } else if (userDisplay) {
-            userDisplay.textContent = "Non connecté";
-        }
-    }
-    updateUserDisplay();
-    setInterval(updateUserDisplay, 2000);
-    
-    const forumMessagesContainer = document.getElementById('forum-chat-messages');
-    const forumInput = document.getElementById('forum-chat-input');
-    const forumSendBtn = document.getElementById('forum-chat-send-btn');
-    
-    function sendForumMessage() {
-        const text = forumInput.value.trim();
-        if (text === "") return;
-        
-        const current = getCurrentUserFirebase();
-        if (!current) {
-            alert("Veuillez vous connecter pour envoyer un message");
-            return;
-        }
-        
-        const messageData = {
-            email: current.email,
-            senderName: `${current.nom} ${current.prenom}`,
-            text: text,
-            timestamp: Date.now(),
-            timeStr: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-        };
-        
-        messagesRef.push(messageData);
-        forumInput.value = "";
-    }
-    
-    if (forumSendBtn) forumSendBtn.addEventListener('click', sendForumMessage);
-    if (forumInput) {
-        forumInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendForumMessage();
+
+    messagesRef.push(messageData)
+        .then(() => {
+            forumInput.value = "";
+            forumSendBtn.disabled = false;
+            forumSendBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Envoyer';
+        })
+        .catch((error) => {
+            console.error("Erreur envoi Firebase:", error);
+            forumSendBtn.disabled = false;
+            forumSendBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> Envoyer';
+            alert("Erreur lors de l'envoi. Vérifiez votre connexion.");
         });
-    }
-    
-    function escapeForumHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    messagesRef.on('child_added', (snapshot) => {
-        const data = snapshot.val();
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        
-        const isAdmin = data.email === "gadasolution.rdc@gmail.com";
-        const displayName = isAdmin ? "Formateur" : (data.senderName || data.email.split('@')[0]);
-        
-        if (isAdmin) {
-            messageElement.classList.add('msg-admin');
-            messageElement.innerHTML = `<span class="meta">📘 ${displayName} • ${data.timeStr}</span> ${escapeForumHtml(data.text)}`;
-        } else {
-            messageElement.classList.add('msg-student');
-            messageElement.innerHTML = `<span class="meta">👤 ${displayName} • ${data.timeStr}</span> ${escapeForumHtml(data.text)}`;
-        }
-        
-        forumMessagesContainer.appendChild(messageElement);
-        forumMessagesContainer.scrollTop = forumMessagesContainer.scrollHeight;
+}
+
+if (forumSendBtn) forumSendBtn.addEventListener('click', sendForumMessage);
+if (forumInput) {
+    forumInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendForumMessage();
     });
+}
+
+// Message de bienvenue dans le chat
+function addWelcomeMessage() {
+    if (forumMessagesContainer.children.length <= 1) {
+        forumMessagesContainer.innerHTML = '';
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.style.cssText = 'text-align:center; padding:20px; color:#999; font-size:0.85rem;';
+        welcomeDiv.innerHTML = '<i class="fa-regular fa-comments"></i><br><br>Bienvenue dans l\'espace discussion !<br>Posez vos questions et échangez avec les autres apprenants.';
+        forumMessagesContainer.appendChild(welcomeDiv);
+    }
+}
+
+messagesRef.on('child_added', (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+
+    // Supprimer le message de bienvenue dès qu'un vrai message arrive
+    const welcomeMsg = forumMessagesContainer.querySelector('div[style]');
+    if (welcomeMsg && forumMessagesContainer.children.length === 1) {
+        forumMessagesContainer.innerHTML = '';
+    }
+
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+
+    const isAdmin = data.email === "gadasolution.rdc@gmail.com";
+    const displayName = isAdmin ? "Formateur" : (data.senderName || data.email.split('@')[0]);
+
+    if (isAdmin) {
+        messageElement.classList.add('msg-admin');
+        messageElement.innerHTML = '<span class="meta">📘 ' + escapeForumHtml(displayName) + ' • ' + escapeForumHtml(data.timeStr || '') + '</span> ' + escapeForumHtml(data.text);
+    } else {
+        messageElement.classList.add('msg-student');
+        messageElement.innerHTML = '<span class="meta">👤 ' + escapeForumHtml(displayName) + ' • ' + escapeForumHtml(data.timeStr || '') + '</span> ' + escapeForumHtml(data.text);
+    }
+
+    forumMessagesContainer.appendChild(messageElement);
+    forumMessagesContainer.scrollTop = forumMessagesContainer.scrollHeight;
+});
+
+// Ajouter le message de bienvenue si le chat est vide
+setTimeout(addWelcomeMessage, 500);
 </script>
 
 <script>
-    // ==================== CHATBOT IA ====================
-    const GADA_KNOWLEDGE = {
-        formation: {
-            titre: "Modélisation Spatiale & Statistique — Approche One Health",
-            duree: "4 semaines (17 mai – 17 juin 2026)",
+// ==================== CHATBOT IA ====================
+const GADA_KNOWLEDGE = {
+    formation: {
+        titre: "Modélisation Spatiale & Statistique — Approche One Health",
+        duree: "4 semaines (17 mai – 17 juin 2026)",
+    },
+    modules: [
+        {
+            id: "M1",
+            titre: "Module I — R : Fondements & Exploration",
+            semaine: "Semaine 1 : 17–23 mai",
+            statut: "actif",
+            concepts: ["vecteurs", "dataframes", "dplyr", "ggplot2", "GLM", "t-test", "ANOVA", "regression logistique"],
         },
-        modules: [
-            {
-                id: "M1",
-                titre: "Module I — R : Fondements & Exploration",
-                semaine: "Semaine 1 : 17–23 mai",
-                statut: "actif",
-                objectifs: [
-                    "Maîtriser les bases de R et RStudio",
-                    "Manipuler et nettoyer des données avec dplyr & tidyr",
-                    "Produire des visualisations avancées avec ggplot2",
-                    "Appliquer des statistiques descriptives et des tests (t-test, ANOVA)",
-                    "Construire des modèles linéaires et logistiques en santé/agriculture",
-                ],
-                documents: [],
-                concepts: ["vecteurs", "dataframes", "dplyr", "ggplot2", "GLM", "t-test", "ANOVA", "regression logistique"],
-            },
-            {
-                id: "M2",
-                titre: "Module II — R : One Health & Modélisation Avancée",
-                semaine: "Semaine 2 : 24–30 mai",
-                statut: "a_venir",
-                objectifs: [],
-                documents: [],
-                concepts: ["NDVI", "NDWI", "SAVI", "LST", "MaxEnt", "Random Forest", "One Health"],
-            },
-            {
-                id: "M3",
-                titre: "Module III — ArcGIS : Fondements & Cartographie",
-                semaine: "Semaine 3 : 31 mai – 6 juin",
-                statut: "a_venir",
-                objectifs: [],
-                documents: [],
-                concepts: ["ArcGIS Pro", "SIG", "Géoréférencement", "KDE", "Shapefiles"],
-            },
-            {
-                id: "M4",
-                titre: "Module IV — ArcGIS : Analyse Avancée & Projet Intégré",
-                semaine: "Semaine 4 : 7–17 juin",
-                statut: "a_venir",
-                objectifs: [],
-                documents: [],
-                concepts: ["AHP", "multicritère", "Random Forest spatial", "MaxEnt ArcGIS"],
-            },
+        {
+            id: "M2",
+            titre: "Module II — R : One Health & Modélisation Avancée",
+            semaine: "Semaine 2 : 24–30 mai",
+            statut: "a_venir",
+            concepts: ["NDVI", "NDWI", "SAVI", "LST", "MaxEnt", "Random Forest", "One Health"],
+        },
+        {
+            id: "M3",
+            titre: "Module III — ArcGIS : Fondements & Cartographie",
+            semaine: "Semaine 3 : 31 mai – 6 juin",
+            statut: "a_venir",
+            concepts: ["ArcGIS Pro", "SIG", "Géoréférencement", "KDE", "Shapefiles"],
+        },
+        {
+            id: "M4",
+            titre: "Module IV — ArcGIS : Analyse Avancée & Projet Intégré",
+            semaine: "Semaine 4 : 7–17 juin",
+            statut: "a_venir",
+            concepts: ["AHP", "multicritère", "Random Forest spatial", "MaxEnt ArcGIS"],
+        },
+    ],
+    contacts: {
+        email: "gadasolution.rdc@gmail.com",
+    },
+};
+
+const AI_RESPONSES = {
+    ndvi: "**NDVI** (Normalized Difference Vegetation Index) = (NIR - R) / (NIR + R).\n\nValeur entre -1 et 1.\n- Sol nu / roche : ~0.1\n- Végétation clairsemée : 0.2–0.4\n- Végétation dense : 0.6–0.9\n\nUtilisé pour évaluer la santé de la végétation.",
+    ndwi: "**NDWI** (Normalized Difference Water Index) = (G - NIR) / (G + NIR).\n\nDétecte les surfaces en eau. Valeur positive = présence d'eau.",
+    savi: "**SAVI** (Soil-Adjusted Vegetation Index) = ((NIR - R) / (NIR + R + L)) × (1+L).\n\nCorrige l'influence du sol nu dans les zones à végétation clairsemée. Facteur L = 0.5 par défaut.",
+    lst: "**LST** (Land Surface Temperature) = Température de surface terrestre.\n\nEssentielle pour le stress hydrique des cultures, les maladies vectorielles et le suivi climatique.",
+    maxent: "**MaxEnt** = Maximum Entropy Modeling.\n\nModélisation de distribution d'espèces à partir de données de présence uniquement. Très utilisé en écologie et One Health.",
+    rf: "**Random Forest** = Algorithme d'apprentissage supervisé par ensemble d'arbres de décision.\n\nAvantages : robuste au surajustement, gère les données manquantes, importance des variables.",
+    glm: "**GLM** (Generalized Linear Model) = Extension de la régression linéaire classique.\n\nPermet de modéliser des variables non-normales (binomiale, Poisson, etc.) grâce à une fonction de lien.",
+    onehealth: "**One Health** = Approche intégrée qui relie santé humaine, santé animale et santé environnementale.\n\nLe SIG permet de cartographier les facteurs de risque (NDVI, LST, densité de vecteurs) pour prédire les zones à risque de maladies.",
+    georef: "**Géoréférencement** = Processus d'alignement d'une image raster (carte scannée, image satellite) sur un système de coordonnées géographiques.",
+    kde: "**KDE** (Kernel Density Estimation) = Estimation de densité par noyau.\n\nCrée une surface de densité à partir de points pour visualiser des hotspots.",
+    ahp: "**AHP** (Analytic Hierarchy Process) = Méthode d'aide à la décision multicritère.\n\nPermet de pondérer différents facteurs (ex: pente, NDVI, distance aux routes) pour créer des cartes de vulnérabilité.",
+    shp: "**Shapefile (.shp)** = Format de données vectorielles (points, lignes, polygones).\n\n**Raster** = Grille de pixels (ex: image satellite, modèle numérique de terrain).",
+};
+
+const DECISION_TREE = {
+    root: {
+        id: "root",
+        message: "Bonjour ! Je suis **GADA Assistant**, votre guide pédagogique intelligent.\n\nComment puis-je vous aider aujourd'hui ?\n\n*Conseil : vous pouvez aussi taper directement votre question.*",
+        options: [
+            { label: "Explorer les modules de formation", next: "modules" },
+            { label: "Comprendre un concept (NDVI, MaxEnt...)", next: "concepts" },
+            { label: "Accéder aux documents", next: "documents" },
+            { label: "Tester mes connaissances (quiz)", next: "quiz" },
+            { label: "Assistance / Contact", next: "contact" },
         ],
-        contacts: {
-            email: "gadasolution.rdc@gmail.com",
-        },
-    };
+    },
+    modules: {
+        id: "modules",
+        message: "Quel module souhaitez-vous explorer ?",
+        options: [
+            { label: "Module I — R : Fondements & Exploration (actif)", next: "ai_question", data: { response: "Le **Module I** est actif (Semaine 1 : 17–23 mai).\n\nAu programme :\n- Bases de R et RStudio\n- Manipulation de données (dplyr, tidyr)\n- Visualisations (ggplot2)\n- Statistiques descriptives\n- Modèles linéaires et logistiques\n\nLes documents sont disponibles dans l'onglet 'Modules & Données' → cliquez sur 'Accéder aux téléchargements'." } },
+            { label: "Module II — One Health & Modélisation", next: "ai_question", data: { response: "Le **Module II** débutera la Semaine 2 (24–30 mai).\n\nAu programme :\n- Corrélations spatiales (NDVI, NDWI, SAVI, LST)\n- Maladies vectorielles\n- MaxEnt et Random Forest\n- Modèle prédictif intégré\n\n🔒 Verrouillé jusqu'au 24 mai." } },
+            { label: "Module III — ArcGIS Fondements", next: "ai_question", data: { response: "Le **Module III** débutera la Semaine 3 (31 mai – 6 juin).\n\nAu programme :\n- Interface ArcGIS Pro\n- Géoréférencement et SIG\n- Cartes de densité (KDE)\n- Analyse multicritère\n\n🔒 Verrouillé jusqu'au 31 mai." } },
+            { label: "Module IV — ArcGIS Avancé", next: "ai_question", data: { response: "Le **Module IV** débutera la Semaine 4 (7–17 juin).\n\nAu programme :\n- AHP et cartes de vulnérabilité\n- Random Forest spatial\n- MaxEnt dans ArcGIS\n- Projet intégré final\n\n🔒 Verrouillé jusqu'au 7 juin." } },
+            { label: "Retour à l'accueil", next: "root" },
+        ],
+    },
+    concepts: {
+        id: "concepts",
+        message: "Quel concept souhaitez-vous comprendre ?\n\n*Vous pouvez aussi taper directement le nom du concept.*",
+        options: [
+            { label: "NDVI / NDWI / SAVI — Indices de végétation", next: "ai_concept", data: { concept: "ndvi" } },
+            { label: "LST — Température de surface", next: "ai_concept", data: { concept: "lst" } },
+            { label: "MaxEnt — Modélisation de distribution", next: "ai_concept", data: { concept: "maxent" } },
+            { label: "Random Forest — Forêt aléatoire", next: "ai_concept", data: { concept: "rf" } },
+            { label: "GLM — Modèles linéaires généralisés", next: "ai_concept", data: { concept: "glm" } },
+            { label: "One Health — Approche intégrée", next: "ai_concept", data: { concept: "onehealth" } },
+            { label: "Géoréférencement / KDE / AHP / Shapefile", next: "ai_concept", data: { concept: "georef" } },
+            { label: "Retour à l'accueil", next: "root" },
+        ],
+    },
+    documents: {
+        id: "documents",
+        message: "Les documents sont disponibles dans la section **'Modules & Données'** ci-dessus.\n\nCliquez sur le bouton **'Accéder aux téléchargements'** puis sur la semaine 1 pour voir les fichiers PDF, scripts R et données Excel.\n\n*Astuce : les semaines 2, 3 et 4 seront déverrouillées automatiquement aux dates prévues.*",
+        options: [
+            { label: "Voir un concept", next: "concepts" },
+            { label: "Retour à l'accueil", next: "root" },
+        ],
+    },
+    quiz: {
+        id: "quiz",
+        message: "**Mini-quiz :**\n\n1. Que signifie l'acronyme NDVI ?\n2. À quoi sert MaxEnt ?\n3. Quelle est la formule du NDVI ?\n4. Qu'est-ce que l'approche One Health ?\n\n➡️ Tapez un concept pour obtenir la réponse, ou explorez les rubriques ci-dessous.",
+        options: [
+            { label: "Voir la réponse sur NDVI", next: "ai_concept", data: { concept: "ndvi" } },
+            { label: "Voir la réponse sur MaxEnt", next: "ai_concept", data: { concept: "maxent" } },
+            { label: "Voir la réponse sur One Health", next: "ai_concept", data: { concept: "onehealth" } },
+            { label: "Retour à l'accueil", next: "root" },
+        ],
+    },
+    contact: {
+        id: "contact",
+        message: "**Assistance GADA Training**\n\n📧 Email : gadasolution.rdc@gmail.com\n\nNotre équipe vous répond dans les 24h ouvrées.\n\n*Pour les questions techniques urgentes, privilégiez le chat en direct de la plateforme.*",
+        options: [
+            { label: "Poser une question libre", next: "ai_open", freeMode: true },
+            { label: "Retour à l'accueil", next: "root" },
+        ],
+    },
+    ai_question: {
+        id: "ai_question",
+        isDynamic: true,
+    },
+    ai_concept: {
+        id: "ai_concept",
+        isDynamic: true,
+    },
+    ai_open: {
+        id: "ai_open",
+        message: "Posez votre question librement dans le champ ci-dessous.\n\n*Exemples : \"Qu'est-ce que le NDVI ?\", \"Parle-moi du Module 1\", \"Contact\"*",
+        freeInput: true,
+    },
+};
 
-    const DECISION_TREE = {
-        root: {
-            id: "root",
-            message: "<i class='fa-regular fa-hand-peace'></i> Bonjour ! Je suis <strong>GADA Assistant</strong>, votre guide pédagogique intelligent.\n\nComment puis-je vous aider aujourd'hui ?",
-            options: [
-                { label: "<i class='fa-regular fa-folder-open'></i> Explorer les modules", next: "modules" },
-                { label: "<i class='fa-regular fa-file-lines'></i> Accéder aux documents", next: "documents" },
-                { label: "<i class='fa-regular fa-lightbulb'></i> Comprendre un concept", next: "concepts" },
-                { label: "<i class='fa-regular fa-pen-to-square'></i> Tester mes connaissances", next: "quiz" },
-                { label: "<i class='fa-regular fa-headset'></i> Assistance", next: "contact" },
-            ],
-        },
-        modules: {
-            id: "modules",
-            message: "Quel module souhaitez-vous explorer ?",
-            options: GADA_KNOWLEDGE.modules.map((m) => ({
-                label: `${m.statut === "actif" ? "✓" : "🔒"} ${m.titre.split("—")[0].trim()}`,
-                next: `module_${m.id}`,
-                disabled: m.statut !== "actif",
-                data: m,
-            })),
-            backTo: "root",
-        },
-        documents: {
-            id: "documents",
-            message: "Les documents sont disponibles dans l'onglet 'Modules & Données' ci-dessus. Cliquez sur 'Accéder aux téléchargements' puis sur la semaine souhaitée.",
-            options: [{ label: "Retour à l'accueil", next: "root" }],
-        },
-        concepts: {
-            id: "concepts",
-            message: "Je peux vous expliquer : NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, GLM, One Health, Géoréférencement, KDE, AHP... Quel concept vous intéresse ?",
-            options: [
-                { label: "NDVI / NDWI / SAVI / LST", next: "indices" },
-                { label: "MaxEnt / Random Forest / GLM", next: "ml" },
-                { label: "One Health", next: "onehealth" },
-                { label: "Retour", next: "root" },
-            ],
-        },
-        indices: {
-            id: "indices",
-            message: "<strong>NDVI</strong> : Indice de végétation. Formule = (NIR-R)/(NIR+R)\n\n<strong>NDWI</strong> : Indice d'eau\n\n<strong>SAVI</strong> : NDVI corrigé pour sol nu\n\n<strong>LST</strong> : Température de surface",
-            options: [{ label: "Retour concepts", next: "concepts" }],
-        },
-        ml: {
-            id: "ml",
-            message: "<strong>MaxEnt</strong> : Modélisation de distribution d'espèces\n\n<strong>Random Forest</strong> : Forêt aléatoire pour classification\n\n<strong>GLM</strong> : Modèles linéaires généralisés",
-            options: [{ label: "Retour concepts", next: "concepts" }],
-        },
-        onehealth: {
-            id: "onehealth",
-            message: "<strong>One Health</strong> : Approche intégrée santé humaine, animale et environnementale. Utilise le SIG pour cartographier les facteurs de risque.",
-            options: [{ label: "Retour concepts", next: "concepts" }],
-        },
-        quiz: {
-            id: "quiz",
-            message: "Quiz rapide :\n1. Que signifie NDVI ?\n2. À quoi sert MaxEnt ?\n3. Qu'est-ce que One Health ?\n\nRéponses dans les concepts !",
-            options: [{ label: "Retour accueil", next: "root" }],
-        },
-        contact: {
-            id: "contact",
-            message: "Email : gadasolution.rdc@gmail.com\n\nNotre équipe vous répond dans les 24h.",
-            options: [{ label: "Retour accueil", next: "root" }],
-        },
-    };
+const chatToggle = document.getElementById('chatToggle');
+const chatWindow = document.getElementById('chatWindow');
+const chatClose = document.getElementById('chatClose');
+const chatbotMessages = document.getElementById('chatbotMessages');
+const chatbotInput = document.getElementById('chatbotInput');
+const chatbotSend = document.getElementById('chatbotSend');
+const chatbotInputArea = document.getElementById('chatbotInputArea');
 
-    const AI_RESPONSES = {
-        ai_ndvi: "NDVI = (NIR - R) / (NIR + R). Entre -1 et 1, plus c'est haut plus la végétation est dense.",
-        ai_ndwi: "NDWI = (G - NIR) / (G + NIR). Détecte les surfaces en eau.",
-        ai_savi: "SAVI = ((NIR - R) / (NIR + R + L)) × (1+L). Corrige l'effet du sol.",
-        ai_lst: "LST = Température de surface terrestre, essentielle pour le stress hydrique.",
-        ai_rf: "Random Forest = méthode d'apprentissage supervisé combinant plusieurs arbres de décision.",
-        ai_maxent: "MaxEnt = modélisation de distribution d'espèces à partir de données de présence.",
-        ai_glm: "GLM = extension de la régression linéaire avec fonction de lien.",
-        ai_oh_def: "One Health = santé humaine, animale et environnementale sont interconnectées.",
-        ai_oh_spatial: "Le SIG permet de cartographier les facteurs de risque One Health.",
-        ai_oh_vect: "Maladies vectorielles : NDVI, LST, NDWI sont des facteurs clés.",
-        ai_georef: "Géoréférencement = alignement d'une image raster sur un système de coordonnées.",
-        ai_kde: "KDE = estimation de densité par noyau pour visualiser des hotspots.",
-        ai_ahp: "AHP = méthode d'aide à la décision multicritère.",
-        ai_shp: "Shapefile = vecteur (points/lignes/polygones). Raster = grille de pixels.",
-    };
+let currentNodeId = "root";
+let isWaitingForFreeInput = false;
 
-    function getAIResponse(nodeId, module) {
-        if (AI_RESPONSES[nodeId]) return AI_RESPONSES[nodeId];
-        if (nodeId && nodeId.startsWith("obj_") && module) {
-            return `Objectifs : ${module.objectifs.join(", ")}`;
-        }
-        return "Je n'ai pas trouvé d'information. Reformulez votre question.";
+function scrollChatbotBottom() {
+    if (chatbotMessages) chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+function addChatbotMessage(text, options = null) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-bot';
+    // Convertir le texte markdown simple (gras) et les retours à la ligne
+    let processedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    messageDiv.innerHTML = '<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">' + processedText + '</div>';
+    chatbotMessages.appendChild(messageDiv);
+
+    if (options && options.length > 0) {
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'chat-options';
+        optionsDiv.style.marginLeft = '36px';
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'chat-option-btn';
+            btn.innerHTML = opt.label;
+            if (opt.disabled) btn.disabled = true;
+            btn.onclick = () => handleChatbotOption(opt);
+            optionsDiv.appendChild(btn);
+        });
+        messageDiv.appendChild(optionsDiv);
+    }
+    scrollChatbotBottom();
+}
+
+function addUserChatbotMessage(text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-user';
+    messageDiv.innerHTML = '<div class="chat-bubble">' + escapeForumHtml(text) + '</div>';
+    chatbotMessages.appendChild(messageDiv);
+    scrollChatbotBottom();
+}
+
+function showTyping() {
+    hideTyping();
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typingIndicatorBot';
+    typingDiv.className = 'message-bot';
+    typingDiv.innerHTML = '<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+    chatbotMessages.appendChild(typingDiv);
+    scrollChatbotBottom();
+}
+
+function hideTyping() {
+    const indicator = document.getElementById('typingIndicatorBot');
+    if (indicator) indicator.remove();
+}
+
+function handleChatbotOption(option) {
+    if (option.disabled) return;
+
+    const labelText = option.label.replace(/<[^>]*>/g, '').trim();
+    addUserChatbotMessage(labelText);
+
+    if (option.freeMode) {
+        isWaitingForFreeInput = true;
+        chatbotInputArea.style.display = 'flex';
+        chatbotInput.value = '';
+        chatbotInput.focus();
+        return;
     }
 
-    const chatToggle = document.getElementById('chatToggle');
-    const chatWindow = document.getElementById('chatWindow');
-    const chatClose = document.getElementById('chatClose');
-    const chatbotMessages = document.getElementById('chatbotMessages');
-    const chatbotInput = document.getElementById('chatbotInput');
-    const chatbotSend = document.getElementById('chatbotSend');
-    const chatbotInputArea = document.getElementById('chatbotInputArea');
-    
-    let currentNodeId = "root";
-    let isWaitingForFreeInput = false;
-    
-    function scrollChatbotBottom() {
-        if (chatbotMessages) chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    }
-    
-    function escapeChatbotHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    function addChatbotMessage(text, options = null) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message-bot';
-        messageDiv.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>`;
-        chatbotMessages.appendChild(messageDiv);
-        
-        if (options && options.length > 0) {
-            const optionsDiv = document.createElement('div');
-            optionsDiv.className = 'chat-options';
-            optionsDiv.style.marginLeft = '36px';
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'chat-option-btn';
-                btn.innerHTML = opt.label;
-                if (opt.disabled) btn.disabled = true;
-                btn.onclick = () => handleChatbotOption(opt);
-                optionsDiv.appendChild(btn);
-            });
-            messageDiv.appendChild(optionsDiv);
-        }
-        scrollChatbotBottom();
-    }
-    
-    function addUserChatbotMessage(text) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message-user';
-        messageDiv.innerHTML = `<div class="chat-bubble">${escapeChatbotHtml(text)}</div>`;
-        chatbotMessages.appendChild(messageDiv);
-        scrollChatbotBottom();
-    }
-    
-    function showTyping() {
-        const typingDiv = document.createElement('div');
-        typingDiv.id = 'typingIndicatorBot';
-        typingDiv.className = 'message-bot';
-        typingDiv.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-        chatbotMessages.appendChild(typingDiv);
-        scrollChatbotBottom();
-    }
-    
-    function hideTyping() {
-        const indicator = document.getElementById('typingIndicatorBot');
-        if (indicator) indicator.remove();
-    }
-    
-    async function handleChatbotOption(option) {
-        if (option.disabled) return;
-        addUserChatbotMessage(option.label.replace(/<[^>]*>/g, ''));
-        
-        if (option.freeMode) {
-            isWaitingForFreeInput = true;
-            chatbotInputArea.style.display = 'flex';
-            chatbotInput.focus();
-            return;
-        }
-        
-        const nextId = option.next;
-        const moduleData = option.data;
-        
+    const nextId = option.next;
+
+    // Gestion des réponses dynamiques
+    if (option.data && option.data.response) {
         showTyping();
-        await new Promise(resolve => setTimeout(resolve, 500));
-        hideTyping();
-        
-        if (nextId && (AI_RESPONSES[nextId] || nextId.startsWith("obj_"))) {
-            const response = getAIResponse(nextId, moduleData);
-            addChatbotMessage(response);
-            addChatbotMessage("Que souhaitez-vous faire ?", [
-                { label: "Autre question", next: "ai_open", freeMode: true },
+        setTimeout(() => {
+            hideTyping();
+            addChatbotMessage(option.data.response);
+            addChatbotMessage("Que souhaitez-vous faire d'autre ?", [
+                { label: "Poser une question libre", next: "ai_open", freeMode: true },
+                { label: "Retour à l'accueil", next: "root" },
+            ]);
+        }, 500);
+        return;
+    }
+
+    if (option.data && option.data.concept) {
+        showTyping();
+        setTimeout(() => {
+            hideTyping();
+            const concept = option.data.concept;
+            // Si c'est "georef", on donne un message combiné
+            if (concept === "georef") {
+                const combined = "**Géoréférencement**\n" + AI_RESPONSES.georef + "\n\n**KDE** (Kernel Density Estimation)\n" + AI_RESPONSES.kde + "\n\n**AHP** (Analytic Hierarchy Process)\n" + AI_RESPONSES.ahp + "\n\n**Shapefile vs Raster**\n" + AI_RESPONSES.shp;
+                addChatbotMessage(combined);
+            } else if (AI_RESPONSES[concept]) {
+                addChatbotMessage(AI_RESPONSES[concept]);
+            } else {
+                addChatbotMessage("Je n'ai pas d'information sur ce concept. Essayez de le taper directement dans le champ de saisie.");
+            }
+            addChatbotMessage("Autre chose ?", [
+                { label: "Poser une question libre", next: "ai_open", freeMode: true },
+                { label: "Retour concepts", next: "concepts" },
                 { label: "Retour accueil", next: "root" },
             ]);
-            return;
-        }
-        
-        const node = DECISION_TREE[nextId];
-        if (node) {
-            currentNodeId = nextId;
-            if (node.freeInput) {
-                addChatbotMessage(node.message);
-                isWaitingForFreeInput = true;
-                chatbotInputArea.style.display = 'flex';
-                chatbotInput.focus();
-            } else {
-                addChatbotMessage(node.message, node.options);
-            }
+        }, 500);
+        return;
+    }
+
+    // Navigation dans l'arbre
+    const node = DECISION_TREE[nextId];
+    if (node) {
+        currentNodeId = nextId;
+        if (node.freeInput) {
+            addChatbotMessage(node.message);
+            isWaitingForFreeInput = true;
+            chatbotInputArea.style.display = 'flex';
+            chatbotInput.value = '';
+            chatbotInput.focus();
+        } else {
+            addChatbotMessage(node.message, node.options);
         }
     }
-    
-    async function handleChatbotFreeSubmit() {
-        const question = chatbotInput.value.trim();
-        if (!question) return;
-        
-        addUserChatbotMessage(question);
-        chatbotInput.value = '';
-        chatbotInputArea.style.display = 'none';
-        isWaitingForFreeInput = false;
-        
-        showTyping();
-        await new Promise(resolve => setTimeout(resolve, 800));
+}
+
+function handleChatbotFreeSubmit() {
+    const question = chatbotInput.value.trim();
+    if (!question) return;
+
+    addUserChatbotMessage(question);
+    chatbotInput.value = '';
+    chatbotInputArea.style.display = 'none';
+    isWaitingForFreeInput = false;
+
+    showTyping();
+    setTimeout(() => {
         hideTyping();
-        
-        let response = "Je n'ai pas trouvé d'information. Essayez 'aide' pour voir ce que je peux faire.";
-        const q = question.toLowerCase();
-        
-        if (q.includes('ndvi')) response = AI_RESPONSES.ai_ndvi;
-        else if (q.includes('ndwi')) response = AI_RESPONSES.ai_ndwi;
-        else if (q.includes('savi')) response = AI_RESPONSES.ai_savi;
-        else if (q.includes('lst')) response = AI_RESPONSES.ai_lst;
-        else if (q.includes('random forest')) response = AI_RESPONSES.ai_rf;
-        else if (q.includes('maxent')) response = AI_RESPONSES.ai_maxent;
-        else if (q.includes('glm')) response = AI_RESPONSES.ai_glm;
-        else if (q.includes('one health')) response = AI_RESPONSES.ai_oh_def;
-        else if (q.includes('module 1')) response = "Module I - R : Fondements & Exploration. Disponible actuellement.";
-        else if (q.includes('contact')) response = "Email : gadasolution.rdc@gmail.com";
-        else if (q.includes('aide')) response = "Commandes : module 1, ndvi, maxent, one health, contact...";
-        
+
+        const q = question.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        let response = null;
+
+        // Détection des concepts par mots-clés
+        if (q.includes('ndvi')) response = AI_RESPONSES.ndvi;
+        else if (q.includes('ndwi')) response = AI_RESPONSES.ndwi;
+        else if (q.includes('savi')) response = AI_RESPONSES.savi;
+        else if (q.includes('lst') || q.includes('temperature')) response = AI_RESPONSES.lst;
+        else if (q.includes('maxent') || q.includes('distribution')) response = AI_RESPONSES.maxent;
+        else if (q.includes('random forest') || q.includes('foret aleatoire')) response = AI_RESPONSES.rf;
+        else if (q.includes('glm') || q.includes('regression logistique')) response = AI_RESPONSES.glm;
+        else if (q.includes('one health') || q.includes('sante') && q.includes('environnement')) response = AI_RESPONSES.onehealth;
+        else if (q.includes('georeferencement') || q.includes('georef')) response = AI_RESPONSES.georef;
+        else if (q.includes('kde') || q.includes('densite')) response = AI_RESPONSES.kde;
+        else if (q.includes('ahp') || q.includes('multicritere')) response = AI_RESPONSES.ahp;
+        else if (q.includes('shapefile') || q.includes('shp') || q.includes('raster')) response = AI_RESPONSES.shp;
+        else if (q.includes('module 1') || q.includes('module i') || q.includes('semaine 1')) {
+            response = "Le **Module I** est actif actuellement (Semaine 1 : 17–23 mai).\n\nAu programme : bases de R, manipulation de données, ggplot2, statistiques descriptives, GLM.\n\nLes documents sont dans la section 'Modules & Données' → cliquez sur 'Accéder aux téléchargements' puis sur la Semaine 1.";
+        } else if (q.includes('module 2') || q.includes('module ii')) {
+            response = "Le **Module II** débutera le 24 mai. Thèmes : NDVI, NDWI, MaxEnt, Random Forest, One Health.\n\n🔒 Actuellement verrouillé.";
+        } else if (q.includes('module 3') || q.includes('module iii')) {
+            response = "Le **Module III** débutera le 31 mai. Thèmes : ArcGIS Pro, géoréférencement, KDE.\n\n🔒 Actuellement verrouillé.";
+        } else if (q.includes('module 4') || q.includes('module iv')) {
+            response = "Le **Module IV** débutera le 7 juin. Thèmes : AHP, Random Forest spatial, MaxEnt ArcGIS, projet intégré.\n\n🔒 Actuellement verrouillé.";
+        } else if (q.includes('contact') || q.includes('email') || q.includes('assistance')) {
+            response = "📧 Email : gadasolution.rdc@gmail.com\n\nNotre équipe vous répond dans les 24h ouvrées.";
+        } else if (q.includes('aide') || q.includes('bonjour') || q.includes('salut')) {
+            response = "👋 Je suis GADA Assistant ! Je peux vous aider sur :\n\n- Les concepts (NDVI, MaxEnt, One Health...)\n- Les modules de formation\n- Les documents et ressources\n- Les contacts\n\nTapez un mot-clé ou explorez les options ci-dessous.";
+        } else {
+            response = "Je n'ai pas trouvé de réponse précise à votre question.\n\n**Conseil :** essayez des mots-clés comme :\n- 'NDVI' ou 'MaxEnt' pour les concepts\n- 'Module 1' pour les infos formation\n- 'Contact' pour l'assistance\n\nOu utilisez les boutons ci-dessous pour naviguer.";
+        }
+
         addChatbotMessage(response);
         addChatbotMessage("Autre chose ?", [
-            { label: "Poser une question", next: "ai_open", freeMode: true },
-            { label: "Retour accueil", next: "root" },
+            { label: "Poser une autre question", next: "ai_open", freeMode: true },
+            { label: "Retour à l'accueil", next: "root" },
         ]);
-    }
-    
-    function initChatbot() {
-        chatbotMessages.innerHTML = '';
-        const rootNode = DECISION_TREE.root;
-        addChatbotMessage(rootNode.message, rootNode.options);
-        currentNodeId = "root";
-        
-        chatbotInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && isWaitingForFreeInput) {
-                e.preventDefault();
-                handleChatbotFreeSubmit();
-            }
-        });
-        
-        chatbotSend.addEventListener('click', () => {
-            if (isWaitingForFreeInput) handleChatbotFreeSubmit();
-        });
-    }
-    
-    chatToggle.addEventListener('click', () => {
-        const wasOpen = chatWindow.classList.contains('open');
-        chatWindow.classList.toggle('open');
-        if (!wasOpen && chatbotMessages.children.length === 0) {
-            initChatbot();
-        } else if (!wasOpen) {
-            scrollChatbotBottom();
+    }, 600);
+}
+
+function initChatbot() {
+    chatbotMessages.innerHTML = '';
+    const rootNode = DECISION_TREE.root;
+    addChatbotMessage(rootNode.message, rootNode.options);
+    currentNodeId = "root";
+    chatbotInputArea.style.display = 'none';
+    isWaitingForFreeInput = false;
+
+    chatbotInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && isWaitingForFreeInput) {
+            e.preventDefault();
+            handleChatbotFreeSubmit();
         }
     });
-    
-    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+
+    chatbotSend.addEventListener('click', () => {
+        if (isWaitingForFreeInput) handleChatbotFreeSubmit();
+    });
+}
+
+chatToggle.addEventListener('click', () => {
+    const wasOpen = chatWindow.classList.contains('open');
+    chatWindow.classList.toggle('open');
+    if (!wasOpen) {
+        if (chatbotMessages.children.length === 0) {
+            initChatbot();
+        } else {
+            scrollChatbotBottom();
+        }
+    }
+});
+
+chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
 </script>
 </body>
 </html>
