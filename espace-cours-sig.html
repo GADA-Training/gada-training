@@ -1885,23 +1885,18 @@
         if (isWaitingForFreeInput) handleFreeSubmit();
     });
 }
-        
-        chatSend.addEventListener('click', () => {
-            if (isWaitingForFreeInput) handleFreeSubmit();
-        });
+
+chatToggle.addEventListener('click', () => {
+    const wasOpen = chatWindow.classList.contains('open');
+    chatWindow.classList.toggle('open');
+    if (!wasOpen && chatMessages.children.length === 0) {
+        initChat();
+    } else if (!wasOpen) {
+        scrollToBottom();
     }
-    
-    chatToggle.addEventListener('click', () => {
-        const wasOpen = chatWindow.classList.contains('open');
-        chatWindow.classList.toggle('open');
-        if (!wasOpen && chatMessages.children.length === 0) {
-            initChat();
-        } else if (!wasOpen) {
-            scrollToBottom();
-        }
-    });
-    
-    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+});
+
+chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
 </script>
 </body>
 </html>
