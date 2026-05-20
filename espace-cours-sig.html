@@ -1523,7 +1523,7 @@
 
     async function chargerDocuments() {
         try {
-            const response = await fetch('documents.json?v=' + Date.now());
+            const response = await fetch('documentsjson.json?v=' + Date.now());
             documentsData = await response.json();
             genererAffichageDocuments();
         } catch (error) {
