@@ -240,9 +240,164 @@
         .main-content {
             position: relative;
             z-index: 10;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 20px auto 60px;
             padding: 0 24px;
+        }
+
+        /* ==================== STYLES CHAT DISCUSSION ==================== */
+        .formation-container {
+            display: flex;
+            gap: 28px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+        
+        .main-content-blocks {
+            flex: 2.5;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        
+        .chat-sidebar {
+            flex: 1;
+            min-width: 320px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(2px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            height: 580px;
+            border: 1px solid rgba(210, 190, 170, 0.3);
+            overflow: hidden;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
+            color: white;
+            padding: 18px 20px;
+        }
+        
+        .chat-header h3 { 
+            margin: 0; 
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header p { 
+            margin: 6px 0 0 0; 
+            font-size: 0.7rem; 
+            opacity: 0.85; 
+        }
+        
+        .forum-chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--neutral-200);
+        }
+        
+        .message {
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 85%;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            animation: fadeInMsg 0.2s ease;
+        }
+        
+        .message .meta {
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .msg-student {
+            background: white;
+            border: 1px solid #e2ddd5;
+            align-self: flex-start;
+            color: var(--neutral-800);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .msg-admin {
+            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            align-self: flex-end;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .msg-admin .meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .forum-chat-input-area {
+            display: flex;
+            padding: 14px;
+            background: white;
+            border-top: 1px solid #eee8e0;
+            gap: 10px;
+        }
+        
+        #forum-chat-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #e2dcd5;
+            border-radius: 30px;
+            outline: none;
+            font-size: 0.85rem;
+            background: #fefcf9;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        #forum-chat-input:focus {
+            border-color: var(--green-agri);
+        }
+        
+        #forum-chat-send-btn {
+            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            color: white;
+            border: none;
+            padding: 0 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        
+        #forum-chat-send-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+        
+        @keyframes fadeInMsg {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 900px) {
+            .formation-container { 
+                flex-direction: column; 
+            }
+            .main-content-blocks { 
+                width: 100%; 
+            }
+            .chat-sidebar { 
+                width: 100%; 
+                height: 480px;
+                position: static;
+            }
         }
 
         .welcome-card {
@@ -252,7 +407,6 @@
             padding: 32px 36px;
             box-shadow: var(--shadow-md);
             border: 1px solid rgba(255,255,240,0.5);
-            margin-bottom: 40px;
         }
         .welcome-card h2 {
             font-size: 1.9rem;
@@ -543,7 +697,7 @@
             margin-bottom: 12px;
         }
 
-        /* ============ CHAT STYLE CORRIGÉ ============ */
+        /* ============ CHATBOT IA ============ */
         .chat-toggle {
             position: fixed;
             bottom: 28px;
@@ -599,7 +753,7 @@
             }
         }
 
-        .chat-header {
+        .chatbot-header {
             background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
             padding: 16px 20px;
             flex-shrink: 0;
@@ -693,7 +847,7 @@
             white-space: nowrap;
         }
         
-        .chat-messages {
+        .chatbot-messages {
             flex: 1;
             overflow-y: auto;
             padding: 16px 14px;
@@ -702,20 +856,19 @@
             gap: 14px;
         }
         
-        .chat-messages::-webkit-scrollbar {
+        .chatbot-messages::-webkit-scrollbar {
             width: 4px;
         }
         
-        .chat-messages::-webkit-scrollbar-track {
+        .chatbot-messages::-webkit-scrollbar-track {
             background: transparent;
         }
         
-        .chat-messages::-webkit-scrollbar-thumb {
+        .chatbot-messages::-webkit-scrollbar-thumb {
             background: #ccc;
             border-radius: 4px;
         }
         
-        /* Message styles - PAS de conflit avec .bubble du background ! */
         .message-bot {
             display: flex;
             gap: 8px;
@@ -861,7 +1014,7 @@
             40% { transform: translateY(-8px); }
         }
         
-        .chat-input-area {
+        .chatbot-input-area {
             padding: 10px 14px;
             border-top: 1px solid #e8e0d8;
             background: white;
@@ -870,7 +1023,7 @@
             align-items: center;
         }
         
-        .chat-input-area input {
+        .chatbot-input-area input {
             flex: 1;
             padding: 9px 14px;
             border-radius: 20px;
@@ -881,11 +1034,11 @@
             background: #f8fdf8;
         }
         
-        .chat-input-area input:focus {
+        .chatbot-input-area input:focus {
             border-color: var(--green-agri);
         }
         
-        .chat-input-area button {
+        .chatbot-input-area button {
             background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
             color: white;
             border: none;
@@ -897,7 +1050,7 @@
             transition: all 0.18s;
         }
         
-        .chat-input-area button:hover {
+        .chatbot-input-area button:hover {
             filter: brightness(1.05);
             transform: translateY(-1px);
         }
@@ -958,112 +1111,106 @@
     </nav>
 
     <div class="main-content">
-        <div class="welcome-card">
-            <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
-            <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
-        </div>
-
-        <div class="course-grid">
-            <div class="course-card">
-                <div>
-                    <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
-                    <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
-                    <ul>
-                        <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
-                        <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
-                    </ul>
+        <div class="formation-container">
+            <!-- CHAT SIDEBAR (GAUCHE) -->
+            <div class="chat-sidebar">
+                <div class="chat-header">
+                    <h3><i class="fa-regular fa-comments"></i> Espace Discussion</h3>
+                    <p>Connecté en tant que : <span id="user-display">Chargement...</span></p>
                 </div>
-                <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
+                
+                <div class="forum-chat-messages" id="forum-chat-messages">
+                    <div style="text-align:center; padding:20px; color:#999;">
+                        <i class="fa-regular fa-spinner fa-spin"></i> Connexion...
+                    </div>
+                </div>
+                
+                <div class="forum-chat-input-area" id="forum-chat-input-area">
+                    <input type="text" id="forum-chat-input" placeholder="Écrivez votre message ici..." autocomplete="off">
+                    <button id="forum-chat-send-btn"><i class="fa-regular fa-paper-plane"></i> Envoyer</button>
+                </div>
             </div>
 
-            <div class="course-card">
-                <div>
-                    <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
-                    <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
-                    <ul>
-                        <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
-                        <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
-                        <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
-                        <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
-                    </ul>
+            <!-- BLOCS PRINCIPAUX (DROITE) -->
+            <div class="main-content-blocks">
+                <div class="welcome-card">
+                    <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
+                    <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
                 </div>
-                <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
-                    Accéder aux téléchargements
-                </button>
 
-                <div id="folder-zone" class="folder-zone">
-                    <div class="h-folder-wrapper">
-                        <div class="h-folder-row">
-                            <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                    <span class="h-badge">3 fichiers</span>
-                                </div>
-                                <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
-                                <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
-                            </div>
+                <div class="course-grid">
+                    <div class="course-card">
+                        <div>
+                            <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
+                            <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
+                            <ul>
+                                <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
+                                <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
+                            </ul>
+                        </div>
+                        <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
+                    </div>
 
-                            <div class="h-expand-panel" id="hp-s1">
-                                <div class="h-expand-inner">
-                                    <div class="h-expand-title">
-                                        <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
-                                        Semaine 1 – Documents
-                                    </div>
-                                    <div class="h-file-item">
-                                        <div class="h-file-name">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            GADA_Plan_Formation_2026.pdf
+                    <div class="course-card">
+                        <div>
+                            <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
+                            <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
+                            <ul>
+                                <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
+                                <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
+                                <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
+                                <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
+                            </ul>
+                        </div>
+                        <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
+                            Accéder aux téléchargements
+                        </button>
+
+                        <div id="folder-zone" class="folder-zone">
+                            <div class="h-folder-wrapper">
+                                <div class="h-folder-row">
+                                    <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
+                                            <span class="h-badge">6 fichiers</span>
                                         </div>
-                                        <a href="documents/GADA_Plan_Formation_2026.pdf" download class="h-file-dl">
-                                            <i class="fa-solid fa-download"></i>
-                                        </a>
+                                        <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
+                                        <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
                                     </div>
-                                    <div class="h-file-item">
-                                        <div class="h-file-name">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            GADA_Formation_RStudio_Jour1.pdf
+
+                                    <div class="h-expand-panel" id="hp-s1">
+                                        <div class="h-expand-inner">
+                                            <!-- Le contenu sera chargé automatiquement par JavaScript -->
                                         </div>
-                                        <a href="documents/GADA_Formation_RStudio_Jour1.pdf" download class="h-file-dl">
-                                            <i class="fa-solid fa-download"></i>
-                                        </a>
                                     </div>
-                                    <div class="h-file-item">
-                                        <div class="h-file-name">
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            Aide utilisation R (Méthodes).pdf
+
+                                    <div class="h-folder-item locked" id="hf-s2">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
                                         </div>
-                                        <a href="documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" download class="h-file-dl">
-                                            <i class="fa-solid fa-download"></i>
-                                        </a>
+                                        <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
+                                        <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
+                                    </div>
+
+                                    <div class="h-folder-item locked" id="hf-s3">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        </div>
+                                        <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
+                                        <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
+                                    </div>
+
+                                    <div class="h-folder-item locked" id="hf-s4">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        </div>
+                                        <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
+                                        <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="h-folder-item locked">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                </div>
-                                <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
-                                <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
-                            </div>
-
-                            <div class="h-folder-item locked">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                </div>
-                                <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
-                                <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
-                            </div>
-
-                            <div class="h-folder-item locked">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                </div>
-                                <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
-                                <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
                             </div>
                         </div>
                     </div>
@@ -1079,14 +1226,14 @@
     </footer>
 </div>
 
-<!-- CHAT TOGGLE -->
+<!-- CHATBOT IA TOGGLE -->
 <div class="chat-toggle" id="chatToggle">
     <i class="fa-regular fa-comment-dots"></i>
 </div>
 
-<!-- CHAT WINDOW -->
+<!-- CHATBOT IA WINDOW -->
 <div id="chatWindow" class="chat-window">
-    <div class="chat-header">
+    <div class="chatbot-header">
         <div class="chat-header-content">
             <div class="chat-avatar">
                 <i class="fa-solid fa-leaf"></i>
@@ -1112,13 +1259,13 @@
         <span class="progress-label"><i class="fa-regular fa-clock"></i> M1 actif</span>
     </div>
     
-    <div class="chat-messages" id="chatMessages">
+    <div class="chatbot-messages" id="chatbotMessages">
         <!-- Les messages seront insérés dynamiquement -->
     </div>
     
-    <div class="chat-input-area" id="chatInputArea" style="display: none;">
-        <input type="text" id="chatInput" placeholder="Votre question...">
-        <button id="chatSend">
+    <div class="chatbot-input-area" id="chatbotInputArea" style="display: none;">
+        <input type="text" id="chatbotInput" placeholder="Votre question...">
+        <button id="chatbotSend">
             <i class="fa-regular fa-paper-plane"></i>
         </button>
     </div>
@@ -1129,270 +1276,6 @@
 </div>
 
 <script>
-    // ==================== BASE DE CONNAISSANCES GADA ====================
-    const GADA_KNOWLEDGE = {
-        formation: {
-            titre: "Modélisation Spatiale & Statistique — Approche One Health",
-            duree: "4 semaines (17 mai – 17 juin 2026)",
-        },
-        modules: [
-            {
-                id: "M1",
-                titre: "Module I — R : Fondements & Exploration",
-                semaine: "Semaine 1 : 17–23 mai",
-                statut: "actif",
-                couleur: "#2b6e3c",
-                objectifs: [
-                    "Maîtriser les bases de R et RStudio",
-                    "Manipuler et nettoyer des données avec dplyr & tidyr",
-                    "Produire des visualisations avancées avec ggplot2",
-                    "Appliquer des statistiques descriptives et des tests (t-test, ANOVA)",
-                    "Construire des modèles linéaires et logistiques en santé/agriculture",
-                ],
-                documents: [
-                    { nom: "GADA_Plan_Formation_2026.pdf", type: "pdf", url: "documents/GADA_Plan_Formation_2026.pdf" },
-                    { nom: "GADA_Formation_RStudio_Jour1.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour1.pdf" },
-                    { nom: "Aide utilisation R (Méthodes).pdf", type: "pdf", url: "documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" },
-                ],
-                concepts: ["vecteurs", "dataframes", "dplyr", "ggplot2", "GLM", "t-test", "ANOVA", "regression logistique"],
-            },
-            {
-                id: "M2",
-                titre: "Module II — R : One Health & Modélisation Avancée",
-                semaine: "Semaine 2 : 24–30 mai",
-                statut: "a_venir",
-                couleur: "#1a4c6e",
-                objectifs: [
-                    "Calculer et interpréter NDVI, NDWI, SAVI, LST",
-                    "Analyser les corrélations spatiales avec les maladies vectorielles",
-                    "Comprendre l'impact des pesticides via des modèles prédictifs",
-                    "Modéliser la distribution d'espèces avec MaxEnt sous RStudio",
-                    "Construire un modèle prédictif intégré (Random Forest & GLM)",
-                ],
-                documents: [],
-                concepts: ["NDVI", "NDWI", "SAVI", "LST", "MaxEnt", "Random Forest", "One Health", "maladies vectorielles"],
-            },
-            {
-                id: "M3",
-                titre: "Module III — ArcGIS : Fondements & Cartographie",
-                semaine: "Semaine 3 : 31 mai – 6 juin",
-                statut: "a_venir",
-                couleur: "#7a5a4b",
-                objectifs: [
-                    "Maîtriser l'interface ArcGIS Pro et la gestion de projets SIG",
-                    "Géoréférencer et digitaliser des données spatiales",
-                    "Comprendre les systèmes de coordonnées et projections",
-                    "Produire des cartes thématiques de qualité professionnelle",
-                    "Analyser la densité et les clusters avec KDE",
-                ],
-                documents: [],
-                concepts: ["ArcGIS Pro", "SIG", "Géoréférencement", "KDE", "Shapefiles", "Rasters", "projections"],
-            },
-            {
-                id: "M4",
-                titre: "Module IV — ArcGIS : Analyse Avancée & Projet Intégré",
-                semaine: "Semaine 4 : 7–17 juin",
-                statut: "a_venir",
-                couleur: "#4a3060",
-                objectifs: [
-                    "Appliquer l'analyse multicritère AHP pour les cartes de vulnérabilité",
-                    "Préparer les données spatiales pour Random Forest (rasters, points)",
-                    "Modéliser avec MaxEnt pour prédire la distribution des espèces",
-                    "Intégrer R et ArcGIS pour une analyse complète",
-                    "Réaliser et présenter un projet de fin de formation",
-                ],
-                documents: [],
-                concepts: ["AHP", "multicritère", "Random Forest spatial", "MaxEnt ArcGIS", "cartes de vulnérabilité", "projet intégré"],
-            },
-        ],
-        contacts: {
-            email: "gadasolution.rdc@gmail.com",
-            assistance: "Pour toute question technique ou administrative, écrivez à gadasolution.rdc@gmail.com",
-        },
-    };
-
-    // ========== ARBRE DE DÉCISION ==========
-    const DECISION_TREE = {
-        root: {
-            id: "root",
-            message: "<i class='fa-regular fa-hand-peace'></i> Bonjour ! Je suis <strong>GADA Assistant</strong>, votre guide pédagogique intelligent.\n\nComment puis-je vous aider aujourd'hui ?",
-            options: [
-                { label: "<i class='fa-regular fa-folder-open'></i> Explorer les modules de formation", next: "modules" },
-                { label: "<i class='fa-regular fa-file-lines'></i> Accéder aux documents", next: "documents" },
-                { label: "<i class='fa-regular fa-lightbulb'></i> Comprendre un concept", next: "concepts" },
-                { label: "<i class='fa-regular fa-pen-to-square'></i> Tester mes connaissances", next: "quiz" },
-                { label: "<i class='fa-regular fa-headset'></i> Assistance & contact", next: "contact" },
-            ],
-        },
-        modules: {
-            id: "modules",
-            message: "Quel module souhaitez-vous explorer ?",
-            options: GADA_KNOWLEDGE.modules.map((m) => ({
-                label: `${m.statut === "actif" ? "<i class='fa-regular fa-circle-check'></i>" : "<i class='fa-regular fa-lock'></i>"} ${m.titre.split("—")[0].trim()}`,
-                next: `module_${m.id}`,
-                disabled: m.statut !== "actif",
-                data: m,
-            })),
-            backTo: "root",
-        },
-        ...Object.fromEntries(
-            GADA_KNOWLEDGE.modules.map((m) => [
-                `module_${m.id}`,
-                {
-                    id: `module_${m.id}`,
-                    message: `<strong>${m.titre}</strong>\n<i class='fa-regular fa-calendar'></i> ${m.semaine}\n\nQue souhaitez-vous savoir sur ce module ?`,
-                    options: [
-                        { label: "<i class='fa-regular fa-bullseye'></i> Voir les objectifs", next: `obj_${m.id}`, data: m },
-                        { label: "<i class='fa-regular fa-file-lines'></i> Voir les documents disponibles", next: `docs_${m.id}`, data: m },
-                        { label: "<i class='fa-regular fa-brain'></i> Concepts clés", next: `concepts_${m.id}`, data: m },
-                        { label: "<i class='fa-regular fa-arrow-left'></i> Retour aux modules", next: "modules" },
-                    ],
-                    backTo: "modules",
-                },
-            ])
-        ),
-        documents: {
-            id: "documents",
-            message: "<i class='fa-regular fa-folder'></i> Choisissez un module pour accéder à ses documents :",
-            options: [
-                { label: "<i class='fa-regular fa-folder-open'></i> Semaine 1 — Documents disponibles", next: "docs_M1" },
-                { label: "<i class='fa-regular fa-lock'></i> Semaine 2 — À venir", next: "locked_docs", disabled: true },
-                { label: "<i class='fa-regular fa-lock'></i> Semaine 3 — À venir", next: "locked_docs", disabled: true },
-                { label: "<i class='fa-regular fa-lock'></i> Semaine 4 — À venir", next: "locked_docs", disabled: true },
-                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "root" },
-            ],
-            backTo: "root",
-        },
-        locked_docs: {
-            id: "locked_docs",
-            message: "<i class='fa-regular fa-lock'></i> Ces documents seront disponibles quand la semaine correspondante débutera. Revenez prochainement !",
-            options: [{ label: "<i class='fa-regular fa-arrow-left'></i> Retour aux documents", next: "documents" }],
-            backTo: "documents",
-        },
-        concepts: {
-            id: "concepts",
-            message: "<i class='fa-regular fa-lightbulb'></i> Sur quel domaine souhaitez-vous approfondir vos connaissances ?",
-            options: [
-                { label: "<i class='fa-regular fa-chart-line'></i> Indices spectraux (NDVI, NDWI…)", next: "concept_indices" },
-                { label: "<i class='fa-regular fa-microchip'></i> Modèles ML (Random Forest, MaxEnt…)", next: "concept_ml" },
-                { label: "<i class='fa-regular fa-hand-holding-heart'></i> Approche One Health", next: "concept_onehealth" },
-                { label: "<i class='fa-regular fa-map'></i> Analyse spatiale (SIG)", next: "concept_sig" },
-                { label: "<i class='fa-regular fa-comment'></i> Autre question (IA)", next: "ai_open" },
-                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "root" },
-            ],
-            backTo: "root",
-        },
-        concept_indices: {
-            id: "concept_indices",
-            message: "<i class='fa-regular fa-chart-line'></i> <strong>Indices spectraux — Quel index vous intéresse ?</strong>",
-            options: [
-                { label: "<i class='fa-regular fa-tree'></i> NDVI — Végétation", next: "ai_ndvi" },
-                { label: "<i class='fa-regular fa-droplet'></i> NDWI — Eau", next: "ai_ndwi" },
-                { label: "<i class='fa-regular fa-mountain'></i> SAVI — Sol aride", next: "ai_savi" },
-                { label: "<i class='fa-regular fa-temperature-high'></i> LST — Température de surface", next: "ai_lst" },
-                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
-            ],
-            backTo: "concepts",
-        },
-        concept_ml: {
-            id: "concept_ml",
-            message: "<i class='fa-regular fa-microchip'></i> <strong>Machine Learning — Choisissez un algorithme :</strong>",
-            options: [
-                { label: "<i class='fa-regular fa-tree'></i> Random Forest", next: "ai_rf" },
-                { label: "<i class='fa-regular fa-chart-line'></i> MaxEnt", next: "ai_maxent" },
-                { label: "<i class='fa-regular fa-chart-simple'></i> GLM — Modèles linéaires généralisés", next: "ai_glm" },
-                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
-            ],
-            backTo: "concepts",
-        },
-        concept_onehealth: {
-            id: "concept_onehealth",
-            message: "<i class='fa-regular fa-hand-holding-heart'></i> <strong>Approche One Health — Que souhaitez-vous savoir ?</strong>",
-            options: [
-                { label: "<i class='fa-regular fa-book'></i> Définition et principes", next: "ai_oh_def" },
-                { label: "<i class='fa-regular fa-globe'></i> Lien avec la modélisation spatiale", next: "ai_oh_spatial" },
-                { label: "<i class='fa-regular fa-bug'></i> Application aux maladies vectorielles", next: "ai_oh_vect" },
-                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
-            ],
-            backTo: "concepts",
-        },
-        concept_sig: {
-            id: "concept_sig",
-            message: "<i class='fa-regular fa-map'></i> <strong>Analyse Spatiale & SIG — Choisissez un thème :</strong>",
-            options: [
-                { label: "<i class='fa-regular fa-crosshairs'></i> Géoréférencement", next: "ai_georef" },
-                { label: "<i class='fa-regular fa-chart-scatter'></i> Analyse KDE (densité)", next: "ai_kde" },
-                { label: "<i class='fa-regular fa-chart-pie'></i> Analyse multicritère AHP", next: "ai_ahp" },
-                { label: "<i class='fa-regular fa-cubes'></i> Shapefiles & Rasters", next: "ai_shp" },
-                { label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "concepts" },
-            ],
-            backTo: "concepts",
-        },
-        quiz: {
-            id: "quiz",
-            message: "<i class='fa-regular fa-pen-to-square'></i> Testez vos connaissances ! Sur quel module souhaitez-vous être évalué ?",
-            options: GADA_KNOWLEDGE.modules.map((m) => ({
-                label: `${m.statut === "actif" ? "<i class='fa-regular fa-circle-check'></i>" : "<i class='fa-regular fa-lock'></i>"} Quiz ${m.titre.split("—")[0].trim()}`,
-                next: `quiz_${m.id}`,
-                disabled: m.statut !== "actif",
-                data: m,
-            })).concat([{ label: "<i class='fa-regular fa-arrow-left'></i> Retour", next: "root" }]),
-            backTo: "root",
-        },
-        contact: {
-            id: "contact",
-            message: `<i class='fa-regular fa-headset'></i> <strong>Assistance GADA Training</strong>\n\n<i class='fa-regular fa-envelope'></i> Email : gadasolution.rdc@gmail.com\n\nNotre équipe répond dans les 24h. N'hésitez pas à nous écrire pour :\n• Questions techniques sur les logiciels\n• Problèmes de paiement ou d'accès\n• Informations sur la prochaine session`,
-            options: [{ label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" }],
-            backTo: "root",
-        },
-        ai_open: {
-            id: "ai_open",
-            message: "<i class='fa-regular fa-comment'></i> Posez votre question librement — l'IA GADA va vous répondre :",
-            freeInput: true,
-            backTo: "concepts",
-        },
-    };
-
-    // Réponses IA locales
-    const AI_RESPONSES = {
-        ai_ndvi: "<i class='fa-regular fa-tree'></i> <strong>NDVI (Normalized Difference Vegetation Index)</strong>\n\nFormule : NDVI = (NIR - R) / (NIR + R)\n\nInterprétation :\n• Valeurs proches de -1 : eau\n• Valeurs proches de 0 : sol nu\n• Valeurs entre 0.2 et 0.5 : végétation éparse\n• Valeurs > 0.6 : végétation dense et saine\n\nApplications : suivi des cultures, détection de stress hydrique, modélisation des habitats.",
-        ai_ndwi: "<i class='fa-regular fa-droplet'></i> <strong>NDWI (Normalized Difference Water Index)</strong>\n\nFormule : NDWI = (G - NIR) / (G + NIR)\n\nUtilité : Détection des surfaces en eau, humidité du sol. Lien avec les maladies vectorielles : zones d'eau stagnante = habitats des moustiques.",
-        ai_savi: "<i class='fa-regular fa-mountain'></i> <strong>SAVI (Soil-Adjusted Vegetation Index)</strong>\n\nFormule : SAVI = ((NIR - R) / (NIR + R + L)) × (1 + L)\n\nL facteur d'ajustement du sol (souvent 0.5). Corrige le NDVI dans les zones à sol nu ou végétation éparse.",
-        ai_lst: "<i class='fa-regular fa-temperature-high'></i> <strong>LST (Land Surface Temperature)</strong>\n\nTempérature de surface terrestre calculée depuis satellites (Landsat, MODIS). Essentiel pour : stress hydrique des cultures, îlots de chaleur urbains, modélisation des maladies vectorielles.",
-        ai_rf: "<i class='fa-regular fa-tree'></i> <strong>Random Forest (Forêt Aléatoire)</strong>\n\nMéthode d'apprentissage supervisé combinant plusieurs arbres de décision (bagging).\n\nAvantages : robuste au bruit, gère données manquantes, fournit l'importance des variables.\n\nApplications : classification d'occupation du sol, prédiction de distribution d'espèces.",
-        ai_maxent: "<i class='fa-regular fa-chart-line'></i> <strong>MaxEnt (Maximum Entropy)</strong>\n\nAlgorithme pour modéliser la distribution d'espèces à partir de données d'occurrence.\n\nInputs : points de présence + variables environnementales.\n\nOutput : carte de probabilité de présence.\n\nUtilité : zones à risque de maladies vectorielles, conservation.",
-        ai_glm: "<i class='fa-regular fa-chart-simple'></i> <strong>GLM (Modèles Linéaires Généralisés)</strong>\n\nExtension de la régression linéaire : lien entre moyenne de Y et prédicteurs via fonction de lien.\n\nTypes : logit (binaire), log (comptage), identité (normal).\n\nApplications : épidémiologie, analyse de survie, agriculture.",
-        ai_oh_def: "<i class='fa-regular fa-hand-holding-heart'></i> <strong>One Health — Définition</strong>\n\nApproche intégrée reconnaissant l'interconnexion entre santé humaine, animale et environnementale.\n\nPrincipes : collaboration multidisciplinaire, prévention plutôt que cure, gestion durable des écosystèmes.\n\nExemple africain : surveillance de la trypanosomose intégrant faune sauvage, bétail, humains.",
-        ai_oh_spatial: "<i class='fa-regular fa-globe'></i> <strong>One Health & Modélisation spatiale</strong>\n\nLe SIG permet de :\n• Cartographier les facteurs de risque environnementaux\n• Analyser les corrélations NDVI/LST avec les cas de maladie\n• Modéliser la distribution des vecteurs (MaxEnt)\n• Produire des cartes de vulnérabilité (AHP multicritère)",
-        ai_oh_vect: "<i class='fa-regular fa-bug'></i> <strong>One Health & Maladies vectorielles</strong>\n\nFacteurs environnementaux clés :\n• NDVI (végétation → habitats vecteurs)\n• LST (température → développement larvaire)\n• NDWI (eau → sites de reproduction)\n\nModélisation avec MaxEnt prédit les zones à risque.",
-        ai_georef: "<i class='fa-regular fa-crosshairs'></i> <strong>Géoréférencement</strong>\n\nProcessus d'alignement d'une image raster sur un système de coordonnées.\n\nMéthodes : transformation affine (mise à l'échelle, rotation, translation) ou polynomiale.\n\nPoints de contrôle (GCP) et calcul de l'erreur RMS.",
-        ai_kde: "<i class='fa-regular fa-chart-scatter'></i> <strong>KDE (Kernel Density Estimation)</strong>\n\nMéthode d'estimation de densité pour visualiser la concentration d'événements ponctuels.\n\nParamètre : bande passante (taille du voisinage).\n\nApplications : hotspots de criminalité, densité de cas de maladies, concentration de cultures.",
-        ai_ahp: "<i class='fa-regular fa-chart-pie'></i> <strong>AHP (Analytic Hierarchy Process)</strong>\n\nMéthode d'aide à la décision multicritère :\n1. Décomposition du problème en hiérarchie\n2. Comparaisons par paires des critères\n3. Calcul des poids et indice de cohérence\n\nApplication : cartes de vulnérabilité, zonage agricole.",
-        ai_shp: "<i class='fa-regular fa-cubes'></i> <strong>Shapefile vs Raster</strong>\n\n<strong>Shapefile (vecteur)</strong> : points, lignes, polygones. Idéal pour limites administratives, réseaux, localisations.\n\n<strong>Raster</strong> : grille de cellules (pixels). Idéal pour indices spectraux, altitude, température.\n\nChoisir selon l'analyse : vecteur pour requêtes spatiales, raster pour calculs mathématiques.",
-    };
-
-    function getAIResponse(nodeId, module) {
-        if (AI_RESPONSES[nodeId]) return AI_RESPONSES[nodeId];
-        
-        if (nodeId && nodeId.startsWith("obj_") && module) {
-            return `<i class='fa-regular fa-bullseye'></i> <strong>Objectifs du ${module.titre}</strong>\n\n${module.objectifs.map((obj, i) => `${i+1}. ${obj}`).join("\n\n")}`;
-        }
-        if (nodeId && nodeId.startsWith("docs_") && module) {
-            if (module.documents.length === 0) {
-                return `<i class='fa-regular fa-folder'></i> Les documents du ${module.titre} seront disponibles à partir du ${module.semaine}. Revenez bientôt ! <i class='fa-regular fa-calendar'></i>`;
-            }
-            return `<i class='fa-regular fa-file-lines'></i> <strong>Documents disponibles</strong>\n\n${module.documents.map(d => `• ${d.nom}`).join("\n")}\n\nCliquez sur les liens ci-dessous pour télécharger.`;
-        }
-        if (nodeId && nodeId.startsWith("concepts_") && module) {
-            return `<i class='fa-regular fa-brain'></i> <strong>Concepts clés du ${module.titre}</strong>\n\n${module.concepts.map(c => `• <strong>${c}</strong>`).join("\n")}\n\nCes notions seront approfondies dans les exercices pratiques.`;
-        }
-        if (nodeId && nodeId.startsWith("quiz_") && module) {
-            return `<i class='fa-regular fa-pen-to-square'></i> <strong>Quiz - ${module.titre}</strong>\n\n<strong>Question 1 :</strong> Qu'est-ce que ${module.concepts[0]} ?\nA. Une méthode statistique\nB. Un indice spectral\nC. Un logiciel SIG\nD. Un type de donnée\n\n<strong>Réponse : B</strong>\n\n<strong>Question 2 :</strong> Dans quel contexte utilise-t-on MaxEnt ?\nA. Cartographie 3D\nB. Modélisation de distribution d'espèces\nC. Analyse de séquences ADN\nD. Rendu graphique\n\n<strong>Réponse : B</strong>\n\n<strong>Question 3 :</strong> Que signifie One Health ?\nA. Un régime alimentaire\nB. L'interconnexion santé humaine/animale/environnementale\nC. Un protocole médical\nD. Une application mobile\n\n<strong>Réponse : B</strong>\n\nContactez votre formateur pour le corrigé détaillé ! <i class='fa-regular fa-book'></i>`;
-        }
-        
-        return "<i class='fa-regular fa-face-meh'></i> Je n'ai pas trouvé d'information spécifique. Essayez de reformuler, ou demandez 'aide' pour voir ce que je peux faire.";
-    }
-
     // ==================== AUTHENTIFICATION ====================
     const ELIGIBLE_EMAILS = [
         "faziliarsene2@gmail.com",
@@ -1635,62 +1518,349 @@
         }
     }
     
-    // ==================== CHAT GADA ASSISTANT IA CORRIGÉ ====================
-    const chatToggle = document.getElementById('chatToggle');
-    const chatWindow = document.getElementById('chatWindow');
-    const chatClose = document.getElementById('chatClose');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const chatSend = document.getElementById('chatSend');
-    const chatInputArea = document.getElementById('chatInputArea');
+    // ==================== CHARGEMENT AUTOMATIQUE DES DOCUMENTS ====================
+    let documentsData = null;
+
+    async function chargerDocuments() {
+        try {
+            const response = await fetch('documents.json?v=' + Date.now());
+            documentsData = await response.json();
+            genererAffichageDocuments();
+        } catch (error) {
+            console.error('Erreur chargement documents:', error);
+        }
+    }
+
+    function genererAffichageDocuments() {
+        if (!documentsData) return;
+        
+        const semaine1 = documentsData.semaine1;
+        const badgeElem = document.querySelector('#hf-s1 .h-badge');
+        const panelInner = document.querySelector('#hp-s1 .h-expand-inner');
+        
+        if (badgeElem) badgeElem.textContent = semaine1.badge;
+        
+        if (panelInner) {
+            let fichiersHtml = `
+                <div class="h-expand-title">
+                    <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
+                    ${semaine1.titre} – Documents
+                </div>
+            `;
+            
+            semaine1.fichiers.forEach(fichier => {
+                fichiersHtml += `
+                    <div class="h-file-item">
+                        <div class="h-file-name">
+                            <i class="fa-solid ${fichier.icone}"></i>
+                            ${fichier.nom}
+                        </div>
+                        <a href="documents/${encodeURIComponent(fichier.nom)}" download class="h-file-dl">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                    </div>
+                `;
+            });
+            
+            panelInner.innerHTML = fichiersHtml;
+        }
+        
+        mettreAJourSemaine('s2', documentsData.semaine2);
+        mettreAJourSemaine('s3', documentsData.semaine3);
+        mettreAJourSemaine('s4', documentsData.semaine4);
+    }
+
+    function mettreAJourSemaine(id, data) {
+        const folderItem = document.getElementById(`hf-${id}`);
+        if (!folderItem) return;
+        
+        if (data.locked) {
+            folderItem.classList.add('locked');
+        } else {
+            folderItem.classList.remove('locked');
+        }
+        
+        const titleSpan = folderItem.querySelector('.h-folder-title');
+        if (titleSpan) {
+            titleSpan.innerHTML = `${data.titre}<br><span style="font-weight:500; color:#4a7a52;">${data.date}</span>`;
+        }
+        
+        const subDiv = folderItem.querySelector('.h-folder-sub');
+        if (subDiv) subDiv.textContent = data.description;
+    }
+
+    chargerDocuments();
+</script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<script>
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyC_G2Fu6ZN4tzavRzfKo9fjXj5R_Un0PyE",
+        authDomain: "gada-training-chat.firebaseapp.com",
+        projectId: "gada-training-chat",
+        storageBucket: "gada-training-chat.firebasestorage.app",
+        messagingSenderId: "251680805573",
+        appId: "1:251680805573:web:a7a9e6b88c0b2844be96ac",
+        measurementId: "G-DXY25B5ZWK",
+        databaseURL: "https://gada-training-chat-default-rtdb.firebaseio.com/"
+    };
     
-    let currentNodeId = "root";
-    let isWaitingForFreeInput = false;
-    let currentModuleForDocs = null;
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const messagesRef = database.ref('forum_messages');
     
-    function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+    function getCurrentUserFirebase() {
+        return JSON.parse(sessionStorage.getItem('gada_current_user'));
     }
     
-    function stripHtmlTags(html) {
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        return div.textContent || div.innerText || '';
+    function updateUserDisplay() {
+        const current = getCurrentUserFirebase();
+        const userDisplay = document.getElementById('user-display');
+        if (current && userDisplay) {
+            userDisplay.textContent = `${current.nom} ${current.prenom}${current.email === "gadasolution.rdc@gmail.com" ? ' (Formateur)' : ''}`;
+        } else if (userDisplay) {
+            userDisplay.textContent = "Non connecté";
+        }
+    }
+    updateUserDisplay();
+    setInterval(updateUserDisplay, 2000);
+    
+    const forumMessagesContainer = document.getElementById('forum-chat-messages');
+    const forumInput = document.getElementById('forum-chat-input');
+    const forumSendBtn = document.getElementById('forum-chat-send-btn');
+    
+    function sendForumMessage() {
+        const text = forumInput.value.trim();
+        if (text === "") return;
+        
+        const current = getCurrentUserFirebase();
+        if (!current) {
+            alert("Veuillez vous connecter pour envoyer un message");
+            return;
+        }
+        
+        const messageData = {
+            email: current.email,
+            senderName: `${current.nom} ${current.prenom}`,
+            text: text,
+            timestamp: Date.now(),
+            timeStr: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        };
+        
+        messagesRef.push(messageData);
+        forumInput.value = "";
     }
     
-    function formatMessageText(text) {
-        return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    if (forumSendBtn) forumSendBtn.addEventListener('click', sendForumMessage);
+    if (forumInput) {
+        forumInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendForumMessage();
+        });
     }
     
-    function escapeHtml(text) {
+    function escapeForumHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
     }
     
-    function addBotMessage(text, options = null, documents = null) {
+    messagesRef.on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        
+        const isAdmin = data.email === "gadasolution.rdc@gmail.com";
+        const displayName = isAdmin ? "Formateur" : (data.senderName || data.email.split('@')[0]);
+        
+        if (isAdmin) {
+            messageElement.classList.add('msg-admin');
+            messageElement.innerHTML = `<span class="meta">📘 ${displayName} • ${data.timeStr}</span> ${escapeForumHtml(data.text)}`;
+        } else {
+            messageElement.classList.add('msg-student');
+            messageElement.innerHTML = `<span class="meta">👤 ${displayName} • ${data.timeStr}</span> ${escapeForumHtml(data.text)}`;
+        }
+        
+        forumMessagesContainer.appendChild(messageElement);
+        forumMessagesContainer.scrollTop = forumMessagesContainer.scrollHeight;
+    });
+</script>
+
+<script>
+    // ==================== CHATBOT IA ====================
+    const GADA_KNOWLEDGE = {
+        formation: {
+            titre: "Modélisation Spatiale & Statistique — Approche One Health",
+            duree: "4 semaines (17 mai – 17 juin 2026)",
+        },
+        modules: [
+            {
+                id: "M1",
+                titre: "Module I — R : Fondements & Exploration",
+                semaine: "Semaine 1 : 17–23 mai",
+                statut: "actif",
+                objectifs: [
+                    "Maîtriser les bases de R et RStudio",
+                    "Manipuler et nettoyer des données avec dplyr & tidyr",
+                    "Produire des visualisations avancées avec ggplot2",
+                    "Appliquer des statistiques descriptives et des tests (t-test, ANOVA)",
+                    "Construire des modèles linéaires et logistiques en santé/agriculture",
+                ],
+                documents: [],
+                concepts: ["vecteurs", "dataframes", "dplyr", "ggplot2", "GLM", "t-test", "ANOVA", "regression logistique"],
+            },
+            {
+                id: "M2",
+                titre: "Module II — R : One Health & Modélisation Avancée",
+                semaine: "Semaine 2 : 24–30 mai",
+                statut: "a_venir",
+                objectifs: [],
+                documents: [],
+                concepts: ["NDVI", "NDWI", "SAVI", "LST", "MaxEnt", "Random Forest", "One Health"],
+            },
+            {
+                id: "M3",
+                titre: "Module III — ArcGIS : Fondements & Cartographie",
+                semaine: "Semaine 3 : 31 mai – 6 juin",
+                statut: "a_venir",
+                objectifs: [],
+                documents: [],
+                concepts: ["ArcGIS Pro", "SIG", "Géoréférencement", "KDE", "Shapefiles"],
+            },
+            {
+                id: "M4",
+                titre: "Module IV — ArcGIS : Analyse Avancée & Projet Intégré",
+                semaine: "Semaine 4 : 7–17 juin",
+                statut: "a_venir",
+                objectifs: [],
+                documents: [],
+                concepts: ["AHP", "multicritère", "Random Forest spatial", "MaxEnt ArcGIS"],
+            },
+        ],
+        contacts: {
+            email: "gadasolution.rdc@gmail.com",
+        },
+    };
+
+    const DECISION_TREE = {
+        root: {
+            id: "root",
+            message: "<i class='fa-regular fa-hand-peace'></i> Bonjour ! Je suis <strong>GADA Assistant</strong>, votre guide pédagogique intelligent.\n\nComment puis-je vous aider aujourd'hui ?",
+            options: [
+                { label: "<i class='fa-regular fa-folder-open'></i> Explorer les modules", next: "modules" },
+                { label: "<i class='fa-regular fa-file-lines'></i> Accéder aux documents", next: "documents" },
+                { label: "<i class='fa-regular fa-lightbulb'></i> Comprendre un concept", next: "concepts" },
+                { label: "<i class='fa-regular fa-pen-to-square'></i> Tester mes connaissances", next: "quiz" },
+                { label: "<i class='fa-regular fa-headset'></i> Assistance", next: "contact" },
+            ],
+        },
+        modules: {
+            id: "modules",
+            message: "Quel module souhaitez-vous explorer ?",
+            options: GADA_KNOWLEDGE.modules.map((m) => ({
+                label: `${m.statut === "actif" ? "✓" : "🔒"} ${m.titre.split("—")[0].trim()}`,
+                next: `module_${m.id}`,
+                disabled: m.statut !== "actif",
+                data: m,
+            })),
+            backTo: "root",
+        },
+        documents: {
+            id: "documents",
+            message: "Les documents sont disponibles dans l'onglet 'Modules & Données' ci-dessus. Cliquez sur 'Accéder aux téléchargements' puis sur la semaine souhaitée.",
+            options: [{ label: "Retour à l'accueil", next: "root" }],
+        },
+        concepts: {
+            id: "concepts",
+            message: "Je peux vous expliquer : NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, GLM, One Health, Géoréférencement, KDE, AHP... Quel concept vous intéresse ?",
+            options: [
+                { label: "NDVI / NDWI / SAVI / LST", next: "indices" },
+                { label: "MaxEnt / Random Forest / GLM", next: "ml" },
+                { label: "One Health", next: "onehealth" },
+                { label: "Retour", next: "root" },
+            ],
+        },
+        indices: {
+            id: "indices",
+            message: "<strong>NDVI</strong> : Indice de végétation. Formule = (NIR-R)/(NIR+R)\n\n<strong>NDWI</strong> : Indice d'eau\n\n<strong>SAVI</strong> : NDVI corrigé pour sol nu\n\n<strong>LST</strong> : Température de surface",
+            options: [{ label: "Retour concepts", next: "concepts" }],
+        },
+        ml: {
+            id: "ml",
+            message: "<strong>MaxEnt</strong> : Modélisation de distribution d'espèces\n\n<strong>Random Forest</strong> : Forêt aléatoire pour classification\n\n<strong>GLM</strong> : Modèles linéaires généralisés",
+            options: [{ label: "Retour concepts", next: "concepts" }],
+        },
+        onehealth: {
+            id: "onehealth",
+            message: "<strong>One Health</strong> : Approche intégrée santé humaine, animale et environnementale. Utilise le SIG pour cartographier les facteurs de risque.",
+            options: [{ label: "Retour concepts", next: "concepts" }],
+        },
+        quiz: {
+            id: "quiz",
+            message: "Quiz rapide :\n1. Que signifie NDVI ?\n2. À quoi sert MaxEnt ?\n3. Qu'est-ce que One Health ?\n\nRéponses dans les concepts !",
+            options: [{ label: "Retour accueil", next: "root" }],
+        },
+        contact: {
+            id: "contact",
+            message: "Email : gadasolution.rdc@gmail.com\n\nNotre équipe vous répond dans les 24h.",
+            options: [{ label: "Retour accueil", next: "root" }],
+        },
+    };
+
+    const AI_RESPONSES = {
+        ai_ndvi: "NDVI = (NIR - R) / (NIR + R). Entre -1 et 1, plus c'est haut plus la végétation est dense.",
+        ai_ndwi: "NDWI = (G - NIR) / (G + NIR). Détecte les surfaces en eau.",
+        ai_savi: "SAVI = ((NIR - R) / (NIR + R + L)) × (1+L). Corrige l'effet du sol.",
+        ai_lst: "LST = Température de surface terrestre, essentielle pour le stress hydrique.",
+        ai_rf: "Random Forest = méthode d'apprentissage supervisé combinant plusieurs arbres de décision.",
+        ai_maxent: "MaxEnt = modélisation de distribution d'espèces à partir de données de présence.",
+        ai_glm: "GLM = extension de la régression linéaire avec fonction de lien.",
+        ai_oh_def: "One Health = santé humaine, animale et environnementale sont interconnectées.",
+        ai_oh_spatial: "Le SIG permet de cartographier les facteurs de risque One Health.",
+        ai_oh_vect: "Maladies vectorielles : NDVI, LST, NDWI sont des facteurs clés.",
+        ai_georef: "Géoréférencement = alignement d'une image raster sur un système de coordonnées.",
+        ai_kde: "KDE = estimation de densité par noyau pour visualiser des hotspots.",
+        ai_ahp: "AHP = méthode d'aide à la décision multicritère.",
+        ai_shp: "Shapefile = vecteur (points/lignes/polygones). Raster = grille de pixels.",
+    };
+
+    function getAIResponse(nodeId, module) {
+        if (AI_RESPONSES[nodeId]) return AI_RESPONSES[nodeId];
+        if (nodeId && nodeId.startsWith("obj_") && module) {
+            return `Objectifs : ${module.objectifs.join(", ")}`;
+        }
+        return "Je n'ai pas trouvé d'information. Reformulez votre question.";
+    }
+
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const chatbotInput = document.getElementById('chatbotInput');
+    const chatbotSend = document.getElementById('chatbotSend');
+    const chatbotInputArea = document.getElementById('chatbotInputArea');
+    
+    let currentNodeId = "root";
+    let isWaitingForFreeInput = false;
+    
+    function scrollChatbotBottom() {
+        if (chatbotMessages) chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+    
+    function escapeChatbotHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function addChatbotMessage(text, options = null) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message-bot';
-        
-        let contentHtml = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>`;
-        messageDiv.innerHTML = contentHtml;
-        chatMessages.appendChild(messageDiv);
-        
-        if (documents && documents.length > 0) {
-            const docsDiv = document.createElement('div');
-            docsDiv.className = 'documents-list';
-            docsDiv.style.marginTop = '8px';
-            docsDiv.style.marginLeft = '36px';
-            documents.forEach(doc => {
-                const docLink = document.createElement('a');
-                docLink.href = doc.url;
-                docLink.download = true;
-                docLink.className = 'doc-link';
-                docLink.innerHTML = `<i class="fa-regular fa-download"></i><span>${doc.nom}</span>`;
-                docsDiv.appendChild(docLink);
-            });
-            messageDiv.appendChild(docsDiv);
-        }
+        messageDiv.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>`;
+        chatbotMessages.appendChild(messageDiv);
         
         if (options && options.length > 0) {
             const optionsDiv = document.createElement('div');
@@ -1701,188 +1871,138 @@
                 btn.className = 'chat-option-btn';
                 btn.innerHTML = opt.label;
                 if (opt.disabled) btn.disabled = true;
-                btn.onclick = () => handleOptionClick(opt);
+                btn.onclick = () => handleChatbotOption(opt);
                 optionsDiv.appendChild(btn);
             });
             messageDiv.appendChild(optionsDiv);
         }
-        
-        scrollToBottom();
+        scrollChatbotBottom();
     }
     
-    function addUserMessage(text) {
+    function addUserChatbotMessage(text) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message-user';
-        messageDiv.innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
-        chatMessages.appendChild(messageDiv);
-        scrollToBottom();
+        messageDiv.innerHTML = `<div class="chat-bubble">${escapeChatbotHtml(text)}</div>`;
+        chatbotMessages.appendChild(messageDiv);
+        scrollChatbotBottom();
     }
     
-    function showTypingIndicator() {
-        removeTypingIndicator();
+    function showTyping() {
         const typingDiv = document.createElement('div');
-        typingDiv.id = 'typingIndicator';
+        typingDiv.id = 'typingIndicatorBot';
         typingDiv.className = 'message-bot';
         typingDiv.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-        chatMessages.appendChild(typingDiv);
-        scrollToBottom();
+        chatbotMessages.appendChild(typingDiv);
+        scrollChatbotBottom();
     }
     
-    function removeTypingIndicator() {
-        const indicator = document.getElementById('typingIndicator');
+    function hideTyping() {
+        const indicator = document.getElementById('typingIndicatorBot');
         if (indicator) indicator.remove();
     }
     
-    async function handleOptionClick(option) {
+    async function handleChatbotOption(option) {
         if (option.disabled) return;
-        
-        const labelText = stripHtmlTags(option.label);
-        addUserMessage(labelText);
+        addUserChatbotMessage(option.label.replace(/<[^>]*>/g, ''));
         
         if (option.freeMode) {
             isWaitingForFreeInput = true;
-            chatInputArea.style.display = 'flex';
-            chatInput.focus();
+            chatbotInputArea.style.display = 'flex';
+            chatbotInput.focus();
             return;
         }
         
         const nextId = option.next;
-        const moduleData = option.data || GADA_KNOWLEDGE.modules.find(m => nextId && nextId.includes(m.id));
+        const moduleData = option.data;
         
-        if (nextId && nextId.startsWith("docs_") && moduleData && moduleData.documents && moduleData.documents.length > 0) {
-            showTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 500));
-            removeTypingIndicator();
-            addBotMessage(`<i class="fa-regular fa-folder-open"></i> <strong>Documents disponibles — ${moduleData.titre}</strong><br><br>Cliquez sur les liens ci-dessous pour télécharger :`, null, moduleData.documents);
-            addBotMessage("<i class='fa-regular fa-arrow-left'></i> Que souhaitez-vous faire ensuite ?", [
-                { label: "<i class='fa-regular fa-arrow-left'></i> Retour au module", next: `module_${moduleData.id}` },
-                { label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" }
-            ]);
-            currentNodeId = nextId;
-            return;
-        }
+        showTyping();
+        await new Promise(resolve => setTimeout(resolve, 500));
+        hideTyping();
         
-        if (nextId && (AI_RESPONSES[nextId] || nextId.startsWith("obj_") || nextId.startsWith("concepts_") || nextId.startsWith("quiz_"))) {
-            showTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 600));
-            removeTypingIndicator();
+        if (nextId && (AI_RESPONSES[nextId] || nextId.startsWith("obj_"))) {
             const response = getAIResponse(nextId, moduleData);
-            addBotMessage(response);
-            
-            if (nextId === "ai_open") {
-                isWaitingForFreeInput = true;
-                chatInputArea.style.display = 'flex';
-                chatInput.focus();
-            } else {
-                addBotMessage("<i class='fa-regular fa-compass'></i> Que souhaitez-vous faire ?", [
-                    { label: "<i class='fa-regular fa-comment'></i> Autre question", next: "ai_open", freeMode: true },
-                    { label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" },
-                    { label: "<i class='fa-regular fa-folder-open'></i> Voir les modules", next: "modules" }
-                ]);
-            }
-            currentNodeId = nextId;
+            addChatbotMessage(response);
+            addChatbotMessage("Que souhaitez-vous faire ?", [
+                { label: "Autre question", next: "ai_open", freeMode: true },
+                { label: "Retour accueil", next: "root" },
+            ]);
             return;
         }
         
         const node = DECISION_TREE[nextId];
         if (node) {
             currentNodeId = nextId;
-            showTypingIndicator();
-            await new Promise(resolve => setTimeout(resolve, 300));
-            removeTypingIndicator();
-            
             if (node.freeInput) {
-                addBotMessage(node.message);
+                addChatbotMessage(node.message);
                 isWaitingForFreeInput = true;
-                chatInputArea.style.display = 'flex';
-                chatInput.focus();
+                chatbotInputArea.style.display = 'flex';
+                chatbotInput.focus();
             } else {
-                addBotMessage(node.message, node.options);
+                addChatbotMessage(node.message, node.options);
             }
         }
     }
     
-    async function handleFreeSubmit() {
-        const question = chatInput.value.trim();
+    async function handleChatbotFreeSubmit() {
+        const question = chatbotInput.value.trim();
         if (!question) return;
         
-        addUserMessage(question);
-        chatInput.value = '';
-        chatInputArea.style.display = 'none';
+        addUserChatbotMessage(question);
+        chatbotInput.value = '';
+        chatbotInputArea.style.display = 'none';
         isWaitingForFreeInput = false;
         
-        showTypingIndicator();
+        showTyping();
         await new Promise(resolve => setTimeout(resolve, 800));
-        removeTypingIndicator();
+        hideTyping();
         
-        let response = "<i class='fa-regular fa-face-meh'></i> Je n'ai pas trouvé d'information sur ce sujet. Essayez de reformuler, ou demandez 'aide' pour voir ce que je peux faire.";
+        let response = "Je n'ai pas trouvé d'information. Essayez 'aide' pour voir ce que je peux faire.";
         const q = question.toLowerCase();
         
         if (q.includes('ndvi')) response = AI_RESPONSES.ai_ndvi;
         else if (q.includes('ndwi')) response = AI_RESPONSES.ai_ndwi;
         else if (q.includes('savi')) response = AI_RESPONSES.ai_savi;
         else if (q.includes('lst')) response = AI_RESPONSES.ai_lst;
-        else if (q.includes('random forest') || q.includes('forêt aléatoire')) response = AI_RESPONSES.ai_rf;
+        else if (q.includes('random forest')) response = AI_RESPONSES.ai_rf;
         else if (q.includes('maxent')) response = AI_RESPONSES.ai_maxent;
         else if (q.includes('glm')) response = AI_RESPONSES.ai_glm;
-        else if (q.includes('one health') || q.includes('une seule santé')) {
-            if (q.includes('définition') || q.includes('principe')) response = AI_RESPONSES.ai_oh_def;
-            else if (q.includes('spatial') || q.includes('sig')) response = AI_RESPONSES.ai_oh_spatial;
-            else if (q.includes('vectorielle') || q.includes('paludisme')) response = AI_RESPONSES.ai_oh_vect;
-            else response = AI_RESPONSES.ai_oh_def;
-        }
-        else if (q.includes('géoréférencement') || q.includes('georeferencement')) response = AI_RESPONSES.ai_georef;
-        else if (q.includes('kde')) response = AI_RESPONSES.ai_kde;
-        else if (q.includes('ahp')) response = AI_RESPONSES.ai_ahp;
-        else if (q.includes('shapefile') || q.includes('raster')) response = AI_RESPONSES.ai_shp;
-        else if (q.includes('module 1') || q.includes('module i')) {
-            const m1 = GADA_KNOWLEDGE.modules[0];
-            response = `<i class='fa-regular fa-folder-open'></i> <strong>${m1.titre}</strong><br><i class='fa-regular fa-calendar'></i> ${m1.semaine}<br><br><strong>Objectifs :</strong> ${m1.objectifs.slice(0,3).join(", ")}...<br><br><strong>Concepts :</strong> ${m1.concepts.slice(0,5).join(", ")}`;
-        }
-        else if (q.includes('module 2') || q.includes('module ii')) {
-            const m2 = GADA_KNOWLEDGE.modules[1];
-            response = `<i class='fa-regular fa-folder'></i> <strong>${m2.titre}</strong><br><i class='fa-regular fa-calendar'></i> ${m2.semaine}<br><br><strong>Objectifs :</strong> ${m2.objectifs.slice(0,3).join(", ")}...<br><br><strong>Concepts :</strong> ${m2.concepts.slice(0,5).join(", ")}`;
-        }
-        else if (q.includes('contact') || q.includes('assistance') || q.includes('email')) {
-            response = `<i class='fa-regular fa-headset'></i> <strong>Assistance GADA Training</strong><br><br><i class='fa-regular fa-envelope'></i> Email : gadasolution.rdc@gmail.com<br><br>Notre équipe répond dans les 24h.`;
-        }
-        else if (q.includes('aide')) {
-            response = "<i class='fa-regular fa-lightbulb'></i> <strong>Aide GADA Assistant</strong><br><br>• <strong>Modules</strong> : dites 'Module 1', 'Module 2', etc.<br>• <strong>Concepts</strong> : 'NDVI', 'MaxEnt', 'Random Forest', 'One Health'<br>• <strong>Assistance</strong> : 'contact', 'support'<br>• <strong>Quiz</strong> : 'quiz'";
-        }
+        else if (q.includes('one health')) response = AI_RESPONSES.ai_oh_def;
+        else if (q.includes('module 1')) response = "Module I - R : Fondements & Exploration. Disponible actuellement.";
+        else if (q.includes('contact')) response = "Email : gadasolution.rdc@gmail.com";
+        else if (q.includes('aide')) response = "Commandes : module 1, ndvi, maxent, one health, contact...";
         
-        addBotMessage(response);
-        addBotMessage("<i class='fa-regular fa-compass'></i> Que souhaitez-vous faire ?", [
-            { label: "<i class='fa-regular fa-comment'></i> Autre question", next: "ai_open", freeMode: true },
-            { label: "<i class='fa-regular fa-house'></i> Retour à l'accueil", next: "root" },
-            { label: "<i class='fa-regular fa-folder-open'></i> Explorer les modules", next: "modules" }
+        addChatbotMessage(response);
+        addChatbotMessage("Autre chose ?", [
+            { label: "Poser une question", next: "ai_open", freeMode: true },
+            { label: "Retour accueil", next: "root" },
         ]);
     }
     
-    function initChat() {
-        chatMessages.innerHTML = '';
+    function initChatbot() {
+        chatbotMessages.innerHTML = '';
         const rootNode = DECISION_TREE.root;
-        addBotMessage(rootNode.message, rootNode.options);
+        addChatbotMessage(rootNode.message, rootNode.options);
         currentNodeId = "root";
         
-        chatInput.addEventListener('keypress', (e) => {
+        chatbotInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && isWaitingForFreeInput) {
                 e.preventDefault();
-                handleFreeSubmit();
+                handleChatbotFreeSubmit();
             }
         });
         
-        chatSend.addEventListener('click', () => {
-            if (isWaitingForFreeInput) handleFreeSubmit();
+        chatbotSend.addEventListener('click', () => {
+            if (isWaitingForFreeInput) handleChatbotFreeSubmit();
         });
     }
     
     chatToggle.addEventListener('click', () => {
         const wasOpen = chatWindow.classList.contains('open');
         chatWindow.classList.toggle('open');
-        if (!wasOpen && chatMessages.children.length === 0) {
-            initChat();
+        if (!wasOpen && chatbotMessages.children.length === 0) {
+            initChatbot();
         } else if (!wasOpen) {
-            scrollToBottom();
+            scrollChatbotBottom();
         }
     });
     
