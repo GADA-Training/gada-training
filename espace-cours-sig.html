@@ -1518,78 +1518,135 @@
         }
     }
     
-    // ==================== CHARGEMENT AUTOMATIQUE DES DOCUMENTS ====================
-    let documentsData = null;
-
-    async function chargerDocuments() {
-        try {
-            const response = await fetch('documentsjson.json?v=' + Date.now());
-            documentsData = await response.json();
-            genererAffichageDocuments();
-        } catch (error) {
-            console.error('Erreur chargement documents:', error);
-        }
+    // ==================== CHARGEMENT DES DOCUMENTS (VERSION INTÉGRÉE) ====================
+let documentsData = {
+    "semaine1": {
+        "titre": "Semaine 1 : Fondements R",
+        "date": "17 mai – 23 mai",
+        "description": "Rappel des bases, Introduction & statistiques descriptives, Nettoyage et structuration des données, Analyse exploratoire des données (AED), visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture",
+        "badge": "6 fichiers",
+        "fichiers": [
+            {
+                "nom": "GADA_Plan_Formation_2026.pdf",
+                "type": "pdf",
+                "icone": "fa-file-pdf"
+            },
+            {
+                "nom": "GADA_Formation_RStudio_Jour1.pdf",
+                "type": "pdf",
+                "icone": "fa-file-pdf"
+            },
+            {
+                "nom": "Aide a l'utilisation de R pour mettre en oeuvre les methodes.pdf",
+                "type": "pdf",
+                "icone": "fa-file-pdf"
+            },
+            {
+                "nom": "GADA_Formation_RStudio_Jour2.pdf",
+                "type": "pdf",
+                "icone": "fa-file-pdf"
+            },
+            {
+                "nom": "Script_Jour2.R",
+                "type": "r",
+                "icone": "fa-file-code"
+            },
+            {
+                "nom": "Donnees_sorgho_Benoit_kajora_complet.xlsx",
+                "type": "excel",
+                "icone": "fa-file-excel"
+            }
+        ]
+    },
+    "semaine2": {
+        "locked": true,
+        "titre": "Semaine 2 : Modélisation R",
+        "date": "24 mai – 30 mai",
+        "description": "Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles, Analyse One Health, impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt, distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)",
+        "badge": "À venir",
+        "fichiers": []
+    },
+    "semaine3": {
+        "locked": true,
+        "titre": "Semaine 3 : ArcGIS Bases",
+        "date": "31 mai – 6 juin",
+        "description": "Interface ArcGIS Pro & gestion de projets SIG, Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère",
+        "badge": "À venir",
+        "fichiers": []
+    },
+    "semaine4": {
+        "locked": true,
+        "titre": "Semaine 4 : ArcGIS Avancé",
+        "date": "7 juin – 17 juin",
+        "description": "Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points), Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables",
+        "badge": "À venir",
+        "fichiers": []
     }
+};
 
-    function genererAffichageDocuments() {
-        if (!documentsData) return;
+function chargerDocuments() {
+    genererAffichageDocuments();
+}
+
+function genererAffichageDocuments() {
+    if (!documentsData) return;
+    
+    const semaine1 = documentsData.semaine1;
+    const badgeElem = document.querySelector('#hf-s1 .h-badge');
+    const panelInner = document.querySelector('#hp-s1 .h-expand-inner');
+    
+    if (badgeElem) badgeElem.textContent = semaine1.badge;
+    
+    if (panelInner) {
+        let fichiersHtml = `
+            <div class="h-expand-title">
+                <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
+                ${semaine1.titre} – Documents
+            </div>
+        `;
         
-        const semaine1 = documentsData.semaine1;
-        const badgeElem = document.querySelector('#hf-s1 .h-badge');
-        const panelInner = document.querySelector('#hp-s1 .h-expand-inner');
-        
-        if (badgeElem) badgeElem.textContent = semaine1.badge;
-        
-        if (panelInner) {
-            let fichiersHtml = `
-                <div class="h-expand-title">
-                    <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
-                    ${semaine1.titre} – Documents
+        semaine1.fichiers.forEach(fichier => {
+            fichiersHtml += `
+                <div class="h-file-item">
+                    <div class="h-file-name">
+                        <i class="fa-solid ${fichier.icone}"></i>
+                        ${fichier.nom}
+                    </div>
+                    <a href="documents/${encodeURIComponent(fichier.nom)}" class="h-file-dl">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
                 </div>
             `;
-            
-            semaine1.fichiers.forEach(fichier => {
-                fichiersHtml += `
-                    <div class="h-file-item">
-                        <div class="h-file-name">
-                            <i class="fa-solid ${fichier.icone}"></i>
-                            ${fichier.nom}
-                        </div>
-                        <a href="documents/${encodeURIComponent(fichier.nom)}" download class="h-file-dl">
-                            <i class="fa-solid fa-download"></i>
-                        </a>
-                    </div>
-                `;
-            });
-            
-            panelInner.innerHTML = fichiersHtml;
-        }
+        });
         
-        mettreAJourSemaine('s2', documentsData.semaine2);
-        mettreAJourSemaine('s3', documentsData.semaine3);
-        mettreAJourSemaine('s4', documentsData.semaine4);
+        panelInner.innerHTML = fichiersHtml;
     }
+    
+    mettreAJourSemaine('s2', documentsData.semaine2);
+    mettreAJourSemaine('s3', documentsData.semaine3);
+    mettreAJourSemaine('s4', documentsData.semaine4);
+}
 
-    function mettreAJourSemaine(id, data) {
-        const folderItem = document.getElementById(`hf-${id}`);
-        if (!folderItem) return;
-        
-        if (data.locked) {
-            folderItem.classList.add('locked');
-        } else {
-            folderItem.classList.remove('locked');
-        }
-        
-        const titleSpan = folderItem.querySelector('.h-folder-title');
-        if (titleSpan) {
-            titleSpan.innerHTML = `${data.titre}<br><span style="font-weight:500; color:#4a7a52;">${data.date}</span>`;
-        }
-        
-        const subDiv = folderItem.querySelector('.h-folder-sub');
-        if (subDiv) subDiv.textContent = data.description;
+function mettreAJourSemaine(id, data) {
+    const folderItem = document.getElementById(`hf-${id}`);
+    if (!folderItem) return;
+    
+    if (data.locked) {
+        folderItem.classList.add('locked');
+    } else {
+        folderItem.classList.remove('locked');
     }
+    
+    const titleSpan = folderItem.querySelector('.h-folder-title');
+    if (titleSpan) {
+        titleSpan.innerHTML = `${data.titre}<br><span style="font-weight:500; color:#4a7a52;">${data.date}</span>`;
+    }
+    
+    const subDiv = folderItem.querySelector('.h-folder-sub');
+    if (subDiv) subDiv.textContent = data.description;
+}
 
-    chargerDocuments();
+chargerDocuments();
 </script>
 
 <!-- Firebase SDK -->
