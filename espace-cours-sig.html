@@ -1004,79 +1004,10 @@
                             </div>
 
                             <div class="h-expand-panel" id="hp-s1">
-    <div class="h-expand-inner">
-        <div class="h-expand-title">
-            <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
-            Semaine 1 – Documents
-        </div>
-        
-        <!-- Document 1 -->
-        <div class="h-file-item">
-            <div class="h-file-name">
-                <i class="fa-solid fa-file-pdf"></i>
-                GADA_Plan_Formation_2026.pdf
-            </div>
-            <a href="documents/GADA_Plan_Formation_2026.pdf" download class="h-file-dl">
-                <i class="fa-solid fa-download"></i>
-            </a>
-        </div>
-        
-        <!-- Document 2 -->
-        <div class="h-file-item">
-            <div class="h-file-name">
-                <i class="fa-solid fa-file-pdf"></i>
-                GADA_Formation_RStudio_Jour1.pdf
-            </div>
-            <a href="documents/GADA_Formation_RStudio_Jour1.pdf" download class="h-file-dl">
-                <i class="fa-solid fa-download"></i>
-            </a>
-        </div>
-        
-        <!-- Document 3 -->
-        <div class="h-file-item">
-            <div class="h-file-name">
-                <i class="fa-solid fa-file-pdf"></i>
-                Aide utilisation R (Méthodes).pdf
-            </div>
-            <a href="documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" download class="h-file-dl">
-                <i class="fa-solid fa-download"></i>
-            </a>
-        </div>
-        
-        <!-- NOUVEAU Document 4 : GADA_Formation_RStudio_Jour2.pdf -->
-        <div class="h-file-item">
-            <div class="h-file-name">
-                <i class="fa-solid fa-file-pdf"></i>
-                GADA_Formation_RStudio_Jour2.pdf
-            </div>
-            <a href="documents/GADA_Formation_RStudio_Jour2.pdf" download class="h-file-dl">
-                <i class="fa-solid fa-download"></i>
-            </a>
-        </div>
-        
-        <!-- NOUVEAU Document 5 : Script_Jour2.R -->
-        <div class="h-file-item">
-            <div class="h-file-name">
-                <i class="fa-solid fa-file-code"></i>
-                Script_Jour2.R
-            </div>
-            <a href="documents/Script_Jour2.R" download class="h-file-dl">
-                <i class="fa-solid fa-download"></i>
-            </a>
-        </div>
-        
-        <!-- NOUVEAU Document 6 : Donnees_sorgho_Benoit_kajora_complet.xlsx -->
-        <div class="h-file-item">
-            <div class="h-file-name">
-                <i class="fa-solid fa-file-excel"></i>
-                Donnees_sorgho_Benoit_kajora_complet.xlsx
-            </div>
-            <a href="documents/Donnees_sorgho_Benoit_kajora_complet.xlsx" download class="h-file-dl">
-                <i class="fa-solid fa-download"></i>
-            </a>
-        </div>
-    </div>
-</div>
+                                <div class="h-expand-inner">
+                                    <!-- Le contenu sera chargé automatiquement par JavaScript -->
+                               </div>
+                           </div>
 
                             <div class="h-folder-item locked">
                                 <div class="h-folder-top">
@@ -1677,6 +1608,92 @@
         }
     }
     
+    // ==================== CHARGEMENT AUTOMATIQUE DES DOCUMENTS ====================
+    let documentsData = null;
+
+    async function chargerDocuments() {
+        try {
+            const response = await fetch('documents.json?v=' + Date.now());
+            documentsData = await response.json();
+            genererAffichageDocuments();
+            mettreAJourChat();
+        } catch (error) {
+            console.error('Erreur chargement documents:', error);
+        }
+    }
+
+    function genererAffichageDocuments() {
+        if (!documentsData) return;
+        
+        const semaine1 = documentsData.semaine1;
+        const badgeElem = document.querySelector('#hf-s1 .h-badge');
+        const panelInner = document.querySelector('#hp-s1 .h-expand-inner');
+        
+        if (badgeElem) badgeElem.textContent = semaine1.badge;
+        
+        if (panelInner) {
+            let fichiersHtml = `
+                <div class="h-expand-title">
+                    <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
+                    ${semaine1.titre} – Documents
+                </div>
+            `;
+            
+            semaine1.fichiers.forEach(fichier => {
+                fichiersHtml += `
+                    <div class="h-file-item">
+                        <div class="h-file-name">
+                            <i class="fa-solid ${fichier.icone}"></i>
+                            ${fichier.nom}
+                        </div>
+                        <a href="documents/${encodeURIComponent(fichier.nom)}" download class="h-file-dl">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                    </div>
+                `;
+            });
+            
+            panelInner.innerHTML = fichiersHtml;
+        }
+        
+        mettreAJourSemaine('s2', documentsData.semaine2);
+        mettreAJourSemaine('s3', documentsData.semaine3);
+        mettreAJourSemaine('s4', documentsData.semaine4);
+    }
+
+    function mettreAJourSemaine(id, data) {
+        const folderItem = document.getElementById(`hf-${id}`);
+        if (!folderItem) return;
+        
+        if (data.locked) {
+            folderItem.classList.add('locked');
+        } else {
+            folderItem.classList.remove('locked');
+        }
+        
+        const titleSpan = folderItem.querySelector('.h-folder-title');
+        if (titleSpan) {
+            titleSpan.innerHTML = `${data.titre}<br><span style="font-weight:500; color:#4a7a52;">${data.date}</span>`;
+        }
+        
+        const subDiv = folderItem.querySelector('.h-folder-sub');
+        if (subDiv) subDiv.textContent = data.description;
+    }
+
+    function mettreAJourChat() {
+        if (!documentsData) return;
+        
+        const fichiers = documentsData.semaine1.fichiers;
+        GADA_KNOWLEDGE.modules[0].documents = fichiers.map(f => ({
+            nom: f.nom,
+            type: f.type,
+            url: `documents/${encodeURIComponent(f.nom)}`
+        }));
+    }
+
+    // Appeler cette fonction au chargement de la page
+    chargerDocuments();
+
     // ==================== CHAT GADA ASSISTANT IA CORRIGÉ ====================
     const chatToggle = document.getElementById('chatToggle');
     const chatWindow = document.getElementById('chatWindow');

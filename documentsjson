@@ -1,9 +1,64 @@
 {
-  "documents": {
-    "semaine1": [
-      "GADA_Plan_Formation_2026.pdf",
-      "GADA_Formation_RStudio_Jour1.pdf",
-      "Aide utilisation R (Méthodes).pdf"
+  "semaine1": {
+    "titre": "Semaine 1 : Fondements R",
+    "date": "17 mai – 23 mai",
+    "description": "Rappel des bases, Introduction & statistiques descriptives, Nettoyage et structuration des données, Analyse exploratoire des données (AED), visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture",
+    "badge": "6 fichiers",
+    "fichiers": [
+      {
+        "nom": "GADA_Plan_Formation_2026.pdf",
+        "type": "pdf",
+        "icone": "fa-file-pdf"
+      },
+      {
+        "nom": "GADA_Formation_RStudio_Jour1.pdf",
+        "type": "pdf",
+        "icone": "fa-file-pdf"
+      },
+      {
+        "nom": "Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf",
+        "type": "pdf",
+        "icone": "fa-file-pdf"
+      },
+      {
+        "nom": "GADA_Formation_RStudio_Jour2.pdf",
+        "type": "pdf",
+        "icone": "fa-file-pdf"
+      },
+      {
+        "nom": "Script_Jour2.R",
+        "type": "r",
+        "icone": "fa-file-code"
+      },
+      {
+        "nom": "Donnees_sorgho_Benoit_kajora_complet.xlsx",
+        "type": "excel",
+        "icone": "fa-file-excel"
+      }
     ]
+  },
+  "semaine2": {
+    "locked": true,
+    "titre": "Semaine 2 : Modélisation R",
+    "date": "24 mai – 30 mai",
+    "description": "Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles, Analyse One Health, impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt, distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)",
+    "badge": "À venir",
+    "fichiers": []
+  },
+  "semaine3": {
+    "locked": true,
+    "titre": "Semaine 3 : ArcGIS Bases",
+    "date": "31 mai – 6 juin",
+    "description": "Interface ArcGIS Pro & gestion de projets SIG, Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère",
+    "badge": "À venir",
+    "fichiers": []
+  },
+  "semaine4": {
+    "locked": true,
+    "titre": "Semaine 4 : ArcGIS Avancé",
+    "date": "7 juin – 17 juin",
+    "description": "Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points), Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables",
+    "badge": "À venir",
+    "fichiers": []
   }
 }
