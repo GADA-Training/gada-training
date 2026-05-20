@@ -240,9 +240,170 @@
         .main-content {
             position: relative;
             z-index: 10;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 20px auto 60px;
             padding: 0 24px;
+        }
+
+        /* ==================== STYLES CHAT DISCUSSION ==================== */
+        .formation-container {
+            display: flex;
+            gap: 28px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+        
+        .main-content-blocks {
+            flex: 2.5;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        
+        /* Style de la boîte de Chat */
+        .chat-sidebar {
+            flex: 1;
+            min-width: 320px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(2px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            height: 580px;
+            border: 1px solid rgba(210, 190, 170, 0.3);
+            overflow: hidden;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
+            color: white;
+            padding: 18px 20px;
+        }
+        
+        .chat-header h3 { 
+            margin: 0; 
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header p { 
+            margin: 6px 0 0 0; 
+            font-size: 0.7rem; 
+            opacity: 0.85; 
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--neutral-200);
+        }
+        
+        /* Bulles de messages */
+        .message {
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 85%;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            animation: fadeInMsg 0.2s ease;
+        }
+        
+        .message .meta {
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        /* Message Apprenant (gauche) */
+        .msg-student {
+            background: white;
+            border: 1px solid #e2ddd5;
+            align-self: flex-start;
+            color: var(--neutral-800);
+            border-bottom-left-radius: 4px;
+        }
+        
+        /* Message Formateur (droite) */
+        .msg-admin {
+            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            align-self: flex-end;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .msg-admin .meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Barre de saisie */
+        .chat-input-area {
+            display: flex;
+            padding: 14px;
+            background: white;
+            border-top: 1px solid #eee8e0;
+            gap: 10px;
+        }
+        
+        #chat-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #e2dcd5;
+            border-radius: 30px;
+            outline: none;
+            font-size: 0.85rem;
+            background: #fefcf9;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        #chat-input:focus {
+            border-color: var(--green-agri);
+        }
+        
+        #chat-send-btn {
+            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            color: white;
+            border: none;
+            padding: 0 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        
+        #chat-send-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+        
+        @keyframes fadeInMsg {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Version mobile */
+        @media (max-width: 900px) {
+            .formation-container { 
+                flex-direction: column; 
+            }
+            .main-content-blocks { 
+                width: 100%; 
+            }
+            .chat-sidebar { 
+                width: 100%; 
+                height: 480px;
+                position: static;
+            }
         }
 
         .welcome-card {
@@ -252,7 +413,6 @@
             padding: 32px 36px;
             box-shadow: var(--shadow-md);
             border: 1px solid rgba(255,255,240,0.5);
-            margin-bottom: 40px;
         }
         .welcome-card h2 {
             font-size: 1.9rem;
@@ -715,7 +875,6 @@
             border-radius: 4px;
         }
         
-        /* Message styles - PAS de conflit avec .bubble du background ! */
         .message-bot {
             display: flex;
             gap: 8px;
@@ -958,82 +1117,106 @@
     </nav>
 
     <div class="main-content">
-        <div class="welcome-card">
-            <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
-            <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
-        </div>
-
-        <div class="course-grid">
-            <div class="course-card">
-                <div>
-                    <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
-                    <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
-                    <ul>
-                        <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
-                        <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
-                    </ul>
+        <div class="formation-container">
+            <!-- CHAT SIDEBAR (GAUCHE) -->
+            <div class="chat-sidebar">
+                <div class="chat-header">
+                    <h3><i class="fa-regular fa-comments"></i> Espace Discussion</h3>
+                    <p>Connecté en tant que : <span id="user-display">Chargement...</span></p>
                 </div>
-                <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div style="text-align:center; padding:20px; color:#999;">
+                        <i class="fa-regular fa-spinner fa-spin"></i> Connexion...
+                    </div>
+                </div>
+                
+                <div class="chat-input-area" id="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Écrivez votre message ici..." autocomplete="off">
+                    <button id="chat-send-btn"><i class="fa-regular fa-paper-plane"></i> Envoyer</button>
+                </div>
             </div>
 
-            <div class="course-card">
-                <div>
-                    <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
-                    <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
-                    <ul>
-                        <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
-                        <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
-                        <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
-                        <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
-                    </ul>
+            <!-- BLOCS PRINCIPAUX (DROITE) -->
+            <div class="main-content-blocks">
+                <div class="welcome-card">
+                    <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
+                    <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
                 </div>
-                <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
-                    Accéder aux téléchargements
-                </button>
 
-                <div id="folder-zone" class="folder-zone">
-                    <div class="h-folder-wrapper">
-                        <div class="h-folder-row">
-                            <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                    <span class="h-badge">6 fichiers</span>
+                <div class="course-grid">
+                    <div class="course-card">
+                        <div>
+                            <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
+                            <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
+                            <ul>
+                                <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
+                                <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
+                            </ul>
+                        </div>
+                        <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
+                    </div>
+
+                    <div class="course-card">
+                        <div>
+                            <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
+                            <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
+                            <ul>
+                                <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
+                                <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
+                                <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
+                                <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
+                            </ul>
+                        </div>
+                        <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
+                            Accéder aux téléchargements
+                        </button>
+
+                        <div id="folder-zone" class="folder-zone">
+                            <div class="h-folder-wrapper">
+                                <div class="h-folder-row">
+                                    <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
+                                            <span class="h-badge">6 fichiers</span>
+                                        </div>
+                                        <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
+                                        <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
+                                    </div>
+
+                                    <div class="h-expand-panel" id="hp-s1">
+                                        <div class="h-expand-inner">
+                                            <!-- Le contenu sera chargé automatiquement par JavaScript -->
+                                        </div>
+                                    </div>
+
+                                    <div class="h-folder-item locked" id="hf-s2">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        </div>
+                                        <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
+                                        <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
+                                    </div>
+
+                                    <div class="h-folder-item locked" id="hf-s3">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        </div>
+                                        <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
+                                        <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
+                                    </div>
+
+                                    <div class="h-folder-item locked" id="hf-s4">
+                                        <div class="h-folder-top">
+                                            <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
+                                            <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                        </div>
+                                        <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
+                                        <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
+                                    </div>
                                 </div>
-                                <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
-                                <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
-                            </div>
-
-                            <div class="h-expand-panel" id="hp-s1">
-                                <div class="h-expand-inner">
-                                    <!-- Le contenu sera chargé automatiquement par JavaScript -->
-                               </div>
-                           </div>
-
-                            <div class="h-folder-item locked">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                </div>
-                                <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
-                                <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
-                            </div>
-
-                            <div class="h-folder-item locked">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                </div>
-                                <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
-                                <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
-                            </div>
-
-                            <div class="h-folder-item locked">
-                                <div class="h-folder-top">
-                                    <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                    <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                </div>
-                                <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
-                                <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
                             </div>
                         </div>
                     </div>
@@ -1120,13 +1303,13 @@
                     "Construire des modèles linéaires et logistiques en santé/agriculture",
                 ],
                 documents: [
-    { nom: "GADA_Plan_Formation_2026.pdf", type: "pdf", url: "documents/GADA_Plan_Formation_2026.pdf" },
-    { nom: "GADA_Formation_RStudio_Jour1.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour1.pdf" },
-    { nom: "Aide utilisation R (Méthodes).pdf", type: "pdf", url: "documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" },
-    { nom: "GADA_Formation_RStudio_Jour2.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour2.pdf" },
-    { nom: "Script_Jour2.R", type: "r", url: "documents/Script_Jour2.R" },
-    { nom: "Donnees_sorgho_Benoit_kajora_complet.xlsx", type: "excel", url: "documents/Donnees_sorgho_Benoit_kajora_complet.xlsx" },
-],
+                    { nom: "GADA_Plan_Formation_2026.pdf", type: "pdf", url: "documents/GADA_Plan_Formation_2026.pdf" },
+                    { nom: "GADA_Formation_RStudio_Jour1.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour1.pdf" },
+                    { nom: "Aide utilisation R (Méthodes).pdf", type: "pdf", url: "documents/Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf" },
+                    { nom: "GADA_Formation_RStudio_Jour2.pdf", type: "pdf", url: "documents/GADA_Formation_RStudio_Jour2.pdf" },
+                    { nom: "Script_Jour2.R", type: "r", url: "documents/Script_Jour2.R" },
+                    { nom: "Donnees_sorgho_Benoit_kajora_complet.xlsx", type: "excel", url: "documents/Donnees_sorgho_Benoit_kajora_complet.xlsx" },
+                ],
                 concepts: ["vecteurs", "dataframes", "dplyr", "ggplot2", "GLM", "t-test", "ANOVA", "regression logistique"],
             },
             {
@@ -1705,7 +1888,6 @@
     
     let currentNodeId = "root";
     let isWaitingForFreeInput = false;
-    let currentModuleForDocs = null;
     
     function scrollToBottom() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1715,10 +1897,6 @@
         const div = document.createElement('div');
         div.innerHTML = html;
         return div.textContent || div.innerText || '';
-    }
-    
-    function formatMessageText(text) {
-        return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
     }
     
     function escapeHtml(text) {
@@ -1917,12 +2095,11 @@
         ]);
     }
     
-        function initChat() {
+    function initChat() {
         chatMessages.innerHTML = '';
         const rootNode = DECISION_TREE.root;
         addBotMessage(rootNode.message, rootNode.options);
         
-        // AJOUTEZ CE BLOC POUR LE BOUTON D'ACTUALISATION
         setTimeout(() => {
             addBotMessage("<i class='fa-regular fa-bell-slash'></i> **Actualisation des documents**", [
                 { 
@@ -1931,7 +2108,6 @@
                 }
             ]);
         }, 1000);
-        // FIN DE L'AJOUT
         
         currentNodeId = "root";
         
@@ -1958,6 +2134,113 @@
     });
     
     chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+</script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<script>
+    // Configuration Firebase (exacte pour votre projet)
+    const firebaseConfig = {
+        apiKey: "AIzaSyC_G2Fu6ZN4tzavRzfKo9fjXj5R_Un0PyE",
+        authDomain: "gada-training-chat.firebaseapp.com",
+        projectId: "gada-training-chat",
+        storageBucket: "gada-training-chat.firebasestorage.app",
+        messagingSenderId: "251680805573",
+        appId: "1:251680805573:web:a7a9e6b88c0b2844be96ac",
+        measurementId: "G-DXY25B5ZWK",
+        databaseURL: "https://gada-training-chat-default-rtdb.firebaseio.com/"
+    };
+    
+    // Initialisation Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const messagesRef = database.ref('chat_messages');
+    
+    function getCurrentUser() {
+        return JSON.parse(sessionStorage.getItem('gada_current_user'));
+    }
+    
+    let currentUser = getCurrentUser();
+    let userEmail = currentUser ? currentUser.email : "visiteur@gada.com";
+    let userName = currentUser ? `${currentUser.nom} ${currentUser.prenom}` : "Visiteur";
+    
+    const adminEmail = "gadasolution.rdc@gmail.com";
+    
+    const userDisplay = document.getElementById('user-display');
+    function updateUserDisplay() {
+        currentUser = getCurrentUser();
+        if (currentUser && userDisplay) {
+            userDisplay.textContent = `${currentUser.nom} ${currentUser.prenom}${currentUser.email === adminEmail ? ' (Formateur)' : ''}`;
+            userEmail = currentUser.email;
+            userName = `${currentUser.nom} ${currentUser.prenom}`;
+        } else if (userDisplay) {
+            userDisplay.textContent = "Non connecté";
+        }
+    }
+    updateUserDisplay();
+    
+    setInterval(updateUserDisplay, 1000);
+    
+    const chatMessagesForum = document.getElementById('chat-messages');
+    const chatInputForum = document.getElementById('chat-input');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    
+    function sendMessage() {
+        const text = chatInputForum.value.trim();
+        if (text === "") return;
+        
+        currentUser = getCurrentUser();
+        if (!currentUser) {
+            alert("Veuillez vous connecter pour envoyer un message");
+            return;
+        }
+        
+        const messageData = {
+            email: currentUser.email,
+            senderName: `${currentUser.nom} ${currentUser.prenom}`,
+            text: text,
+            timestamp: Date.now(),
+            timeStr: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+        };
+        
+        messagesRef.push(messageData);
+        chatInputForum.value = "";
+    }
+    
+    if (chatSendBtn) chatSendBtn.addEventListener('click', sendMessage);
+    if (chatInputForum) {
+        chatInputForum.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+    
+    messagesRef.on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        
+        const isAdmin = data.email === adminEmail;
+        const displayName = isAdmin ? "Formateur" : (data.senderName || data.email.split('@')[0]);
+        
+        if (isAdmin) {
+            messageElement.classList.add('msg-admin');
+            messageElement.innerHTML = `<span class="meta">📘 ${displayName} • ${data.timeStr}</span> ${escapeHtmlForum(data.text)}`;
+        } else {
+            messageElement.classList.add('msg-student');
+            messageElement.innerHTML = `<span class="meta">👤 ${displayName} • ${data.timeStr}</span> ${escapeHtmlForum(data.text)}`;
+        }
+        
+        chatMessagesForum.appendChild(messageElement);
+        chatMessagesForum.scrollTop = chatMessagesForum.scrollHeight;
+    });
+    
+    function escapeHtmlForum(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 </script>
 </body>
 </html>
