@@ -168,6 +168,71 @@
         .post-action:hover { background:var(--bg); color:var(--green); }
         .post-caption { margin-bottom:10px; }
         .empty-state { text-align:center; padding:48px 20px; color:var(--muted); }
+
+        /* ── MEDIA CARD (images & vidéos compactes) ── */
+        .media-card {
+            position: relative; border-radius: 14px; overflow: hidden;
+            background: #0a0a0a; margin-bottom: 10px; cursor: pointer;
+            border: 1px solid var(--border);
+            /* Hauteur fixe : l'image ne dépasse jamais 320px */
+            max-height: 320px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .media-card img {
+            width: 100%; height: 100%;
+            object-fit: cover; /* recadrage centré, pas d'étirement */
+            max-height: 320px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .media-card:hover img { transform: scale(1.02); }
+        /* Overlay au survol */
+        .media-card .media-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.25s;
+            display: flex; align-items: flex-end; padding: 14px;
+        }
+        .media-card:hover .media-overlay { opacity: 1; }
+        .media-overlay-label {
+            color: white; font-size: 0.72rem; font-weight: 700;
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(6px);
+            padding: 5px 12px; border-radius: 20px;
+        }
+        /* Badge ratio en haut à droite */
+        .media-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+            color: white; font-size: 0.65rem; font-weight: 700;
+            padding: 3px 9px; border-radius: 20px;
+        }
+        /* Lightbox */
+        .lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            z-index: 9000; display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        .lightbox img {
+            max-width: 92vw; max-height: 88vh;
+            object-fit: contain; border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+        .lightbox-close {
+            position: absolute; top: 18px; right: 20px;
+            color: white; font-size: 1.8rem; cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.12); display: flex;
+            align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+        .lightbox-filename {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            color: rgba(255,255,255,0.6); font-size: 0.75rem; font-weight: 600;
+            background: rgba(0,0,0,0.4); padding: 5px 14px; border-radius: 20px;
+        }
         .empty-state i { font-size:2.5rem; margin-bottom:12px; opacity:0.4; }
         .empty-state p { font-size:0.88rem; }
 
@@ -1080,11 +1145,18 @@ function buildPostHtml(post){
             ${post.type==='cloud'?'<span class="post-type-badge type-cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>':''}
             ${post.type==='photo'?'<span class="post-type-badge type-photo"><i class="fa-regular fa-image"></i> Photo</span>':''}
             <div class="post-caption" id="caption-${post._key}">${post.caption?`<p style="margin-bottom:10px">${esc(post.caption)}</p>`:''}</div>
-            ${post.type==='photo'&&post.url?`<img src="${post.url}" style="width:100%;border-radius:12px;margin-bottom:10px;cursor:pointer" alt="" onclick="window.open('${post.url}','_blank')">`:
-              post.url?`<a class="post-link" href="${post.url}" target="_blank">
-                <i class="fa-solid ${post.type==='github'?'fa-code-branch':post.type==='cloud'?'fa-cloud':'fa-file'}"></i>
-                <div><div class="post-link-name">${esc(post.fileName||post.url)}</div><div class="post-link-sub">${post.type==='github'?'Repository GitHub':post.type==='cloud'?'Lien cloud':'Fichier'}</div></div>
-              </a>`:''}
+            ${post.type==='photo'&&post.url
+              ? `<div class="media-card" onclick="openLightbox(this.dataset.url, this.dataset.name)" data-url="${post.url}" data-name="${esc(post.fileName||'Photo')}">
+                   <img src="${post.url}" alt="${esc(post.fileName||'Photo')}">
+                   <div class="media-badge"><i class="fa-regular fa-image"></i></div>
+                   <div class="media-overlay"><div class="media-overlay-label"><i class="fa-solid fa-expand"></i> Agrandir</div></div>
+                 </div>`
+              : post.url
+                ? `<a class="post-link" href="${post.url}" target="_blank">
+                    <i class="fa-solid ${post.type==='github'?'fa-code-branch':post.type==='cloud'?'fa-cloud':'fa-file'}"></i>
+                    <div><div class="post-link-name">${esc(post.fileName||post.url)}</div><div class="post-link-sub">${post.type==='github'?'Repository GitHub':post.type==='cloud'?'Lien cloud':'Fichier'}</div></div>
+                  </a>`
+                : ''}
         </div>
         <div class="post-footer">
             <button class="post-action" onclick="toggleLike('${post._key}')">
@@ -1283,6 +1355,27 @@ function pickIAOpt(nextId,label){
     msgs.appendChild(u);msgs.scrollTop=msgs.scrollHeight;
     renderIANode(nextId);
 }
+// ══════════════════════════════════════════════
+// LIGHTBOX — agrandissement image propre
+// ══════════════════════════════════════════════
+function openLightbox(url, name){
+    // Supprimer lightbox existante si doublon
+    document.querySelector('.lightbox')?.remove();
+    const lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.innerHTML = `
+        <div class="lightbox-close" onclick="this.closest('.lightbox').remove()"><i class="fa-solid fa-xmark"></i></div>
+        <img src="${url}" alt="${name||''}">
+        ${name ? `<div class="lightbox-filename"><i class="fa-regular fa-image"></i> ${name}</div>` : ''}
+    `;
+    // Clic fond = fermer
+    lb.addEventListener('click', e => { if(e.target === lb) lb.remove(); });
+    // Escape = fermer
+    const escHandler = e => { if(e.key==='Escape'){lb.remove(); document.removeEventListener('keydown', escHandler);} };
+    document.addEventListener('keydown', escHandler);
+    document.body.appendChild(lb);
+}
+
 function sendIaFree(){
     const inp=document.getElementById('iaInput');
     const q=inp.value.trim().toLowerCase();if(!q)return;
