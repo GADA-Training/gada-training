@@ -423,6 +423,7 @@
             background: var(--card); border-radius: var(--radius);
             border: 1px solid var(--border); box-shadow: var(--shadow);
             animation: fadeUp 0.3s ease;
+            margin-bottom: 16px;
         }
         @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         .post-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px 10px; }
@@ -446,9 +447,9 @@
         .post-link-name { font-size: 0.82rem; font-weight: 600; }
         .post-link-sub { font-size: 0.72rem; color: var(--muted); }
         .post-footer { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; gap: 12px; }
-        .post-action { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); cursor: pointer; padding: 5px 8px; border-radius: 8px; transition: all 0.15s; }
+        .post-action { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); cursor: pointer; padding: 5px 8px; border-radius: 8px; transition: all 0.15s; background: none; border: none; }
         .post-action:hover { background: var(--bg); color: var(--green); }
-        .post-time { font-size: 0.7rem; color: var(--muted); margin-left: auto; }
+        .post-caption { margin-bottom: 10px; }
 
         /* Empty state */
         .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
@@ -807,12 +808,7 @@
                     </div>
                 </div>
                 <!-- Posts feed -->
-                <div id="postsFeed">
-                    <div class="empty-state">
-                        <i class="fa-regular fa-newspaper"></i>
-                        <p>Aucune publication pour le moment.<br>Soyez le premier à partager !</p>
-                    </div>
-                </div>
+                <div id="postsFeed"></div>
             </div>
 
             <!-- === VIEW: PROFIL === -->
@@ -1504,79 +1500,140 @@ function toggleSemaine(key) {
 }
 
 // ══════════════════════════════════════════════
-// PARTAGE SUR RÉSEAUX SOCIAUX
+// LIKES
 // ══════════════════════════════════════════════
 
-function openShareModal(postId, postContent, postUrl) {
-    const modal = document.createElement('div');
-    modal.className = 'compose-modal-overlay';
-    modal.style.display = 'flex';
-    modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
-    modal.innerHTML = `
-        <div class="compose-modal" style="max-width:400px; text-align:center;" onclick="event.stopPropagation()">
-            <div class="compose-modal-header">
-                <h3><i class="fa-solid fa-share-alt"></i> Partager sur</h3>
-                <button style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)" onclick="this.closest('.compose-modal-overlay').remove()">×</button>
-            </div>
-            <div class="share-modal-buttons">
-                <button class="share-btn facebook" onclick="shareOnFacebook('${postContent.replace(/'/g, "\\'")}')">
-                    <i class="fab fa-facebook-f"></i>
-                </button>
-                <button class="share-btn linkedin" onclick="shareOnLinkedIn('${postContent.replace(/'/g, "\\'")}')">
-                    <i class="fab fa-linkedin-in"></i>
-                </button>
-                <button class="share-btn whatsapp" onclick="shareOnWhatsApp('${postContent.replace(/'/g, "\\'")}')">
-                    <i class="fab fa-whatsapp"></i>
-                </button>
-                <button class="share-btn copy" onclick="copyToClipboard('${postUrl.replace(/'/g, "\\'")}')">
-                    <i class="fa-solid fa-link"></i>
-                </button>
-            </div>
-            <p style="font-size:0.7rem; color:var(--muted); margin-top:10px">Cliquez sur l'icône pour partager</p>
-        </div>
-    `;
-    document.body.appendChild(modal);
+function toggleLike(postId) {
+    const userId = currentUser.uid;
+    const likeRef = db.ref(`post_likes/${postId}/${userId}`);
+    
+    likeRef.once('value', snap => {
+        if (snap.exists()) {
+            likeRef.remove();
+            toast('👍 Like retiré');
+        } else {
+            likeRef.set({
+                userId: userId,
+                userName: currentProfile.fullName || currentUser.email.split('@')[0],
+                timestamp: Date.now()
+            });
+            toast('❤️ Vous aimez ce post');
+        }
+        loadLikes(postId);
+    });
 }
 
-function shareOnFacebook(content) {
-    const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent(content.substring(0, 200));
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank', 'width=600,height=400');
-    toast('📱 Partage Facebook ouvert');
+function loadLikes(postId) {
+    db.ref(`post_likes/${postId}`).once('value', snap => {
+        const count = snap.numChildren();
+        const likeCountSpan = document.getElementById(`like-count-${postId}`);
+        const likeIcon = document.getElementById(`like-icon-${postId}`);
+        
+        if (likeCountSpan) likeCountSpan.textContent = count;
+        if (likeIcon) {
+            const userLiked = snap.child(currentUser.uid).exists();
+            likeIcon.className = userLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+        }
+    });
 }
 
-function shareOnLinkedIn(content) {
-    const url = encodeURIComponent(window.location.href);
-    const summary = encodeURIComponent(content.substring(0, 200));
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&summary=${summary}`, '_blank', 'width=600,height=500');
-    toast('💼 Partage LinkedIn ouvert');
-}
+// ══════════════════════════════════════════════
+// COMMENTAIRES
+// ══════════════════════════════════════════════
 
-function shareOnWhatsApp(content) {
-    const text = encodeURIComponent(`📚 GADA Training\n\n${content.substring(0, 300)}\n\nPartagé depuis l'espace apprenant GADA`);
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        window.open(`whatsapp://send?text=${text}`, '_blank');
+function toggleComments(postId) {
+    const commentsDiv = document.getElementById(`comments-${postId}`);
+    if (commentsDiv.style.display === 'none' || !commentsDiv.style.display) {
+        commentsDiv.style.display = 'block';
+        loadComments(postId);
     } else {
-        window.open(`https://web.whatsapp.com/send?text=${text}`, '_blank');
+        commentsDiv.style.display = 'none';
     }
-    toast('📱 Partage WhatsApp ouvert');
 }
 
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        toast('✅ Lien copié dans le presse-papier !');
-        document.querySelector('.compose-modal-overlay')?.remove();
-    }).catch(() => toast('❌ Impossible de copier'));
+function loadComments(postId) {
+    const commentsContainer = document.getElementById(`comments-list-${postId}`);
+    if (!commentsContainer) return;
+    
+    commentsContainer.innerHTML = '<div style="text-align:center;padding:10px"><i class="fa-solid fa-spinner fa-spin"></i> Chargement...</div>';
+    
+    db.ref(`post_comments/${postId}`).once('value', snap => {
+        const comments = [];
+        snap.forEach(c => comments.push({ id: c.key, ...c.val() }));
+        comments.sort((a, b) => a.timestamp - b.timestamp);
+        
+        if (comments.length === 0) {
+            commentsContainer.innerHTML = '<div style="color:var(--muted);text-align:center;padding:15px;font-size:0.75rem">💬 Aucun commentaire. Soyez le premier à réagir !</div>';
+            return;
+        }
+        
+        commentsContainer.innerHTML = comments.map(c => `
+            <div style="padding:10px 0; border-bottom:1px solid var(--border);">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
+                    <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;color:white;font-size:11px;overflow:hidden">
+                        ${c.avatar ? `<img src="${c.avatar}" style="width:100%;height:100%;object-fit:cover">` : `<i class="fa-solid fa-user"></i>`}
+                    </div>
+                    <div>
+                        <strong style="font-size:0.75rem;color:var(--text)">${esc(c.userName)}</strong>
+                        <div style="font-size:0.65rem;color:var(--muted)">${new Date(c.timestamp).toLocaleString('fr-FR', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'})}</div>
+                    </div>
+                    ${c.userId === currentUser.uid ? `
+                        <button onclick="deleteComment('${postId}', '${c.id}')" style="margin-left:auto; background:none; border:none; color:#dc2626; cursor:pointer; font-size:0.7rem;">
+                            <i class="fa-regular fa-trash-alt"></i>
+                        </button>
+                    ` : ''}
+                </div>
+                <div style="font-size:0.75rem;color:var(--text);margin-left:36px;line-height:1.5">${esc(c.text)}</div>
+            </div>
+        `).join('');
+        commentsContainer.scrollTop = commentsContainer.scrollHeight;
+    });
+}
+
+function addComment(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    const text = input.value.trim();
+    if (!text) {
+        toast('❌ Écrivez un commentaire d\'abord');
+        return;
+    }
+    
+    const comment = {
+        userId: currentUser.uid,
+        userName: currentProfile.fullName || currentUser.email.split('@')[0],
+        avatar: currentProfile.avatar || '',
+        text: text,
+        timestamp: Date.now()
+    };
+    
+    db.ref(`post_comments/${postId}`).push(comment).then(() => {
+        input.value = '';
+        loadComments(postId);
+        toast('✅ Commentaire ajouté');
+    }).catch(e => toast('❌ Erreur: ' + e.message));
+}
+
+function deleteComment(postId, commentId) {
+    if (confirm('Supprimer ce commentaire ?')) {
+        db.ref(`post_comments/${postId}/${commentId}`).remove();
+        loadComments(postId);
+        toast('✅ Commentaire supprimé');
+    }
 }
 
 // ══════════════════════════════════════════════
-// SUPPRESSION DE POST
+// MODIFIER UN POST
 // ══════════════════════════════════════════════
 
-function deletePost(postId) {
-    if (confirm('⚠️ Êtes-vous sûr de vouloir supprimer cette publication ?\nCette action est irréversible.')) {
-        db.ref(`user_projects/${postId}`).remove();
-        toast('✅ Publication supprimée avec succès');
+function editPost(postId) {
+    const captionDiv = document.getElementById(`caption-${postId}`);
+    const currentCaption = captionDiv?.innerText || '';
+    
+    const newCaption = prompt('Modifier votre publication :', currentCaption);
+    if (newCaption !== null && newCaption !== currentCaption) {
+        db.ref(`user_projects/${postId}/caption`).set(newCaption);
+        if (captionDiv) captionDiv.innerHTML = `<p style="margin-bottom:10px">${esc(newCaption)}</p>`;
+        toast('✅ Publication modifiée');
     }
 }
 
@@ -1615,35 +1672,128 @@ function submitPost() {
     const savePost = (postData) => {
         postData.userId = currentUser.uid;
         postData.userName = name;
-        postData.userAvatar = currentProfile.avatar||'';
+        postData.userEmail = currentUser.email;
+        postData.userAvatar = currentProfile.avatar || '';
         postData.timestamp = Date.now();
         postData.caption = caption;
-        db.ref('user_projects').push(postData);
-        closeCompose();
-        toast('✅ Publication ajoutée !');
+        
+        db.ref('user_projects').push(postData)
+            .then(() => {
+                closeCompose();
+                toast('✅ Publication ajoutée ! Tous les membres peuvent la voir maintenant');
+            })
+            .catch(e => toast('❌ Erreur: ' + e.message));
     };
 
-    if (composeMode==='doc'||composeMode==='photo') {
+    if (composeMode === 'doc' || composeMode === 'photo') {
         const file = document.getElementById('postFile')?.files[0];
         if (!file) { toast('❌ Sélectionnez un fichier'); return; }
+        
+        if (file.size > 5000000) {
+            toast('❌ Fichier trop volumineux (max 5MB)');
+            return;
+        }
         const r = new FileReader();
-        r.onload = e => savePost({ type:composeMode, fileName:file.name, url:e.target.result, fileType:file.type });
+        r.onload = e => savePost({ type: composeMode, fileName: file.name, url: e.target.result, fileType: file.type });
         r.readAsDataURL(file);
     } else {
         const url = document.getElementById('postUrl')?.value.trim();
         if (!url) { toast('❌ Entrez un lien valide'); return; }
-        savePost({ type:composeMode, url });
+        savePost({ type: composeMode, url });
     }
 }
 
 function listenPosts() {
-    db.ref('user_projects').on('value', snap => {
+    db.ref('user_projects').on('child_added', (snap) => {
+        const newPost = { _key: snap.key, ...snap.val() };
+        if (!document.querySelector(`[data-post-id="${newPost._key}"]`)) {
+            addPostToFeed(newPost);
+        }
+    });
+    
+    db.ref('user_projects').on('child_removed', (snap) => {
+        const postElement = document.querySelector(`[data-post-id="${snap.key}"]`);
+        if (postElement) postElement.remove();
+    });
+    
+    db.ref('user_projects').once('value', (snap) => {
         const posts = [];
-        snap.forEach(c => posts.push({ _key:c.key, ...c.val() }));
-        posts.sort((a,b)=>b.timestamp-a.timestamp);
+        snap.forEach(c => posts.push({ _key: c.key, ...c.val() }));
+        posts.sort((a, b) => b.timestamp - a.timestamp);
         renderFeed(posts);
         loadUserProjets();
     });
+}
+
+function addPostToFeed(post) {
+    const feed = document.getElementById('postsFeed');
+    const emptyState = feed.querySelector('.empty-state');
+    
+    if (emptyState && feed.children.length === 1) {
+        feed.innerHTML = '';
+    }
+    
+    const postContent = post.caption || (post.fileName || post.url || 'Publication GADA');
+    const isOwner = currentUser.uid === post.userId;
+    
+    const postHtml = `
+    <div class="post-card" data-post-id="${post._key}">
+        <div class="post-header">
+            <div class="user-av" onclick="viewMemberProfile('${post.userId}', '${post.userEmail || ''}', '${post.userName.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                ${post.userAvatar ? `<img src="${post.userAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : '<i class="fa-solid fa-user"></i>'}
+            </div>
+            <div style="flex:1;">
+                <div style="font-size:0.85rem;font-weight:700;cursor:pointer;" onclick="viewMemberProfile('${post.userId}', '${post.userEmail || ''}', '${post.userName.replace(/'/g, "\\'")}')">${esc(post.userName)}</div>
+                <div style="font-size:0.7rem;color:var(--muted)">${new Date(post.timestamp).toLocaleString('fr-FR', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'})}</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button onclick="sharePost('${post._key}', '${postContent.replace(/'/g, "\\'")}')" style="background:none; border:none; color:var(--green); cursor:pointer; font-size:0.9rem;" title="Partager">
+                    <i class="fa-solid fa-share-alt"></i>
+                </button>
+                ${isOwner ? `
+                    <button onclick="editPost('${post._key}')" style="background:none; border:none; color:var(--blue); cursor:pointer; font-size:0.9rem;" title="Modifier">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                    <button onclick="deletePost('${post._key}')" style="background:none; border:none; color:#dc2626; cursor:pointer; font-size:0.9rem;" title="Supprimer">
+                        <i class="fa-regular fa-trash-alt"></i>
+                    </button>
+                ` : ''}
+            </div>
+        </div>
+        <div class="post-content">
+            ${post.type === 'doc' ? '<span class="post-type-badge type-doc"><i class="fa-regular fa-file"></i> Document</span>' : ''}
+            ${post.type === 'github' ? '<span class="post-type-badge type-github"><i class="fab fa-github"></i> GitHub</span>' : ''}
+            ${post.type === 'cloud' ? '<span class="post-type-badge type-cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>' : ''}
+            ${post.type === 'photo' ? '<span class="post-type-badge type-photo"><i class="fa-regular fa-image"></i> Photo</span>' : ''}
+            <div class="post-caption" id="caption-${post._key}">${post.caption ? `<p style="margin-bottom:10px">${esc(post.caption)}</p>` : ''}</div>
+            ${post.type === 'photo' ? `<img src="${post.url}" style="width:100%;border-radius:12px;margin-bottom:10px" alt="" onclick="window.open('${post.url}', '_blank')" style="cursor:pointer;">` : 
+              post.url ? `<a class="post-link" href="${post.url}" target="_blank">
+                <i class="fa-solid ${post.type === 'github' ? 'fa-code-branch' : post.type === 'cloud' ? 'fa-cloud' : 'fa-file'}"></i>
+                <div><div class="post-link-name">${esc(post.fileName || post.url)}</div><div class="post-link-sub">${post.type === 'github' ? 'Repository GitHub' : post.type === 'cloud' ? 'Lien cloud' : 'Fichier'}</div></div>
+              </a>` : ''}
+        </div>
+        <div class="post-footer">
+            <button class="post-action" onclick="toggleLike('${post._key}')" id="like-btn-${post._key}">
+                <i class="fa-regular fa-heart" id="like-icon-${post._key}"></i> <span id="like-count-${post._key}">0</span>
+            </button>
+            <button class="post-action" onclick="toggleComments('${post._key}')">
+                <i class="fa-regular fa-comment"></i> Commenter
+            </button>
+        </div>
+        <div id="comments-${post._key}" style="display:none; padding:0 16px 16px 16px; border-top:1px solid var(--border);">
+            <div id="comments-list-${post._key}" style="max-height:300px; overflow-y:auto; margin-bottom:12px;"></div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <div class="user-av" style="width:28px;height:28px; flex-shrink:0">
+                    ${currentProfile.avatar ? `<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">` : '<i class="fa-solid fa-user"></i>'}
+                </div>
+                <input type="text" id="comment-input-${post._key}" placeholder="Écrivez un commentaire..." style="flex:1; padding:8px 12px; border:1.5px solid var(--border); border-radius:20px; font-size:0.75rem;">
+                <button onclick="addComment('${post._key}')" style="background:var(--green); border:none; border-radius:20px; padding:6px 12px; color:white; cursor:pointer; font-size:0.7rem;">Envoyer</button>
+            </div>
+        </div>
+    </div>`;
+    
+    feed.insertAdjacentHTML('afterbegin', postHtml);
+    loadLikes(post._key);
 }
 
 function renderFeed(posts) {
@@ -1652,41 +1802,111 @@ function renderFeed(posts) {
         feed.innerHTML = `<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>Aucune publication pour le moment.<br>Soyez le premier à partager !</p></div>`;
         return;
     }
-    feed.innerHTML = posts.map(p => {
-        const postContent = p.caption || (p.fileName || p.url || 'Publication GADA');
-        return `
-        <div class="post-card">
+    
+    feed.innerHTML = '';
+    posts.forEach(post => {
+        const postContent = post.caption || (post.fileName || post.url || 'Publication GADA');
+        const isOwner = currentUser.uid === post.userId;
+        
+        const postHtml = `
+        <div class="post-card" data-post-id="${post._key}">
             <div class="post-header">
-                <div class="user-av">${p.userAvatar?`<img src="${p.userAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:'<i class="fa-solid fa-user"></i>'}</div>
-                <div>
-                    <div style="font-size:0.85rem;font-weight:700">${esc(p.userName)}</div>
-                    <div style="font-size:0.7rem;color:var(--muted)">${new Date(p.timestamp).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}</div>
+                <div class="user-av" onclick="viewMemberProfile('${post.userId}', '${post.userEmail || ''}', '${post.userName.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                    ${post.userAvatar ? `<img src="${post.userAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : '<i class="fa-solid fa-user"></i>'}
                 </div>
-                <div style="margin-left:auto; display:flex; gap:8px;">
-                    <button onclick="openShareModal('${p._key}', '${postContent.replace(/'/g, "\\'")}', window.location.href)" style="background:none; border:none; color:var(--green); cursor:pointer; font-size:0.9rem;" title="Partager">
+                <div style="flex:1;">
+                    <div style="font-size:0.85rem;font-weight:700;cursor:pointer;" onclick="viewMemberProfile('${post.userId}', '${post.userEmail || ''}', '${post.userName.replace(/'/g, "\\'")}')">${esc(post.userName)}</div>
+                    <div style="font-size:0.7rem;color:var(--muted)">${new Date(post.timestamp).toLocaleString('fr-FR', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'})}</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button onclick="sharePost('${post._key}', '${postContent.replace(/'/g, "\\'")}')" style="background:none; border:none; color:var(--green); cursor:pointer; font-size:0.9rem;" title="Partager">
                         <i class="fa-solid fa-share-alt"></i>
                     </button>
-                    ${currentUser.uid === p.userId ? `
-                        <button onclick="deletePost('${p._key}')" style="background:none; border:none; color:#dc2626; cursor:pointer; font-size:0.9rem;" title="Supprimer">
+                    ${isOwner ? `
+                        <button onclick="editPost('${post._key}')" style="background:none; border:none; color:var(--blue); cursor:pointer; font-size:0.9rem;" title="Modifier">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deletePost('${post._key}')" style="background:none; border:none; color:#dc2626; cursor:pointer; font-size:0.9rem;" title="Supprimer">
                             <i class="fa-regular fa-trash-alt"></i>
                         </button>
                     ` : ''}
                 </div>
             </div>
             <div class="post-content">
-                ${p.type==='doc'?'<span class="post-type-badge type-doc"><i class="fa-regular fa-file"></i> Document</span>':''}
-                ${p.type==='github'?'<span class="post-type-badge type-github"><i class="fab fa-github"></i> GitHub</span>':''}
-                ${p.type==='cloud'?'<span class="post-type-badge type-cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>':''}
-                ${p.type==='photo'?'<span class="post-type-badge type-photo"><i class="fa-regular fa-image"></i> Photo</span>':''}
-                ${p.caption?`<p style="margin-bottom:10px">${esc(p.caption)}</p>`:''}
-                ${p.type==='photo'?`<img src="${p.url}" style="width:100%;border-radius:12px;margin-bottom:10px" alt="">`: 
-                  p.url?`<a class="post-link" href="${p.url}" target="_blank">
-                    <i class="fa-solid ${p.type==='github'?'fa-code-branch':p.type==='cloud'?'fa-cloud':'fa-file'}"></i>
-                    <div><div class="post-link-name">${esc(p.fileName||p.url)}</div><div class="post-link-sub">${p.type==='github'?'Repository GitHub':p.type==='cloud'?'Lien cloud':'Fichier'}</div></div>
-                  </a>`:''}
+                ${post.type === 'doc' ? '<span class="post-type-badge type-doc"><i class="fa-regular fa-file"></i> Document</span>' : ''}
+                ${post.type === 'github' ? '<span class="post-type-badge type-github"><i class="fab fa-github"></i> GitHub</span>' : ''}
+                ${post.type === 'cloud' ? '<span class="post-type-badge type-cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>' : ''}
+                ${post.type === 'photo' ? '<span class="post-type-badge type-photo"><i class="fa-regular fa-image"></i> Photo</span>' : ''}
+                <div class="post-caption" id="caption-${post._key}">${post.caption ? `<p style="margin-bottom:10px">${esc(post.caption)}</p>` : ''}</div>
+                ${post.type === 'photo' ? `<img src="${post.url}" style="width:100%;border-radius:12px;margin-bottom:10px" alt="" onclick="window.open('${post.url}', '_blank')" style="cursor:pointer;">` : 
+                  post.url ? `<a class="post-link" href="${post.url}" target="_blank">
+                    <i class="fa-solid ${post.type === 'github' ? 'fa-code-branch' : post.type === 'cloud' ? 'fa-cloud' : 'fa-file'}"></i>
+                    <div><div class="post-link-name">${esc(post.fileName || post.url)}</div><div class="post-link-sub">${post.type === 'github' ? 'Repository GitHub' : post.type === 'cloud' ? 'Lien cloud' : 'Fichier'}</div></div>
+                  </a>` : ''}
+            </div>
+            <div class="post-footer">
+                <button class="post-action" onclick="toggleLike('${post._key}')" id="like-btn-${post._key}">
+                    <i class="fa-regular fa-heart" id="like-icon-${post._key}"></i> <span id="like-count-${post._key}">0</span>
+                </button>
+                <button class="post-action" onclick="toggleComments('${post._key}')">
+                    <i class="fa-regular fa-comment"></i> Commenter
+                </button>
+            </div>
+            <div id="comments-${post._key}" style="display:none; padding:0 16px 16px 16px; border-top:1px solid var(--border);">
+                <div id="comments-list-${post._key}" style="max-height:300px; overflow-y:auto; margin-bottom:12px;"></div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <div class="user-av" style="width:28px;height:28px; flex-shrink:0">
+                        ${currentProfile.avatar ? `<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">` : '<i class="fa-solid fa-user"></i>'}
+                    </div>
+                    <input type="text" id="comment-input-${post._key}" placeholder="Écrivez un commentaire..." style="flex:1; padding:8px 12px; border:1.5px solid var(--border); border-radius:20px; font-size:0.75rem;">
+                    <button onclick="addComment('${post._key}')" style="background:var(--green); border:none; border-radius:20px; padding:6px 12px; color:white; cursor:pointer; font-size:0.7rem;">Envoyer</button>
+                </div>
             </div>
         </div>`;
-    }).join('');
+        
+        feed.insertAdjacentHTML('beforeend', postHtml);
+        loadLikes(post._key);
+    });
+}
+
+function deletePost(postId) {
+    if (confirm('⚠️ Êtes-vous sûr de vouloir supprimer cette publication ?\nCette action est irréversible.')) {
+        db.ref(`user_projects/${postId}`).remove();
+        db.ref(`post_comments/${postId}`).remove();
+        db.ref(`post_likes/${postId}`).remove();
+        toast('✅ Publication supprimée avec succès');
+    }
+}
+
+function sharePost(postId, postContent) {
+    const modal = document.createElement('div');
+    modal.className = 'compose-modal-overlay';
+    modal.style.display = 'flex';
+    modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
+    modal.innerHTML = `
+        <div class="compose-modal" style="max-width:400px; text-align:center;" onclick="event.stopPropagation()">
+            <div class="compose-modal-header">
+                <h3><i class="fa-solid fa-share-alt"></i> Partager sur</h3>
+                <button style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)" onclick="this.closest('.compose-modal-overlay').remove()">×</button>
+            </div>
+            <div class="share-modal-buttons">
+                <button class="share-btn facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href)+'&quote='+encodeURIComponent('${postContent.replace(/'/g, "\\'")}'), '_blank')">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button class="share-btn linkedin" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(window.location.href), '_blank')">
+                    <i class="fab fa-linkedin-in"></i>
+                </button>
+                <button class="share-btn whatsapp" onclick="window.open('https://web.whatsapp.com/send?text='+encodeURIComponent('${postContent.replace(/'/g, "\\'")}'), '_blank')">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button class="share-btn copy" onclick="navigator.clipboard.writeText(window.location.href); toast('✅ Lien copié !'); this.closest('.compose-modal-overlay').remove()">
+                    <i class="fa-solid fa-link"></i>
+                </button>
+            </div>
+            <p style="font-size:0.7rem; color:var(--muted); margin-top:10px">Cliquez sur l'icône pour partager</p>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 function loadUserProjets() {
