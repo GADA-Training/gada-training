@@ -31,12 +31,12 @@
             --neutral-400: #dce4e0;
             --neutral-600: #5b6e5f;
             --neutral-800: #2d3a2f;
-            --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
-            --shadow-md: 0 20px 30px -12px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
-            --shadow-lg: 0 25px 40px -12px rgba(0, 0, 0, 0.12);
-            --radius-md: 20px;
-            --radius-lg: 28px;
-            --radius-xl: 36px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
         }
 
         body {
@@ -45,11 +45,10 @@
             color: var(--neutral-800);
             margin: 0;
             padding: 0;
-            position: relative;
             min-height: 100vh;
         }
 
-        /* Styles d'authentification */
+        /* Auth styles */
         .auth-overlay {
             position: fixed;
             top: 0;
@@ -129,6 +128,17 @@
             box-shadow: 0 8px 20px rgba(43, 110, 60, 0.3);
         }
 
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--green-agri);
+            color: var(--green-agri);
+        }
+
+        .btn-outline:hover {
+            background: var(--green-agri);
+            color: white;
+        }
+
         .auth-switch {
             text-align: center;
             margin-top: 24px;
@@ -180,18 +190,17 @@
         }
         .bubble {
             position: absolute;
-            background: rgba(63, 158, 85, 0.06);
+            background: rgba(63, 158, 85, 0.04);
             backdrop-filter: blur(18px);
             border-radius: 60% 40% 70% 30% / 40% 55% 45% 60%;
             animation: float 22s infinite alternate ease-in-out;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.02), inset 0 1px 1px rgba(255,255,255,0.6);
-            border: 1px solid rgba(158, 123, 102, 0.15);
+            border: 1px solid rgba(158, 123, 102, 0.08);
         }
         .vector-icon-bg {
             position: absolute;
             font-size: 2.8rem;
-            color: rgba(122, 90, 75, 0.08);
-            opacity: 0.5;
+            color: rgba(122, 90, 75, 0.05);
+            opacity: 0.4;
             animation: drift 30s linear infinite;
         }
         @keyframes float {
@@ -199,8 +208,8 @@
             100% { transform: translate(40px, -40px) rotate(6deg); }
         }
         @keyframes drift {
-            0% { transform: translateX(-20px) translateY(0px); opacity: 0.2; }
-            100% { transform: translateX(60px) translateY(30px); opacity: 0.45; }
+            0% { transform: translateX(-20px) translateY(0px); opacity: 0.15; }
+            100% { transform: translateX(60px) translateY(30px); opacity: 0.3; }
         }
 
         /* Navigation */
@@ -222,7 +231,6 @@
             height: 58px;
             width: auto;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
         }
         .nav-status {
             background: linear-gradient(105deg, var(--green-agri) 0%, var(--blue-tech) 100%);
@@ -231,8 +239,6 @@
             border-radius: 60px;
             font-size: 0.85rem;
             font-weight: 600;
-            letter-spacing: -0.2px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -251,11 +257,10 @@
             background: rgba(255,255,255,0.3);
         }
 
-        /* Profile Section in Navbar */
         .profile-nav {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             cursor: pointer;
             padding: 5px 12px;
             border-radius: 40px;
@@ -289,7 +294,7 @@
             padding: 0 24px;
         }
 
-        /* Tab Navigation */
+        /* Tabs */
         .tabs-container {
             display: flex;
             gap: 8px;
@@ -308,7 +313,6 @@
             cursor: pointer;
             border-radius: 40px;
             transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
         }
         .tab-btn:hover {
             background: rgba(43, 110, 60, 0.1);
@@ -317,7 +321,6 @@
         .tab-btn.active {
             background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
             color: white;
-            box-shadow: 0 4px 12px rgba(43, 110, 60, 0.3);
         }
         .tab-content {
             display: none;
@@ -331,7 +334,406 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Profile Card */
+        /* ========== GRILLE PRINCIPALE HARMONISÉE ========== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Chat Sidebar */
+        .chat-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(2px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            border: 1px solid rgba(210, 190, 170, 0.3);
+            overflow: hidden;
+            position: sticky;
+            top: 20px;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
+            color: white;
+            padding: 18px 20px;
+            flex-shrink: 0;
+        }
+
+        .chat-header h3 { 
+            margin: 0; 
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header p { 
+            margin: 6px 0 0 0; 
+            font-size: 0.7rem; 
+            opacity: 0.85; 
+        }
+
+        .forum-chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--neutral-200);
+        }
+
+        .message {
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 85%;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .message-avatar.placeholder {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message .meta {
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .msg-student {
+            background: white;
+            border: 1px solid #e2ddd5;
+            color: var(--neutral-800);
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-admin {
+            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-admin .meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .forum-chat-input-area {
+            display: flex;
+            padding: 14px;
+            background: white;
+            border-top: 1px solid #eee8e0;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        #forum-chat-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #e2dcd5;
+            border-radius: 30px;
+            outline: none;
+            font-size: 0.85rem;
+            background: #fefcf9;
+        }
+
+        #forum-chat-input:focus {
+            border-color: var(--green-agri);
+        }
+
+        #forum-chat-send-btn {
+            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            color: white;
+            border: none;
+            padding: 0 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Right Column Grid */
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .welcome-card {
+            background: linear-gradient(112deg, rgba(255,255,245,0.92) 0%, rgba(247, 242, 235, 0.9) 100%);
+            backdrop-filter: blur(4px);
+            border-radius: var(--radius-lg);
+            padding: 28px 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(255,255,240,0.5);
+        }
+        .welcome-card h2 {
+            font-size: 1.7rem;
+            font-weight: 600;
+            background: linear-gradient(130deg, var(--blue-tech) 0%, var(--green-agri) 60%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+        }
+
+        /* Equal Height Cards Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        @media (max-width: 780px) {
+            .course-grid { grid-template-columns: 1fr; }
+        }
+
+        .course-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(2px);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s ease;
+            border: 1px solid rgba(210, 190, 170, 0.3);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(63, 158, 85, 0.3);
+        }
+        .course-card h3 {
+            color: var(--blue-tech);
+            font-weight: 650;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 1.35rem;
+        }
+        .course-card h3 i { color: var(--green-agri); font-size: 1.5rem; }
+        .course-card ul {
+            margin: 12px 0 24px 20px;
+            color: #3e4a41;
+            line-height: 1.5;
+            flex: 1;
+        }
+        .course-card .btn-gada {
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+        .btn-gada {
+            display: inline-block;
+            background: linear-gradient(95deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            color: white;
+            text-align: center;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: all 0.25s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-gada:hover {
+            background: linear-gradient(95deg, var(--green-agri-light) 0%, var(--blue-tech-light) 100%);
+            transform: scale(1.02);
+        }
+
+        /* Folder Zone */
+        .folder-zone {
+            display: none;
+            margin-top: 20px;
+        }
+        .folder-zone.open {
+            display: block;
+            animation: fadeSlide 0.3s ease-out;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .h-folder-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+            background: #faf7f3;
+            border: 1px solid #e2dbd2;
+        }
+        .h-folder-row {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: stretch;
+            min-width: 100%;
+        }
+        .h-folder-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px 18px 14px;
+            min-width: 200px;
+            max-width: 200px;
+            flex-shrink: 0;
+            border-right: 1px solid #e5ddd5;
+            cursor: pointer;
+            transition: background 0.18s;
+            background: transparent;
+            position: relative;
+        }
+        .h-folder-item:last-child { border-right: none; }
+        .h-folder-item:hover:not(.locked) { background: #fff8f0; }
+        .h-folder-item.active {
+            background: linear-gradient(160deg, #f0fbe8 0%, #fdf7ed 100%);
+        }
+        .h-folder-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--green-agri), var(--blue-tech));
+        }
+        .h-folder-item.locked { opacity: 0.52; cursor: not-allowed; }
+        .h-folder-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .h-folder-icon { font-size: 22px; }
+        .h-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: #e6f5e9;
+            color: #2a7a3a;
+            border-radius: 20px;
+            padding: 2px 8px;
+        }
+        .h-lock-badge {
+            font-size: 0.65rem;
+            background: #ede8e2;
+            color: #7a5a4b;
+            border-radius: 20px;
+            padding: 2px 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .h-folder-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1e3f20;
+            line-height: 1.35;
+            margin-bottom: 4px;
+        }
+        .h-folder-sub {
+            font-size: 0.67rem;
+            color: #888;
+            line-height: 1.3;
+        }
+        .h-expand-panel {
+            flex-shrink: 0;
+            overflow: hidden;
+            width: 0;
+            max-width: 0;
+            opacity: 0;
+            border-left: 2px solid transparent;
+            background: white;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .h-expand-panel.open {
+            width: 280px;
+            max-width: 280px;
+            opacity: 1;
+            border-left-color: var(--green-agri);
+        }
+        .h-expand-inner {
+            min-width: 280px;
+            padding: 16px 18px;
+        }
+        .h-expand-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--green-agri);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            border-bottom: 1px solid #f0e5da;
+            padding-bottom: 8px;
+        }
+        .h-file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0ebe3;
+        }
+        .h-file-item:last-child { border-bottom: none; }
+        .h-file-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.73rem;
+            color: #3a4a3c;
+            flex: 1;
+        }
+        .h-file-name i { color: #e74c3c; }
+        .h-file-dl {
+            background: #eef5ea;
+            color: var(--green-agri);
+            border-radius: 30px;
+            padding: 5px 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .h-file-dl:hover {
+            background: var(--green-agri);
+            color: white;
+        }
+
+        /* Profile Container */
         .profile-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(4px);
@@ -358,7 +760,6 @@
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid var(--green-agri);
-            box-shadow: var(--shadow-md);
         }
         .profile-avatar-large .placeholder {
             width: 140px;
@@ -386,12 +787,7 @@
             font-size: 14px;
             transition: transform 0.2s;
         }
-        .change-photo-btn:hover {
-            transform: scale(1.1);
-        }
-        .profile-info {
-            flex: 1;
-        }
+        .profile-info { flex: 1; }
         .profile-info h2 {
             font-size: 1.8rem;
             color: var(--blue-tech);
@@ -427,7 +823,6 @@
         .profile-social a:hover {
             background: var(--green-agri);
             color: white;
-            transform: translateY(-2px);
         }
         .profile-details-grid {
             display: grid;
@@ -461,13 +856,9 @@
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .edit-profile-btn:hover {
-            transform: translateY(-2px);
         }
 
-        /* Modal d'édition de profil */
+        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -481,9 +872,7 @@
             align-items: center;
             justify-content: center;
         }
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
         .modal-content {
             background: white;
             border-radius: var(--radius-lg);
@@ -501,17 +890,10 @@
             padding-bottom: 16px;
             border-bottom: 2px solid #e2dcd5;
         }
-        .modal-header h3 {
-            color: var(--blue-tech);
-            font-size: 1.4rem;
-        }
-        .modal-close {
-            cursor: pointer;
-            font-size: 24px;
-            color: var(--neutral-600);
-        }
+        .modal-header h3 { color: var(--blue-tech); font-size: 1.4rem; }
+        .modal-close { cursor: pointer; font-size: 24px; color: var(--neutral-600); }
 
-        /* Document Upload Section */
+        /* Upload Hub */
         .upload-hub {
             background: linear-gradient(135deg, #f8fbf8, #fefcf9);
             border-radius: var(--radius-md);
@@ -540,12 +922,8 @@
             border-color: transparent;
             color: white;
         }
-        .upload-panel {
-            display: none;
-        }
-        .upload-panel.active {
-            display: block;
-        }
+        .upload-panel { display: none; }
+        .upload-panel.active { display: block; }
         .upload-area {
             border: 2px dashed #c9bfb2;
             border-radius: 20px;
@@ -584,7 +962,7 @@
             font-weight: 600;
         }
 
-        /* Student Projects Grid */
+        /* Projects Grid */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -604,7 +982,7 @@
             box-shadow: var(--shadow-md);
         }
         .project-thumbnail {
-            height: 180px;
+            height: 160px;
             background: linear-gradient(135deg, var(--blue-tech-pale), var(--green-agri-pale));
             display: flex;
             align-items: center;
@@ -612,17 +990,15 @@
             font-size: 48px;
             color: var(--blue-tech);
         }
-        .project-info {
-            padding: 20px;
-        }
+        .project-info { padding: 20px; }
         .project-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--blue-tech);
             margin-bottom: 8px;
         }
         .project-author {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--neutral-600);
             margin-bottom: 12px;
             display: flex;
@@ -633,22 +1009,20 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
+            object-fit: cover;
         }
         .project-description {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--neutral-800);
             margin-bottom: 16px;
-            line-height: 1.5;
+            line-height: 1.4;
         }
-        .project-actions {
-            display: flex;
-            gap: 12px;
-        }
+        .project-actions { display: flex; gap: 12px; }
         .project-btn {
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 30px;
             text-decoration: none;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             transition: all 0.2s;
         }
@@ -669,443 +1043,110 @@
             color: white;
         }
 
-        /* Formation Container */
-        .formation-container {
-            display: flex;
-            gap: 28px;
-            margin: 0 auto;
-            align-items: flex-start;
+        /* Community Grid */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
         }
-        
-        .main-content-blocks {
-            flex: 2.5;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-        
-        .chat-sidebar {
-            flex: 1;
-            min-width: 320px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(2px);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            height: 580px;
+        .member-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s;
             border: 1px solid rgba(210, 190, 170, 0.3);
-            overflow: hidden;
-            position: sticky;
-            top: 20px;
+            cursor: pointer;
         }
-        
-        .chat-header {
-            background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
-            color: white;
-            padding: 18px 20px;
+        .member-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
         }
-        
-        .chat-header h3 { 
-            margin: 0; 
-            font-size: 1.15rem;
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 16px;
+            border: 3px solid var(--green-agri);
+        }
+        .member-avatar.placeholder {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
         }
-        
-        .chat-header p { 
-            margin: 6px 0 0 0; 
-            font-size: 0.7rem; 
-            opacity: 0.85; 
+        .member-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--blue-tech);
+            margin-bottom: 6px;
         }
-        
-        .forum-chat-messages {
-            flex: 1;
-            padding: 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: var(--neutral-200);
-        }
-        
-        .message {
-            padding: 10px 14px;
-            border-radius: 18px;
-            max-width: 85%;
+        .member-title {
             font-size: 0.8rem;
-            line-height: 1.45;
-            animation: fadeInMsg 0.2s ease;
-        }
-        
-        .message .meta {
-            font-size: 0.65rem;
+            color: var(--green-agri);
             font-weight: 600;
-            margin-bottom: 5px;
-            display: block;
+            margin-bottom: 10px;
         }
-        
-        .msg-student {
-            background: white;
-            border: 1px solid #e2ddd5;
-            align-self: flex-start;
-            color: var(--neutral-800);
-            border-bottom-left-radius: 4px;
-        }
-        
-        .msg-admin {
-            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
-            align-self: flex-end;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        
-        .msg-admin .meta {
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .forum-chat-input-area {
-            display: flex;
-            padding: 14px;
-            background: white;
-            border-top: 1px solid #eee8e0;
-            gap: 10px;
-        }
-        
-        #forum-chat-input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1.5px solid #e2dcd5;
-            border-radius: 30px;
-            outline: none;
-            font-size: 0.85rem;
-            background: #fefcf9;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        #forum-chat-input:focus {
-            border-color: var(--green-agri);
-        }
-        
-        #forum-chat-send-btn {
-            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
-            color: white;
-            border: none;
-            padding: 0 22px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
-        }
-        
-        #forum-chat-send-btn:hover {
-            transform: scale(1.02);
-            filter: brightness(1.05);
-        }
-        
-        @keyframes fadeInMsg {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 900px) {
-            .formation-container { 
-                flex-direction: column; 
-            }
-            .main-content-blocks { 
-                width: 100%; 
-            }
-            .chat-sidebar { 
-                width: 100%; 
-                height: 480px;
-                position: static;
-            }
-            .profile-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-            .profile-social {
-                justify-content: center;
-            }
-        }
-
-        .welcome-card {
-            background: linear-gradient(112deg, rgba(255,255,245,0.92) 0%, rgba(247, 242, 235, 0.9) 100%);
-            backdrop-filter: blur(4px);
-            border-radius: var(--radius-lg);
-            padding: 32px 36px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255,255,240,0.5);
-        }
-        .welcome-card h2 {
-            font-size: 1.9rem;
-            font-weight: 600;
-            background: linear-gradient(130deg, var(--blue-tech) 0%, var(--green-agri) 60%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+        .member-bio {
+            font-size: 0.75rem;
+            color: var(--neutral-600);
+            line-height: 1.4;
             margin-bottom: 12px;
         }
-        .welcome-card p {
-            color: #4a5b4e;
-            line-height: 1.5;
-            font-weight: 450;
-        }
-
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 28px;
-        }
-        @media (max-width: 780px) {
-            .course-grid { grid-template-columns: 1fr; }
-        }
-
-        .course-card {
-            background: rgba(255,255,255,0.94);
-            backdrop-filter: blur(2px);
-            border-radius: var(--radius-md);
-            padding: 28px;
-            box-shadow: var(--shadow-md);
-            transition: transform 0.25s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(210, 190, 170, 0.3);
+        .member-stats {
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2dcd5;
         }
-        .course-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-            border-color: rgba(63, 158, 85, 0.3);
-            background: rgba(255,255,255,0.98);
+        .member-stat {
+            font-size: 0.7rem;
+            color: var(--neutral-600);
         }
-        .course-card h3 {
-            color: var(--blue-tech);
-            font-weight: 650;
+        .member-stat i { color: var(--green-agri); margin-right: 4px; }
+
+        /* Member Detail Modal */
+        .member-detail-content { text-align: center; }
+        .member-detail-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
             margin-bottom: 16px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            font-size: 1.45rem;
+            border: 3px solid var(--green-agri);
         }
-        .course-card h3 i { color: var(--green-agri); font-size: 1.6rem; }
-        .course-card ul {
-            margin: 12px 0 24px 20px;
-            color: #3e4a41;
-            line-height: 1.5;
-        }
-
-        .btn-gada {
-            display: inline-block;
-            background: linear-gradient(95deg, var(--green-agri) 0%, var(--blue-tech) 100%);
-            color: white;
-            text-align: center;
-            padding: 12px 20px;
-            text-decoration: none;
-            border-radius: 40px;
-            font-weight: 600;
-            transition: all 0.25s;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-        .btn-gada:hover {
-            background: linear-gradient(95deg, var(--green-agri-light) 0%, var(--blue-tech-light) 100%);
-            transform: scale(1.01);
-            box-shadow: 0 8px 18px rgba(43,110,60,0.2);
-        }
-
-        .folder-zone {
-            display: none;
-            margin-top: 20px;
-        }
-        .folder-zone.open {
-            display: block;
-            animation: fadeSlide 0.3s ease-out;
-        }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .h-folder-wrapper {
-            overflow-x: auto;
-            overflow-y: visible;
-            border-radius: 24px;
-            background: #faf7f3;
-            border: 1px solid #e2dbd2;
-            scrollbar-width: thin;
-        }
-        .h-folder-wrapper::-webkit-scrollbar { height: 5px; }
-        .h-folder-wrapper::-webkit-scrollbar-track { background: transparent; }
-        .h-folder-wrapper::-webkit-scrollbar-thumb { background: #c9bfb2; border-radius: 10px; }
-
-        .h-folder-row {
-            display: inline-flex;
-            flex-direction: row;
-            align-items: stretch;
-            min-width: 100%;
-        }
-
-        .h-folder-item {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 16px 18px 14px;
-            min-width: 200px;
-            max-width: 200px;
-            flex-shrink: 0;
-            border-right: 1px solid #e5ddd5;
-            cursor: pointer;
-            transition: background 0.18s, border-color 0.18s;
-            background: transparent;
-            position: relative;
-        }
-        .h-folder-item:last-child { border-right: none; }
-
-        .h-folder-item:hover:not(.locked) {
-            background: #fff8f0;
-        }
-        .h-folder-item.active {
-            background: linear-gradient(160deg, #f0fbe8 0%, #fdf7ed 100%);
-            border-right-color: #d5e8cc;
-        }
-        .h-folder-item.active::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--green-agri), var(--blue-tech));
-            border-radius: 0;
-        }
-        .h-folder-item.locked {
-            opacity: 0.52;
-            cursor: not-allowed;
-        }
-
-        .h-folder-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+        .member-detail-name {
+            font-size: 1.4rem;
+            color: var(--blue-tech);
             margin-bottom: 8px;
         }
-        .h-folder-icon { font-size: 22px; }
-        .h-badge {
-            font-size: 0.65rem;
-            font-weight: 700;
-            background: #e6f5e9;
-            color: #2a7a3a;
-            border-radius: 20px;
-            padding: 2px 8px;
-            white-space: nowrap;
-        }
-        .h-lock-badge {
-            font-size: 0.65rem;
-            background: #ede8e2;
-            color: #7a5a4b;
-            border-radius: 20px;
-            padding: 2px 8px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .h-folder-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #1e3f20;
-            line-height: 1.35;
-            margin-bottom: 4px;
-        }
-        .h-folder-item.locked .h-folder-title { color: #999; }
-
-        .h-folder-sub {
-            font-size: 0.67rem;
-            color: #888;
-            line-height: 1.3;
-        }
-
-        .h-expand-panel {
-            flex-shrink: 0;
-            overflow: hidden;
-            width: 0;
-            max-width: 0;
-            opacity: 0;
-            border-left: 2px solid transparent;
-            background: white;
-            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        .h-expand-panel.open {
-            width: 280px;
-            max-width: 280px;
-            opacity: 1;
-            border-left-color: var(--green-agri);
-        }
-
-        .h-expand-inner {
-            min-width: 280px;
-            padding: 16px 18px;
-        }
-
-        .h-expand-title {
-            font-size: 0.78rem;
-            font-weight: 700;
+        .member-detail-title {
             color: var(--green-agri);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            border-bottom: 1px solid #f0e5da;
-            padding-bottom: 8px;
-        }
-
-        .h-file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0ebe3;
-        }
-        .h-file-item:last-child { border-bottom: none; }
-
-        .h-file-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.73rem;
-            color: #3a4a3c;
-            line-height: 1.3;
-            flex: 1;
-        }
-        .h-file-name i { color: #e74c3c; flex-shrink: 0; }
-
-        .h-file-dl {
-            flex-shrink: 0;
-            background: #eef5ea;
-            color: var(--green-agri);
-            border-radius: 30px;
-            padding: 5px 12px;
-            font-size: 0.7rem;
             font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            white-space: nowrap;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
+            margin-bottom: 16px;
         }
-        .h-file-dl:hover {
-            background: var(--green-agri);
-            color: white;
+        .member-detail-bio { margin-bottom: 20px; line-height: 1.5; }
+        .member-detail-projects {
+            margin-top: 20px;
+            text-align: left;
         }
+        .member-project-item {
+            padding: 12px;
+            border-bottom: 1px solid #e2dcd5;
+        }
+        .member-project-item:last-child { border-bottom: none; }
 
+        /* Footer */
         .footer {
             position: relative;
             z-index: 10;
@@ -1142,14 +1183,11 @@
             cursor: pointer;
             box-shadow: 0 6px 24px rgba(43, 110, 60, 0.4);
             z-index: 1000;
-            transition: transform 0.2s;
             font-size: 26px;
             color: white;
+            transition: transform 0.2s;
         }
-        .chat-toggle:hover {
-            transform: scale(1.05);
-        }
-
+        .chat-toggle:hover { transform: scale(1.05); }
         .chat-window {
             position: fixed;
             bottom: 96px;
@@ -1163,36 +1201,22 @@
             flex-direction: column;
             z-index: 1000;
             overflow: hidden;
-            font-family: 'Inter', sans-serif;
         }
-        .chat-window.open {
-            display: flex;
-            animation: slideInChat 0.3s ease-out;
-        }
-        
+        .chat-window.open { display: flex; animation: slideInChat 0.3s ease-out; }
         @keyframes slideInChat {
-            from {
-                opacity: 0;
-                transform: translateX(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
+            from { opacity: 0; transform: translateX(30px) scale(0.95); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
         }
-
         .chatbot-header {
             background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
             padding: 16px 20px;
             flex-shrink: 0;
         }
-        
         .chat-header-content {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
         .chat-avatar {
             width: 38px;
             height: 38px;
@@ -1203,17 +1227,8 @@
             justify-content: center;
             font-size: 20px;
         }
-        
-        .chat-header-info {
-            flex: 1;
-        }
-        
-        .chat-header-title {
-            color: white;
-            font-weight: 700;
-            font-size: 14px;
-        }
-        
+        .chat-header-info { flex: 1; }
+        .chat-header-title { color: white; font-weight: 700; font-size: 14px; }
         .chat-header-status {
             color: rgba(255, 255, 255, 0.7);
             font-size: 11px;
@@ -1221,7 +1236,6 @@
             align-items: center;
             gap: 4px;
         }
-        
         .status-dot {
             width: 6px;
             height: 6px;
@@ -1229,18 +1243,8 @@
             background: #7dff9a;
             animation: pulse 2s infinite;
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .chat-close {
-            cursor: pointer;
-            font-size: 24px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .chat-close { cursor: pointer; font-size: 24px; color: rgba(255, 255, 255, 0.8); }
         .chatbot-messages {
             flex: 1;
             overflow-y: auto;
@@ -1249,14 +1253,11 @@
             flex-direction: column;
             gap: 14px;
         }
-        
         .message-bot {
             display: flex;
             gap: 8px;
             align-items: flex-start;
-            animation: fadeInMessage 0.3s ease-out;
         }
-        
         .message-bot .bot-avatar {
             width: 28px;
             height: 28px;
@@ -1267,26 +1268,20 @@
             justify-content: center;
             font-size: 14px;
             flex-shrink: 0;
-            margin-top: 2px;
         }
-        
         .message-bot .chat-bubble {
             background: white;
             border-radius: 4px 18px 18px 18px;
             padding: 10px 14px;
             font-size: 12.5px;
-            line-height: 1.55;
             color: #2d3a2f;
             border: 1px solid #e8e0d8;
             max-width: 85%;
         }
-        
         .message-user {
             display: flex;
             justify-content: flex-end;
-            animation: fadeInMessage 0.3s ease-out;
         }
-        
         .message-user .chat-bubble {
             background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
             color: white;
@@ -1295,25 +1290,12 @@
             font-size: 12.5px;
             max-width: 78%;
         }
-        
-        @keyframes fadeInMessage {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         .chat-options {
             margin-top: 8px;
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
-        
         .chat-option-btn {
             background: white;
             border: 1.5px solid #dae6d5;
@@ -1324,20 +1306,8 @@
             color: #2b4a2e;
             text-align: left;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.18s;
         }
-        
-        .chat-option-btn:hover:not(:disabled) {
-            background: linear-gradient(90deg, #edf7ea, #eef3fc);
-            transform: translateX(3px);
-        }
-        
-        .chat-option-btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-        }
-        
+        .chat-option-btn:disabled { opacity: 0.45; cursor: not-allowed; }
         .chatbot-input-area {
             padding: 10px 14px;
             border-top: 1px solid #e8e0d8;
@@ -1346,7 +1316,6 @@
             gap: 8px;
             align-items: center;
         }
-        
         .chatbot-input-area input {
             flex: 1;
             padding: 9px 14px;
@@ -1354,14 +1323,8 @@
             border: 1.5px solid #cde0c9;
             outline: none;
             font-size: 12.5px;
-            font-family: 'Inter', sans-serif;
             background: #f8fdf8;
         }
-        
-        .chatbot-input-area input:focus {
-            border-color: var(--green-agri);
-        }
-        
         .chatbot-input-area button {
             background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
             color: white;
@@ -1372,7 +1335,6 @@
             cursor: pointer;
             font-weight: 700;
         }
-        
         .chat-footer {
             padding: 6px 14px;
             background: #f4f8f2;
@@ -1405,16 +1367,16 @@
 
 <div class="main-wrapper" id="mainWrapper">
     <div class="floating-bg">
-        <div class="bubble" style="width: 260px; height: 260px; top: 7%; left: -70px; background: rgba(63,158,85,0.05);"></div>
-        <div class="bubble" style="width: 380px; height: 380px; bottom: 10%; right: -90px; background: rgba(26,76,110,0.04);"></div>
-        <div class="bubble" style="width: 180px; height: 180px; top: 40%; left: 70%; background: rgba(122,90,75,0.06);"></div>
-        <div class="bubble" style="width: 300px; height: 200px; bottom: 20%; left: 5%; background: rgba(43,110,60,0.04);"></div>
+        <div class="bubble" style="width: 260px; height: 260px; top: 7%; left: -70px;"></div>
+        <div class="bubble" style="width: 380px; height: 380px; bottom: 10%; right: -90px;"></div>
+        <div class="bubble" style="width: 180px; height: 180px; top: 40%; left: 70%;"></div>
+        <div class="bubble" style="width: 300px; height: 200px; bottom: 20%; left: 5%;"></div>
         <i class="fa-solid fa-tree vector-icon-bg" style="top: 18%; left: 12%; font-size: 3rem;"></i>
-        <i class="fa-solid fa-map vector-icon-bg" style="top: 70%; left: 85%; font-size: 2.6rem; animation-duration: 38s;"></i>
-        <i class="fa-solid fa-chart-line vector-icon-bg" style="top: 30%; right: 5%; font-size: 2.4rem; animation-duration: 26s;"></i>
-        <i class="fa-solid fa-seedling vector-icon-bg" style="bottom: 12%; left: 20%; font-size: 2.9rem; opacity: 0.3;"></i>
-        <i class="fa-solid fa-draw-polygon vector-icon-bg" style="top: 55%; left: 45%; font-size: 2.2rem; opacity: 0.2;"></i>
-        <i class="fa-solid fa-globe vector-icon-bg" style="top: 82%; left: 68%; font-size: 3.1rem; animation-duration: 44s;"></i>
+        <i class="fa-solid fa-map vector-icon-bg" style="top: 70%; left: 85%; font-size: 2.6rem;"></i>
+        <i class="fa-solid fa-chart-line vector-icon-bg" style="top: 30%; right: 5%; font-size: 2.4rem;"></i>
+        <i class="fa-solid fa-seedling vector-icon-bg" style="bottom: 12%; left: 20%; font-size: 2.9rem;"></i>
+        <i class="fa-solid fa-draw-polygon vector-icon-bg" style="top: 55%; left: 45%; font-size: 2.2rem;"></i>
+        <i class="fa-solid fa-globe vector-icon-bg" style="top: 82%; left: 68%; font-size: 3.1rem;"></i>
         <i class="fa-solid fa-leaf vector-icon-bg" style="top: 12%; right: 18%; font-size: 2rem;"></i>
     </div>
 
@@ -1434,48 +1396,49 @@
     </nav>
 
     <div class="main-content">
-        <!-- Tabs Navigation -->
         <div class="tabs-container">
             <button class="tab-btn active" data-tab="formation">📚 Formation & Ressources</button>
             <button class="tab-btn" data-tab="profile">👤 Mon Profil</button>
             <button class="tab-btn" data-tab="projects">📁 Mes Projets</button>
+            <button class="tab-btn" data-tab="community">👥 Communauté</button>
         </div>
 
-        <!-- Tab 1: Formation & Ressources -->
+        <!-- Tab 1: Formation avec GRILLE HARMONISÉE -->
         <div id="tab-formation" class="tab-content active">
-            <div class="formation-container">
+            <div class="dashboard-grid">
+                <!-- Colonne Gauche: Chat -->
                 <div class="chat-sidebar">
                     <div class="chat-header">
                         <h3><i class="fa-regular fa-comments"></i> Espace Discussion</h3>
                         <p>Connecté en tant que : <span id="user-display">Chargement...</span></p>
                     </div>
-                    
                     <div class="forum-chat-messages" id="forum-chat-messages">
                         <div style="text-align:center; padding:20px; color:#999;">
                             <i class="fa-regular fa-spinner fa-spin"></i> Connexion...
                         </div>
                     </div>
-                    
-                    <div class="forum-chat-input-area" id="forum-chat-input-area">
+                    <div class="forum-chat-input-area">
                         <input type="text" id="forum-chat-input" placeholder="Écrivez votre message ici..." autocomplete="off">
                         <button id="forum-chat-send-btn"><i class="fa-regular fa-paper-plane"></i> Envoyer</button>
                     </div>
                 </div>
 
-                <div class="main-content-blocks">
+                <!-- Colonne Droite: Cartes à hauteur égale -->
+                <div class="right-column">
                     <div class="welcome-card">
                         <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
-                        <p>Cet espace sécurisé regroupe toutes les ressources exclusives, supports de cours et bases de données nécessaires pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
+                        <p>Cet espace sécurisé regroupe toutes les ressources exclusives pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
                     </div>
 
                     <div class="course-grid">
                         <div class="course-card">
                             <div>
                                 <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
-                                <p>Téléchargez et installez l'environnement technique complet requis pour les sessions pratiques :</p>
+                                <p>Téléchargez l'environnement technique complet :</p>
                                 <ul>
-                                    <li><strong>ArcGIS Pro / ArcMap</strong> : Fichiers d'installation et extensions.</li>
-                                    <li><strong>R & RStudio</strong> : Packages d'analyse de données et modélisation.</li>
+                                    <li><strong>ArcGIS Pro / ArcMap</strong></li>
+                                    <li><strong>R & RStudio</strong></li>
+                                    <li><strong>Python & QGIS</strong></li>
                                 </ul>
                             </div>
                             <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
@@ -1484,61 +1447,54 @@
                         <div class="course-card">
                             <div>
                                 <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
-                                <p>Retrouvez les guides méthodologiques (Syllabus) ainsi que les couches de données géospatiales (Shapefiles, rasters) répartis selon notre programme :</p>
+                                <p>Guides méthodologiques et données géospatiales :</p>
                                 <ul>
-                                    <li><strong>Module I</strong> : R : Fondements & Exploration de données (Semaine 1)</li>
-                                    <li><strong>Module II</strong> : R : Intégration One Health & Modélisation avancée (Semaine 2)</li>
-                                    <li><strong>Module III</strong> : ArcGIS : Fondements & Production Cartographique (Semaine 3)</li>
-                                    <li><strong>Module IV</strong> : ArcGIS : Analyse Avancée & Projet Intégré (Semaine 4)</li>
+                                    <li><strong>Module I</strong> : R Fondements (Semaine 1)</li>
+                                    <li><strong>Module II</strong> : R One Health (Semaine 2)</li>
+                                    <li><strong>Module III</strong> : ArcGIS Bases (Semaine 3)</li>
+                                    <li><strong>Module IV</strong> : ArcGIS Avancé (Semaine 4)</li>
                                 </ul>
                             </div>
-                            <button onclick="ouvrirZone()" class="btn-gada" style="width: 100%; border: none; cursor: pointer;" id="btn-open">
-                                Accéder aux téléchargements
-                            </button>
+                            <button onclick="ouvrirZone()" class="btn-gada" id="btn-open">Accéder aux téléchargements</button>
+                        </div>
+                    </div>
 
-                            <div id="folder-zone" class="folder-zone">
-                                <div class="h-folder-wrapper">
-                                    <div class="h-folder-row">
-                                        <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
-                                            <div class="h-folder-top">
-                                                <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                                <span class="h-badge">6 fichiers</span>
-                                            </div>
-                                            <div class="h-folder-title">Semaine 1 : Fondements R <br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
-                                            <div class="h-folder-sub">Rappel des bases,Introduction & statistiques descriptives,Nettoyage et structuration des données,Analyse exploratoire des données (AED),visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture</div>
-                                        </div>
-
-                                        <div class="h-expand-panel" id="hp-s1">
-                                            <div class="h-expand-inner"></div>
-                                        </div>
-
-                                        <div class="h-folder-item locked" id="hf-s2">
-                                            <div class="h-folder-top">
-                                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                            </div>
-                                            <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
-                                            <div class="h-folder-sub">Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles,Analyse One Health,impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt,distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)</div>
-                                        </div>
-
-                                        <div class="h-folder-item locked" id="hf-s3">
-                                            <div class="h-folder-top">
-                                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                            </div>
-                                            <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
-                                            <div class="h-folder-sub">Interface ArcGIS Pro & gestion de projets SIG,Géoréférencement, digitalisation & systèmes de coordonnées, Cartes de densité & analyse de clusters KDE & One Health, Préparation des données & standardisation pour l'analyse multicritère</div>
-                                        </div>
-
-                                        <div class="h-folder-item locked" id="hf-s4">
-                                            <div class="h-folder-top">
-                                                <i class="fa-solid fa-folder h-folder-icon" style="color: #c8c0b8;"></i>
-                                                <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                            </div>
-                                            <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
-                                            <div class="h-folder-sub">Application de l'analyse multicritère AHP & cartes de vulnérabilité, Préparation spatiale des données pour Random Forest (rasters, points),Modélisation spatiale avec MaxEnt & prédiction de distribution, Carte thématique décisionnelle & intégration avec RStudio, Revue & consolidation du projet intégré, Présentation finale & remise des livrables</div>
-                                        </div>
+                    <!-- Zone des dossiers (s'affiche après clic) -->
+                    <div id="folder-zone" class="folder-zone">
+                        <div class="h-folder-wrapper">
+                            <div class="h-folder-row">
+                                <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
+                                    <div class="h-folder-top">
+                                        <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
+                                        <span class="h-badge">6 fichiers</span>
                                     </div>
+                                    <div class="h-folder-title">Semaine 1 : Fondements R<br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
+                                    <div class="h-folder-sub">Bases R, statistiques descriptives, visualisations, modèles linéaires et logistiques</div>
+                                </div>
+                                <div class="h-expand-panel" id="hp-s1"><div class="h-expand-inner"></div></div>
+                                <div class="h-folder-item locked" id="hf-s2" onclick="toggleHFolder('s2')">
+                                    <div class="h-folder-top">
+                                        <i class="fa-solid fa-folder h-folder-icon" style="color:#c8c0b8;"></i>
+                                        <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                    </div>
+                                    <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
+                                    <div class="h-folder-sub">NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, GLM</div>
+                                </div>
+                                <div class="h-folder-item locked" id="hf-s3" onclick="toggleHFolder('s3')">
+                                    <div class="h-folder-top">
+                                        <i class="fa-solid fa-folder h-folder-icon" style="color:#c8c0b8;"></i>
+                                        <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                    </div>
+                                    <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
+                                    <div class="h-folder-sub">ArcGIS Pro, géoréférencement, KDE, analyses spatiales</div>
+                                </div>
+                                <div class="h-folder-item locked" id="hf-s4" onclick="toggleHFolder('s4')">
+                                    <div class="h-folder-top">
+                                        <i class="fa-solid fa-folder h-folder-icon" style="color:#c8c0b8;"></i>
+                                        <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
+                                    </div>
+                                    <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
+                                    <div class="h-folder-sub">AHP, Random Forest spatial, MaxEnt ArcGIS, projet intégré</div>
                                 </div>
                             </div>
                         </div>
@@ -1549,57 +1505,49 @@
 
         <!-- Tab 2: Mon Profil -->
         <div id="tab-profile" class="tab-content">
-            <div class="profile-container" id="profileContainer">
-                <!-- Le contenu du profil sera chargé dynamiquement -->
-            </div>
+            <div class="profile-container" id="profileContainer"></div>
         </div>
 
         <!-- Tab 3: Mes Projets -->
         <div id="tab-projects" class="tab-content">
             <div class="profile-container">
-                <h3 style="color: var(--blue-tech); margin-bottom: 24px;">
-                    <i class="fa-solid fa-upload"></i> Publier un nouveau projet / document
-                </h3>
-                
-                <!-- Hub de publication -->
+                <h3 style="color: var(--blue-tech); margin-bottom: 24px;"><i class="fa-solid fa-upload"></i> Publier un nouveau projet</h3>
                 <div class="upload-hub">
                     <div class="upload-tabs">
                         <button class="upload-tab active" data-upload="local">📁 Depuis mon PC</button>
                         <button class="upload-tab" data-upload="github">🐙 Depuis GitHub</button>
-                        <button class="upload-tab" data-upload="cloud">☁️ Lien Cloud (Drive)</button>
+                        <button class="upload-tab" data-upload="cloud">☁️ Lien Cloud</button>
                     </div>
-                    
                     <div id="upload-local" class="upload-panel active">
                         <div class="upload-area" id="localUploadArea">
                             <i class="fa-solid fa-cloud-upload-alt"></i>
-                            <p>Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
-                            <p style="font-size: 0.7rem; color: #999;">Formats acceptés : PDF, ZIP, R, PY, SHP, TIFF, DOCX</p>
-                            <input type="file" id="localFileInput" multiple style="display: none;">
+                            <p>Glissez-déposez ou cliquez pour sélectionner</p>
+                            <input type="file" id="localFileInput" multiple style="display:none;">
                         </div>
                     </div>
-                    
                     <div id="upload-github" class="upload-panel">
                         <div class="github-input-group">
-                            <input type="text" id="githubRepoUrl" placeholder="URL du repository GitHub (ex: https://github.com/user/repo)">
+                            <input type="text" id="githubRepoUrl" placeholder="URL du repository GitHub">
                             <button class="submit-upload-btn" onclick="submitGitHubProject()">Importer</button>
                         </div>
                     </div>
-                    
                     <div id="upload-cloud" class="upload-panel">
                         <div class="cloud-input-group">
-                            <input type="text" id="cloudUrl" placeholder="Lien Google Drive / OneDrive / Dropbox">
-                            <button class="submit-upload-btn" onclick="submitCloudProject()">Ajouter le lien</button>
+                            <input type="text" id="cloudUrl" placeholder="Lien Google Drive / OneDrive">
+                            <button class="submit-upload-btn" onclick="submitCloudProject()">Ajouter</button>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Section des projets existants -->
-                <h3 style="color: var(--blue-tech); margin-bottom: 24px; margin-top: 32px;">
-                    <i class="fa-solid fa-folder-open"></i> Mes projets et contributions
-                </h3>
-                <div id="projectsGrid" class="projects-grid">
-                    <!-- Les projets seront chargés dynamiquement -->
-                </div>
+                <h3 style="color: var(--blue-tech); margin: 32px 0 24px;"><i class="fa-solid fa-folder-open"></i> Mes projets</h3>
+                <div id="projectsGrid" class="projects-grid"></div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Communauté -->
+        <div id="tab-community" class="tab-content">
+            <div class="profile-container">
+                <h3 style="color: var(--blue-tech); margin-bottom: 24px;"><i class="fa-solid fa-users"></i> Membres de la communauté</h3>
+                <div id="membersGrid" class="members-grid"></div>
             </div>
         </div>
     </div>
@@ -1607,408 +1555,175 @@
     <footer class="footer">
         <div class="footer-brand">GeoAgri Data Analytics & Solution (GADA Sol)</div>
         <p>&copy; 2026 GADA Training. Tous droits réservés.</p>
-        <p>Formons les meilleurs du futur.</p>
     </footer>
 </div>
 
-<!-- Modal d'édition de profil -->
+<!-- Modals -->
 <div id="profileModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fa-solid fa-user-pen"></i> Modifier mon profil</h3>
-            <span class="modal-close" onclick="closeProfileModal()">&times;</span>
-        </div>
+        <div class="modal-header"><h3><i class="fa-solid fa-user-pen"></i> Modifier mon profil</h3><span class="modal-close" onclick="closeProfileModal()">&times;</span></div>
         <form id="editProfileForm">
-            <div class="form-group">
-                <label>Nom complet</label>
-                <input type="text" id="editFullName" required>
-            </div>
-            <div class="form-group">
-                <label>Titre / Spécialité</label>
-                <input type="text" id="editTitle" placeholder="Ex: Géomaticien, Data Scientist">
-            </div>
-            <div class="form-group">
-                <label>Bio / Description</label>
-                <textarea id="editBio" rows="3" placeholder="Parlez-nous de vous, vos intérêts en modélisation spatiale..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>LinkedIn (URL)</label>
-                <input type="url" id="editLinkedin" placeholder="https://linkedin.com/in/...">
-            </div>
-            <div class="form-group">
-                <label>GitHub (URL)</label>
-                <input type="url" id="editGithub" placeholder="https://github.com/...">
-            </div>
-            <div class="form-group">
-                <label>Pays</label>
-                <input type="text" id="editPays">
-            </div>
-            <div class="form-group">
-                <label>Téléphone</label>
-                <input type="tel" id="editPhone">
-            </div>
-            <button type="submit" class="btn-primary" style="margin-top: 16px;">Enregistrer les modifications</button>
+            <div class="form-group"><label>Nom complet</label><input type="text" id="editFullName" required></div>
+            <div class="form-group"><label>Titre / Spécialité</label><input type="text" id="editTitle" placeholder="Ex: Géomaticien, Data Scientist"></div>
+            <div class="form-group"><label>Bio</label><textarea id="editBio" rows="3"></textarea></div>
+            <div class="form-group"><label>LinkedIn</label><input type="url" id="editLinkedin"></div>
+            <div class="form-group"><label>GitHub</label><input type="url" id="editGithub"></div>
+            <div class="form-group"><label>Pays</label><input type="text" id="editPays"></div>
+            <div class="form-group"><label>Téléphone</label><input type="tel" id="editPhone"></div>
+            <button type="submit" class="btn-primary">Enregistrer</button>
         </form>
     </div>
 </div>
 
-<div class="chat-toggle" id="chatToggle">
-    <i class="fa-regular fa-comment-dots"></i>
+<div id="memberDetailModal" class="modal">
+    <div class="modal-content member-detail-content" id="memberDetailContent"></div>
 </div>
 
+<div class="chat-toggle" id="chatToggle"><i class="fa-regular fa-comment-dots"></i></div>
 <div id="chatWindow" class="chat-window">
     <div class="chatbot-header">
         <div class="chat-header-content">
-            <div class="chat-avatar">
-                <i class="fa-solid fa-leaf"></i>
-            </div>
+            <div class="chat-avatar"><i class="fa-solid fa-leaf"></i></div>
             <div class="chat-header-info">
                 <div class="chat-header-title">GADA Assistant IA</div>
-                <div class="chat-header-status">
-                    <span class="status-dot"></span>
-                    <span>Guide pédagogique · One Health</span>
-                </div>
+                <div class="chat-header-status"><span class="status-dot"></span> Guide pédagogique</div>
             </div>
-            <span class="chat-close" id="chatClose">
-                <i class="fa-solid fa-xmark"></i>
-            </span>
+            <span class="chat-close" id="chatClose"><i class="fa-solid fa-xmark"></i></span>
         </div>
     </div>
-    
     <div class="chatbot-messages" id="chatbotMessages"></div>
-    
-    <div class="chatbot-input-area" id="chatbotInputArea">
-        <input type="text" id="chatbotInput" placeholder="Votre question...">
-        <button id="chatbotSend">
-            <i class="fa-regular fa-paper-plane"></i>
-        </button>
-    </div>
-    
-    <div class="chat-footer">
-        <i class="fa-regular fa-chart-line"></i> GADA Training · Modélisation Spatiale & One Health · 2026
-    </div>
+    <div class="chatbot-input-area" id="chatbotInputArea"><input type="text" id="chatbotInput" placeholder="Votre question..."><button id="chatbotSend"><i class="fa-regular fa-paper-plane"></i></button></div>
+    <div class="chat-footer">GADA Training · Modélisation Spatiale & One Health</div>
 </div>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
-    // Configuration Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyC_G2Fu6ZN4tzavRzfKo9fjXj5R_Un0PyE",
         authDomain: "gada-training-chat.firebaseapp.com",
         projectId: "gada-training-chat",
-        storageBucket: "gada-training-chat.firebasestorage.app",
-        messagingSenderId: "251680805573",
-        appId: "1:251680805573:web:a7a9e6b88c0b2844be96ac",
-        measurementId: "G-DXY25B5ZWK",
         databaseURL: "https://gada-training-chat-default-rtdb.firebaseio.com/"
     };
-    
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const messagesRef = database.ref('forum_messages');
     const projectsRef = database.ref('user_projects');
-    
-    // Variables globales
+    const profilesRef = database.ref('user_profiles');
+
     let currentUser = null;
     let isLoginMode = true;
     let currentUserProfile = {};
-    
-    // Éligibilité des emails
-    const ELIGIBLE_EMAILS = [
-        "faziliarsene2@gmail.com",
-        "josuekalegamire4@gmail.com",
-        "stevenkusinza@gmail.com",
-        "stevenamampa7@gmail.com",
-        "stevenamampa15@gmail.com",
-        "lukunatowangevehugues2006@gmail.com",
-        "niyoyitakasomo@gmail.com",
-        "hwabalygie@gmail.com"
-    ];
-    
+    let allProfiles = {};
+    let allProjects = [];
+
+    const ELIGIBLE_EMAILS = ["faziliarsene2@gmail.com", "josuekalegamire4@gmail.com", "stevenkusinza@gmail.com", "stevenamampa7@gmail.com", "stevenamampa15@gmail.com", "lukunatowangevehugues2006@gmail.com", "niyoyitakasomo@gmail.com", "hwabalygie@gmail.com"];
     const TEAM_EMAILS = ["gadasolution.rdc@gmail.com"];
     const ALLOWED_EMAILS = [...ELIGIBLE_EMAILS, ...TEAM_EMAILS];
-    
-    function isEmailAllowed(email) {
-        return ALLOWED_EMAILS.includes(email.toLowerCase());
-    }
-    
+
+    function isEmailAllowed(email) { return ALLOWED_EMAILS.includes(email.toLowerCase()); }
     function showAuthMessage(msg, isError) {
         const msgDiv = document.getElementById('authMessage');
         msgDiv.textContent = msg;
         msgDiv.className = 'auth-message ' + (isError ? 'error' : 'success');
-        setTimeout(() => {
-            msgDiv.className = 'auth-message';
-        }, 5000);
+        setTimeout(() => msgDiv.className = 'auth-message', 5000);
     }
-    
+
     function renderAuthForm() {
         const fieldsDiv = document.getElementById('authFields');
         const submitBtn = document.getElementById('authSubmitBtn');
         const switchText = document.getElementById('authSwitchText');
         const switchLink = document.getElementById('authSwitchLink');
-        
         if (isLoginMode) {
             submitBtn.textContent = 'Se connecter';
             switchText.textContent = 'Pas encore de compte ?';
             switchLink.textContent = 'Créer un compte';
-            fieldsDiv.innerHTML = `
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="loginEmail" required placeholder="votre@email.com">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Mot de passe</label>
-                    <input type="password" id="loginPassword" required placeholder="••••••••">
-                </div>
-            `;
+            fieldsDiv.innerHTML = `<div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" required></div>`;
         } else {
             submitBtn.textContent = 'Créer mon compte';
             switchText.textContent = 'Déjà un compte ?';
             switchLink.textContent = 'Se connecter';
-            fieldsDiv.innerHTML = `
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Nom complet</label>
-                    <input type="text" id="regFullName" required placeholder="Votre nom et prénom">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-map-marker-alt"></i> Pays</label>
-                    <input type="text" id="regPays" required placeholder="Votre pays">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-phone"></i> Téléphone</label>
-                    <input type="tel" id="regPhone" required placeholder="+243 XX XXX XXXX">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="regEmail" required placeholder="exemple@email.com">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Mot de passe</label>
-                    <input type="password" id="regPassword" required placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-check-circle"></i> Confirmation</label>
-                    <input type="password" id="regPasswordConfirm" required placeholder="Confirmez le mot de passe">
-                </div>
-            `;
+            fieldsDiv.innerHTML = `<div class="form-group"><label>Nom complet</label><input type="text" id="regFullName" required></div><div class="form-group"><label>Pays</label><input type="text" id="regPays" required></div><div class="form-group"><label>Téléphone</label><input type="tel" id="regPhone"></div><div class="form-group"><label>Email</label><input type="email" id="regEmail" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="regPassword" required></div><div class="form-group"><label>Confirmation</label><input type="password" id="regPasswordConfirm" required></div>`;
         }
     }
-    
+
     function handleAuthSubmit(e) {
         e.preventDefault();
-        
         if (isLoginMode) {
             const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
-            
-            if (!isEmailAllowed(email)) {
-                showAuthMessage('❌ Accès refusé. Veuillez finaliser votre paiement ou contacter gadasolution.rdc@gmail.com', true);
-                return;
-            }
-            
-            showAuthMessage("Vérification des identifiants...", false);
-            
-            firebase.auth().signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    currentUser = userCredential.user;
-                    loadUserProfile();
-                    document.getElementById('authOverlay').style.display = 'none';
-                    showDashboard();
-                })
-                .catch((error) => {
-                    console.error(error);
-                    let errorMsg = "Email ou mot de passe incorrect.";
-                    if (error.code === 'auth/user-not-found') {
-                        errorMsg = "Aucun compte trouvé avec cet e-mail.";
-                    } else if (error.code === 'auth/wrong-password') {
-                        errorMsg = "Mot de passe incorrect.";
-                    }
-                    showAuthMessage("❌ " + errorMsg, true);
-                });
+            if (!isEmailAllowed(email)) { showAuthMessage('❌ Accès refusé. Contactez gadasolution.rdc@gmail.com', true); return; }
+            firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
+                currentUser = userCredential.user;
+                loadUserProfile();
+                document.getElementById('authOverlay').style.display = 'none';
+                showDashboard();
+            }).catch(() => showAuthMessage("❌ Email ou mot de passe incorrect", true));
         } else {
             const fullName = document.getElementById('regFullName').value.trim();
             const pays = document.getElementById('regPays').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
             const email = document.getElementById('regEmail').value.trim().toLowerCase();
             const password = document.getElementById('regPassword').value;
-            const confirmPassword = document.getElementById('regPasswordConfirm').value;
-            
-            if (password !== confirmPassword) {
-                showAuthMessage("❌ Les mots de passe ne correspondent pas.", true);
-                return;
-            }
-            
-            if (password.length < 6) {
-                showAuthMessage("❌ Le mot de passe doit contenir au moins 6 caractères.", true);
-                return;
-            }
-            
-            if (!isEmailAllowed(email)) {
-                showAuthMessage('❌ Désolé, vous n\'êtes pas éligible à prendre part à cette section. Veuillez finaliser votre paiement ou contacter l\'assistance technique de GADA Solution : gadasolution.rdc@gmail.com', true);
-                return;
-            }
-            
-            showAuthMessage("Création du compte sur Firebase...", false);
-            
-            firebase.auth().createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    // Stocker les informations supplémentaires
-                    const userProfile = {
-                        uid: user.uid,
-                        fullName: fullName,
-                        pays: pays,
-                        phone: phone,
-                        email: email,
-                        title: "",
-                        bio: "",
-                        linkedin: "",
-                        github: "",
-                        avatar: "",
-                        createdAt: Date.now()
-                    };
-                    
-                    database.ref('user_profiles/' + user.uid).set(userProfile);
-                    localStorage.setItem('gada_user_profile_' + user.uid, JSON.stringify(userProfile));
-                    
-                    showAuthMessage("✅ Compte créé avec succès ! Vous pouvez maintenant vous connecter.", false);
-                    isLoginMode = true;
-                    renderAuthForm();
-                })
-                .catch((error) => {
-                    console.error(error);
-                    let errorMsg = error.message;
-                    if (error.code === 'auth/email-already-in-use') {
-                        errorMsg = "Cette adresse e-mail est déjà utilisée.";
-                    } else if (error.code === 'auth/weak-password') {
-                        errorMsg = "Le mot de passe doit contenir au moins 6 caractères.";
-                    }
-                    showAuthMessage("❌ " + errorMsg, true);
-                });
+            const confirm = document.getElementById('regPasswordConfirm').value;
+            if (password !== confirm) { showAuthMessage("❌ Mots de passe différents", true); return; }
+            if (!isEmailAllowed(email)) { showAuthMessage('❌ Vous n\'êtes pas éligible', true); return; }
+            firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
+                const user = userCredential.user;
+                const userProfile = { uid: user.uid, fullName, pays, phone, email, title: "", bio: "", linkedin: "", github: "", avatar: "", createdAt: Date.now() };
+                profilesRef.child(user.uid).set(userProfile);
+                showAuthMessage("✅ Compte créé ! Connectez-vous.", false);
+                isLoginMode = true;
+                renderAuthForm();
+            }).catch((error) => showAuthMessage("❌ " + error.message, true));
         }
     }
-    
+
     function loadUserProfile() {
         if (!currentUser) return;
-        
-        database.ref('user_profiles/' + currentUser.uid).once('value', (snapshot) => {
-            if (snapshot.exists()) {
-                currentUserProfile = snapshot.val();
-            } else {
-                // Créer un profil par défaut
-                currentUserProfile = {
-                    uid: currentUser.uid,
-                    fullName: currentUser.email.split('@')[0],
-                    email: currentUser.email,
-                    title: "Apprenant GADA",
-                    bio: "Passionné(e) par la modélisation spatiale et l'approche One Health.",
-                    pays: "",
-                    phone: "",
-                    linkedin: "",
-                    github: "",
-                    avatar: "",
-                    createdAt: Date.now()
-                };
-                database.ref('user_profiles/' + currentUser.uid).set(currentUserProfile);
-            }
+        profilesRef.child(currentUser.uid).on('value', (snapshot) => {
+            if (snapshot.exists()) currentUserProfile = snapshot.val();
+            else currentUserProfile = { uid: currentUser.uid, fullName: currentUser.email.split('@')[0], email: currentUser.email, title: "Apprenant GADA", bio: "", pays: "", phone: "", linkedin: "", github: "", avatar: "" };
             updateUIWithProfile();
         });
     }
-    
+
     function updateUIWithProfile() {
         const displayName = currentUserProfile.fullName || currentUser.email.split('@')[0];
-        const welcomeTitle = document.getElementById('welcomeTitle');
-        if (welcomeTitle) welcomeTitle.innerHTML = `Bienvenue ${displayName} dans votre espace de formation !`;
-        
-        // Mettre à jour la navbar
-        const navUserName = document.getElementById('navUserName');
-        if (navUserName) navUserName.textContent = displayName;
-        
-        const userDisplay = document.getElementById('user-display');
-        if (userDisplay) {
-            const isAdmin = currentUser.email === "gadasolution.rdc@gmail.com";
-            userDisplay.textContent = `${displayName}${isAdmin ? ' (Formateur)' : ''}`;
-        }
-        
-        // Mettre à jour l'avatar dans la navbar
+        document.getElementById('welcomeTitle').innerHTML = `Bienvenue ${displayName} !`;
+        document.getElementById('navUserName').textContent = displayName;
+        document.getElementById('user-display').textContent = `${displayName}${currentUser.email === "gadasolution.rdc@gmail.com" ? ' (Formateur)' : ''}`;
         updateNavAvatar();
-        
-        // Rendre le profil
         renderProfilePage();
-        
-        // Charger les projets
         loadUserProjects();
+        loadAllMembers();
+        loadAllProjectsForCommunity();
     }
-    
+
     function updateNavAvatar() {
-        const navAvatarContainer = document.getElementById('navAvatarPlaceholder');
+        const navAvatar = document.getElementById('navAvatarPlaceholder');
         if (currentUserProfile.avatar) {
-            navAvatarContainer.innerHTML = `<img src="${currentUserProfile.avatar}" class="profile-avatar-small" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`;
-            navAvatarContainer.classList.remove('placeholder');
+            navAvatar.innerHTML = `<img src="${currentUserProfile.avatar}" class="profile-avatar-small" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`;
+            navAvatar.classList.remove('placeholder');
         } else {
-            navAvatarContainer.innerHTML = '<i class="fa-solid fa-user"></i>';
-            navAvatarContainer.classList.add('placeholder');
+            navAvatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+            navAvatar.classList.add('placeholder');
         }
     }
-    
+
     function renderProfilePage() {
         const container = document.getElementById('profileContainer');
-        if (!container) return;
-        
-        const avatarHtml = currentUserProfile.avatar 
-            ? `<img src="${currentUserProfile.avatar}" alt="Photo de profil">`
-            : `<div class="placeholder"><i class="fa-solid fa-user fa-4x"></i></div>`;
-        
+        const avatarHtml = currentUserProfile.avatar ? `<img src="${currentUserProfile.avatar}">` : `<div class="placeholder"><i class="fa-solid fa-user fa-4x"></i></div>`;
         container.innerHTML = `
-            <div class="profile-header">
-                <div class="profile-avatar-large">
-                    ${avatarHtml}
-                    <button class="change-photo-btn" onclick="triggerAvatarUpload()">
-                        <i class="fa-solid fa-camera"></i>
-                    </button>
-                    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this)">
-                </div>
-                <div class="profile-info">
-                    <h2>${currentUserProfile.fullName || currentUser.email.split('@')[0]}</h2>
-                    <div class="profile-badge">
-                        <i class="fa-solid fa-graduation-cap"></i> ${currentUserProfile.title || "Apprenant GADA"}
-                    </div>
-                    <div class="profile-social">
-                        ${currentUserProfile.linkedin ? `<a href="${currentUserProfile.linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : ''}
-                        ${currentUserProfile.github ? `<a href="${currentUserProfile.github}" target="_blank"><i class="fab fa-github"></i></a>` : ''}
-                        <a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-pen"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="profile-details-grid">
-                <div class="detail-card">
-                    <label><i class="fa-regular fa-envelope"></i> Email</label>
-                    <p>${currentUserProfile.email}</p>
-                </div>
-                <div class="detail-card">
-                    <label><i class="fa-regular fa-address-card"></i> Bio</label>
-                    <p>${currentUserProfile.bio || "Aucune bio renseignée"}</p>
-                </div>
-                <div class="detail-card">
-                    <label><i class="fa-solid fa-location-dot"></i> Pays</label>
-                    <p>${currentUserProfile.pays || "Non renseigné"}</p>
-                </div>
-                <div class="detail-card">
-                    <label><i class="fa-solid fa-phone"></i> Téléphone</label>
-                    <p>${currentUserProfile.phone || "Non renseigné"}</p>
-                </div>
-            </div>
-            <button class="edit-profile-btn" onclick="openProfileModal()">
-                <i class="fa-solid fa-user-pen"></i> Modifier mon profil
-            </button>
-        `;
+            <div class="profile-header"><div class="profile-avatar-large">${avatarHtml}<button class="change-photo-btn" onclick="triggerAvatarUpload()"><i class="fa-solid fa-camera"></i></button><input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="uploadAvatar(this)"></div>
+            <div class="profile-info"><h2>${escapeHtml(currentUserProfile.fullName || currentUser.email.split('@')[0])}</h2><div class="profile-badge"><i class="fa-solid fa-graduation-cap"></i> ${escapeHtml(currentUserProfile.title || "Apprenant GADA")}</div>
+            <div class="profile-social">${currentUserProfile.linkedin ? `<a href="${currentUserProfile.linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : ''}${currentUserProfile.github ? `<a href="${currentUserProfile.github}" target="_blank"><i class="fab fa-github"></i></a>` : ''}<a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-pen"></i></a></div></div></div>
+            <div class="profile-details-grid"><div class="detail-card"><label>Email</label><p>${escapeHtml(currentUserProfile.email)}</p></div><div class="detail-card"><label>Bio</label><p>${escapeHtml(currentUserProfile.bio || "Aucune bio")}</p></div><div class="detail-card"><label>Pays</label><p>${escapeHtml(currentUserProfile.pays || "Non renseigné")}</p></div><div class="detail-card"><label>Téléphone</label><p>${escapeHtml(currentUserProfile.phone || "Non renseigné")}</p></div></div>
+            <button class="edit-profile-btn" onclick="openProfileModal()"><i class="fa-solid fa-user-pen"></i> Modifier mon profil</button>`;
     }
-    
+
     function openProfileModal() {
         document.getElementById('editFullName').value = currentUserProfile.fullName || '';
         document.getElementById('editTitle').value = currentUserProfile.title || '';
@@ -2017,35 +1732,23 @@
         document.getElementById('editGithub').value = currentUserProfile.github || '';
         document.getElementById('editPays').value = currentUserProfile.pays || '';
         document.getElementById('editPhone').value = currentUserProfile.phone || '';
-        
         document.getElementById('profileModal').classList.add('active');
     }
-    
-    function closeProfileModal() {
-        document.getElementById('profileModal').classList.remove('active');
-    }
-    
-    function triggerAvatarUpload() {
-        document.getElementById('avatarInput').click();
-    }
-    
+    function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); }
+    function triggerAvatarUpload() { document.getElementById('avatarInput').click(); }
     function uploadAvatar(input) {
         if (input.files && input.files[0]) {
-            const file = input.files[0];
             const reader = new FileReader();
             reader.onload = function(e) {
-                const avatarUrl = e.target.result;
-                currentUserProfile.avatar = avatarUrl;
-                database.ref('user_profiles/' + currentUser.uid + '/avatar').set(avatarUrl);
+                currentUserProfile.avatar = e.target.result;
+                profilesRef.child(currentUser.uid + '/avatar').set(currentUserProfile.avatar);
                 updateUIWithProfile();
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(input.files[0]);
         }
     }
-    
     document.getElementById('editProfileForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         currentUserProfile.fullName = document.getElementById('editFullName').value;
         currentUserProfile.title = document.getElementById('editTitle').value;
         currentUserProfile.bio = document.getElementById('editBio').value;
@@ -2053,197 +1756,169 @@
         currentUserProfile.github = document.getElementById('editGithub').value;
         currentUserProfile.pays = document.getElementById('editPays').value;
         currentUserProfile.phone = document.getElementById('editPhone').value;
-        
-        database.ref('user_profiles/' + currentUser.uid).update(currentUserProfile);
+        profilesRef.child(currentUser.uid).update(currentUserProfile);
         updateUIWithProfile();
         closeProfileModal();
-        showAuthMessage("✅ Profil mis à jour avec succès !", false);
+        showAuthMessage("✅ Profil mis à jour !", false);
     });
-    
-    // Gestion des projets
+
+    function loadUserProjects() {
+        projectsRef.orderByChild('userId').equalTo(currentUser?.uid).on('value', (snapshot) => {
+            const projects = [];
+            snapshot.forEach((child) => projects.push({ id: child.key, ...child.val() }));
+            projects.sort((a,b) => b.timestamp - a.timestamp);
+            renderProjects(projects);
+        });
+    }
+
+    function renderProjects(projects) {
+        const grid = document.getElementById('projectsGrid');
+        if (!grid) return;
+        if (projects.length === 0) { grid.innerHTML = `<div style="text-align:center;padding:40px;"><i class="fa-regular fa-folder-open fa-3x"></i><p>Aucun projet</p></div>`; return; }
+        grid.innerHTML = projects.map(p => `<div class="project-card"><div class="project-thumbnail">${p.type === 'github' ? '<i class="fab fa-github fa-3x"></i>' : p.type === 'cloud' ? '<i class="fa-solid fa-cloud fa-3x"></i>' : '<i class="fa-regular fa-file fa-3x"></i>'}</div><div class="project-info"><div class="project-title">${escapeHtml(p.title)}</div><div class="project-author">${p.userAvatar ? `<img src="${p.userAvatar}">` : '<i class="fa-solid fa-user"></i>'} ${escapeHtml(p.userName)}</div><div class="project-description">${escapeHtml(p.description)}</div><div class="project-actions"><a href="${p.url}" class="project-btn project-btn-view" target="_blank">Voir</a>${p.type === 'github' ? `<a href="${p.url}" class="project-btn project-btn-code" target="_blank">Code</a>` : ''}</div></div></div>`).join('');
+    }
+
+    function loadAllMembers() {
+        profilesRef.on('value', (snapshot) => {
+            allProfiles = {};
+            snapshot.forEach((child) => { allProfiles[child.key] = child.val(); });
+            renderMembersGrid();
+        });
+    }
+
+    function renderMembersGrid() {
+        const grid = document.getElementById('membersGrid');
+        if (!grid) return;
+        const members = Object.values(allProfiles);
+        if (members.length === 0) { grid.innerHTML = `<div style="text-align:center;padding:40px;"><i class="fa-solid fa-users fa-3x"></i><p>Aucun membre pour le moment</p></div>`; return; }
+        grid.innerHTML = members.map(m => {
+            const userProjects = allProjects.filter(p => p.userId === m.uid);
+            return `
+            <div class="member-card" onclick="showMemberDetail('${m.uid}')">
+                ${m.avatar ? `<img src="${m.avatar}" class="member-avatar">` : `<div class="member-avatar placeholder"><i class="fa-solid fa-user fa-2x"></i></div>`}
+                <div class="member-name">${escapeHtml(m.fullName || m.email.split('@')[0])}</div>
+                <div class="member-title">${escapeHtml(m.title || "Apprenant GADA")}</div>
+                <div class="member-bio">${escapeHtml((m.bio || "Aucune bio").substring(0, 80))}${(m.bio || "").length > 80 ? '...' : ''}</div>
+                <div class="member-stats">
+                    <span class="member-stat"><i class="fa-regular fa-folder"></i> ${userProjects.length} projet(s)</span>
+                    <span class="member-stat"><i class="fa-regular fa-star"></i> ${m.uid === currentUser?.uid ? 'Vous' : 'Membre'}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function loadAllProjectsForCommunity() {
+        projectsRef.on('value', (snapshot) => {
+            allProjects = [];
+            snapshot.forEach((child) => allProjects.push({ id: child.key, ...child.val() }));
+            renderMembersGrid();
+        });
+    }
+
+    function showMemberDetail(uid) {
+        const member = allProfiles[uid];
+        if (!member) return;
+        const memberProjects = allProjects.filter(p => p.userId === uid);
+        const modalContent = document.getElementById('memberDetailContent');
+        modalContent.innerHTML = `
+            <div style="text-align:center;">
+                <span class="modal-close" style="float:right; font-size:24px; cursor:pointer;" onclick="closeMemberModal()">&times;</span>
+                ${member.avatar ? `<img src="${member.avatar}" class="member-detail-avatar">` : `<div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--green-agri),var(--blue-tech));margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;"><i class="fa-solid fa-user"></i></div>`}
+                <div class="member-detail-name">${escapeHtml(member.fullName || member.email.split('@')[0])}</div>
+                <div class="member-detail-title">${escapeHtml(member.title || "Apprenant GADA")}</div>
+                <div class="member-detail-bio">${escapeHtml(member.bio || "Aucune bio renseignée")}</div>
+                <div class="profile-social" style="justify-content:center;">${member.linkedin ? `<a href="${member.linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : ''}${member.github ? `<a href="${member.github}" target="_blank"><i class="fab fa-github"></i></a>` : ''}</div>
+                <div class="member-detail-projects"><h4 style="color:var(--blue-tech);margin:20px 0 10px;"><i class="fa-regular fa-folder-open"></i> Projets (${memberProjects.length})</h4>${memberProjects.length === 0 ? '<p>Aucun projet publié</p>' : memberProjects.map(p => `<div class="member-project-item"><strong>${escapeHtml(p.title)}</strong><br><small>${escapeHtml(p.description)}</small><br><a href="${p.url}" target="_blank" style="color:var(--green-agri);font-size:12px;">Voir le projet →</a></div>`).join('')}</div>
+                <button class="btn-primary" style="margin-top:20px;" onclick="closeMemberModal()">Fermer</button>
+            </div>`;
+        document.getElementById('memberDetailModal').classList.add('active');
+    }
+    function closeMemberModal() { document.getElementById('memberDetailModal').classList.remove('active'); }
+
     function submitLocalProject(file) {
-        if (!currentUser) return;
-        
         const reader = new FileReader();
         reader.onload = function(e) {
-            const project = {
-                id: Date.now(),
-                userId: currentUser.uid,
-                userName: currentUserProfile.fullName || currentUser.email.split('@')[0],
-                userAvatar: currentUserProfile.avatar || '',
-                title: file.name,
-                description: "Document téléchargé depuis mon PC",
-                type: "file",
-                url: e.target.result,
-                fileType: file.type,
-                fileName: file.name,
-                timestamp: Date.now()
-            };
-            
+            const project = { userId: currentUser.uid, userName: currentUserProfile.fullName || currentUser.email.split('@')[0], userAvatar: currentUserProfile.avatar || '', title: file.name, description: "Fichier téléchargé", type: "file", url: e.target.result, fileName: file.name, timestamp: Date.now() };
             projectsRef.push(project);
-            showAuthMessage("✅ Fichier téléchargé avec succès !", false);
+            showAuthMessage("✅ Fichier ajouté !", false);
             loadUserProjects();
         };
         reader.readAsDataURL(file);
     }
-    
     function submitGitHubProject() {
         const url = document.getElementById('githubRepoUrl').value.trim();
-        if (!url) {
-            showAuthMessage("❌ Veuillez entrer une URL GitHub valide", true);
-            return;
-        }
-        
-        const project = {
-            id: Date.now(),
-            userId: currentUser.uid,
-            userName: currentUserProfile.fullName || currentUser.email.split('@')[0],
-            userAvatar: currentUserProfile.avatar || '',
-            title: "Projet GitHub",
-            description: "Repository GitHub",
-            type: "github",
-            url: url,
-            timestamp: Date.now()
-        };
-        
+        if (!url) { showAuthMessage("❌ Entrez une URL GitHub", true); return; }
+        const project = { userId: currentUser.uid, userName: currentUserProfile.fullName || currentUser.email.split('@')[0], userAvatar: currentUserProfile.avatar || '', title: "Projet GitHub", description: "Repository GitHub", type: "github", url: url, timestamp: Date.now() };
         projectsRef.push(project);
         document.getElementById('githubRepoUrl').value = '';
-        showAuthMessage("✅ Projet GitHub ajouté avec succès !", false);
+        showAuthMessage("✅ Projet GitHub ajouté !", false);
         loadUserProjects();
     }
-    
     function submitCloudProject() {
         const url = document.getElementById('cloudUrl').value.trim();
-        if (!url) {
-            showAuthMessage("❌ Veuillez entrer un lien valide", true);
-            return;
-        }
-        
-        const project = {
-            id: Date.now(),
-            userId: currentUser.uid,
-            userName: currentUserProfile.fullName || currentUser.email.split('@')[0],
-            userAvatar: currentUserProfile.avatar || '',
-            title: "Document Cloud",
-            description: "Document partagé via lien cloud",
-            type: "cloud",
-            url: url,
-            timestamp: Date.now()
-        };
-        
+        if (!url) { showAuthMessage("❌ Entrez un lien valide", true); return; }
+        const project = { userId: currentUser.uid, userName: currentUserProfile.fullName || currentUser.email.split('@')[0], userAvatar: currentUserProfile.avatar || '', title: "Document Cloud", description: "Document partagé", type: "cloud", url: url, timestamp: Date.now() };
         projectsRef.push(project);
         document.getElementById('cloudUrl').value = '';
-        showAuthMessage("✅ Lien ajouté avec succès !", false);
+        showAuthMessage("✅ Lien ajouté !", false);
         loadUserProjects();
     }
-    
-    function loadUserProjects() {
-        projectsRef.orderByChild('userId').equalTo(currentUser?.uid).on('value', (snapshot) => {
-            const projects = [];
-            snapshot.forEach((childSnapshot) => {
-                projects.push({ id: childSnapshot.key, ...childSnapshot.val() });
-            });
-            projects.sort((a, b) => b.timestamp - a.timestamp);
-            renderProjects(projects);
-        });
-    }
-    
-    function renderProjects(projects) {
-        const grid = document.getElementById('projectsGrid');
-        if (!grid) return;
-        
-        if (projects.length === 0) {
-            grid.innerHTML = `<div style="text-align:center; padding:40px; color:#999;">
-                <i class="fa-regular fa-folder-open fa-3x"></i>
-                <p>Aucun projet pour le moment. Commencez par partager votre travail !</p>
-            </div>`;
-            return;
-        }
-        
-        grid.innerHTML = projects.map(project => `
-            <div class="project-card">
-                <div class="project-thumbnail">
-                    ${project.type === 'github' ? '<i class="fab fa-github fa-3x"></i>' : 
-                      project.type === 'cloud' ? '<i class="fa-solid fa-cloud fa-3x"></i>' : 
-                      '<i class="fa-regular fa-file fa-3x"></i>'}
-                </div>
-                <div class="project-info">
-                    <div class="project-title">${escapeHtml(project.title)}</div>
-                    <div class="project-author">
-                        ${project.userAvatar ? `<img src="${project.userAvatar}" alt="avatar">` : '<i class="fa-solid fa-user"></i>'}
-                        ${escapeHtml(project.userName)}
-                    </div>
-                    <div class="project-description">${escapeHtml(project.description)}</div>
-                    <div class="project-actions">
-                        <a href="${project.url}" class="project-btn project-btn-view" target="_blank">
-                            <i class="fa-regular fa-eye"></i> Voir
-                        </a>
-                        ${project.type === 'github' ? 
-                            `<a href="${project.url}" class="project-btn project-btn-code" target="_blank">
-                                <i class="fab fa-github"></i> Code
-                            </a>` : ''}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
+
     function showDashboard() {
         document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('mainWrapper').classList.add('authenticated');
         document.getElementById('chatToggle').style.display = 'flex';
-        updateUIWithProfile();
     }
-    
-    function logout() {
-        firebase.auth().signOut().then(() => {
-            currentUser = null;
-            currentUserProfile = {};
-            document.getElementById('authOverlay').style.display = 'flex';
-            document.getElementById('mainWrapper').classList.remove('authenticated');
-            document.getElementById('chatToggle').style.display = 'none';
-            document.getElementById('chatWindow').classList.remove('open');
-            isLoginMode = true;
-            renderAuthForm();
-        });
+    function logout() { firebase.auth().signOut().then(() => { location.reload(); }); }
+
+    // Chat avec avatars
+    function sendForumMessage() {
+        const input = document.getElementById('forum-chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+        const messageData = {
+            email: currentUser.email,
+            senderName: currentUserProfile.fullName || currentUser.email.split('@')[0],
+            senderAvatar: currentUserProfile.avatar || '',
+            text: text,
+            timestamp: Date.now(),
+            timeStr: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+        };
+        messagesRef.push(messageData);
+        input.value = "";
     }
-    
-    // Écouteur de session Firebase
+
+    messagesRef.on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        const container = document.getElementById('forum-chat-messages');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message ' + (data.email === "gadasolution.rdc@gmail.com" ? 'msg-admin' : 'msg-student');
+        const avatarHtml = data.senderAvatar ? `<img src="${data.senderAvatar}" class="message-avatar">` : `<div class="message-avatar placeholder"><i class="fa-solid fa-user"></i></div>`;
+        msgDiv.innerHTML = `${avatarHtml}<div class="message-content"><span class="meta">${data.email === "gadasolution.rdc@gmail.com" ? '📘 Formateur' : '👤 ' + escapeHtml(data.senderName)} • ${data.timeStr}</span>${escapeHtml(data.text)}</div>`;
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
+    });
+
+    document.getElementById('forum-chat-send-btn')?.addEventListener('click', sendForumMessage);
+    document.getElementById('forum-chat-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendForumMessage(); });
+
+    // Firebase auth state
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-            if (!isEmailAllowed(user.email)) {
-                firebase.auth().signOut();
-                showAuthMessage('❌ Accès refusé. Veuillez contacter l\'administrateur.', true);
-                return;
-            }
+            if (!isEmailAllowed(user.email)) { firebase.auth().signOut(); showAuthMessage('Accès refusé', true); return; }
             currentUser = user;
             loadUserProfile();
             document.getElementById('authOverlay').style.display = 'none';
             showDashboard();
         } else {
-            currentUser = null;
-            currentUserProfile = {};
             document.getElementById('authOverlay').style.display = 'flex';
             document.getElementById('mainWrapper').classList.remove('authenticated');
-            document.getElementById('chatToggle').style.display = 'none';
             renderAuthForm();
         }
     });
-    
-    // Gestionnaires d'événements
+
     document.getElementById('authForm')?.addEventListener('submit', handleAuthSubmit);
-    document.getElementById('authSwitchLink')?.addEventListener('click', () => {
-        isLoginMode = !isLoginMode;
-        renderAuthForm();
-    });
-    
-    // Tabs
+    document.getElementById('authSwitchLink')?.addEventListener('click', () => { isLoginMode = !isLoginMode; renderAuthForm(); });
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -2252,8 +1927,6 @@
             document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
         });
     });
-    
-    // Upload tabs
     document.querySelectorAll('.upload-tab').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.upload-tab').forEach(b => b.classList.remove('active'));
@@ -2262,97 +1935,14 @@
             document.getElementById(`upload-${btn.dataset.upload}`).classList.add('active');
         });
     });
-    
-    // Local file upload
     const localUploadArea = document.getElementById('localUploadArea');
     const localFileInput = document.getElementById('localFileInput');
-    
     localUploadArea?.addEventListener('click', () => localFileInput.click());
-    localFileInput?.addEventListener('change', (e) => {
-        Array.from(e.target.files).forEach(file => submitLocalProject(file));
-        localFileInput.value = '';
-    });
-    
-    localUploadArea?.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        localUploadArea.style.borderColor = 'var(--green-agri)';
-    });
-    
-    localUploadArea?.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        localUploadArea.style.borderColor = '#c9bfb2';
-    });
-    
-    localUploadArea?.addEventListener('drop', (e) => {
-        e.preventDefault();
-        localUploadArea.style.borderColor = '#c9bfb2';
-        const files = Array.from(e.dataTransfer.files);
-        files.forEach(file => submitLocalProject(file));
-    });
-    
-    // Chat functions
-    function sendForumMessage() {
-        const forumInput = document.getElementById('forum-chat-input');
-        const text = forumInput.value.trim();
-        if (text === "") return;
-        
-        if (!currentUser) {
-            alert("Veuillez vous connecter pour envoyer un message");
-            return;
-        }
-        
-        const senderName = currentUserProfile.fullName || currentUser.email.split('@')[0];
-        
-        const messageData = {
-            email: currentUser.email,
-            senderName: senderName,
-            text: text,
-            timestamp: Date.now(),
-            timeStr: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-        };
-        
-        messagesRef.push(messageData);
-        forumInput.value = "";
-    }
-    
-    const forumSendBtn = document.getElementById('forum-chat-send-btn');
-    const forumInput = document.getElementById('forum-chat-input');
-    if (forumSendBtn) forumSendBtn.addEventListener('click', sendForumMessage);
-    if (forumInput) {
-        forumInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendForumMessage();
-        });
-    }
-    
-    function escapeForumHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    const forumMessagesContainer = document.getElementById('forum-chat-messages');
-    messagesRef.on('child_added', (snapshot) => {
-        const data = snapshot.val();
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        
-        const isAdmin = data.email === "gadasolution.rdc@gmail.com";
-        const displayName = isAdmin ? "Formateur" : (data.senderName || data.email.split('@')[0]);
-        
-        if (isAdmin) {
-            messageElement.classList.add('msg-admin');
-            messageElement.innerHTML = `<span class="meta">📘 ${displayName} • ${data.timeStr}</span> ${escapeForumHtml(data.text)}`;
-        } else {
-            messageElement.classList.add('msg-student');
-            messageElement.innerHTML = `<span class="meta">👤 ${displayName} • ${data.timeStr}</span> ${escapeForumHtml(data.text)}`;
-        }
-        
-        forumMessagesContainer.appendChild(messageElement);
-        forumMessagesContainer.scrollTop = forumMessagesContainer.scrollHeight;
-    });
-    
-    // Folder functions
-    function ouvrirZone() {
+    localFileInput?.addEventListener('change', (e) => { Array.from(e.target.files).forEach(f => submitLocalProject(f)); localFileInput.value = ''; });
+    localUploadArea?.addEventListener('dragover', (e) => e.preventDefault());
+    localUploadArea?.addEventListener('drop', (e) => { e.preventDefault(); Array.from(e.dataTransfer.files).forEach(f => submitLocalProject(f)); });
+
+    function ouvrirZone() { 
         const btn = document.getElementById('btn-open');
         const zone = document.getElementById('folder-zone');
         if (btn) btn.style.display = 'none';
@@ -2360,154 +1950,55 @@
     }
     
     let currentOpenPanelId = null;
-    
     function toggleHFolder(id) {
         const panel = document.getElementById('hp-' + id);
-        const folderItem = document.getElementById('hf-' + id);
+        const folder = document.getElementById('hf-' + id);
         const icon = document.getElementById('hfi-' + id);
-        
-        if (!panel || !folderItem) return;
-        
+        if (!panel) return;
         const isOpen = panel.classList.contains('open');
-        
-        document.querySelectorAll('.h-expand-panel.open').forEach(p => {
-            if (p.id !== ('hp-' + id)) p.classList.remove('open');
-        });
-        document.querySelectorAll('.h-folder-item.active').forEach(item => {
-            if (item.id !== ('hf-' + id)) item.classList.remove('active');
-        });
-        
-        document.querySelectorAll('[id^="hfi-"]').forEach(ic => {
-            ic.className = 'fa-solid fa-folder h-folder-icon';
-            ic.style.color = '#b5824e';
-        });
-        
-        if (!isOpen) {
+        document.querySelectorAll('.h-expand-panel.open').forEach(p => p.classList.remove('open'));
+        document.querySelectorAll('.h-folder-item.active').forEach(f => f.classList.remove('active'));
+        if (!isOpen && !folder.classList.contains('locked')) {
             panel.classList.add('open');
-            folderItem.classList.add('active');
-            icon.className = 'fa-solid fa-folder-open h-folder-icon';
-            icon.style.color = '#4f7a3b';
-            currentOpenPanelId = 'hp-' + id;
-        } else {
-            panel.classList.remove('open');
-            folderItem.classList.remove('active');
-            icon.className = 'fa-solid fa-folder h-folder-icon';
-            icon.style.color = '#b5824e';
-            currentOpenPanelId = null;
+            folder.classList.add('active');
+            if (icon) { icon.className = 'fa-solid fa-folder-open h-folder-icon'; icon.style.color = '#4f7a3b'; }
+        } else if (icon && !folder.classList.contains('locked')) { 
+            icon.className = 'fa-solid fa-folder h-folder-icon'; 
+            icon.style.color = '#b5824e'; 
         }
     }
     
-    // Documents data
-    const documentsData = {
-        "semaine1": {
-            "titre": "Semaine 1 : Fondements R",
-            "badge": "6 fichiers",
-            "fichiers": [
-                {"nom": "GADA_Plan_Formation_2026.pdf", "icone": "fa-file-pdf"},
-                {"nom": "GADA_Formation_RStudio_Jour1.pdf", "icone": "fa-file-pdf"},
-                {"nom": "Aide_a_utilisation_R.pdf", "icone": "fa-file-pdf"},
-                {"nom": "GADA_Formation_RStudio_Jour2.pdf", "icone": "fa-file-pdf"},
-                {"nom": "Script_Jour2.R", "icone": "fa-file-code"},
-                {"nom": "Donnees_sorgho_complet.xlsx", "icone": "fa-file-excel"}
-            ]
-        }
+    const documentsData = { 
+        semaine1: { titre: "Semaine 1 : Fondements R", badge: "6 fichiers", fichiers: [
+            {nom:"GADA_Plan_Formation_2026.pdf",icone:"fa-file-pdf"},
+            {nom:"GADA_Formation_RStudio_Jour1.pdf",icone:"fa-file-pdf"},
+            {nom:"Aide_a_utilisation_R.pdf",icone:"fa-file-pdf"},
+            {nom:"GADA_Formation_RStudio_Jour2.pdf",icone:"fa-file-pdf"},
+            {nom:"Script_Jour2.R",icone:"fa-file-code"},
+            {nom:"Donnees_sorgho_complet.xlsx",icone:"fa-file-excel"}
+        ] } 
     };
     
     function chargerDocuments() {
-        const semaine1 = documentsData.semaine1;
-        const badgeElem = document.querySelector('#hf-s1 .h-badge');
-        const panelInner = document.querySelector('#hp-s1 .h-expand-inner');
-        
-        if (badgeElem) badgeElem.textContent = semaine1.badge;
-        
-        if (panelInner) {
-            let fichiersHtml = `
-                <div class="h-expand-title">
-                    <i class="fa-solid fa-folder-open" style="color:#b5824e;"></i>
-                    ${semaine1.titre} – Documents
-                </div>
-            `;
-            
-            semaine1.fichiers.forEach(fichier => {
-                fichiersHtml += `
-                    <div class="h-file-item">
-                        <div class="h-file-name">
-                            <i class="fa-solid ${fichier.icone}"></i>
-                            ${fichier.nom}
-                        </div>
-                        <a href="documents/${encodeURIComponent(fichier.nom)}" class="h-file-dl" target="_blank">
-                            <i class="fa-solid fa-download"></i>
-                        </a>
-                    </div>
-                `;
-            });
-            
-            panelInner.innerHTML = fichiersHtml;
-        }
+        const badge = document.querySelector('#hf-s1 .h-badge');
+        const inner = document.querySelector('#hp-s1 .h-expand-inner');
+        if (badge) badge.textContent = documentsData.semaine1.badge;
+        if (inner) inner.innerHTML = `<div class="h-expand-title"><i class="fa-solid fa-folder-open"></i> ${documentsData.semaine1.titre}</div>` + documentsData.semaine1.fichiers.map(f => `<div class="h-file-item"><div class="h-file-name"><i class="fa-solid ${f.icone}"></i> ${f.nom}</div><a href="documents/${encodeURIComponent(f.nom)}" class="h-file-dl" target="_blank"><i class="fa-solid fa-download"></i></a></div>`).join('');
     }
-    
     chargerDocuments();
-    
-    // Chatbot IA
+
+    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+    // Chatbot simplifié
     const DECISION_TREE = {
-        root: {
-            id: "root",
-            message: "<i class='fa-regular fa-hand-peace'></i> Bonjour ! Je suis <strong>GADA Assistant</strong>, votre guide pédagogique intelligent.\n\nComment puis-je vous aider aujourd'hui ?",
-            options: [
-                { label: "<i class='fa-regular fa-folder-open'></i> Explorer les modules", next: "modules" },
-                { label: "<i class='fa-regular fa-file-lines'></i> Accéder aux documents", next: "documents" },
-                { label: "<i class='fa-regular fa-lightbulb'></i> Comprendre un concept", next: "concepts" },
-                { label: "<i class='fa-regular fa-pen-to-square'></i> Tester mes connaissances", next: "quiz" },
-                { label: "<i class='fa-regular fa-headset'></i> Assistance", next: "contact" },
-            ],
-        },
-        modules: {
-            id: "modules",
-            message: "Module I - R : Fondements & Exploration (Semaine 1 - Disponible)\nModule II - R : One Health (Semaine 2 - À venir)\nModule III - ArcGIS Bases (Semaine 3 - À venir)\nModule IV - ArcGIS Avancé (Semaine 4 - À venir)",
-            options: [{ label: "Retour à l'accueil", next: "root" }],
-        },
-        documents: {
-            id: "documents",
-            message: "Les documents sont disponibles dans l'onglet 'Modules & Données' ci-dessus. Cliquez sur 'Accéder aux téléchargements' puis sur la semaine souhaitée.",
-            options: [{ label: "Retour à l'accueil", next: "root" }],
-        },
-        concepts: {
-            id: "concepts",
-            message: "Je peux vous expliquer : NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, GLM, One Health, Géoréférencement...",
-            options: [
-                { label: "NDVI / NDWI / SAVI / LST", next: "indices" },
-                { label: "MaxEnt / Random Forest / GLM", next: "ml" },
-                { label: "One Health", next: "onehealth" },
-                { label: "Retour", next: "root" },
-            ],
-        },
-        indices: {
-            id: "indices",
-            message: "NDVI : Indice de végétation. Formule = (NIR-R)/(NIR+R)\nNDWI : Indice d'eau\nSAVI : NDVI corrigé pour sol nu\nLST : Température de surface",
-            options: [{ label: "Retour concepts", next: "concepts" }],
-        },
-        ml: {
-            id: "ml",
-            message: "MaxEnt : Modélisation de distribution d'espèces\nRandom Forest : Forêt aléatoire pour classification\nGLM : Modèles linéaires généralisés",
-            options: [{ label: "Retour concepts", next: "concepts" }],
-        },
-        onehealth: {
-            id: "onehealth",
-            message: "One Health : Approche intégrée santé humaine, animale et environnementale. Utilise le SIG pour cartographier les facteurs de risque.",
-            options: [{ label: "Retour concepts", next: "concepts" }],
-        },
-        quiz: {
-            id: "quiz",
-            message: "Quiz rapide :\n1. Que signifie NDVI ?\n2. À quoi sert MaxEnt ?\n3. Qu'est-ce que One Health ?\n\nRéponses dans les concepts !",
-            options: [{ label: "Retour accueil", next: "root" }],
-        },
-        contact: {
-            id: "contact",
-            message: "Email : gadasolution.rdc@gmail.com\n\nNotre équipe vous répond dans les 24h.",
-            options: [{ label: "Retour accueil", next: "root" }],
-        },
+        root: { id:"root", message:"Bonjour ! Je suis GADA Assistant. Comment puis-je vous aider ?", options:[{label:"Explorer les modules",next:"modules"},{label:"Comprendre un concept",next:"concepts"},{label:"Assistance",next:"contact"}] },
+        modules: { id:"modules", message:"Module I - R : Fondements (Disponible)\nModule II - One Health (À venir)\nModule III - ArcGIS (À venir)", options:[{label:"Retour",next:"root"}] },
+        concepts: { id:"concepts", message:"NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, One Health", options:[{label:"NDVI",next:"ndvi"},{label:"MaxEnt",next:"maxent"},{label:"One Health",next:"onehealth"},{label:"Retour",next:"root"}] },
+        ndvi: { id:"ndvi", message:"NDVI = (NIR-R)/(NIR+R). Indice de végétation.", options:[{label:"Retour concepts",next:"concepts"}] },
+        maxent: { id:"maxent", message:"MaxEnt : modélisation de distribution d'espèces", options:[{label:"Retour concepts",next:"concepts"}] },
+        onehealth: { id:"onehealth", message:"One Health : santé humaine, animale, environnementale", options:[{label:"Retour concepts",next:"concepts"}] },
+        contact: { id:"contact", message:"Email: gadasolution.rdc@gmail.com", options:[{label:"Retour",next:"root"}] }
     };
-    
     const chatbotMessages = document.getElementById('chatbotMessages');
     const chatbotInput = document.getElementById('chatbotInput');
     const chatbotSend = document.getElementById('chatbotSend');
@@ -2515,136 +2006,30 @@
     const chatToggle = document.getElementById('chatToggle');
     const chatWindow = document.getElementById('chatWindow');
     const chatClose = document.getElementById('chatClose');
-    
     let isWaitingForFreeInput = false;
-    
-    function scrollChatbotBottom() {
-        if (chatbotMessages) chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    function addChatbotMessage(text, options=null) {
+        const div = document.createElement('div'); div.className = 'message-bot';
+        div.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+        chatbotMessages.appendChild(div);
+        if (options) { const optsDiv = document.createElement('div'); optsDiv.className = 'chat-options'; optsDiv.style.marginLeft='36px'; options.forEach(opt => { const btn = document.createElement('button'); btn.className='chat-option-btn'; btn.innerHTML=opt.label; btn.onclick=()=>handleChatbotOption(opt); optsDiv.appendChild(btn); }); div.appendChild(optsDiv); }
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     }
-    
-    function addChatbotMessage(text, options = null) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message-bot';
-        messageDiv.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>`;
-        chatbotMessages.appendChild(messageDiv);
-        
-        if (options && options.length > 0) {
-            const optionsDiv = document.createElement('div');
-            optionsDiv.className = 'chat-options';
-            optionsDiv.style.marginLeft = '36px';
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'chat-option-btn';
-                btn.innerHTML = opt.label;
-                if (opt.disabled) btn.disabled = true;
-                btn.onclick = () => handleChatbotOption(opt);
-                optionsDiv.appendChild(btn);
-            });
-            messageDiv.appendChild(optionsDiv);
-        }
-        scrollChatbotBottom();
-    }
-    
-    function addUserChatbotMessage(text) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message-user';
-        messageDiv.innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
-        chatbotMessages.appendChild(messageDiv);
-        scrollChatbotBottom();
-    }
-    
+    function addUserChatbotMessage(text) { const div = document.createElement('div'); div.className='message-user'; div.innerHTML=`<div class="chat-bubble">${escapeHtml(text)}</div>`; chatbotMessages.appendChild(div); chatbotMessages.scrollTop = chatbotMessages.scrollHeight; }
     function handleChatbotOption(option) {
         if (option.disabled) return;
-        addUserChatbotMessage(option.label.replace(/<[^>]*>/g, ''));
-        
-        const nextId = option.next;
-        const node = DECISION_TREE[nextId];
-        if (node) {
-            if (node.freeInput) {
-                addChatbotMessage(node.message);
-                isWaitingForFreeInput = true;
-                chatbotInputArea.style.display = 'flex';
-                chatbotInput.focus();
-            } else {
-                addChatbotMessage(node.message, node.options);
-            }
-        }
+        addUserChatbotMessage(option.label.replace(/<[^>]*>/g,''));
+        const node = DECISION_TREE[option.next];
+        if (node) { addChatbotMessage(node.message, node.options); }
     }
-    
-    function handleChatbotFreeSubmit() {
-        const question = chatbotInput.value.trim();
-        if (!question) return;
-        
-        addUserChatbotMessage(question);
-        chatbotInput.value = '';
-        chatbotInputArea.style.display = 'none';
-        isWaitingForFreeInput = false;
-        
-        let response = "Je n'ai pas trouvé d'information. Essayez 'aide' pour voir ce que je peux faire.";
-        const q = question.toLowerCase();
-        
-        if (q.includes('ndvi')) response = "NDVI = (NIR - R) / (NIR + R). Entre -1 et 1, plus c'est haut plus la végétation est dense.";
-        else if (q.includes('ndwi')) response = "NDWI = (G - NIR) / (G + NIR). Détecte les surfaces en eau.";
-        else if (q.includes('savi')) response = "SAVI = ((NIR - R) / (NIR + R + L)) × (1+L). Corrige l'effet du sol.";
-        else if (q.includes('maxent')) response = "MaxEnt = modélisation de distribution d'espèces à partir de données de présence.";
-        else if (q.includes('random forest')) response = "Random Forest = méthode d'apprentissage supervisé combinant plusieurs arbres de décision.";
-        else if (q.includes('one health')) response = "One Health : santé humaine, animale et environnementale sont interconnectées.";
-        else if (q.includes('module 1')) response = "Module I - R : Fondements & Exploration. Disponible actuellement.";
-        else if (q.includes('contact')) response = "Email : gadasolution.rdc@gmail.com";
-        else if (q.includes('aide')) response = "Commandes : module 1, ndvi, maxent, one health, contact...";
-        
-        addChatbotMessage(response);
-        addChatbotMessage("Autre chose ?", [
-            { label: "Poser une question", next: "ai_open", freeMode: true },
-            { label: "Retour accueil", next: "root" },
-        ]);
-    }
-    
     function initChatbot() {
         chatbotMessages.innerHTML = '';
-        const rootNode = DECISION_TREE.root;
-        addChatbotMessage(rootNode.message, rootNode.options);
-        
-        DECISION_TREE.ai_open = {
-            id: "ai_open",
-            message: "Posez votre question sur la formation, les concepts ou les outils.",
-            freeInput: true
-        };
-        
-        chatbotInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && isWaitingForFreeInput) {
-                e.preventDefault();
-                handleChatbotFreeSubmit();
-            }
-        });
-        
-        chatbotSend.addEventListener('click', () => {
-            if (isWaitingForFreeInput) handleChatbotFreeSubmit();
-        });
+        addChatbotMessage(DECISION_TREE.root.message, DECISION_TREE.root.options);
+        chatbotInputArea.style.display = 'none';
     }
-    
-    chatToggle.addEventListener('click', () => {
-        const wasOpen = chatWindow.classList.contains('open');
-        chatWindow.classList.toggle('open');
-        if (!wasOpen && chatbotMessages.children.length === 0) {
-            initChatbot();
-        } else if (!wasOpen) {
-            scrollChatbotBottom();
-        }
-    });
-    
+    chatToggle.addEventListener('click', () => { chatWindow.classList.toggle('open'); if(chatWindow.classList.contains('open') && chatbotMessages.children.length===0) initChatbot(); });
     chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
-    
-    // Expose functions globally
-    window.ouvrirZone = ouvrirZone;
-    window.toggleHFolder = toggleHFolder;
-    window.openProfileModal = openProfileModal;
-    window.closeProfileModal = closeProfileModal;
-    window.triggerAvatarUpload = triggerAvatarUpload;
-    window.uploadAvatar = uploadAvatar;
-    window.submitGitHubProject = submitGitHubProject;
-    window.submitCloudProject = submitCloudProject;
-    window.logout = logout;
+
+    window.ouvrirZone = ouvrirZone; window.toggleHFolder = toggleHFolder; window.openProfileModal = openProfileModal; window.closeProfileModal = closeProfileModal; window.triggerAvatarUpload = triggerAvatarUpload; window.uploadAvatar = uploadAvatar; window.submitGitHubProject = submitGitHubProject; window.submitCloudProject = submitCloudProject; window.logout = logout; window.showMemberDetail = showMemberDetail; window.closeMemberModal = closeMemberModal;
 </script>
 </body>
 </html>
