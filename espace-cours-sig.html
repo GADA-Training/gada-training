@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Espace Privé Apprenants — GADA Training | Modélisation Spatiale & One Health</title>
+    <title>GADA Training — Modélisation Spatiale & One Health | Communauté Interactive</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,27 +24,24 @@
             --green-agri-pale: #edf7e9;
             --earth-brown: #7a5a4b;
             --earth-brown-light: #9e7b66;
-            --earth-brown-pale: #f8f2ea;
             --neutral-100: #ffffff;
             --neutral-200: #f9fafb;
             --neutral-300: #eef2f0;
             --neutral-400: #dce4e0;
             --neutral-600: #5b6e5f;
             --neutral-800: #2d3a2f;
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
             --radius-md: 16px;
             --radius-lg: 24px;
-            --radius-xl: 32px;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #f6faf7 0%, #edeae5 100%);
             color: var(--neutral-800);
-            margin: 0;
-            padding: 0;
             min-height: 100vh;
         }
 
@@ -96,17 +93,16 @@
             color: var(--blue-tech);
         }
 
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 14px 16px;
             border: 2px solid #e2dcd5;
-            border-radius: 16px;
+            border-radius: var(--radius-sm);
             font-size: 0.95rem;
-            transition: border-color 0.2s;
             font-family: 'Inter', sans-serif;
         }
 
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--green-agri);
         }
@@ -120,23 +116,11 @@
             border-radius: 40px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(43, 110, 60, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--green-agri);
-            color: var(--green-agri);
-        }
-
-        .btn-outline:hover {
-            background: var(--green-agri);
-            color: white;
         }
 
         .auth-switch {
@@ -152,7 +136,7 @@
 
         .auth-message {
             padding: 12px;
-            border-radius: 12px;
+            border-radius: var(--radius-sm);
             margin-bottom: 20px;
             text-align: center;
             font-size: 0.9rem;
@@ -196,20 +180,9 @@
             animation: float 22s infinite alternate ease-in-out;
             border: 1px solid rgba(158, 123, 102, 0.08);
         }
-        .vector-icon-bg {
-            position: absolute;
-            font-size: 2.8rem;
-            color: rgba(122, 90, 75, 0.05);
-            opacity: 0.4;
-            animation: drift 30s linear infinite;
-        }
         @keyframes float {
             0% { transform: translate(0, 0) rotate(0deg); }
             100% { transform: translate(40px, -40px) rotate(6deg); }
-        }
-        @keyframes drift {
-            0% { transform: translateX(-20px) translateY(0px); opacity: 0.15; }
-            100% { transform: translateX(60px) translateY(30px); opacity: 0.3; }
         }
 
         /* Navigation */
@@ -230,7 +203,6 @@
         .logo-area img {
             height: 58px;
             width: auto;
-            object-fit: contain;
         }
         .nav-status {
             background: linear-gradient(105deg, var(--green-agri) 0%, var(--blue-tech) 100%);
@@ -251,12 +223,7 @@
             border-radius: 40px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.2s;
         }
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
         .profile-nav {
             display: flex;
             align-items: center;
@@ -264,10 +231,6 @@
             cursor: pointer;
             padding: 5px 12px;
             border-radius: 40px;
-            transition: background 0.2s;
-        }
-        .profile-nav:hover {
-            background: rgba(255,255,255,0.2);
         }
         .profile-avatar-small {
             width: 38px;
@@ -285,7 +248,7 @@
             font-size: 18px;
         }
 
-        /* Main Content */
+        /* Main Layout */
         .main-content {
             position: relative;
             z-index: 10;
@@ -294,66 +257,489 @@
             padding: 0 24px;
         }
 
-        /* Tabs */
-        .tabs-container {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            border-bottom: 2px solid rgba(210, 190, 170, 0.3);
-            padding-bottom: 12px;
-        }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            padding: 12px 24px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--neutral-600);
-            cursor: pointer;
-            border-radius: 40px;
-            transition: all 0.2s;
-        }
-        .tab-btn:hover {
-            background: rgba(43, 110, 60, 0.1);
-            color: var(--green-agri);
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ========== GRILLE PRINCIPALE HARMONISÉE ========== */
-        .dashboard-grid {
+        /* 3-Column Layout comme FormaSIG */
+        .community-layout {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 300px 1fr 320px;
             gap: 28px;
             align-items: start;
         }
 
-        @media (max-width: 900px) {
-            .dashboard-grid {
+        @media (max-width: 1000px) {
+            .community-layout {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* Chat Sidebar */
+        /* Colonne Gauche - Membres */
+        .members-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(210, 190, 170, 0.3);
+            position: sticky;
+            top: 20px;
+        }
+
+        .members-sidebar h3 {
+            color: var(--blue-tech);
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(210, 190, 170, 0.3);
+        }
+
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .member-item:hover {
+            background: var(--neutral-200);
+        }
+
+        .member-avatar-small {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--green-agri);
+        }
+
+        .member-avatar-small.placeholder {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--blue-tech);
+        }
+
+        .member-title {
+            font-size: 0.7rem;
+            color: var(--neutral-600);
+        }
+
+        /* Colonne Centrale - Flux */
+        .feed-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(210, 190, 170, 0.3);
+        }
+
+        /* Formulaire de création de post */
+        .post-creator {
+            background: var(--neutral-200);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .post-creator-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .post-creator-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-creator-avatar.placeholder {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .post-creator-input {
+            flex: 1;
+            background: white;
+            border: 1px solid #e2dcd5;
+            border-radius: 24px;
+            padding: 12px 20px;
+            cursor: pointer;
+            color: var(--neutral-600);
+            transition: all 0.2s;
+        }
+
+        .post-creator-input:hover {
+            border-color: var(--green-agri);
+            background: #fff;
+        }
+
+        .post-creator-actions {
+            display: flex;
+            gap: 16px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(210, 190, 170, 0.3);
+        }
+
+        .creator-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.85rem;
+            color: var(--neutral-600);
+        }
+
+        .creator-action:hover {
+            background: rgba(43, 110, 60, 0.1);
+            color: var(--green-agri);
+        }
+
+        .creator-action i {
+            font-size: 1.1rem;
+        }
+
+        /* Posts */
+        .post-card {
+            background: white;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            border: 1px solid rgba(210, 190, 170, 0.3);
+            overflow: hidden;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-author-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-author-avatar.placeholder {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .post-author-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-author-name {
+            font-weight: 700;
+            color: var(--blue-tech);
+            font-size: 0.95rem;
+        }
+
+        .post-date {
+            font-size: 0.7rem;
+            color: var(--neutral-600);
+        }
+
+        .post-menu {
+            position: relative;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .post-menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-md);
+            display: none;
+            z-index: 10;
+        }
+
+        .post-menu-dropdown.show {
+            display: block;
+        }
+
+        .post-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.8rem;
+        }
+
+        .post-menu-item:hover {
+            background: var(--neutral-200);
+        }
+
+        .post-menu-item.delete {
+            color: #dc2626;
+        }
+
+        .post-content {
+            padding: 0 20px 16px;
+        }
+
+        .post-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .post-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .post-images img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .post-document {
+            background: var(--neutral-200);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .post-document i {
+            font-size: 28px;
+            color: var(--green-agri);
+        }
+
+        .post-document a {
+            color: var(--blue-tech);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Social Footer */
+        .post-footer {
+            padding: 12px 20px;
+            border-top: 1px solid rgba(210, 190, 170, 0.3);
+            display: flex;
+            gap: 24px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 30px;
+            transition: background 0.2s;
+            font-size: 0.85rem;
+            color: var(--neutral-600);
+        }
+
+        .post-action:hover {
+            background: rgba(43, 110, 60, 0.1);
+            color: var(--green-agri);
+        }
+
+        .post-action.active {
+            color: var(--green-agri);
+        }
+
+        /* Reaction Panel */
+        .reaction-panel {
+            position: relative;
+        }
+
+        .reaction-options {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: white;
+            border-radius: 40px;
+            padding: 8px 16px;
+            display: flex;
+            gap: 12px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 8px;
+            display: none;
+        }
+
+        .reaction-options.show {
+            display: flex;
+        }
+
+        .reaction-emoji {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .reaction-emoji:hover {
+            transform: scale(1.2);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            padding: 0 20px 16px;
+            border-top: 1px solid rgba(210, 190, 170, 0.3);
+            display: none;
+        }
+
+        .comments-section.show {
+            display: block;
+        }
+
+        .comment {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .comment-content {
+            flex: 1;
+            background: var(--neutral-200);
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+        }
+
+        .comment-author {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--blue-tech);
+        }
+
+        .comment-text {
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .comment-input {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #e2dcd5;
+            border-radius: 40px;
+            outline: none;
+            font-size: 0.8rem;
+        }
+
+        .comment-input button {
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+
+        /* Share Modal */
+        .share-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            z-index: 1000;
+            display: none;
+            width: 300px;
+        }
+
+        .share-modal.show {
+            display: block;
+        }
+
+        .share-modal h4 {
+            margin-bottom: 16px;
+            color: var(--blue-tech);
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            color: var(--neutral-800);
+        }
+
+        .share-btn:hover {
+            background: var(--neutral-200);
+        }
+
+        /* Colonne Droite - Chat */
         .chat-sidebar {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(2px);
             border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
             display: flex;
             flex-direction: column;
             height: 600px;
@@ -367,21 +753,6 @@
             background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
             color: white;
             padding: 18px 20px;
-            flex-shrink: 0;
-        }
-
-        .chat-header h3 { 
-            margin: 0; 
-            font-size: 1.15rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-header p { 
-            margin: 6px 0 0 0; 
-            font-size: 0.7rem; 
-            opacity: 0.85; 
         }
 
         .forum-chat-messages {
@@ -395,11 +766,6 @@
         }
 
         .message {
-            padding: 10px 14px;
-            border-radius: 18px;
-            max-width: 85%;
-            font-size: 0.8rem;
-            line-height: 1.45;
             display: flex;
             gap: 10px;
             align-items: flex-start;
@@ -410,43 +776,24 @@
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
-            flex-shrink: 0;
-        }
-        .message-avatar.placeholder {
-            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: white;
         }
 
         .message-content {
             flex: 1;
         }
 
-        .message .meta {
-            font-size: 0.65rem;
+        .message-sender {
             font-weight: 600;
-            margin-bottom: 5px;
-            display: block;
+            font-size: 0.7rem;
+            color: var(--neutral-600);
         }
 
-        .msg-student {
+        .message-text {
             background: white;
-            border: 1px solid #e2ddd5;
-            color: var(--neutral-800);
-            border-bottom-left-radius: 4px;
-        }
-
-        .msg-admin {
-            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .msg-admin .meta {
-            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            margin-top: 4px;
         }
 
         .forum-chat-input-area {
@@ -455,7 +802,6 @@
             background: white;
             border-top: 1px solid #eee8e0;
             gap: 10px;
-            flex-shrink: 0;
         }
 
         #forum-chat-input {
@@ -464,402 +810,68 @@
             border: 1.5px solid #e2dcd5;
             border-radius: 30px;
             outline: none;
-            font-size: 0.85rem;
-            background: #fefcf9;
-        }
-
-        #forum-chat-input:focus {
-            border-color: var(--green-agri);
         }
 
         #forum-chat-send-btn {
-            background: linear-gradient(135deg, var(--green-agri) 0%, var(--blue-tech) 100%);
+            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
             color: white;
             border: none;
             padding: 0 22px;
             border-radius: 30px;
             cursor: pointer;
-            font-weight: 600;
         }
 
-        /* Right Column Grid */
-        .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-        }
-
-        .welcome-card {
-            background: linear-gradient(112deg, rgba(255,255,245,0.92) 0%, rgba(247, 242, 235, 0.9) 100%);
-            backdrop-filter: blur(4px);
-            border-radius: var(--radius-lg);
-            padding: 28px 32px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(255,255,240,0.5);
-        }
-        .welcome-card h2 {
-            font-size: 1.7rem;
-            font-weight: 600;
-            background: linear-gradient(130deg, var(--blue-tech) 0%, var(--green-agri) 60%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            margin-bottom: 12px;
-        }
-
-        /* Equal Height Cards Grid */
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-        @media (max-width: 780px) {
-            .course-grid { grid-template-columns: 1fr; }
-        }
-
-        .course-card {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(2px);
-            border-radius: var(--radius-md);
-            padding: 28px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.25s ease;
-            border: 1px solid rgba(210, 190, 170, 0.3);
-            display: flex;
-            flex-direction: column;
+        /* Modal Post Creator */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-        }
-        .course-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-            border-color: rgba(63, 158, 85, 0.3);
-        }
-        .course-card h3 {
-            color: var(--blue-tech);
-            font-weight: 650;
-            margin-bottom: 16px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            font-size: 1.35rem;
-        }
-        .course-card h3 i { color: var(--green-agri); font-size: 1.5rem; }
-        .course-card ul {
-            margin: 12px 0 24px 20px;
-            color: #3e4a41;
-            line-height: 1.5;
-            flex: 1;
-        }
-        .course-card .btn-gada {
-            margin-top: auto;
-            align-self: flex-start;
-        }
-
-        .btn-gada {
-            display: inline-block;
-            background: linear-gradient(95deg, var(--green-agri) 0%, var(--blue-tech) 100%);
-            color: white;
-            text-align: center;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 40px;
-            font-weight: 600;
-            transition: all 0.25s;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .btn-gada:hover {
-            background: linear-gradient(95deg, var(--green-agri-light) 0%, var(--blue-tech-light) 100%);
-            transform: scale(1.02);
-        }
-
-        /* Folder Zone */
-        .folder-zone {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
             display: none;
-            margin-top: 20px;
-        }
-        .folder-zone.open {
-            display: block;
-            animation: fadeSlide 0.3s ease-out;
-        }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            align-items: center;
+            justify-content: center;
         }
 
-        .h-folder-wrapper {
-            overflow-x: auto;
-            border-radius: 20px;
-            background: #faf7f3;
-            border: 1px solid #e2dbd2;
-        }
-        .h-folder-row {
-            display: inline-flex;
-            flex-direction: row;
-            align-items: stretch;
-            min-width: 100%;
-        }
-        .h-folder-item {
+        .modal-overlay.active {
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 16px 18px 14px;
-            min-width: 200px;
-            max-width: 200px;
-            flex-shrink: 0;
-            border-right: 1px solid #e5ddd5;
-            cursor: pointer;
-            transition: background 0.18s;
-            background: transparent;
-            position: relative;
         }
-        .h-folder-item:last-child { border-right: none; }
-        .h-folder-item:hover:not(.locked) { background: #fff8f0; }
-        .h-folder-item.active {
-            background: linear-gradient(160deg, #f0fbe8 0%, #fdf7ed 100%);
-        }
-        .h-folder-item.active::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--green-agri), var(--blue-tech));
-        }
-        .h-folder-item.locked { opacity: 0.52; cursor: not-allowed; }
-        .h-folder-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        .h-folder-icon { font-size: 22px; }
-        .h-badge {
-            font-size: 0.65rem;
-            font-weight: 700;
-            background: #e6f5e9;
-            color: #2a7a3a;
-            border-radius: 20px;
-            padding: 2px 8px;
-        }
-        .h-lock-badge {
-            font-size: 0.65rem;
-            background: #ede8e2;
-            color: #7a5a4b;
-            border-radius: 20px;
-            padding: 2px 8px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .h-folder-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #1e3f20;
-            line-height: 1.35;
-            margin-bottom: 4px;
-        }
-        .h-folder-sub {
-            font-size: 0.67rem;
-            color: #888;
-            line-height: 1.3;
-        }
-        .h-expand-panel {
-            flex-shrink: 0;
-            overflow: hidden;
-            width: 0;
-            max-width: 0;
-            opacity: 0;
-            border-left: 2px solid transparent;
+
+        .create-post-modal {
             background: white;
-            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-        }
-        .h-expand-panel.open {
-            width: 280px;
-            max-width: 280px;
-            opacity: 1;
-            border-left-color: var(--green-agri);
-        }
-        .h-expand-inner {
-            min-width: 280px;
-            padding: 16px 18px;
-        }
-        .h-expand-title {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--green-agri);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            border-bottom: 1px solid #f0e5da;
-            padding-bottom: 8px;
-        }
-        .h-file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0ebe3;
-        }
-        .h-file-item:last-child { border-bottom: none; }
-        .h-file-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.73rem;
-            color: #3a4a3c;
-            flex: 1;
-        }
-        .h-file-name i { color: #e74c3c; }
-        .h-file-dl {
-            background: #eef5ea;
-            color: var(--green-agri);
-            border-radius: 30px;
-            padding: 5px 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .h-file-dl:hover {
-            background: var(--green-agri);
-            color: white;
-        }
-
-        /* Profile Container */
-        .profile-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(4px);
             border-radius: var(--radius-lg);
-            padding: 32px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(210, 190, 170, 0.3);
-        }
-        .profile-header {
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap;
-            margin-bottom: 32px;
-            padding-bottom: 24px;
-            border-bottom: 2px solid rgba(210, 190, 170, 0.2);
-        }
-        .profile-avatar-large {
-            position: relative;
-            text-align: center;
-        }
-        .profile-avatar-large img {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--green-agri);
-        }
-        .profile-avatar-large .placeholder {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 56px;
-            color: white;
-            border: 4px solid var(--green-agri);
-        }
-        .change-photo-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: var(--green-agri);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 14px;
-            transition: transform 0.2s;
-        }
-        .profile-info { flex: 1; }
-        .profile-info h2 {
-            font-size: 1.8rem;
-            color: var(--blue-tech);
-            margin-bottom: 8px;
-        }
-        .profile-badge {
-            display: inline-block;
-            background: var(--green-agri-pale);
-            color: var(--green-agri);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin: 8px 0;
-        }
-        .profile-social {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        .profile-social a {
-            color: var(--blue-tech);
-            background: var(--blue-tech-pale);
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .profile-social a:hover {
-            background: var(--green-agri);
-            color: white;
-        }
-        .profile-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-        .detail-card {
-            background: var(--neutral-200);
-            padding: 16px 20px;
-            border-radius: var(--radius-md);
-        }
-        .detail-card label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--neutral-600);
-            letter-spacing: 1px;
-            display: block;
-            margin-bottom: 8px;
-        }
-        .detail-card p {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--blue-tech);
-        }
-        .edit-profile-btn {
-            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
         }
 
-        /* Modal */
-        .modal {
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .image-preview img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Profile Modal */
+        .profile-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -872,281 +884,39 @@
             align-items: center;
             justify-content: center;
         }
-        .modal.active { display: flex; }
-        .modal-content {
+
+        .profile-modal.active {
+            display: flex;
+        }
+
+        .profile-modal-content {
             background: white;
             border-radius: var(--radius-lg);
-            max-width: 600px;
+            max-width: 500px;
             width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
             padding: 32px;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #e2dcd5;
-        }
-        .modal-header h3 { color: var(--blue-tech); font-size: 1.4rem; }
-        .modal-close { cursor: pointer; font-size: 24px; color: var(--neutral-600); }
-
-        /* Upload Hub */
-        .upload-hub {
-            background: linear-gradient(135deg, #f8fbf8, #fefcf9);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            margin-bottom: 32px;
-            border: 1px solid rgba(210, 190, 170, 0.3);
-        }
-        .upload-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .upload-tab {
-            background: transparent;
-            border: 2px solid #e2dcd5;
-            padding: 10px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--neutral-600);
-            transition: all 0.2s;
-        }
-        .upload-tab.active {
-            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
-            border-color: transparent;
-            color: white;
-        }
-        .upload-panel { display: none; }
-        .upload-panel.active { display: block; }
-        .upload-area {
-            border: 2px dashed #c9bfb2;
-            border-radius: 20px;
-            padding: 30px;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .upload-area:hover {
-            border-color: var(--green-agri);
-            background: rgba(43, 110, 60, 0.05);
-        }
-        .upload-area i {
-            font-size: 48px;
-            color: var(--green-agri);
-            margin-bottom: 12px;
-        }
-        .github-input-group, .cloud-input-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        .github-input-group input, .cloud-input-group input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e2dcd5;
-            border-radius: 40px;
-        }
-        .submit-upload-btn {
-            background: var(--green-agri);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
         }
 
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
-        }
-        .project-card {
-            background: white;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s;
-            border: 1px solid rgba(210, 190, 170, 0.3);
-        }
-        .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-        .project-thumbnail {
-            height: 160px;
-            background: linear-gradient(135deg, var(--blue-tech-pale), var(--green-agri-pale));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            color: var(--blue-tech);
-        }
-        .project-info { padding: 20px; }
-        .project-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--blue-tech);
-            margin-bottom: 8px;
-        }
-        .project-author {
-            font-size: 0.75rem;
-            color: var(--neutral-600);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .project-author img {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .project-description {
-            font-size: 0.8rem;
-            color: var(--neutral-800);
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-        .project-actions { display: flex; gap: 12px; }
-        .project-btn {
-            padding: 6px 14px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-size: 0.7rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .project-btn-view {
-            background: var(--green-agri-pale);
-            color: var(--green-agri);
-        }
-        .project-btn-view:hover {
-            background: var(--green-agri);
-            color: white;
-        }
-        .project-btn-code {
-            background: var(--blue-tech-pale);
-            color: var(--blue-tech);
-        }
-        .project-btn-code:hover {
-            background: var(--blue-tech);
-            color: white;
-        }
-
-        /* Community Grid */
-        .members-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
-        }
-        .member-card {
-            background: white;
-            border-radius: var(--radius-md);
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(210, 190, 170, 0.3);
-            cursor: pointer;
-        }
-        .member-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
-        .member-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 16px;
-            border: 3px solid var(--green-agri);
-        }
-        .member-avatar.placeholder {
-            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: white;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-        }
-        .member-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--blue-tech);
-            margin-bottom: 6px;
-        }
-        .member-title {
-            font-size: 0.8rem;
-            color: var(--green-agri);
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .member-bio {
-            font-size: 0.75rem;
-            color: var(--neutral-600);
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-        .member-stats {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #e2dcd5;
-        }
-        .member-stat {
-            font-size: 0.7rem;
-            color: var(--neutral-600);
-        }
-        .member-stat i { color: var(--green-agri); margin-right: 4px; }
-
-        /* Member Detail Modal */
-        .member-detail-content { text-align: center; }
-        .member-detail-avatar {
+        .profile-avatar-large {
             width: 120px;
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 16px;
+            margin: 0 auto 16px;
             border: 3px solid var(--green-agri);
         }
-        .member-detail-name {
-            font-size: 1.4rem;
-            color: var(--blue-tech);
-            margin-bottom: 8px;
-        }
-        .member-detail-title {
-            color: var(--green-agri);
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        .member-detail-bio { margin-bottom: 20px; line-height: 1.5; }
-        .member-detail-projects {
-            margin-top: 20px;
-            text-align: left;
-        }
-        .member-project-item {
-            padding: 12px;
-            border-bottom: 1px solid #e2dcd5;
-        }
-        .member-project-item:last-child { border-bottom: none; }
 
-        /* Footer */
+        .upload-avatar-btn {
+            background: var(--green-agri);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 16px 0;
+        }
+
         .footer {
             position: relative;
             z-index: 10;
@@ -1156,192 +926,6 @@
             margin-top: 80px;
             text-align: center;
             border-radius: 48px 48px 0 0;
-            font-size: 0.85rem;
-        }
-        .footer-brand {
-            font-weight: 700;
-            font-size: 1.2rem;
-            background: linear-gradient(145deg, #dfcca6, #bbe0a4);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            margin-bottom: 12px;
-        }
-
-        /* Chatbot */
-        .chat-toggle {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            width: 58px;
-            height: 58px;
-            background: linear-gradient(135deg, var(--green-agri), var(--blue-tech));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 6px 24px rgba(43, 110, 60, 0.4);
-            z-index: 1000;
-            font-size: 26px;
-            color: white;
-            transition: transform 0.2s;
-        }
-        .chat-toggle:hover { transform: scale(1.05); }
-        .chat-window {
-            position: fixed;
-            bottom: 96px;
-            right: 28px;
-            width: 380px;
-            height: 540px;
-            background: #fdfcf9;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-            display: none;
-            flex-direction: column;
-            z-index: 1000;
-            overflow: hidden;
-        }
-        .chat-window.open { display: flex; animation: slideInChat 0.3s ease-out; }
-        @keyframes slideInChat {
-            from { opacity: 0; transform: translateX(30px) scale(0.95); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        .chatbot-header {
-            background: linear-gradient(135deg, var(--blue-tech) 0%, var(--green-agri) 100%);
-            padding: 16px 20px;
-            flex-shrink: 0;
-        }
-        .chat-header-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .chat-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        .chat-header-info { flex: 1; }
-        .chat-header-title { color: white; font-weight: 700; font-size: 14px; }
-        .chat-header-status {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #7dff9a;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .chat-close { cursor: pointer; font-size: 24px; color: rgba(255, 255, 255, 0.8); }
-        .chatbot-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .message-bot {
-            display: flex;
-            gap: 8px;
-            align-items: flex-start;
-        }
-        .message-bot .bot-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .message-bot .chat-bubble {
-            background: white;
-            border-radius: 4px 18px 18px 18px;
-            padding: 10px 14px;
-            font-size: 12.5px;
-            color: #2d3a2f;
-            border: 1px solid #e8e0d8;
-            max-width: 85%;
-        }
-        .message-user {
-            display: flex;
-            justify-content: flex-end;
-        }
-        .message-user .chat-bubble {
-            background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
-            color: white;
-            border-radius: 18px 4px 18px 18px;
-            padding: 9px 14px;
-            font-size: 12.5px;
-            max-width: 78%;
-        }
-        .chat-options {
-            margin-top: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .chat-option-btn {
-            background: white;
-            border: 1.5px solid #dae6d5;
-            border-radius: 12px;
-            padding: 7px 12px;
-            font-size: 11.5px;
-            font-weight: 600;
-            color: #2b4a2e;
-            text-align: left;
-            cursor: pointer;
-        }
-        .chat-option-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-        .chatbot-input-area {
-            padding: 10px 14px;
-            border-top: 1px solid #e8e0d8;
-            background: white;
-            display: none;
-            gap: 8px;
-            align-items: center;
-        }
-        .chatbot-input-area input {
-            flex: 1;
-            padding: 9px 14px;
-            border-radius: 20px;
-            border: 1.5px solid #cde0c9;
-            outline: none;
-            font-size: 12.5px;
-            background: #f8fdf8;
-        }
-        .chatbot-input-area button {
-            background: linear-gradient(135deg, #2b6e3c, #1a4c6e);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 9px 16px;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: 700;
-        }
-        .chat-footer {
-            padding: 6px 14px;
-            background: #f4f8f2;
-            border-top: 1px solid #e8ede5;
-            text-align: center;
-            font-size: 10px;
-            color: #8aaa8e;
         }
     </style>
 </head>
@@ -1351,7 +935,7 @@
     <div class="auth-card">
         <div class="auth-header">
             <h2>GADA Training</h2>
-            <p style="color: #666;">Espace privé des apprenants</p>
+            <p>Espace privé des apprenants</p>
         </div>
         <div id="authMessage" class="auth-message"></div>
         <form id="authForm">
@@ -1370,25 +954,15 @@
         <div class="bubble" style="width: 260px; height: 260px; top: 7%; left: -70px;"></div>
         <div class="bubble" style="width: 380px; height: 380px; bottom: 10%; right: -90px;"></div>
         <div class="bubble" style="width: 180px; height: 180px; top: 40%; left: 70%;"></div>
-        <div class="bubble" style="width: 300px; height: 200px; bottom: 20%; left: 5%;"></div>
-        <i class="fa-solid fa-tree vector-icon-bg" style="top: 18%; left: 12%; font-size: 3rem;"></i>
-        <i class="fa-solid fa-map vector-icon-bg" style="top: 70%; left: 85%; font-size: 2.6rem;"></i>
-        <i class="fa-solid fa-chart-line vector-icon-bg" style="top: 30%; right: 5%; font-size: 2.4rem;"></i>
-        <i class="fa-solid fa-seedling vector-icon-bg" style="bottom: 12%; left: 20%; font-size: 2.9rem;"></i>
-        <i class="fa-solid fa-draw-polygon vector-icon-bg" style="top: 55%; left: 45%; font-size: 2.2rem;"></i>
-        <i class="fa-solid fa-globe vector-icon-bg" style="top: 82%; left: 68%; font-size: 3.1rem;"></i>
-        <i class="fa-solid fa-leaf vector-icon-bg" style="top: 12%; right: 18%; font-size: 2rem;"></i>
     </div>
 
     <nav class="navbar">
         <div class="logo-area">
-            <img src="images/logo-gada.png" alt="GADA Training Logo" onerror="this.src='https://placehold.co/160x60/2b6e3c/ffffff?text=GADA+Training'; this.onerror=null;">
+            <img src="images/logo-gada.png" alt="GADA Training" onerror="this.src='https://placehold.co/160x60/2b6e3c/ffffff?text=GADA+Training';">
         </div>
         <div class="nav-status">
             <div class="profile-nav" id="profileNavBtn">
-                <div id="navAvatarPlaceholder" class="profile-avatar-small placeholder">
-                    <i class="fa-solid fa-user"></i>
-                </div>
+                <div id="navAvatarPlaceholder" class="profile-avatar-small placeholder"><i class="fa-solid fa-user"></i></div>
                 <span id="navUserName">Chargement...</span>
             </div>
             <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Quitter</button>
@@ -1396,158 +970,43 @@
     </nav>
 
     <div class="main-content">
-        <div class="tabs-container">
-            <button class="tab-btn active" data-tab="formation">📚 Formation & Ressources</button>
-            <button class="tab-btn" data-tab="profile">👤 Mon Profil</button>
-            <button class="tab-btn" data-tab="projects">📁 Mes Projets</button>
-            <button class="tab-btn" data-tab="community">👥 Communauté</button>
-        </div>
-
-        <!-- Tab 1: Formation avec GRILLE HARMONISÉE -->
-        <div id="tab-formation" class="tab-content active">
-            <div class="dashboard-grid">
-                <!-- Colonne Gauche: Chat -->
-                <div class="chat-sidebar">
-                    <div class="chat-header">
-                        <h3><i class="fa-regular fa-comments"></i> Espace Discussion</h3>
-                        <p>Connecté en tant que : <span id="user-display">Chargement...</span></p>
-                    </div>
-                    <div class="forum-chat-messages" id="forum-chat-messages">
-                        <div style="text-align:center; padding:20px; color:#999;">
-                            <i class="fa-regular fa-spinner fa-spin"></i> Connexion...
-                        </div>
-                    </div>
-                    <div class="forum-chat-input-area">
-                        <input type="text" id="forum-chat-input" placeholder="Écrivez votre message ici..." autocomplete="off">
-                        <button id="forum-chat-send-btn"><i class="fa-regular fa-paper-plane"></i> Envoyer</button>
-                    </div>
-                </div>
-
-                <!-- Colonne Droite: Cartes à hauteur égale -->
-                <div class="right-column">
-                    <div class="welcome-card">
-                        <h2 id="welcomeTitle">Bienvenue dans votre espace de formation !</h2>
-                        <p>Cet espace sécurisé regroupe toutes les ressources exclusives pour votre parcours en <strong>Modélisation Spatiale et Statistique (Approche One Health)</strong>.</p>
-                    </div>
-
-                    <div class="course-grid">
-                        <div class="course-card">
-                            <div>
-                                <h3><i class="fa-solid fa-laptop-code"></i> 1. Logiciels & Outils</h3>
-                                <p>Téléchargez l'environnement technique complet :</p>
-                                <ul>
-                                    <li><strong>ArcGIS Pro / ArcMap</strong></li>
-                                    <li><strong>R & RStudio</strong></li>
-                                    <li><strong>Python & QGIS</strong></li>
-                                </ul>
-                            </div>
-                            <a href="#" target="_blank" class="btn-gada">Accéder aux téléchargements</a>
-                        </div>
-
-                        <div class="course-card">
-                            <div>
-                                <h3><i class="fa-solid fa-book-atlas"></i> 2. Modules & Données</h3>
-                                <p>Guides méthodologiques et données géospatiales :</p>
-                                <ul>
-                                    <li><strong>Module I</strong> : R Fondements (Semaine 1)</li>
-                                    <li><strong>Module II</strong> : R One Health (Semaine 2)</li>
-                                    <li><strong>Module III</strong> : ArcGIS Bases (Semaine 3)</li>
-                                    <li><strong>Module IV</strong> : ArcGIS Avancé (Semaine 4)</li>
-                                </ul>
-                            </div>
-                            <button onclick="ouvrirZone()" class="btn-gada" id="btn-open">Accéder aux téléchargements</button>
-                        </div>
-                    </div>
-
-                    <!-- Zone des dossiers (s'affiche après clic) -->
-                    <div id="folder-zone" class="folder-zone">
-                        <div class="h-folder-wrapper">
-                            <div class="h-folder-row">
-                                <div class="h-folder-item" id="hf-s1" onclick="toggleHFolder('s1')">
-                                    <div class="h-folder-top">
-                                        <i class="fa-solid fa-folder h-folder-icon" id="hfi-s1" style="color: #b5824e;"></i>
-                                        <span class="h-badge">6 fichiers</span>
-                                    </div>
-                                    <div class="h-folder-title">Semaine 1 : Fondements R<br><span style="font-weight:500; color:#4a7a52;">17 mai – 23 mai</span></div>
-                                    <div class="h-folder-sub">Bases R, statistiques descriptives, visualisations, modèles linéaires et logistiques</div>
-                                </div>
-                                <div class="h-expand-panel" id="hp-s1"><div class="h-expand-inner"></div></div>
-                                <div class="h-folder-item locked" id="hf-s2" onclick="toggleHFolder('s2')">
-                                    <div class="h-folder-top">
-                                        <i class="fa-solid fa-folder h-folder-icon" style="color:#c8c0b8;"></i>
-                                        <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                    </div>
-                                    <div class="h-folder-title">Semaine 2 : Modélisation R<br><span style="font-weight:500;">24 mai – 30 mai</span></div>
-                                    <div class="h-folder-sub">NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, GLM</div>
-                                </div>
-                                <div class="h-folder-item locked" id="hf-s3" onclick="toggleHFolder('s3')">
-                                    <div class="h-folder-top">
-                                        <i class="fa-solid fa-folder h-folder-icon" style="color:#c8c0b8;"></i>
-                                        <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                    </div>
-                                    <div class="h-folder-title">Semaine 3 : ArcGIS Bases<br><span style="font-weight:500;">31 mai – 6 juin</span></div>
-                                    <div class="h-folder-sub">ArcGIS Pro, géoréférencement, KDE, analyses spatiales</div>
-                                </div>
-                                <div class="h-folder-item locked" id="hf-s4" onclick="toggleHFolder('s4')">
-                                    <div class="h-folder-top">
-                                        <i class="fa-solid fa-folder h-folder-icon" style="color:#c8c0b8;"></i>
-                                        <span class="h-lock-badge"><i class="fa-solid fa-lock"></i> À venir</span>
-                                    </div>
-                                    <div class="h-folder-title">Semaine 4 : ArcGIS Avancé<br><span style="font-weight:500;">7 juin – 17 juin</span></div>
-                                    <div class="h-folder-sub">AHP, Random Forest spatial, MaxEnt ArcGIS, projet intégré</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="community-layout">
+            <!-- Colonne Gauche - Membres -->
+            <div class="members-sidebar">
+                <h3><i class="fa-solid fa-users"></i> Membres ({count})</h3>
+                <div class="member-list" id="memberList"></div>
             </div>
-        </div>
 
-        <!-- Tab 2: Mon Profil -->
-        <div id="tab-profile" class="tab-content">
-            <div class="profile-container" id="profileContainer"></div>
-        </div>
-
-        <!-- Tab 3: Mes Projets -->
-        <div id="tab-projects" class="tab-content">
-            <div class="profile-container">
-                <h3 style="color: var(--blue-tech); margin-bottom: 24px;"><i class="fa-solid fa-upload"></i> Publier un nouveau projet</h3>
-                <div class="upload-hub">
-                    <div class="upload-tabs">
-                        <button class="upload-tab active" data-upload="local">📁 Depuis mon PC</button>
-                        <button class="upload-tab" data-upload="github">🐙 Depuis GitHub</button>
-                        <button class="upload-tab" data-upload="cloud">☁️ Lien Cloud</button>
-                    </div>
-                    <div id="upload-local" class="upload-panel active">
-                        <div class="upload-area" id="localUploadArea">
-                            <i class="fa-solid fa-cloud-upload-alt"></i>
-                            <p>Glissez-déposez ou cliquez pour sélectionner</p>
-                            <input type="file" id="localFileInput" multiple style="display:none;">
+            <!-- Colonne Centrale - Flux -->
+            <div class="feed-container">
+                <div class="post-creator">
+                    <div class="post-creator-header">
+                        <div id="creatorAvatar" class="post-creator-avatar placeholder"><i class="fa-solid fa-user"></i></div>
+                        <div class="post-creator-input" id="openPostModalBtn">
+                            Quoi de neuf ? Partagez vos travaux...
                         </div>
                     </div>
-                    <div id="upload-github" class="upload-panel">
-                        <div class="github-input-group">
-                            <input type="text" id="githubRepoUrl" placeholder="URL du repository GitHub">
-                            <button class="submit-upload-btn" onclick="submitGitHubProject()">Importer</button>
-                        </div>
-                    </div>
-                    <div id="upload-cloud" class="upload-panel">
-                        <div class="cloud-input-group">
-                            <input type="text" id="cloudUrl" placeholder="Lien Google Drive / OneDrive">
-                            <button class="submit-upload-btn" onclick="submitCloudProject()">Ajouter</button>
-                        </div>
+                    <div class="post-creator-actions">
+                        <div class="creator-action" data-type="image"><i class="fa-regular fa-image"></i> Photo/Vidéo</div>
+                        <div class="creator-action" data-type="document"><i class="fa-regular fa-file"></i> Document</div>
+                        <div class="creator-action" data-type="github"><i class="fab fa-github"></i> GitHub</div>
+                        <div class="creator-action" data-type="cloud"><i class="fa-solid fa-cloud"></i> Cloud</div>
                     </div>
                 </div>
-                <h3 style="color: var(--blue-tech); margin: 32px 0 24px;"><i class="fa-solid fa-folder-open"></i> Mes projets</h3>
-                <div id="projectsGrid" class="projects-grid"></div>
-            </div>
-        </div>
 
-        <!-- Tab 4: Communauté -->
-        <div id="tab-community" class="tab-content">
-            <div class="profile-container">
-                <h3 style="color: var(--blue-tech); margin-bottom: 24px;"><i class="fa-solid fa-users"></i> Membres de la communauté</h3>
-                <div id="membersGrid" class="members-grid"></div>
+                <div id="feedPosts"></div>
+            </div>
+
+            <!-- Colonne Droite - Chat -->
+            <div class="chat-sidebar">
+                <div class="chat-header">
+                    <h3><i class="fa-regular fa-comments"></i> Discussion</h3>
+                </div>
+                <div class="forum-chat-messages" id="forum-chat-messages"></div>
+                <div class="forum-chat-input-area">
+                    <input type="text" id="forum-chat-input" placeholder="Votre message...">
+                    <button id="forum-chat-send-btn"><i class="fa-regular fa-paper-plane"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -1558,42 +1017,49 @@
     </footer>
 </div>
 
-<!-- Modals -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header"><h3><i class="fa-solid fa-user-pen"></i> Modifier mon profil</h3><span class="modal-close" onclick="closeProfileModal()">&times;</span></div>
-        <form id="editProfileForm">
-            <div class="form-group"><label>Nom complet</label><input type="text" id="editFullName" required></div>
-            <div class="form-group"><label>Titre / Spécialité</label><input type="text" id="editTitle" placeholder="Ex: Géomaticien, Data Scientist"></div>
-            <div class="form-group"><label>Bio</label><textarea id="editBio" rows="3"></textarea></div>
-            <div class="form-group"><label>LinkedIn</label><input type="url" id="editLinkedin"></div>
-            <div class="form-group"><label>GitHub</label><input type="url" id="editGithub"></div>
-            <div class="form-group"><label>Pays</label><input type="text" id="editPays"></div>
-            <div class="form-group"><label>Téléphone</label><input type="tel" id="editPhone"></div>
-            <button type="submit" class="btn-primary">Enregistrer</button>
-        </form>
-    </div>
-</div>
-
-<div id="memberDetailModal" class="modal">
-    <div class="modal-content member-detail-content" id="memberDetailContent"></div>
-</div>
-
-<div class="chat-toggle" id="chatToggle"><i class="fa-regular fa-comment-dots"></i></div>
-<div id="chatWindow" class="chat-window">
-    <div class="chatbot-header">
-        <div class="chat-header-content">
-            <div class="chat-avatar"><i class="fa-solid fa-leaf"></i></div>
-            <div class="chat-header-info">
-                <div class="chat-header-title">GADA Assistant IA</div>
-                <div class="chat-header-status"><span class="status-dot"></span> Guide pédagogique</div>
-            </div>
-            <span class="chat-close" id="chatClose"><i class="fa-solid fa-xmark"></i></span>
+<!-- Modal Création de Post -->
+<div id="postModal" class="modal-overlay">
+    <div class="create-post-modal">
+        <div class="modal-header">
+            <h3>Créer une publication</h3>
+            <span onclick="closePostModal()" style="cursor:pointer; font-size:24px;">&times;</span>
+        </div>
+        <textarea id="postText" rows="4" placeholder="Partagez vos réflexions, travaux ou questions..." style="width:100%; padding:12px; border:1px solid #e2dcd5; border-radius:12px; margin-bottom:16px;"></textarea>
+        <div id="postImagePreview" class="image-preview"></div>
+        <input type="file" id="postImageInput" accept="image/*" multiple style="display:none;">
+        <div id="postDocumentInfo" style="display:none; background:#f0fbe8; padding:12px; border-radius:12px; margin-bottom:16px;"></div>
+        <div id="postGithubInfo" style="display:none;"></div>
+        <div id="postCloudInfo" style="display:none;"></div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+            <button onclick="closePostModal()" class="btn-outline" style="padding:10px 24px; border:1px solid #e2dcd5; background:white; border-radius:40px;">Annuler</button>
+            <button onclick="submitPost()" class="btn-primary" style="width:auto; padding:10px 32px;">Publier</button>
         </div>
     </div>
-    <div class="chatbot-messages" id="chatbotMessages"></div>
-    <div class="chatbot-input-area" id="chatbotInputArea"><input type="text" id="chatbotInput" placeholder="Votre question..."><button id="chatbotSend"><i class="fa-regular fa-paper-plane"></i></button></div>
-    <div class="chat-footer">GADA Training · Modélisation Spatiale & One Health</div>
+</div>
+
+<!-- Modal Profil -->
+<div id="profileModal" class="profile-modal">
+    <div class="profile-modal-content">
+        <h3 style="color:var(--blue-tech); margin-bottom:16px;">Mon Profil</h3>
+        <img id="profileAvatar" class="profile-avatar-large" src="">
+        <div>
+            <button class="upload-avatar-btn" onclick="triggerAvatarUpload()">Changer la photo</button>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="uploadAvatar(this)">
+        </div>
+        <div class="form-group"><label>Nom complet</label><input type="text" id="profileFullName"></div>
+        <div class="form-group"><label>Titre</label><input type="text" id="profileTitle" placeholder="Ex: Géomaticien"></div>
+        <div class="form-group"><label>Bio</label><textarea id="profileBio" rows="3"></textarea></div>
+        <div class="form-group"><label>LinkedIn</label><input type="url" id="profileLinkedin"></div>
+        <div class="form-group"><label>GitHub</label><input type="url" id="profileGithub"></div>
+        <button onclick="saveProfile()" class="btn-primary">Enregistrer</button>
+        <button onclick="closeProfileModal()" style="margin-top:12px; background:transparent; border:none; cursor:pointer;">Fermer</button>
+    </div>
+</div>
+
+<!-- Share Modal -->
+<div id="shareModal" class="share-modal">
+    <h4>Partager</h4>
+    <div class="share-buttons" id="shareButtons"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -1610,42 +1076,44 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const messagesRef = database.ref('forum_messages');
-    const projectsRef = database.ref('user_projects');
+    const postsRef = database.ref('community_posts');
+    const commentsRef = database.ref('post_comments');
+    const reactionsRef = database.ref('post_reactions');
     const profilesRef = database.ref('user_profiles');
 
     let currentUser = null;
-    let isLoginMode = true;
     let currentUserProfile = {};
+    let isLoginMode = true;
     let allProfiles = {};
-    let allProjects = [];
+    let pendingPostType = null;
+    let pendingPostFiles = [];
+    let pendingPostUrl = null;
 
     const ELIGIBLE_EMAILS = ["faziliarsene2@gmail.com", "josuekalegamire4@gmail.com", "stevenkusinza@gmail.com", "stevenamampa7@gmail.com", "stevenamampa15@gmail.com", "lukunatowangevehugues2006@gmail.com", "niyoyitakasomo@gmail.com", "hwabalygie@gmail.com"];
     const TEAM_EMAILS = ["gadasolution.rdc@gmail.com"];
     const ALLOWED_EMAILS = [...ELIGIBLE_EMAILS, ...TEAM_EMAILS];
 
     function isEmailAllowed(email) { return ALLOWED_EMAILS.includes(email.toLowerCase()); }
+    
     function showAuthMessage(msg, isError) {
-        const msgDiv = document.getElementById('authMessage');
-        msgDiv.textContent = msg;
-        msgDiv.className = 'auth-message ' + (isError ? 'error' : 'success');
-        setTimeout(() => msgDiv.className = 'auth-message', 5000);
+        const div = document.getElementById('authMessage');
+        div.textContent = msg;
+        div.className = 'auth-message ' + (isError ? 'error' : 'success');
+        setTimeout(() => div.className = 'auth-message', 5000);
     }
 
     function renderAuthForm() {
         const fieldsDiv = document.getElementById('authFields');
-        const submitBtn = document.getElementById('authSubmitBtn');
-        const switchText = document.getElementById('authSwitchText');
-        const switchLink = document.getElementById('authSwitchLink');
         if (isLoginMode) {
-            submitBtn.textContent = 'Se connecter';
-            switchText.textContent = 'Pas encore de compte ?';
-            switchLink.textContent = 'Créer un compte';
             fieldsDiv.innerHTML = `<div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" required></div>`;
+            document.getElementById('authSubmitBtn').textContent = 'Se connecter';
+            document.getElementById('authSwitchText').textContent = 'Pas encore de compte ?';
+            document.getElementById('authSwitchLink').textContent = 'Créer un compte';
         } else {
-            submitBtn.textContent = 'Créer mon compte';
-            switchText.textContent = 'Déjà un compte ?';
-            switchLink.textContent = 'Se connecter';
             fieldsDiv.innerHTML = `<div class="form-group"><label>Nom complet</label><input type="text" id="regFullName" required></div><div class="form-group"><label>Pays</label><input type="text" id="regPays" required></div><div class="form-group"><label>Téléphone</label><input type="tel" id="regPhone"></div><div class="form-group"><label>Email</label><input type="email" id="regEmail" required></div><div class="form-group"><label>Mot de passe</label><input type="password" id="regPassword" required></div><div class="form-group"><label>Confirmation</label><input type="password" id="regPasswordConfirm" required></div>`;
+            document.getElementById('authSubmitBtn').textContent = 'Créer mon compte';
+            document.getElementById('authSwitchText').textContent = 'Déjà un compte ?';
+            document.getElementById('authSwitchLink').textContent = 'Se connecter';
         }
     }
 
@@ -1654,9 +1122,9 @@
         if (isLoginMode) {
             const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
-            if (!isEmailAllowed(email)) { showAuthMessage('❌ Accès refusé. Contactez gadasolution.rdc@gmail.com', true); return; }
-            firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
-                currentUser = userCredential.user;
+            if (!isEmailAllowed(email)) { showAuthMessage('❌ Accès refusé', true); return; }
+            firebase.auth().signInWithEmailAndPassword(email, password).then((uc) => {
+                currentUser = uc.user;
                 loadUserProfile();
                 document.getElementById('authOverlay').style.display = 'none';
                 showDashboard();
@@ -1670,8 +1138,8 @@
             const confirm = document.getElementById('regPasswordConfirm').value;
             if (password !== confirm) { showAuthMessage("❌ Mots de passe différents", true); return; }
             if (!isEmailAllowed(email)) { showAuthMessage('❌ Vous n\'êtes pas éligible', true); return; }
-            firebase.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
-                const user = userCredential.user;
+            firebase.auth().createUserWithEmailAndPassword(email, password).then((uc) => {
+                const user = uc.user;
                 const userProfile = { uid: user.uid, fullName, pays, phone, email, title: "", bio: "", linkedin: "", github: "", avatar: "", createdAt: Date.now() };
                 profilesRef.child(user.uid).set(userProfile);
                 showAuthMessage("✅ Compte créé ! Connectez-vous.", false);
@@ -1682,59 +1150,44 @@
     }
 
     function loadUserProfile() {
-        if (!currentUser) return;
         profilesRef.child(currentUser.uid).on('value', (snapshot) => {
             if (snapshot.exists()) currentUserProfile = snapshot.val();
-            else currentUserProfile = { uid: currentUser.uid, fullName: currentUser.email.split('@')[0], email: currentUser.email, title: "Apprenant GADA", bio: "", pays: "", phone: "", linkedin: "", github: "", avatar: "" };
-            updateUIWithProfile();
+            else currentUserProfile = { uid: currentUser.uid, fullName: currentUser.email.split('@')[0], email: currentUser.email, title: "Apprenant GADA", bio: "", avatar: "" };
+            updateUI();
         });
     }
 
-    function updateUIWithProfile() {
-        const displayName = currentUserProfile.fullName || currentUser.email.split('@')[0];
-        document.getElementById('welcomeTitle').innerHTML = `Bienvenue ${displayName} !`;
-        document.getElementById('navUserName').textContent = displayName;
-        document.getElementById('user-display').textContent = `${displayName}${currentUser.email === "gadasolution.rdc@gmail.com" ? ' (Formateur)' : ''}`;
+    function updateUI() {
+        const name = currentUserProfile.fullName || currentUser.email.split('@')[0];
+        document.getElementById('navUserName').textContent = name;
         updateNavAvatar();
-        renderProfilePage();
-        loadUserProjects();
+        updateCreatorAvatar();
         loadAllMembers();
-        loadAllProjectsForCommunity();
+        loadFeedPosts();
     }
 
     function updateNavAvatar() {
-        const navAvatar = document.getElementById('navAvatarPlaceholder');
+        const nav = document.getElementById('navAvatarPlaceholder');
         if (currentUserProfile.avatar) {
-            navAvatar.innerHTML = `<img src="${currentUserProfile.avatar}" class="profile-avatar-small" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`;
-            navAvatar.classList.remove('placeholder');
+            nav.innerHTML = `<img src="${currentUserProfile.avatar}" class="profile-avatar-small" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`;
+            nav.classList.remove('placeholder');
         } else {
-            navAvatar.innerHTML = '<i class="fa-solid fa-user"></i>';
-            navAvatar.classList.add('placeholder');
+            nav.innerHTML = '<i class="fa-solid fa-user"></i>';
+            nav.classList.add('placeholder');
         }
     }
 
-    function renderProfilePage() {
-        const container = document.getElementById('profileContainer');
-        const avatarHtml = currentUserProfile.avatar ? `<img src="${currentUserProfile.avatar}">` : `<div class="placeholder"><i class="fa-solid fa-user fa-4x"></i></div>`;
-        container.innerHTML = `
-            <div class="profile-header"><div class="profile-avatar-large">${avatarHtml}<button class="change-photo-btn" onclick="triggerAvatarUpload()"><i class="fa-solid fa-camera"></i></button><input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="uploadAvatar(this)"></div>
-            <div class="profile-info"><h2>${escapeHtml(currentUserProfile.fullName || currentUser.email.split('@')[0])}</h2><div class="profile-badge"><i class="fa-solid fa-graduation-cap"></i> ${escapeHtml(currentUserProfile.title || "Apprenant GADA")}</div>
-            <div class="profile-social">${currentUserProfile.linkedin ? `<a href="${currentUserProfile.linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : ''}${currentUserProfile.github ? `<a href="${currentUserProfile.github}" target="_blank"><i class="fab fa-github"></i></a>` : ''}<a href="#" onclick="openProfileModal(); return false;"><i class="fa-solid fa-pen"></i></a></div></div></div>
-            <div class="profile-details-grid"><div class="detail-card"><label>Email</label><p>${escapeHtml(currentUserProfile.email)}</p></div><div class="detail-card"><label>Bio</label><p>${escapeHtml(currentUserProfile.bio || "Aucune bio")}</p></div><div class="detail-card"><label>Pays</label><p>${escapeHtml(currentUserProfile.pays || "Non renseigné")}</p></div><div class="detail-card"><label>Téléphone</label><p>${escapeHtml(currentUserProfile.phone || "Non renseigné")}</p></div></div>
-            <button class="edit-profile-btn" onclick="openProfileModal()"><i class="fa-solid fa-user-pen"></i> Modifier mon profil</button>`;
+    function updateCreatorAvatar() {
+        const creator = document.getElementById('creatorAvatar');
+        if (currentUserProfile.avatar) {
+            creator.innerHTML = `<img src="${currentUserProfile.avatar}" class="post-creator-avatar" style="width:48px;height:48px;border-radius:50%;object-fit:cover;">`;
+            creator.classList.remove('placeholder');
+        } else {
+            creator.innerHTML = '<i class="fa-solid fa-user"></i>';
+            creator.classList.add('placeholder');
+        }
     }
 
-    function openProfileModal() {
-        document.getElementById('editFullName').value = currentUserProfile.fullName || '';
-        document.getElementById('editTitle').value = currentUserProfile.title || '';
-        document.getElementById('editBio').value = currentUserProfile.bio || '';
-        document.getElementById('editLinkedin').value = currentUserProfile.linkedin || '';
-        document.getElementById('editGithub').value = currentUserProfile.github || '';
-        document.getElementById('editPays').value = currentUserProfile.pays || '';
-        document.getElementById('editPhone').value = currentUserProfile.phone || '';
-        document.getElementById('profileModal').classList.add('active');
-    }
-    function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); }
     function triggerAvatarUpload() { document.getElementById('avatarInput').click(); }
     function uploadAvatar(input) {
         if (input.files && input.files[0]) {
@@ -1742,167 +1195,355 @@
             reader.onload = function(e) {
                 currentUserProfile.avatar = e.target.result;
                 profilesRef.child(currentUser.uid + '/avatar').set(currentUserProfile.avatar);
-                updateUIWithProfile();
+                updateUI();
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
-    document.getElementById('editProfileForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        currentUserProfile.fullName = document.getElementById('editFullName').value;
-        currentUserProfile.title = document.getElementById('editTitle').value;
-        currentUserProfile.bio = document.getElementById('editBio').value;
-        currentUserProfile.linkedin = document.getElementById('editLinkedin').value;
-        currentUserProfile.github = document.getElementById('editGithub').value;
-        currentUserProfile.pays = document.getElementById('editPays').value;
-        currentUserProfile.phone = document.getElementById('editPhone').value;
-        profilesRef.child(currentUser.uid).update(currentUserProfile);
-        updateUIWithProfile();
-        closeProfileModal();
-        showAuthMessage("✅ Profil mis à jour !", false);
-    });
 
-    function loadUserProjects() {
-        projectsRef.orderByChild('userId').equalTo(currentUser?.uid).on('value', (snapshot) => {
-            const projects = [];
-            snapshot.forEach((child) => projects.push({ id: child.key, ...child.val() }));
-            projects.sort((a,b) => b.timestamp - a.timestamp);
-            renderProjects(projects);
-        });
+    function openProfileModal() {
+        document.getElementById('profileAvatar').src = currentUserProfile.avatar || 'https://placehold.co/120x120/2b6e3c/white?text=User';
+        document.getElementById('profileFullName').value = currentUserProfile.fullName || '';
+        document.getElementById('profileTitle').value = currentUserProfile.title || '';
+        document.getElementById('profileBio').value = currentUserProfile.bio || '';
+        document.getElementById('profileLinkedin').value = currentUserProfile.linkedin || '';
+        document.getElementById('profileGithub').value = currentUserProfile.github || '';
+        document.getElementById('profileModal').classList.add('active');
     }
 
-    function renderProjects(projects) {
-        const grid = document.getElementById('projectsGrid');
-        if (!grid) return;
-        if (projects.length === 0) { grid.innerHTML = `<div style="text-align:center;padding:40px;"><i class="fa-regular fa-folder-open fa-3x"></i><p>Aucun projet</p></div>`; return; }
-        grid.innerHTML = projects.map(p => `<div class="project-card"><div class="project-thumbnail">${p.type === 'github' ? '<i class="fab fa-github fa-3x"></i>' : p.type === 'cloud' ? '<i class="fa-solid fa-cloud fa-3x"></i>' : '<i class="fa-regular fa-file fa-3x"></i>'}</div><div class="project-info"><div class="project-title">${escapeHtml(p.title)}</div><div class="project-author">${p.userAvatar ? `<img src="${p.userAvatar}">` : '<i class="fa-solid fa-user"></i>'} ${escapeHtml(p.userName)}</div><div class="project-description">${escapeHtml(p.description)}</div><div class="project-actions"><a href="${p.url}" class="project-btn project-btn-view" target="_blank">Voir</a>${p.type === 'github' ? `<a href="${p.url}" class="project-btn project-btn-code" target="_blank">Code</a>` : ''}</div></div></div>`).join('');
+    function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); }
+
+    function saveProfile() {
+        currentUserProfile.fullName = document.getElementById('profileFullName').value;
+        currentUserProfile.title = document.getElementById('profileTitle').value;
+        currentUserProfile.bio = document.getElementById('profileBio').value;
+        currentUserProfile.linkedin = document.getElementById('profileLinkedin').value;
+        currentUserProfile.github = document.getElementById('profileGithub').value;
+        profilesRef.child(currentUser.uid).update(currentUserProfile);
+        closeProfileModal();
+        updateUI();
     }
 
     function loadAllMembers() {
         profilesRef.on('value', (snapshot) => {
             allProfiles = {};
             snapshot.forEach((child) => { allProfiles[child.key] = child.val(); });
-            renderMembersGrid();
+            renderMemberList();
         });
     }
 
-    function renderMembersGrid() {
-        const grid = document.getElementById('membersGrid');
-        if (!grid) return;
+    function renderMemberList() {
+        const container = document.getElementById('memberList');
         const members = Object.values(allProfiles);
-        if (members.length === 0) { grid.innerHTML = `<div style="text-align:center;padding:40px;"><i class="fa-solid fa-users fa-3x"></i><p>Aucun membre pour le moment</p></div>`; return; }
-        grid.innerHTML = members.map(m => {
-            const userProjects = allProjects.filter(p => p.userId === m.uid);
-            return `
-            <div class="member-card" onclick="showMemberDetail('${m.uid}')">
-                ${m.avatar ? `<img src="${m.avatar}" class="member-avatar">` : `<div class="member-avatar placeholder"><i class="fa-solid fa-user fa-2x"></i></div>`}
-                <div class="member-name">${escapeHtml(m.fullName || m.email.split('@')[0])}</div>
-                <div class="member-title">${escapeHtml(m.title || "Apprenant GADA")}</div>
-                <div class="member-bio">${escapeHtml((m.bio || "Aucune bio").substring(0, 80))}${(m.bio || "").length > 80 ? '...' : ''}</div>
-                <div class="member-stats">
-                    <span class="member-stat"><i class="fa-regular fa-folder"></i> ${userProjects.length} projet(s)</span>
-                    <span class="member-stat"><i class="fa-regular fa-star"></i> ${m.uid === currentUser?.uid ? 'Vous' : 'Membre'}</span>
+        document.querySelector('.members-sidebar h3').innerHTML = `<i class="fa-solid fa-users"></i> Membres (${members.length})`;
+        container.innerHTML = members.map(m => `
+            <div class="member-item" onclick="showMemberProfile('${m.uid}')">
+                ${m.avatar ? `<img src="${m.avatar}" class="member-avatar-small">` : `<div class="member-avatar-small placeholder"><i class="fa-solid fa-user"></i></div>`}
+                <div class="member-info">
+                    <div class="member-name">${escapeHtml(m.fullName || m.email.split('@')[0])}</div>
+                    <div class="member-title">${escapeHtml(m.title || "Apprenant")}</div>
                 </div>
-            </div>`;
+            </div>
+        `).join('');
+    }
+
+    function showMemberProfile(uid) {
+        const m = allProfiles[uid];
+        if (!m) return;
+        alert(`${m.fullName || m.email}\n${m.title || ''}\n${m.bio || 'Aucune bio'}\n${m.linkedin ? 'LinkedIn: ' + m.linkedin : ''}\n${m.github ? 'GitHub: ' + m.github : ''}`);
+    }
+
+    // Posts Feed
+    function loadFeedPosts() {
+        postsRef.orderByChild('timestamp').once('value', (snapshot) => {
+            const posts = [];
+            snapshot.forEach((child) => posts.push({ id: child.key, ...child.val() }));
+            posts.reverse();
+            renderFeedPosts(posts);
+        });
+    }
+
+    function renderFeedPosts(posts) {
+        const container = document.getElementById('feedPosts');
+        if (posts.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:40px; color:#999;"><i class="fa-regular fa-newspaper fa-3x"></i><p>Aucune publication pour le moment</p></div>`;
+            return;
+        }
+        container.innerHTML = posts.map(post => {
+            const author = allProfiles[post.userId] || {};
+            const isAuthor = post.userId === currentUser.uid;
+            return `
+                <div class="post-card" data-post-id="${post.id}">
+                    <div class="post-header">
+                        <div class="post-author">
+                            ${author.avatar ? `<img src="${author.avatar}" class="post-author-avatar">` : `<div class="post-author-avatar placeholder"><i class="fa-solid fa-user"></i></div>`}
+                            <div class="post-author-info">
+                                <span class="post-author-name">${escapeHtml(author.fullName || post.userEmail?.split('@')[0] || 'Utilisateur')}</span>
+                                <span class="post-date">${new Date(post.timestamp).toLocaleString()}</span>
+                            </div>
+                        </div>
+                        ${isAuthor ? `<div class="post-menu" onclick="togglePostMenu('${post.id}')"><i class="fa-solid fa-ellipsis"></i><div class="post-menu-dropdown" id="menu-${post.id}"><div class="post-menu-item delete" onclick="deletePost('${post.id}')">Supprimer</div></div></div>` : ''}
+                    </div>
+                    <div class="post-content">
+                        <div class="post-text">${escapeHtml(post.text || '')}</div>
+                        ${post.images ? `<div class="post-images">${post.images.map(img => `<img src="${img}" onclick="window.open('${img}','_blank')">`).join('')}</div>` : ''}
+                        ${post.document ? `<div class="post-document"><i class="fa-solid fa-file-pdf"></i><a href="${post.document}" target="_blank">${post.documentName || 'Document'}</a></div>` : ''}
+                        ${post.githubUrl ? `<div class="post-document"><i class="fab fa-github"></i><a href="${post.githubUrl}" target="_blank">Projet GitHub</a></div>` : ''}
+                        ${post.cloudUrl ? `<div class="post-document"><i class="fa-solid fa-cloud"></i><a href="${post.cloudUrl}" target="_blank">Document Cloud</a></div>` : ''}
+                    </div>
+                    <div class="post-footer">
+                        <div class="reaction-panel">
+                            <div class="post-action" onclick="toggleReactions('${post.id}')"><i class="fa-regular fa-thumbs-up"></i> <span id="reaction-count-${post.id}">0</span></div>
+                            <div class="reaction-options" id="reactions-${post.id}">
+                                <span class="reaction-emoji" onclick="addReaction('${post.id}', '👍')">👍</span>
+                                <span class="reaction-emoji" onclick="addReaction('${post.id}', '💡')">💡</span>
+                                <span class="reaction-emoji" onclick="addReaction('${post.id}', '👏')">👏</span>
+                                <span class="reaction-emoji" onclick="addReaction('${post.id}', '✅')">✅</span>
+                            </div>
+                        </div>
+                        <div class="post-action" onclick="toggleComments('${post.id}')"><i class="fa-regular fa-comment"></i> Commenter</div>
+                        <div class="post-action" onclick="openShareModal('${post.id}')"><i class="fa-regular fa-share-from-square"></i> Partager</div>
+                    </div>
+                    <div class="comments-section" id="comments-${post.id}">
+                        <div id="comments-list-${post.id}"></div>
+                        <div class="comment-input">
+                            <input type="text" id="comment-input-${post.id}" placeholder="Écrire un commentaire...">
+                            <button onclick="addComment('${post.id}')">Envoyer</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        // Load comments and reactions for each post
+        posts.forEach(post => loadComments(post.id));
+        posts.forEach(post => loadReactions(post.id));
+    }
+
+    function openPostModal() { document.getElementById('postModal').classList.add('active'); }
+    function closePostModal() { 
+        document.getElementById('postModal').classList.remove('active');
+        pendingPostType = null;
+        pendingPostFiles = [];
+        pendingPostUrl = null;
+        document.getElementById('postText').value = '';
+        document.getElementById('postImagePreview').innerHTML = '';
+        document.getElementById('postDocumentInfo').style.display = 'none';
+        document.getElementById('postGithubInfo').style.display = 'none';
+        document.getElementById('postCloudInfo').style.display = 'none';
+    }
+
+    function submitPost() {
+        const text = document.getElementById('postText').value;
+        if (!text && !pendingPostFiles.length && !pendingPostUrl) {
+            alert("Veuillez écrire quelque chose ou ajouter un fichier");
+            return;
+        }
+        const postData = {
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            text: text,
+            timestamp: Date.now(),
+            images: pendingPostType === 'image' ? pendingPostFiles : null,
+            document: pendingPostType === 'document' ? pendingPostFiles[0] : null,
+            documentName: pendingPostType === 'document' ? pendingPostFiles[0]?.name : null,
+            githubUrl: pendingPostType === 'github' ? pendingPostUrl : null,
+            cloudUrl: pendingPostType === 'cloud' ? pendingPostUrl : null
+        };
+        postsRef.push(postData);
+        closePostModal();
+    }
+
+    // Comments
+    function loadComments(postId) {
+        commentsRef.orderByChild('postId').equalTo(postId).on('value', (snapshot) => {
+            const comments = [];
+            snapshot.forEach((child) => comments.push({ id: child.key, ...child.val() }));
+            renderComments(postId, comments);
+        });
+    }
+
+    function renderComments(postId, comments) {
+        const container = document.getElementById(`comments-list-${postId}`);
+        if (!container) return;
+        container.innerHTML = comments.map(c => {
+            const author = allProfiles[c.userId] || {};
+            return `
+                <div class="comment">
+                    ${author.avatar ? `<img src="${author.avatar}" class="comment-avatar">` : `<div class="comment-avatar placeholder"><i class="fa-solid fa-user"></i></div>`}
+                    <div class="comment-content">
+                        <div class="comment-author">${escapeHtml(author.fullName || c.userEmail?.split('@')[0] || 'Utilisateur')}</div>
+                        <div class="comment-text">${escapeHtml(c.text)}</div>
+                    </div>
+                </div>
+            `;
         }).join('');
     }
 
-    function loadAllProjectsForCommunity() {
-        projectsRef.on('value', (snapshot) => {
-            allProjects = [];
-            snapshot.forEach((child) => allProjects.push({ id: child.key, ...child.val() }));
-            renderMembersGrid();
+    function addComment(postId) {
+        const input = document.getElementById(`comment-input-${postId}`);
+        const text = input.value.trim();
+        if (!text) return;
+        commentsRef.push({
+            postId: postId,
+            userId: currentUser.uid,
+            userEmail: currentUser.email,
+            text: text,
+            timestamp: Date.now()
+        });
+        input.value = '';
+    }
+
+    // Reactions
+    function loadReactions(postId) {
+        reactionsRef.orderByChild('postId').equalTo(postId).on('value', (snapshot) => {
+            const reactions = [];
+            snapshot.forEach((child) => reactions.push(child.val()));
+            const count = reactions.length;
+            const countSpan = document.getElementById(`reaction-count-${postId}`);
+            if (countSpan) countSpan.textContent = count;
         });
     }
 
-    function showMemberDetail(uid) {
-        const member = allProfiles[uid];
-        if (!member) return;
-        const memberProjects = allProjects.filter(p => p.userId === uid);
-        const modalContent = document.getElementById('memberDetailContent');
-        modalContent.innerHTML = `
-            <div style="text-align:center;">
-                <span class="modal-close" style="float:right; font-size:24px; cursor:pointer;" onclick="closeMemberModal()">&times;</span>
-                ${member.avatar ? `<img src="${member.avatar}" class="member-detail-avatar">` : `<div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--green-agri),var(--blue-tech));margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;"><i class="fa-solid fa-user"></i></div>`}
-                <div class="member-detail-name">${escapeHtml(member.fullName || member.email.split('@')[0])}</div>
-                <div class="member-detail-title">${escapeHtml(member.title || "Apprenant GADA")}</div>
-                <div class="member-detail-bio">${escapeHtml(member.bio || "Aucune bio renseignée")}</div>
-                <div class="profile-social" style="justify-content:center;">${member.linkedin ? `<a href="${member.linkedin}" target="_blank"><i class="fab fa-linkedin-in"></i></a>` : ''}${member.github ? `<a href="${member.github}" target="_blank"><i class="fab fa-github"></i></a>` : ''}</div>
-                <div class="member-detail-projects"><h4 style="color:var(--blue-tech);margin:20px 0 10px;"><i class="fa-regular fa-folder-open"></i> Projets (${memberProjects.length})</h4>${memberProjects.length === 0 ? '<p>Aucun projet publié</p>' : memberProjects.map(p => `<div class="member-project-item"><strong>${escapeHtml(p.title)}</strong><br><small>${escapeHtml(p.description)}</small><br><a href="${p.url}" target="_blank" style="color:var(--green-agri);font-size:12px;">Voir le projet →</a></div>`).join('')}</div>
-                <button class="btn-primary" style="margin-top:20px;" onclick="closeMemberModal()">Fermer</button>
-            </div>`;
-        document.getElementById('memberDetailModal').classList.add('active');
-    }
-    function closeMemberModal() { document.getElementById('memberDetailModal').classList.remove('active'); }
-
-    function submitLocalProject(file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const project = { userId: currentUser.uid, userName: currentUserProfile.fullName || currentUser.email.split('@')[0], userAvatar: currentUserProfile.avatar || '', title: file.name, description: "Fichier téléchargé", type: "file", url: e.target.result, fileName: file.name, timestamp: Date.now() };
-            projectsRef.push(project);
-            showAuthMessage("✅ Fichier ajouté !", false);
-            loadUserProjects();
-        };
-        reader.readAsDataURL(file);
-    }
-    function submitGitHubProject() {
-        const url = document.getElementById('githubRepoUrl').value.trim();
-        if (!url) { showAuthMessage("❌ Entrez une URL GitHub", true); return; }
-        const project = { userId: currentUser.uid, userName: currentUserProfile.fullName || currentUser.email.split('@')[0], userAvatar: currentUserProfile.avatar || '', title: "Projet GitHub", description: "Repository GitHub", type: "github", url: url, timestamp: Date.now() };
-        projectsRef.push(project);
-        document.getElementById('githubRepoUrl').value = '';
-        showAuthMessage("✅ Projet GitHub ajouté !", false);
-        loadUserProjects();
-    }
-    function submitCloudProject() {
-        const url = document.getElementById('cloudUrl').value.trim();
-        if (!url) { showAuthMessage("❌ Entrez un lien valide", true); return; }
-        const project = { userId: currentUser.uid, userName: currentUserProfile.fullName || currentUser.email.split('@')[0], userAvatar: currentUserProfile.avatar || '', title: "Document Cloud", description: "Document partagé", type: "cloud", url: url, timestamp: Date.now() };
-        projectsRef.push(project);
-        document.getElementById('cloudUrl').value = '';
-        showAuthMessage("✅ Lien ajouté !", false);
-        loadUserProjects();
+    function addReaction(postId, emoji) {
+        reactionsRef.push({
+            postId: postId,
+            userId: currentUser.uid,
+            emoji: emoji,
+            timestamp: Date.now()
+        });
     }
 
-    function showDashboard() {
-        document.getElementById('authOverlay').style.display = 'none';
-        document.getElementById('mainWrapper').classList.add('authenticated');
-        document.getElementById('chatToggle').style.display = 'flex';
+    function toggleReactions(postId) {
+        const panel = document.getElementById(`reactions-${postId}`);
+        panel.classList.toggle('show');
+        setTimeout(() => panel.classList.remove('show'), 3000);
     }
-    function logout() { firebase.auth().signOut().then(() => { location.reload(); }); }
 
-    // Chat avec avatars
-    function sendForumMessage() {
+    function toggleComments(postId) {
+        const section = document.getElementById(`comments-${postId}`);
+        section.classList.toggle('show');
+    }
+
+    function togglePostMenu(postId) {
+        const menu = document.getElementById(`menu-${postId}`);
+        menu.classList.toggle('show');
+        setTimeout(() => menu.classList.remove('show'), 3000);
+    }
+
+    function deletePost(postId) {
+        if (confirm("Supprimer cette publication ?")) {
+            postsRef.child(postId).remove();
+            commentsRef.orderByChild('postId').equalTo(postId).once('value', (snap) => {
+                snap.forEach((child) => commentsRef.child(child.key).remove());
+            });
+            reactionsRef.orderByChild('postId').equalTo(postId).once('value', (snap) => {
+                snap.forEach((child) => reactionsRef.child(child.key).remove());
+            });
+        }
+    }
+
+    function openShareModal(postId) {
+        const post = null; // Would need to fetch post
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent("Voir cette publication sur GADA Training");
+        const modal = document.getElementById('shareModal');
+        const buttons = document.getElementById('shareButtons');
+        buttons.innerHTML = `
+            <a href="https://wa.me/?text=${text} ${url}" target="_blank" class="share-btn"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${url}" target="_blank" class="share-btn"><i class="fab fa-facebook" style="color:#1877F2;"></i> Facebook</a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=${url}" target="_blank" class="share-btn"><i class="fab fa-linkedin" style="color:#0077B5;"></i> LinkedIn</a>
+            <a href="https://twitter.com/intent/tweet?text=${text}&url=${url}" target="_blank" class="share-btn"><i class="fab fa-twitter"></i> X (Twitter)</a>
+        `;
+        modal.classList.add('show');
+        setTimeout(() => modal.classList.remove('show'), 5000);
+    }
+
+    // Chat
+    function sendChatMessage() {
         const input = document.getElementById('forum-chat-input');
         const text = input.value.trim();
         if (!text) return;
-        const messageData = {
-            email: currentUser.email,
-            senderName: currentUserProfile.fullName || currentUser.email.split('@')[0],
-            senderAvatar: currentUserProfile.avatar || '',
+        messagesRef.push({
+            userId: currentUser.uid,
+            userName: currentUserProfile.fullName || currentUser.email.split('@')[0],
+            userAvatar: currentUserProfile.avatar || '',
             text: text,
-            timestamp: Date.now(),
-            timeStr: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
-        };
-        messagesRef.push(messageData);
-        input.value = "";
+            timestamp: Date.now()
+        });
+        input.value = '';
     }
 
     messagesRef.on('child_added', (snapshot) => {
         const data = snapshot.val();
         const container = document.getElementById('forum-chat-messages');
         const msgDiv = document.createElement('div');
-        msgDiv.className = 'message ' + (data.email === "gadasolution.rdc@gmail.com" ? 'msg-admin' : 'msg-student');
-        const avatarHtml = data.senderAvatar ? `<img src="${data.senderAvatar}" class="message-avatar">` : `<div class="message-avatar placeholder"><i class="fa-solid fa-user"></i></div>`;
-        msgDiv.innerHTML = `${avatarHtml}<div class="message-content"><span class="meta">${data.email === "gadasolution.rdc@gmail.com" ? '📘 Formateur' : '👤 ' + escapeHtml(data.senderName)} • ${data.timeStr}</span>${escapeHtml(data.text)}</div>`;
+        msgDiv.className = 'message';
+        msgDiv.innerHTML = `
+            ${data.userAvatar ? `<img src="${data.userAvatar}" class="message-avatar">` : `<div class="message-avatar placeholder"><i class="fa-solid fa-user"></i></div>`}
+            <div class="message-content">
+                <div class="message-sender">${escapeHtml(data.userName)} • ${new Date(data.timestamp).toLocaleTimeString()}</div>
+                <div class="message-text">${escapeHtml(data.text)}</div>
+            </div>
+        `;
         container.appendChild(msgDiv);
         container.scrollTop = container.scrollHeight;
     });
 
-    document.getElementById('forum-chat-send-btn')?.addEventListener('click', sendForumMessage);
-    document.getElementById('forum-chat-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendForumMessage(); });
+    function showDashboard() {
+        document.getElementById('authOverlay').style.display = 'none';
+        document.getElementById('mainWrapper').classList.add('authenticated');
+    }
 
-    // Firebase auth state
+    function logout() { firebase.auth().signOut().then(() => location.reload()); }
+
+    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+    // Event Listeners
+    document.getElementById('authForm')?.addEventListener('submit', handleAuthSubmit);
+    document.getElementById('authSwitchLink')?.addEventListener('click', () => { isLoginMode = !isLoginMode; renderAuthForm(); });
+    document.getElementById('openPostModalBtn')?.addEventListener('click', openPostModal);
+    document.getElementById('profileNavBtn')?.addEventListener('click', openProfileModal);
+    document.getElementById('forum-chat-send-btn')?.addEventListener('click', sendChatMessage);
+    document.getElementById('forum-chat-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChatMessage(); });
+
+    // Creator actions
+    document.querySelectorAll('.creator-action').forEach(action => {
+        action.addEventListener('click', () => {
+            const type = action.dataset.type;
+            pendingPostType = type;
+            if (type === 'image') {
+                document.getElementById('postImageInput').click();
+                document.getElementById('postImageInput').onchange = (e) => {
+                    pendingPostFiles = Array.from(e.target.files).map(f => URL.createObjectURL(f));
+                    const preview = document.getElementById('postImagePreview');
+                    preview.innerHTML = pendingPostFiles.map(src => `<img src="${src}">`).join('');
+                    openPostModal();
+                };
+            } else if (type === 'document') {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        pendingPostFiles = [ev.target.result];
+                        document.getElementById('postDocumentInfo').innerHTML = `<i class="fa-solid fa-file"></i> ${file.name}`;
+                        document.getElementById('postDocumentInfo').style.display = 'block';
+                        openPostModal();
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            } else if (type === 'github') {
+                const url = prompt("URL du repository GitHub:");
+                if (url) { pendingPostUrl = url; document.getElementById('postGithubInfo').innerHTML = `<i class="fab fa-github"></i> ${url}`; document.getElementById('postGithubInfo').style.display = 'block'; openPostModal(); }
+            } else if (type === 'cloud') {
+                const url = prompt("Lien Google Drive / OneDrive:");
+                if (url) { pendingPostUrl = url; document.getElementById('postCloudInfo').innerHTML = `<i class="fa-solid fa-cloud"></i> ${url}`; document.getElementById('postCloudInfo').style.display = 'block'; openPostModal(); }
+            }
+        });
+    });
+
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             if (!isEmailAllowed(user.email)) { firebase.auth().signOut(); showAuthMessage('Accès refusé', true); return; }
@@ -1917,119 +1558,22 @@
         }
     });
 
-    document.getElementById('authForm')?.addEventListener('submit', handleAuthSubmit);
-    document.getElementById('authSwitchLink')?.addEventListener('click', () => { isLoginMode = !isLoginMode; renderAuthForm(); });
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
-        });
-    });
-    document.querySelectorAll('.upload-tab').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.upload-tab').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.upload-panel').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`upload-${btn.dataset.upload}`).classList.add('active');
-        });
-    });
-    const localUploadArea = document.getElementById('localUploadArea');
-    const localFileInput = document.getElementById('localFileInput');
-    localUploadArea?.addEventListener('click', () => localFileInput.click());
-    localFileInput?.addEventListener('change', (e) => { Array.from(e.target.files).forEach(f => submitLocalProject(f)); localFileInput.value = ''; });
-    localUploadArea?.addEventListener('dragover', (e) => e.preventDefault());
-    localUploadArea?.addEventListener('drop', (e) => { e.preventDefault(); Array.from(e.dataTransfer.files).forEach(f => submitLocalProject(f)); });
-
-    function ouvrirZone() { 
-        const btn = document.getElementById('btn-open');
-        const zone = document.getElementById('folder-zone');
-        if (btn) btn.style.display = 'none';
-        if (zone) zone.classList.add('open');
-    }
-    
-    let currentOpenPanelId = null;
-    function toggleHFolder(id) {
-        const panel = document.getElementById('hp-' + id);
-        const folder = document.getElementById('hf-' + id);
-        const icon = document.getElementById('hfi-' + id);
-        if (!panel) return;
-        const isOpen = panel.classList.contains('open');
-        document.querySelectorAll('.h-expand-panel.open').forEach(p => p.classList.remove('open'));
-        document.querySelectorAll('.h-folder-item.active').forEach(f => f.classList.remove('active'));
-        if (!isOpen && !folder.classList.contains('locked')) {
-            panel.classList.add('open');
-            folder.classList.add('active');
-            if (icon) { icon.className = 'fa-solid fa-folder-open h-folder-icon'; icon.style.color = '#4f7a3b'; }
-        } else if (icon && !folder.classList.contains('locked')) { 
-            icon.className = 'fa-solid fa-folder h-folder-icon'; 
-            icon.style.color = '#b5824e'; 
-        }
-    }
-    
-    const documentsData = { 
-        semaine1: { titre: "Semaine 1 : Fondements R", badge: "6 fichiers", fichiers: [
-            {nom:"GADA_Plan_Formation_2026.pdf",icone:"fa-file-pdf"},
-            {nom:"GADA_Formation_RStudio_Jour1.pdf",icone:"fa-file-pdf"},
-            {nom:"Aide_a_utilisation_R.pdf",icone:"fa-file-pdf"},
-            {nom:"GADA_Formation_RStudio_Jour2.pdf",icone:"fa-file-pdf"},
-            {nom:"Script_Jour2.R",icone:"fa-file-code"},
-            {nom:"Donnees_sorgho_complet.xlsx",icone:"fa-file-excel"}
-        ] } 
-    };
-    
-    function chargerDocuments() {
-        const badge = document.querySelector('#hf-s1 .h-badge');
-        const inner = document.querySelector('#hp-s1 .h-expand-inner');
-        if (badge) badge.textContent = documentsData.semaine1.badge;
-        if (inner) inner.innerHTML = `<div class="h-expand-title"><i class="fa-solid fa-folder-open"></i> ${documentsData.semaine1.titre}</div>` + documentsData.semaine1.fichiers.map(f => `<div class="h-file-item"><div class="h-file-name"><i class="fa-solid ${f.icone}"></i> ${f.nom}</div><a href="documents/${encodeURIComponent(f.nom)}" class="h-file-dl" target="_blank"><i class="fa-solid fa-download"></i></a></div>`).join('');
-    }
-    chargerDocuments();
-
-    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-
-    // Chatbot simplifié
-    const DECISION_TREE = {
-        root: { id:"root", message:"Bonjour ! Je suis GADA Assistant. Comment puis-je vous aider ?", options:[{label:"Explorer les modules",next:"modules"},{label:"Comprendre un concept",next:"concepts"},{label:"Assistance",next:"contact"}] },
-        modules: { id:"modules", message:"Module I - R : Fondements (Disponible)\nModule II - One Health (À venir)\nModule III - ArcGIS (À venir)", options:[{label:"Retour",next:"root"}] },
-        concepts: { id:"concepts", message:"NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, One Health", options:[{label:"NDVI",next:"ndvi"},{label:"MaxEnt",next:"maxent"},{label:"One Health",next:"onehealth"},{label:"Retour",next:"root"}] },
-        ndvi: { id:"ndvi", message:"NDVI = (NIR-R)/(NIR+R). Indice de végétation.", options:[{label:"Retour concepts",next:"concepts"}] },
-        maxent: { id:"maxent", message:"MaxEnt : modélisation de distribution d'espèces", options:[{label:"Retour concepts",next:"concepts"}] },
-        onehealth: { id:"onehealth", message:"One Health : santé humaine, animale, environnementale", options:[{label:"Retour concepts",next:"concepts"}] },
-        contact: { id:"contact", message:"Email: gadasolution.rdc@gmail.com", options:[{label:"Retour",next:"root"}] }
-    };
-    const chatbotMessages = document.getElementById('chatbotMessages');
-    const chatbotInput = document.getElementById('chatbotInput');
-    const chatbotSend = document.getElementById('chatbotSend');
-    const chatbotInputArea = document.getElementById('chatbotInputArea');
-    const chatToggle = document.getElementById('chatToggle');
-    const chatWindow = document.getElementById('chatWindow');
-    const chatClose = document.getElementById('chatClose');
-    let isWaitingForFreeInput = false;
-    function addChatbotMessage(text, options=null) {
-        const div = document.createElement('div'); div.className = 'message-bot';
-        div.innerHTML = `<div class="bot-avatar"><i class="fa-solid fa-leaf"></i></div><div class="chat-bubble">${text.replace(/\n/g,'<br>')}</div>`;
-        chatbotMessages.appendChild(div);
-        if (options) { const optsDiv = document.createElement('div'); optsDiv.className = 'chat-options'; optsDiv.style.marginLeft='36px'; options.forEach(opt => { const btn = document.createElement('button'); btn.className='chat-option-btn'; btn.innerHTML=opt.label; btn.onclick=()=>handleChatbotOption(opt); optsDiv.appendChild(btn); }); div.appendChild(optsDiv); }
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    }
-    function addUserChatbotMessage(text) { const div = document.createElement('div'); div.className='message-user'; div.innerHTML=`<div class="chat-bubble">${escapeHtml(text)}</div>`; chatbotMessages.appendChild(div); chatbotMessages.scrollTop = chatbotMessages.scrollHeight; }
-    function handleChatbotOption(option) {
-        if (option.disabled) return;
-        addUserChatbotMessage(option.label.replace(/<[^>]*>/g,''));
-        const node = DECISION_TREE[option.next];
-        if (node) { addChatbotMessage(node.message, node.options); }
-    }
-    function initChatbot() {
-        chatbotMessages.innerHTML = '';
-        addChatbotMessage(DECISION_TREE.root.message, DECISION_TREE.root.options);
-        chatbotInputArea.style.display = 'none';
-    }
-    chatToggle.addEventListener('click', () => { chatWindow.classList.toggle('open'); if(chatWindow.classList.contains('open') && chatbotMessages.children.length===0) initChatbot(); });
-    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
-
-    window.ouvrirZone = ouvrirZone; window.toggleHFolder = toggleHFolder; window.openProfileModal = openProfileModal; window.closeProfileModal = closeProfileModal; window.triggerAvatarUpload = triggerAvatarUpload; window.uploadAvatar = uploadAvatar; window.submitGitHubProject = submitGitHubProject; window.submitCloudProject = submitCloudProject; window.logout = logout; window.showMemberDetail = showMemberDetail; window.closeMemberModal = closeMemberModal;
+    window.openProfileModal = openProfileModal;
+    window.closeProfileModal = closeProfileModal;
+    window.triggerAvatarUpload = triggerAvatarUpload;
+    window.uploadAvatar = uploadAvatar;
+    window.saveProfile = saveProfile;
+    window.showMemberProfile = showMemberProfile;
+    window.closePostModal = closePostModal;
+    window.submitPost = submitPost;
+    window.addComment = addComment;
+    window.addReaction = addReaction;
+    window.toggleReactions = toggleReactions;
+    window.toggleComments = toggleComments;
+    window.togglePostMenu = togglePostMenu;
+    window.deletePost = deletePost;
+    window.openShareModal = openShareModal;
+    window.logout = logout;
 </script>
 </body>
 </html>
