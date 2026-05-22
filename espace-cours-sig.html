@@ -985,26 +985,37 @@ function showView(v){
 // SEMAINES
 // ══════════════════════════════════════════════
 function renderSemaines(){
-    const container=document.getElementById('semainesSection');container.innerHTML='';
-    Object.entries(SEMAINES_DATA).forEach(([key,s])=>{
-        const div=document.createElement('div');
-        div.className='semaine-card'+(s.locked?' locked':'');
-        div.innerHTML=`
-            <div class="semaine-header" onclick="${s.locked?'':(`toggleSemaine('${key}')`)}">
-                <div class="semaine-icon ${s.locked?'s-locked':'s-open'}"><i class="fa-solid ${s.locked?'fa-lock':'fa-folder-open'}"></i></div>
-                <div class="semaine-meta"><div class="semaine-title">${esc(s.titre)}</div><div class="semaine-date">${esc(s.date)}</div></div>
-                <span class="semaine-badge ${s.locked?'badge-locked':'badge-open'}">${esc(s.badge)}</span>
-                ${!s.locked?`<span class="semaine-chevron" id="chev-${key}"><i class="fa-solid fa-chevron-down"></i></span>`:''}
+    const container = document.getElementById('semainesSection');
+    container.innerHTML = '';
+    
+    Object.entries(SEMAINES_DATA).forEach(([key, s]) => {
+        const div = document.createElement('div');
+        div.className = 'semaine-card' + (s.locked ? ' locked' : '');
+        
+        div.innerHTML = `
+            <div class="semaine-header" onclick="${s.locked ? '' : `toggleSemaine('${key}')`}">
+                <div class="semaine-icon ${s.locked ? 's-locked' : 's-open'}">
+                    <i class="fa-solid ${s.locked ? 'fa-lock' : 'fa-folder-open'}"></i>
+                </div>
+                <div class="semaine-meta">
+                    <div class="semaine-title">${esc(s.titre)}</div>
+                    <div class="semaine-date">${esc(s.date)}</div>
+                </div>
+                <span class="semaine-badge ${s.locked ? 'badge-locked' : 'badge-open'}">${esc(s.badge)}</span>
+                ${!s.locked ? `<span class="semaine-chevron" id="chev-${key}"><i class="fa-solid fa-chevron-down"></i></span>` : ''}
             </div>
             <div class="semaine-desc">${esc(s.description)}</div>
-            ${!s.locked?`<div class="semaine-files" id="files-${key}">
-                ${s.fichiers.map(f=>{
-    const iconClass = f.type==='pdf'?'icon-pdf':f.type==='r'?'icon-r':f.type==='excel'?'icon-excel':f.type==='powerpoint'?'icon-ppt':'icon-pdf';
-    const iconFA = f.type==='pdf'?'fa-file-pdf':f.type==='r'?'fa-file-code':f.type==='excel'?'fa-file-excel':f.type==='powerpoint'?'fa-file-powerpoint':'fa-file';
-    const fileUrl = GITHUB_BASE + encodeURIComponent(f.nom);
-    return `<div class="file-row"><div class="file-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div><div class="file-name">${esc(f.nom)}</div><a href="${fileUrl}" class="file-dl" target="_blank"><i class="fa-solid fa-download"></i></a></div>`;
-}).join('')}
-        container.appendChild(div);
+            ${!s.locked ? `<div class="semaine-files" id="files-${key}">
+                ${s.fichiers.map(f => {
+                    const iconClass = f.type === 'pdf' ? 'icon-pdf' : f.type === 'r' ? 'icon-r' : f.type === 'excel' ? 'icon-excel' : f.type === 'powerpoint' ? 'icon-ppt' : 'icon-pdf';
+                    const iconFA = f.type === 'pdf' ? 'fa-file-pdf' : f.type === 'r' ? 'fa-file-code' : f.type === 'excel' ? 'fa-file-excel' : f.type === 'powerpoint' ? 'fa-file-powerpoint' : 'fa-file';
+                    const fileUrl = GITHUB_BASE + encodeURIComponent(f.nom);
+                    return `<div class="file-row"><div class="file-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div><div class="file-name">${esc(f.nom)}</div><a href="${fileUrl}" class="file-dl" target="_blank"><i class="fa-solid fa-download"></i> Télécharger</a></div>`;
+                }).join('')}
+            </div>` : ''}
+        `;
+        
+        container.appendChild(div);  // ← ICI, à l'extérieur du map() !
     });
 }
 function toggleSemaine(key){
