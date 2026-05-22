@@ -207,7 +207,7 @@
       transition: all 0.25s;
     }
     .service-card:hover, .course-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-blue-light); }
-    .service-card img, .course-card img { width: 100%; height: 160px; object-fit: cover; }
+    .service-card img, .course-card img { width: 100%; height: 160px; object-fit: cover; background: var(--primary-blue-light); }
     .service-card div, .course-body { padding: 20px; }
     .service-title, .course-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
     .service-desc, .course-desc { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; margin-bottom: 12px; }
@@ -247,6 +247,7 @@
     .community-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 40px; font-weight: 600; }
     .badge-free { background: #e6f2fa; color: #0066b3; }
     .badge-paid { background: #fef3e8; color: #e85d04; }
+    .badge-admin { background: #e85d04; color: white; }
 
     .transition-block { text-align: center; padding: 40px 5% 0; max-width: 800px; margin: 0 auto; }
     .transition-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; color: var(--gray-dark); }
@@ -264,7 +265,6 @@
     .card-icon { width: 52px; height: 52px; background: var(--primary-blue-light); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--primary-blue); margin-bottom: 20px; }
     .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
     .card-desc { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; }
-    .card-meta { display: flex; gap: 16px; font-size: 0.7rem; color: var(--gray-text-light); border-top: 1px solid var(--gray-border); padding-top: 14px; margin-top: 14px; }
 
     .modal {
       display: none;
@@ -303,7 +303,6 @@
     }
     .close-modal { float: right; font-size: 1.5rem; cursor: pointer; }
 
-    /* Widget Tawk.to personnalisé */
     .tawk-custom-widget {
       background: var(--white);
       border-radius: var(--radius-lg);
@@ -346,14 +345,8 @@
       font-weight: 500;
       color: var(--primary-blue);
     }
-    .tawk-status i { font-size: 0.7rem; }
 
-    /* Personnalisation iframe Tawk.to */
-    iframe[src*="tawk.to"] {
-      border-radius: 16px !important;
-      box-shadow: 0 8px 24px rgba(0,102,179,0.15) !important;
-    }
-
+    /* Chat flottant */
     .chat-floating {
       position: fixed;
       bottom: 20px;
@@ -541,6 +534,25 @@
 
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
+    
+    @keyframes fadeOut {
+      0% { opacity: 1; transform: translateY(0); }
+      70% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-20px); display: none; }
+    }
+    
+    .admin-panel-btn {
+      background: #e85d04;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .admin-panel-btn:hover { background: #cc5500; }
   </style>
 </head>
 <body>
@@ -646,7 +658,7 @@
   </div>
 </section>
 
-<!-- SECTION COMMUNAUTÉS AVEC Tawk.to INTÉGRÉ -->
+<!-- SECTION COMMUNAUTÉS -->
 <section id="communities" class="section-container">
   <div class="section-header">
     <div class="section-tag">Réseau professionnel</div>
@@ -659,9 +671,7 @@
     <div id="communityDiscussions"></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- WIDGET Tawk.to INTÉGRÉ DANS LA COMMUNAUTÉ -->
-  <!-- ============================================================ -->
+  <!-- Widget Tawk.to -->
   <div class="tawk-custom-widget">
     <div class="tawk-header">
       <div class="tawk-icon">
@@ -729,7 +739,7 @@
   <div class="footer-bottom"><div>© 2025 GADA Academy — GeoAgri Data Analytics & Solution · RDC</div><div class="social-links"><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-github"></i></a></div></div>
 </footer>
 
-<!-- CHAT PROFESSIONNEL GADA CHAT (flottant) -->
+<!-- CHAT FLOTTANT -->
 <div class="chat-floating" id="chatFloating">
   <div class="chat-icon" id="chatIcon">
     <i class="fas fa-comments"></i>
@@ -788,27 +798,556 @@
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- Tawk.to Widget avec CONTROLE D'AFFICHAGE : visible uniquement dans la section Communauté -->
-<!-- ============================================================ -->
 <script type="text/javascript">
+// ============================================================
+// ADMINISTRATEUR SUPRÊME - ACCÈS TOTAL À TOUTE LA PLATEFORME
+// ============================================================
+const ADMIN_EMAIL = "gadasolution.rdc@gmail.com";
+
+// ============================================================
+// DONNÉES DES COMMUNAUTÉS
+// ============================================================
+const communities = [
+  { id: 1, name: "Agriculture Intelligente", icon: '<i class="fas fa-seedling"></i>', access: "free", members: 342, description: "Discussions sur les pratiques agricoles durables." },
+  { id: 2, name: "Déforestation & Forêts", icon: '<i class="fas fa-tree"></i>', access: "free", members: 218, description: "Analyses satellites, alertes déforestation." },
+  { id: 3, name: "Gestion des Sols", icon: '<i class="fas fa-mountain"></i>', access: "paid", members: 196, description: "Cartes détaillées, rapports experts." },
+  { id: 4, name: "Climat & Environnement", icon: '<i class="fas fa-cloud-sun"></i>', access: "paid", members: 275, description: "Modèles climatiques, formations avancées." }
+];
+
+// Discussions par communauté (persistantes en mémoire)
+let discussions = {
+  1: ["📢 Nouveau dataset NDVI disponible", "💡 Astuce GEE : utiliser ee.Reducer.percentile()", "❓ Comment masquer les nuages sur Sentinel-2 ?"],
+  2: ["🛰️ Alerte : baisse de 8% du couvert forestier au Kasaï", "📊 Script GEE pour analyse déforestation", "🗺️ Carte interactive des zones protégées"],
+  3: ["📈 Rapport mensuel sur l'érosion des sols - Mars 2025", "🔬 Méthodologie d'analyse des sols par télédétection"],
+  4: ["🌍 Prévisions climatiques pour l'Afrique centrale - Avril 2025", "🌡️ Modèle CMIP6 appliqué à la RDC", "💧 Analyse des précipitations saisonnières"]
+};
+
+// Sauvegarde des discussions dans localStorage
+function saveDiscussions() {
+  localStorage.setItem('gada_discussions', JSON.stringify(discussions));
+}
+
+function loadDiscussionsFromStorage() {
+  const saved = localStorage.getItem('gada_discussions');
+  if (saved) {
+    discussions = JSON.parse(saved);
+  }
+}
+
+let currentUser = null;
+
+// Vérifier si l'utilisateur est l'admin
+function isAdmin() {
+  return currentUser && currentUser.email === ADMIN_EMAIL;
+}
+
+// Fonction helper pour échapper le HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Afficher un message temporaire
+function showTemporaryMessage(message, isError = false) {
+  const msgDiv = document.createElement('div');
+  msgDiv.textContent = message;
+  msgDiv.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: ${isError ? '#e85d04' : '#0066b3'};
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 2000;
+    animation: fadeOut 3s forwards;
+    font-size: 0.8rem;
+    font-weight: 500;
+  `;
+  document.body.appendChild(msgDiv);
+  setTimeout(() => msgDiv.remove(), 3000);
+}
+
+// Publier dans une communauté
+function publishToCommunity(communityId) {
+  const input = document.getElementById('newPostInput');
+  const newPost = input.value.trim();
+  
+  if (!newPost) {
+    showTemporaryMessage("Veuillez écrire un message avant de publier.", true);
+    return;
+  }
+  
+  // Ajouter le nouveau post
+  if (!discussions[communityId]) {
+    discussions[communityId] = [];
+  }
+  
+  const postWithMeta = isAdmin() ? `👑 ADMIN - ${newPost}` : newPost;
+  discussions[communityId].unshift(postWithMeta);
+  saveDiscussions();
+  
+  // Recharger la communauté
+  openCommunity(communityId);
+  
+  if (isAdmin()) {
+    showTemporaryMessage("👑 Publication administrateur envoyée à la communauté !");
+  } else {
+    showTemporaryMessage("📢 Votre message a été publié !");
+  }
+}
+
+// Supprimer un post (admin seulement)
+function deletePost(communityId, postContent) {
+  if (!isAdmin()) {
+    showTemporaryMessage("Seul l'administrateur peut supprimer des messages.", true);
+    return;
+  }
+  
+  if (confirm("🗑️ Supprimer ce message définitivement ?")) {
+    const index = discussions[communityId].indexOf(postContent);
+    if (index !== -1) {
+      discussions[communityId].splice(index, 1);
+      saveDiscussions();
+      openCommunity(communityId);
+      showTemporaryMessage("✅ Message supprimé par l'administrateur");
+    }
+  }
+}
+
+// Ouvrir une communauté
+function openCommunity(id) {
+  const comm = communities.find(c => c.id === id);
+  if (!comm) return;
+  
+  const privateArea = document.getElementById('communityPrivateArea');
+  const content = document.getElementById('communityDiscussions');
+  document.getElementById('currentCommunityTitle').innerHTML = `${comm.icon} ${comm.name}`;
+  
+  // L'admin a accès à TOUTES les communautés, y compris payantes
+  const hasAccess = isAdmin() || (comm.access !== 'paid') || (currentUser && currentUser.paid);
+  
+  if (!hasAccess) {
+    content.innerHTML = `<div style="text-align:center; padding:40px;">
+      <i class="fas fa-lock" style="font-size:3rem; color:#e85d04;"></i>
+      <h3>Accès réservé aux membres payants</h3>
+      <p>Cette communauté nécessite un abonnement premium.</p>
+      <button class="btn-nav btn-nav-primary" onclick="alert('Fonctionnalité à venir : paiement sécurisé')">Devenir membre premium →</button>
+    </div>`;
+    privateArea.style.display = 'block';
+    return;
+  }
+  
+  const posts = discussions[id] || ["Bienvenue dans la communauté !"];
+  const adminBadge = isAdmin() ? '<span style="margin-left:12px; font-size:0.7rem; background:#e85d04; color:white; padding:2px 8px; border-radius:20px;"><i class="fas fa-crown"></i> Mode Admin - Accès total</span>' : '';
+  
+  content.innerHTML = `
+    <div style="margin-bottom: 20px; padding: 16px; background: ${isAdmin() ? '#fff8f0' : '#f0f7ff'}; border-radius: 12px; border-left: 4px solid ${isAdmin() ? '#e85d04' : '#0066b3'};">
+      <textarea id="newPostInput" rows="3" placeholder="${isAdmin() ? 'Publier un message en tant qu\'administrateur...' : 'Partagez quelque chose avec la communauté...'}" style="width:100%; padding:12px; border:1px solid #e9ecef; border-radius:8px; font-family:inherit; margin-bottom:10px;"></textarea>
+      <button onclick="publishToCommunity(${id})" class="btn-nav btn-nav-primary" style="padding:8px 20px;">📢 Publier</button>
+      ${adminBadge}
+    </div>
+    <div id="postsList" style="max-height: 400px; overflow-y: auto;">
+      ${posts.map(post => `
+        <div style="padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+          <div style="flex:1;">
+            <i class="fas fa-comment" style="margin-right:12px; color:${post.startsWith('👑 ADMIN') ? '#e85d04' : '#0066b3'};"></i>
+            <span style="${post.startsWith('👑 ADMIN') ? 'color:#e85d04; font-weight:500;' : ''}">${escapeHtml(post)}</span>
+          </div>
+          ${isAdmin() ? `<button onclick="deletePost(${id}, '${escapeHtml(post).replace(/'/g, "\\'")}')" style="background:none; border:none; color:#e85d04; cursor:pointer; font-size:0.8rem;"><i class="fas fa-trash"></i></button>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  privateArea.style.display = 'block';
+}
+
+function showCommunityPreview(id) {
+  if (!currentUser) {
+    showTemporaryMessage("🔐 Veuillez vous connecter pour accéder à cette communauté.", true);
+    openModal('login');
+  } else if (!isAdmin()) {
+    const comm = communities.find(c => c.id === id);
+    if (comm.access === 'paid') {
+      showTemporaryMessage("⭐ Cette communauté est réservée aux membres premium.", true);
+    } else {
+      openCommunity(id);
+    }
+  } else {
+    openCommunity(id);
+  }
+}
+
+// Charger les communautés
+function loadCommunities() {
+  const container = document.getElementById('communitiesContainer');
+  const isUserLogged = !!currentUser;
+  const isUserAdmin = isAdmin();
+  
+  container.innerHTML = `<div class="grid-2cols">` + communities.map(comm => {
+    let badgeText = comm.access === 'free' ? 'Gratuit' : 'Payant ⭐';
+    let badgeClass = comm.access === 'free' ? 'badge-free' : 'badge-paid';
+    
+    if (isUserAdmin) {
+      badgeText = '👑 Admin (accès total)';
+      badgeClass = 'badge-admin';
+    }
+    
+    return `
+      <div class="community-item" onclick="showCommunityPreview(${comm.id})">
+        <div class="community-info">
+          <div class="community-icon">${comm.icon}</div>
+          <div>
+            <div class="community-name">${comm.name}</div>
+            <div class="community-count">${comm.members} membres</div>
+            <div class="community-count" style="font-size:0.65rem;">${comm.description.substring(0,60)}...</div>
+          </div>
+        </div>
+        <span class="community-badge ${badgeClass}">${badgeText}</span>
+      </div>
+    `;
+  }).join('') + `</div>`;
+}
+
+function loadCommunitiesPublic() {
+  loadCommunities();
+}
+
+// Gestion session utilisateur
+function checkSession() {
+  loadDiscussionsFromStorage();
+  const saved = localStorage.getItem('gada_user');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    updateNav();
+    loadCommunities();
+  } else {
+    updateNavLoggedOut();
+    loadCommunitiesPublic();
+  }
+}
+
+function updateNav() {
+  const navActions = document.getElementById('navActions');
+  const adminBadge = isAdmin() ? '<span style="background:#e85d04; color:white; padding:2px 8px; border-radius:20px; font-size:0.6rem; margin-left:8px;"><i class="fas fa-crown"></i> ADMIN</span>' : '';
+  
+  navActions.innerHTML = `
+    <div class="user-avatar" onclick="openDashboard()">
+      <i class="fas fa-user-circle"></i>
+      <span>${currentUser.name}${adminBadge}</span>
+    </div>
+    ${isAdmin() ? '<button class="admin-panel-btn" onclick="openAdminPanel()"><i class="fas fa-shield-alt"></i> Panel Admin</button>' : ''}
+  `;
+}
+
+function updateNavLoggedOut() {
+  const navActions = document.getElementById('navActions');
+  navActions.innerHTML = `<button class="btn-nav btn-nav-outline" onclick="openModal('login')">Se connecter</button>
+                          <button class="btn-nav btn-nav-primary" onclick="openModal('register')">S'inscrire</button>`;
+}
+
+function openAdminPanel() {
+  if (!isAdmin()) return;
+  
+  let stats = "";
+  for (let id in discussions) {
+    const comm = communities.find(c => c.id == id);
+    stats += `<li><strong>${comm ? comm.name : 'Comm ' + id}</strong> : ${discussions[id].length} messages</li>`;
+  }
+  
+  alert("👑 PANEL ADMINISTRATEUR GADA\n\n" +
+        "📊 Statistiques des communautés :\n" + stats + 
+        "\n\n✅ Vous avez un accès complet à toutes les communautés.\n" +
+        "✅ Vous pouvez publier et supprimer des messages.\n" +
+        "✅ Toutes les communautés payantes vous sont accessibles.\n\n" +
+        "💡 Conseil : Utilisez le chat flottant pour répondre aux utilisateurs.");
+}
+
+function openModal(type) {
+  document.getElementById('authModal').style.display = 'flex';
+  if (type === 'login') {
+    document.getElementById('modalLogin').style.display = 'block';
+    document.getElementById('modalRegister').style.display = 'none';
+  } else {
+    document.getElementById('modalLogin').style.display = 'none';
+    document.getElementById('modalRegister').style.display = 'block';
+  }
+}
+
+function closeModal() {
+  document.getElementById('authModal').style.display = 'none';
+}
+
+function showRegister() {
+  document.getElementById('modalLogin').style.display = 'none';
+  document.getElementById('modalRegister').style.display = 'block';
+}
+
+function showLogin() {
+  document.getElementById('modalLogin').style.display = 'block';
+  document.getElementById('modalRegister').style.display = 'none';
+}
+
+function register() {
+  const name = document.getElementById('regName').value;
+  const email = document.getElementById('regEmail').value;
+  const password = document.getElementById('regPassword').value;
+  if (!name || !email || !password) { alert("Tous les champs sont requis"); return; }
+  
+  const isAdminAccount = (email === ADMIN_EMAIL);
+  
+  currentUser = { 
+    name, 
+    email, 
+    password, 
+    paid: isAdminAccount ? true : false,
+    isAdmin: isAdminAccount
+  };
+  
+  localStorage.setItem('gada_user', JSON.stringify(currentUser));
+  closeModal();
+  updateNav();
+  loadCommunities();
+  
+  if (isAdminAccount) {
+    showTemporaryMessage("👑 Bienvenue Administrateur GADA ! Vous avez un accès complet à toutes les communautés.");
+  } else {
+    showTemporaryMessage("✅ Inscription réussie ! Bienvenue sur GADA Academy.");
+  }
+}
+
+function login() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const saved = localStorage.getItem('gada_user');
+  
+  if (saved) {
+    const user = JSON.parse(saved);
+    if (user.email === email && user.password === password) {
+      currentUser = user;
+      localStorage.setItem('gada_user', JSON.stringify(currentUser));
+      closeModal();
+      updateNav();
+      loadCommunities();
+      
+      if (user.email === ADMIN_EMAIL) {
+        showTemporaryMessage("👑 Mode Administrateur activé - Accès total à toutes les communautés");
+      } else {
+        showTemporaryMessage("✅ Connexion réussie ! Bienvenue sur GADA Academy.");
+      }
+      return;
+    }
+  }
+  alert("Email ou mot de passe incorrect");
+}
+
+function openDashboard() {
+  if (isAdmin()) {
+    alert(`👑 Tableau de bord Administrateur\n\nBienvenue ${currentUser.name} !\n\n📌 Privilèges :\n- Accès à TOUTES les communautés\n- Publication et modération\n- Support prioritaire\n\n📧 ${currentUser.email}`);
+  } else {
+    alert(`📚 Tableau de bord GADA\n\nBienvenue ${currentUser.name} !\n\n📧 ${currentUser.email}\n⭐ Statut: ${currentUser.paid ? 'Membre Premium' : 'Membre Gratuit'}\n\nAccédez aux formations et communautés depuis le menu principal.`);
+  }
+}
+
+// ============================================================
+// CHAT PROFESSIONNEL
+// ============================================================
+const chatIcon = document.getElementById('chatIcon');
+const chatWindow = document.getElementById('chatWindow');
+const chatMinimize = document.getElementById('chatMinimize');
+const chatClose = document.getElementById('chatClose');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const messagesArea = document.getElementById('chatMessagesArea');
+const btnResume = document.getElementById('btnResume');
+const btnAlerts = document.getElementById('btnAlerts');
+const welcomeMsgDiv = document.getElementById('welcomeMessage');
+
+let isChatOpen = false;
+
+function typeWelcomeMessage() {
+  const text = isAdmin() ? 
+    "👑 Bonjour Administrateur GADA ! Je suis votre assistant. Vous avez un accès complet à toutes les communautés et pouvez modérer les discussions. Comment puis-je vous aider aujourd'hui ?" : 
+    "Bonjour, je suis GADA Chat. Comment puis-je vous aider dans votre parcours de formation ?";
+  let i = 0;
+  welcomeMsgDiv.classList.add('typing');
+  function typeWriter() {
+    if (i < text.length) {
+      welcomeMsgDiv.innerHTML = text.substring(0, i + 1);
+      i++;
+      setTimeout(typeWriter, 40);
+    } else {
+      welcomeMsgDiv.classList.remove('typing');
+    }
+  }
+  typeWriter();
+}
+
+function addMessageWithTyping(content, isUser = false, userName = null) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
+  const name = isUser ? (userName || 'Vous') : (isAdmin() ? 'GADA Admin Support' : 'GADA Chat');
+  
+  messageDiv.innerHTML = `
+    <div class="message-avatar" style="${!isUser ? 'background:#e6f2fa; color:#0066b3;' : 'background:#e85d04; color:white;'}">
+      ${isUser ? '<i class="fas fa-user"></i>' : (isAdmin() ? '<i class="fas fa-crown"></i>' : '<i class="fas fa-robot"></i>')}
+    </div>
+    <div class="message-content" style="${isUser ? 'background:#0066b3; color:white; border-radius:16px 16px 4px 16px;' : 'background:white; border:1px solid #e9ecef; border-radius:16px 16px 16px 4px;'}">
+      <div class="message-name" style="${isUser ? 'color:#e85d04; text-align:right;' : 'color:#0066b3;'}">${name}</div>
+      <div class="message-text typing" id="typingText"></div>
+    </div>
+  `;
+  
+  messagesArea.appendChild(messageDiv);
+  messagesArea.scrollTop = messagesArea.scrollHeight;
+  
+  const textDiv = messageDiv.querySelector('#typingText');
+  let i = 0;
+  function typeWriter() {
+    if (i < content.length) {
+      textDiv.innerHTML = content.substring(0, i + 1);
+      i++;
+      setTimeout(typeWriter, 30);
+    } else {
+      textDiv.classList.remove('typing');
+    }
+  }
+  typeWriter();
+}
+
+function addUserMessage(message) {
+  addMessageWithTyping(message, true, 'Vous');
+}
+
+function showResume() {
+  const adminNote = isAdmin() ? "\n\n👑 En tant qu'administrateur, vous pouvez également accéder au panel admin pour gérer les communautés." : "";
+  addMessageWithTyping("Formations GADA Academy disponibles :\n• SIG avec QGIS & ArcGIS (40h, certifié)\n• Télédétection & Google Earth Engine (28h)\n• Analyse Statistique R & Python (35h)\n• Agriculture de précision & drones\n\nContactez-nous pour un devis personnalisé !" + adminNote, false, isAdmin() ? 'GADA Admin Support' : 'GADA Chat');
+}
+
+function showAlerts() {
+  const adminAlert = isAdmin() ? "\n\n👑 [ADMIN] Vous avez accès à toutes les communautés pour répondre aux utilisateurs." : "";
+  addMessageWithTyping("Alertes GADA :\n• Nouvelle session QGIS début le 15 juin (10 places)\n• Webinaire gratuit sur GEE le 22 mai\n• Communauté Gestion des Sols : nouveau rapport mensuel\n• Promotion -20% sur la formation Data Science jusqu'au 30 mai" + adminAlert, false, isAdmin() ? 'GADA Admin Support' : 'GADA Chat');
+}
+
+chatIcon.addEventListener('click', () => {
+  isChatOpen = !isChatOpen;
+  if (isChatOpen) {
+    chatWindow.classList.add('open');
+    if (messagesArea.children.length === 1) {
+      typeWelcomeMessage();
+    }
+  } else {
+    chatWindow.classList.remove('open');
+  }
+});
+
+chatMinimize.addEventListener('click', () => {
+  chatWindow.classList.remove('open');
+  isChatOpen = false;
+});
+
+chatClose.addEventListener('click', () => {
+  chatWindow.classList.remove('open');
+  isChatOpen = false;
+});
+
+chatSend.addEventListener('click', () => {
+  const message = chatInput.value.trim();
+  if (message) {
+    addUserMessage(message);
+    chatInput.value = '';
+    setTimeout(() => {
+      if (isAdmin()) {
+        addMessageWithTyping("Merci Administrateur ! Votre message a été noté. N'oubliez pas que vous avez un accès complet à toutes les communautés pour répondre aux utilisateurs.", false, 'GADA Admin Support');
+      } else {
+        addMessageWithTyping("Merci pour votre message ! Un conseiller pédagogique vous répondra dans les plus brefs délais. En attendant, consultez notre catalogue de formations sur notre site.", false, 'GADA Chat');
+      }
+    }, 1000);
+  }
+});
+
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') chatSend.click();
+});
+
+btnResume.addEventListener('click', showResume);
+btnAlerts.addEventListener('click', showAlerts);
+
+// Simulateur de messages
+const simulatedUsers = [
+  { name: "Jean-Marc", color: "#e85d04", icon: '<i class="fas fa-user-tie"></i>' },
+  { name: "Amina", color: "#0066b3", icon: '<i class="fas fa-user-graduate"></i>' },
+  { name: "Dr. Kamanda", color: "#2a7a3e", icon: '<i class="fas fa-chalkboard-user"></i>' }
+];
+
+const randomMessages = [
+  "Quelqu'un peut m'aider sur l'utilisation de GEE pour le NDVI au Kasaï ?",
+  "Nouveau dataset : données pluviométriques RDC 2024 disponibles dans la communauté !",
+  "Formation GEE gratuite ce week-end, les places sont limitées, qui est intéressé ?",
+  "Besoin d'aide pour exporter une carte QGIS en PDF de qualité publication.",
+  "Le nouveau module sur la télédétection est excellent ! Merci GADA Academy."
+];
+
+function simulateRandomMessage() {
+  if (isChatOpen && !isAdmin()) {
+    const randomUser = simulatedUsers[Math.floor(Math.random() * simulatedUsers.length)];
+    const randomMsg = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message bot`;
+    messageDiv.innerHTML = `
+      <div class="message-avatar" style="background:${randomUser.color}20; color:${randomUser.color};">
+        ${randomUser.icon}
+      </div>
+      <div class="message-content" style="background:white; border:1px solid #e9ecef; border-radius:16px 16px 16px 4px;">
+        <div class="message-name" style="color:${randomUser.color};">${randomUser.name}</div>
+        <div class="message-text typing" id="randMsg"></div>
+      </div>
+    `;
+    messagesArea.appendChild(messageDiv);
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+    
+    const textDiv = messageDiv.querySelector('#randMsg');
+    let i = 0;
+    function typeRand() {
+      if (i < randomMsg.length) {
+        textDiv.innerHTML = randomMsg.substring(0, i + 1);
+        i++;
+        setTimeout(typeRand, 25);
+      } else {
+        textDiv.classList.remove('typing');
+      }
+    }
+    typeRand();
+  }
+}
+
+setInterval(simulateRandomMessage, 45000);
+
+// Initialisation
+window.onclick = function(e) { if (e.target === document.getElementById('authModal')) closeModal(); };
+checkSession();
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
+
+const form = document.getElementById('contactForm');
+if(form) form.addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    const res = await fetch(form.action, { method:'POST', body:new FormData(form), headers:{'Accept':'application/json'} });
+    if(res.ok) { form.reset(); document.getElementById('formSuccess').style.display='block'; setTimeout(()=>document.getElementById('formSuccess').style.display='none',5000); }
+  } catch { alert('Erreur réseau'); }
+});
+
+// Tawk.to Widget
 var Tawk_API = Tawk_API || {};
 var Tawk_LoadStart = new Date();
-
-// Personnalisation des paramètres Tawk.to
-Tawk_API.visitor = {
-  name: "Visiteur GADA Academy",
-  email: ""
-};
-
-// Style personnalisé
-Tawk_API.customStyle = {
-  primaryColor: "#0066b3",
-  secondaryColor: "#004c8a",
-  chatBubbleTitle: "Support GADA Academy"
-};
+Tawk_API.visitor = { name: "Visiteur GADA Academy", email: "" };
+Tawk_API.customStyle = { primaryColor: "#0066b3", secondaryColor: "#004c8a", chatBubbleTitle: "Support GADA Academy" };
 </script>
-
 <script type="text/javascript">
 (function(){
 var s1 = document.createElement("script");
@@ -820,420 +1359,31 @@ s1.setAttribute('crossorigin', '*');
 s0.parentNode.insertBefore(s1, s0);
 })();
 </script>
-
-<!-- CONTROLE : Masquer Tawk.to sur toutes les pages sauf la section Communauté -->
 <script>
 (function() {
   var checkInterval = setInterval(function() {
     if (typeof Tawk_API !== 'undefined' && Tawk_API && Tawk_API.hideWidget && Tawk_API.showWidget) {
       clearInterval(checkInterval);
-      
-      // Fonction pour vérifier si on est dans la section Communauté
       function isCommunityActive() {
-        // Vérifier par hash
-        if (window.location.hash === '#communities') {
-          return true;
-        }
-        // Vérifier si la section communities est visible à l'écran
+        if (window.location.hash === '#communities') return true;
         var communitiesSection = document.getElementById('communities');
         if (communitiesSection) {
           var rect = communitiesSection.getBoundingClientRect();
-          if (rect.top < window.innerHeight - 100 && rect.bottom > 0) {
-            return true;
-          }
+          if (rect.top < window.innerHeight - 100 && rect.bottom > 0) return true;
         }
         return false;
       }
-      
-      // Fonction de mise à jour
       function updateTawkVisibility() {
-        if (isCommunityActive()) {
-          Tawk_API.showWidget();
-        } else {
-          Tawk_API.hideWidget();
-        }
+        if (isCommunityActive()) Tawk_API.showWidget();
+        else Tawk_API.hideWidget();
       }
-      
-      // Masquer par défaut
       Tawk_API.hideWidget();
-      
-      // Écouter les changements
       window.addEventListener('hashchange', updateTawkVisibility);
       window.addEventListener('scroll', updateTawkVisibility);
-      
-      // Vérifier au chargement
       setTimeout(updateTawkVisibility, 500);
     }
   }, 200);
 })();
-</script>
-
-<!-- Style additionnel pour harmoniser Tawk.to -->
-<style>
-  /* Personnalisation du widget Tawk.to */
-  iframe[src*="tawk.to"] {
-    border-radius: 16px !important;
-    box-shadow: 0 8px 24px rgba(0,102,179,0.15) !important;
-  }
-  
-  /* Style du bouton flottant Tawk.to */
-  .tawk-button-circle {
-    background: linear-gradient(135deg, #0066b3, #004c8a) !important;
-    box-shadow: 0 4px 15px rgba(0,102,179,0.3) !important;
-  }
-  
-  /* Style des messages */
-  .tawk-custom-style {
-    font-family: 'Inter', sans-serif !important;
-  }
-</style>
-
-<script>
-  // ============================================================
-  // DONNÉES DES COMMUNAUTÉS (icônes vectorielles sobres)
-  // ============================================================
-  const communities = [
-    { id: 1, name: "Agriculture Intelligente", icon: '<i class="fas fa-seedling"></i>', access: "free", members: 342, description: "Discussions sur les pratiques agricoles durables." },
-    { id: 2, name: "Déforestation & Forêts", icon: '<i class="fas fa-tree"></i>', access: "free", members: 218, description: "Analyses satellites, alertes déforestation." },
-    { id: 3, name: "Gestion des Sols", icon: '<i class="fas fa-mountain"></i>', access: "paid", members: 196, description: "Cartes détaillées, rapports experts." },
-    { id: 4, name: "Climat & Environnement", icon: '<i class="fas fa-cloud-sun"></i>', access: "paid", members: 275, description: "Modèles climatiques, formations avancées." }
-  ];
-
-  const discussions = {
-    1: ["📢 Nouveau dataset NDVI disponible", "💡 Astuce GEE : utiliser ee.Reducer.percentile()", "❓ Comment masquer les nuages sur Sentinel-2 ?"],
-    2: ["🛰️ Alerte : baisse de 8% du couvert forestier au Kasaï", "📊 Script GEE pour analyse déforestation", "🗺️ Carte interactive des zones protégées"],
-    3: ["🔒 Accès réservé aux membres payants", "📈 Rapport mensuel sur l'érosion des sols"],
-    4: ["🔒 Prévisions climatiques mensuelles", "🌡️ Modèle CMIP6 pour l'Afrique centrale"]
-  };
-
-  let currentUser = null;
-
-  function checkSession() {
-    const saved = localStorage.getItem('gada_user');
-    if (saved) {
-      currentUser = JSON.parse(saved);
-      updateNav();
-      loadCommunities();
-    } else {
-      updateNavLoggedOut();
-      loadCommunitiesPublic();
-    }
-  }
-
-  function updateNav() {
-    const navActions = document.getElementById('navActions');
-    navActions.innerHTML = `<div class="user-avatar" onclick="openDashboard()"><i class="fas fa-user-circle"></i><span>${currentUser.name}</span></div>`;
-  }
-
-  function updateNavLoggedOut() {
-    const navActions = document.getElementById('navActions');
-    navActions.innerHTML = `<button class="btn-nav btn-nav-outline" onclick="openModal('login')">Se connecter</button>
-                            <button class="btn-nav btn-nav-primary" onclick="openModal('register')">S'inscrire</button>`;
-  }
-
-  function openModal(type) {
-    document.getElementById('authModal').style.display = 'flex';
-    if (type === 'login') {
-      document.getElementById('modalLogin').style.display = 'block';
-      document.getElementById('modalRegister').style.display = 'none';
-    } else {
-      document.getElementById('modalLogin').style.display = 'none';
-      document.getElementById('modalRegister').style.display = 'block';
-    }
-  }
-
-  function closeModal() {
-    document.getElementById('authModal').style.display = 'none';
-  }
-
-  function showRegister() {
-    document.getElementById('modalLogin').style.display = 'none';
-    document.getElementById('modalRegister').style.display = 'block';
-  }
-
-  function showLogin() {
-    document.getElementById('modalLogin').style.display = 'block';
-    document.getElementById('modalRegister').style.display = 'none';
-  }
-
-  function register() {
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const password = document.getElementById('regPassword').value;
-    if (!name || !email || !password) { alert("Tous les champs sont requis"); return; }
-    currentUser = { name, email, password, paid: false };
-    localStorage.setItem('gada_user', JSON.stringify(currentUser));
-    closeModal();
-    updateNav();
-    loadCommunities();
-  }
-
-  function login() {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    const saved = localStorage.getItem('gada_user');
-    if (saved) {
-      const user = JSON.parse(saved);
-      if (user.email === email && user.password === password) {
-        currentUser = user;
-        localStorage.setItem('gada_user', JSON.stringify(currentUser));
-        closeModal();
-        updateNav();
-        loadCommunities();
-        return;
-      }
-    }
-    alert("Email ou mot de passe incorrect");
-  }
-
-  function openDashboard() {
-    alert(`Bienvenue ${currentUser.name} !\nEspace privé en construction.`);
-  }
-
-  function loadCommunitiesPublic() {
-    const container = document.getElementById('communitiesContainer');
-    container.innerHTML = `<div class="grid-2cols">` + communities.map(comm => `
-      <div class="community-item" onclick="showCommunityPreview(${comm.id})">
-        <div class="community-info">
-          <div class="community-icon">${comm.icon}</div>
-          <div>
-            <div class="community-name">${comm.name}</div>
-            <div class="community-count">${comm.members} membres</div>
-          </div>
-        </div>
-        <span class="community-badge badge-free">🔒 Connexion requise</span>
-      </div>
-    `).join('') + `</div><p style="text-align:center; margin-top:24px;"><strong>🔐 Connectez-vous pour accéder aux discussions et ressources</strong></p>`;
-  }
-
-  function loadCommunities() {
-    const container = document.getElementById('communitiesContainer');
-    container.innerHTML = `<div class="grid-2cols">` + communities.map(comm => `
-      <div class="community-item" onclick="openCommunity(${comm.id})">
-        <div class="community-info">
-          <div class="community-icon">${comm.icon}</div>
-          <div>
-            <div class="community-name">${comm.name}</div>
-            <div class="community-count">${comm.members} membres</div>
-            <div class="community-count">${comm.description.substring(0,60)}...</div>
-          </div>
-        </div>
-        <span class="community-badge ${comm.access === 'free' ? 'badge-free' : 'badge-paid'}">${comm.access === 'free' ? 'Gratuit' : 'Payant ⭐'}</span>
-      </div>
-    `).join('') + `</div>`;
-  }
-
-  function openCommunity(id) {
-    const comm = communities.find(c => c.id === id);
-    if (!comm) return;
-    const privateArea = document.getElementById('communityPrivateArea');
-    const content = document.getElementById('communityDiscussions');
-    document.getElementById('currentCommunityTitle').innerHTML = `${comm.icon} ${comm.name}`;
-    
-    if (comm.access === 'paid' && (!currentUser || !currentUser.paid)) {
-      content.innerHTML = `<div style="text-align:center; padding:40px;"><i class="fas fa-lock" style="font-size:3rem; color:#e85d04;"></i>
-        <h3>Accès réservé aux membres payants</h3><p>Cette communauté nécessite un abonnement premium.</p>
-        <button class="btn-nav btn-nav-primary" onclick="alert('Fonctionnalité à venir : paiement sécurisé')">Devenir membre premium →</button></div>`;
-      privateArea.style.display = 'block';
-      return;
-    }
-    
-    const posts = discussions[id] || ["Bienvenue dans la communauté !"];
-    content.innerHTML = posts.map(post => `<div style="padding:12px; border-bottom:1px solid #eee;"><i class="fas fa-comment" style="margin-right:12px; color:#0066b3;"></i>${post}</div>`).join('');
-    privateArea.style.display = 'block';
-  }
-
-  function showCommunityPreview(id) {
-    alert("🔐 Veuillez vous connecter pour accéder à cette communauté.\nInscrivez-vous gratuitement pour découvrir les discussions.");
-    openModal('login');
-  }
-
-  // ============================================================
-  // CHAT PROFESSIONNEL GADA CHAT
-  // ============================================================
-  const chatIcon = document.getElementById('chatIcon');
-  const chatWindow = document.getElementById('chatWindow');
-  const chatMinimize = document.getElementById('chatMinimize');
-  const chatClose = document.getElementById('chatClose');
-  const chatInput = document.getElementById('chatInput');
-  const chatSend = document.getElementById('chatSend');
-  const messagesArea = document.getElementById('chatMessagesArea');
-  const btnResume = document.getElementById('btnResume');
-  const btnAlerts = document.getElementById('btnAlerts');
-  const welcomeMsgDiv = document.getElementById('welcomeMessage');
-
-  let isChatOpen = false;
-
-  function typeWelcomeMessage() {
-    const text = "Bonjour, je suis GADA Chat. Comment puis-je vous aider dans votre parcours de formation ?";
-    let i = 0;
-    welcomeMsgDiv.classList.add('typing');
-    function typeWriter() {
-      if (i < text.length) {
-        welcomeMsgDiv.innerHTML = text.substring(0, i + 1);
-        i++;
-        setTimeout(typeWriter, 40);
-      } else {
-        welcomeMsgDiv.classList.remove('typing');
-      }
-    }
-    typeWriter();
-  }
-
-  function addMessageWithTyping(content, isUser = false, userName = null, userColor = null) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
-    
-    const name = isUser ? (userName || 'Vous') : 'GADA Chat';
-    const msgColor = isUser ? (userColor || '#0066b3') : '#0066b3';
-    
-    messageDiv.innerHTML = `
-      <div class="message-avatar" style="${!isUser ? 'background:#e6f2fa; color:#0066b3;' : `background:${msgColor}; color:white;`}">
-        ${isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>'}
-      </div>
-      <div class="message-content" style="${isUser ? `background:${msgColor}; color:white; border-radius:16px 16px 4px 16px;` : 'background:white; border:1px solid #e9ecef; border-radius:16px 16px 16px 4px;'}">
-        <div class="message-name" style="${isUser ? `color:${msgColor}; text-align:right;` : 'color:#0066b3;'}">${name}</div>
-        <div class="message-text typing" id="typingText"></div>
-      </div>
-    `;
-    
-    messagesArea.appendChild(messageDiv);
-    messagesArea.scrollTop = messagesArea.scrollHeight;
-    
-    const textDiv = messageDiv.querySelector('#typingText');
-    let i = 0;
-    function typeWriter() {
-      if (i < content.length) {
-        textDiv.innerHTML = content.substring(0, i + 1);
-        i++;
-        setTimeout(typeWriter, 30);
-      } else {
-        textDiv.classList.remove('typing');
-      }
-    }
-    typeWriter();
-  }
-
-  function addUserMessage(message) {
-    addMessageWithTyping(message, true, 'Vous', '#0066b3');
-  }
-
-  const simulatedUsers = [
-    { name: "Jean-Marc", color: "#e85d04", icon: '<i class="fas fa-user-tie"></i>' },
-    { name: "Amina", color: "#0066b3", icon: '<i class="fas fa-user-graduate"></i>' },
-    { name: "Dr. Kamanda", color: "#2a7a3e", icon: '<i class="fas fa-chalkboard-user"></i>' },
-    { name: "Claire", color: "#6b3fa0", icon: '<i class="fas fa-user-astronaut"></i>' }
-  ];
-
-  const randomMessages = [
-    "Quelqu'un peut m'aider sur l'utilisation de GEE pour le NDVI au Kasaï ?",
-    "Nouveau dataset : données pluviométriques RDC 2024 disponibles dans la communauté !",
-    "Formation GEE gratuite ce week-end, les places sont limitées, qui est intéressé ?",
-    "Besoin d'aide pour exporter une carte QGIS en PDF de qualité publication.",
-    "Le nouveau module sur la télédétection est excellent ! Merci GADA Academy.",
-    "Comment masquer efficacement les nuages sur les images Sentinel-2 ?",
-    "Quelqu'un a un script Python pour calculer le NDVI sur une série temporelle ?"
-  ];
-
-  function simulateRandomMessage() {
-    if (isChatOpen) {
-      const randomUser = simulatedUsers[Math.floor(Math.random() * simulatedUsers.length)];
-      const randomMsg = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-      
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `chat-message bot`;
-      messageDiv.innerHTML = `
-        <div class="message-avatar" style="background:${randomUser.color}20; color:${randomUser.color};">
-          ${randomUser.icon}
-        </div>
-        <div class="message-content" style="background:white; border:1px solid #e9ecef; border-radius:16px 16px 16px 4px;">
-          <div class="message-name" style="color:${randomUser.color};">${randomUser.name}</div>
-          <div class="message-text typing" id="randMsg"></div>
-        </div>
-      `;
-      messagesArea.appendChild(messageDiv);
-      messagesArea.scrollTop = messagesArea.scrollHeight;
-      
-      const textDiv = messageDiv.querySelector('#randMsg');
-      let i = 0;
-      function typeRand() {
-        if (i < randomMsg.length) {
-          textDiv.innerHTML = randomMsg.substring(0, i + 1);
-          i++;
-          setTimeout(typeRand, 25);
-        } else {
-          textDiv.classList.remove('typing');
-        }
-      }
-      typeRand();
-    }
-  }
-
-  function showResume() {
-    addMessageWithTyping("Formations GADA Academy disponibles :\n• SIG avec QGIS & ArcGIS (40h, certifié)\n• Télédétection & Google Earth Engine (28h)\n• Analyse Statistique R & Python (35h)\n• Agriculture de précision & drones\n\nContactez-nous pour un devis personnalisé !", false, 'GADA Chat', '#0066b3');
-  }
-
-  function showAlerts() {
-    addMessageWithTyping("Alertes GADA :\n• Nouvelle session QGIS début le 15 juin (10 places)\n• Webinaire gratuit sur GEE le 22 mai\n• Communauté Gestion des Sols : nouveau rapport mensuel\n• Promotion -20% sur la formation Data Science jusqu'au 30 mai", false, 'GADA Chat', '#0066b3');
-  }
-
-  chatIcon.addEventListener('click', () => {
-    isChatOpen = !isChatOpen;
-    if (isChatOpen) {
-      chatWindow.classList.add('open');
-      if (messagesArea.children.length === 1) {
-        typeWelcomeMessage();
-      }
-    } else {
-      chatWindow.classList.remove('open');
-    }
-  });
-
-  chatMinimize.addEventListener('click', () => {
-    chatWindow.classList.remove('open');
-    isChatOpen = false;
-  });
-
-  chatClose.addEventListener('click', () => {
-    chatWindow.classList.remove('open');
-    isChatOpen = false;
-  });
-
-  chatSend.addEventListener('click', () => {
-    const message = chatInput.value.trim();
-    if (message) {
-      addUserMessage(message);
-      chatInput.value = '';
-      setTimeout(() => {
-        addMessageWithTyping("Merci pour votre message ! Un conseiller pédagogique vous répondra dans les plus brefs délais. En attendant, consultez notre catalogue de formations sur notre site.", false, 'GADA Chat', '#0066b3');
-      }, 1000);
-    }
-  });
-
-  chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') chatSend.click();
-  });
-
-  btnResume.addEventListener('click', showResume);
-  btnAlerts.addEventListener('click', showAlerts);
-
-  setInterval(simulateRandomMessage, 30000);
-
-  window.onclick = function(e) { if (e.target === document.getElementById('authModal')) closeModal(); };
-  checkSession();
-
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
-  reveals.forEach(r => observer.observe(r));
-
-  const form = document.getElementById('contactForm');
-  if(form) form.addEventListener('submit', async e => {
-    e.preventDefault();
-    try {
-      const res = await fetch(form.action, { method:'POST', body:new FormData(form), headers:{'Accept':'application/json'} });
-      if(res.ok) { form.reset(); document.getElementById('formSuccess').style.display='block'; setTimeout(()=>document.getElementById('formSuccess').style.display='none',5000); }
-    } catch { alert('Erreur réseau'); }
-  });
 </script>
 </body>
 </html>

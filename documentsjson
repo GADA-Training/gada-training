@@ -3,7 +3,7 @@
     "titre": "Semaine 1 : Fondements R",
     "date": "17 mai – 23 mai",
     "description": "Rappel des bases, Introduction & statistiques descriptives, Nettoyage et structuration des données, Analyse exploratoire des données (AED), visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture",
-    "badge": "6 fichiers",
+    "badge": "7 fichiers",
     "fichiers": [
       {
         "nom": "GADA_Plan_Formation_2026.pdf",
@@ -34,7 +34,18 @@
         "nom": "Donnees_sorgho_Benoit_kajora_complet.xlsx",
         "type": "excel",
         "icone": "fa-file-excel"
+      },
+      {
+        "nom": "GADA_Jour3_EDA_Paludisme.pptx",
+        "type": "powerpoint",
+        "icone": "fa-file-powerpoint"
+      },
+      {
+        "nom": "wmr2024_annex_4f.xlsx",
+        "type": "excel",
+        "icone": "fa-file-excel"
       }
+
     ]
   },
   "semaine2": {

@@ -263,6 +263,7 @@
         .icon-pdf { background:#fee2e2; color:#dc2626; }
         .icon-r { background:#dbeafe; color:#1d4ed8; }
         .icon-excel { background:#dcfce7; color:#16a34a; }
+        .icon-ppt { background:#fef3c7; color:#d97706; }
         .file-name { flex:1; font-size:0.78rem; font-weight:600; color:var(--text); }
         .file-dl { display:flex; align-items:center; gap:5px; background:var(--green-pale); color:var(--green); padding:5px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; text-decoration:none; transition:all 0.18s; }
         .file-dl:hover { background:var(--green); color:white; }
@@ -581,14 +582,16 @@ const SEMAINES_DATA = {
     semaine1:{
         titre:"Semaine 1 : Fondements R",date:"17 mai – 23 mai",
         description:"Rappel des bases, Introduction & statistiques descriptives, Nettoyage et structuration des données, Analyse exploratoire des données (AED), visualisations avancées, Modèles linéaires et logistiques appliqués en santé / agriculture",
-        badge:"6 fichiers",locked:false,
+        badge:"8 fichiers",locked:false,
         fichiers:[
             {nom:"GADA_Plan_Formation_2026.pdf",type:"pdf"},
             {nom:"GADA_Formation_RStudio_Jour1.pdf",type:"pdf"},
             {nom:"Aide à l'utilisation de R pour mettre en oeuvre les méthodes.pdf",type:"pdf"},
             {nom:"GADA_Formation_RStudio_Jour2.pdf",type:"pdf"},
             {nom:"Script_Jour2.R",type:"r"},
-            {nom:"Donnees_sorgho_Benoit_kajora_complet.xlsx",type:"excel"}
+            {nom:"Donnees_sorgho_Benoit_kajora_complet.xlsx",type:"excel"},
+            { nom: "GADA_Jour3_EDA_Paludisme.pptx", type: "powerpoint" },
+            {nom:"wmr2024_annex_4f.xlsx",type:"excel"}
         ]
     },
     semaine2:{titre:"Semaine 2 : Modélisation R",date:"24 mai – 30 mai",description:"Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles, Analyse One Health, impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt, distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)",badge:"À venir",locked:true,fichiers:[]},
@@ -996,12 +999,11 @@ function renderSemaines(){
             <div class="semaine-desc">${esc(s.description)}</div>
             ${!s.locked?`<div class="semaine-files" id="files-${key}">
                 ${s.fichiers.map(f=>{
-                    const iconClass=f.type==='pdf'?'icon-pdf':f.type==='r'?'icon-r':'icon-excel';
-                    const iconFA=f.type==='pdf'?'fa-file-pdf':f.type==='r'?'fa-file-code':'fa-file-excel';
-                    const fileUrl=GITHUB_BASE+encodeURIComponent(f.nom);
-                    return`<div class="file-row"><div class="file-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div><div class="file-name">${esc(f.nom)}</div><a href="${fileUrl}" class="file-dl" target="_blank"><i class="fa-solid fa-download"></i> Télécharger</a></div>`;
-                }).join('')}
-            </div>`:''}`;
+    const iconClass = f.type==='pdf'?'icon-pdf':f.type==='r'?'icon-r':f.type==='excel'?'icon-excel':f.type==='powerpoint'?'icon-ppt':'icon-pdf';
+    const iconFA = f.type==='pdf'?'fa-file-pdf':f.type==='r'?'fa-file-code':f.type==='excel'?'fa-file-excel':f.type==='powerpoint'?'fa-file-powerpoint':'fa-file';
+    const fileUrl = GITHUB_BASE + encodeURIComponent(f.nom);
+    return `<div class="file-row"><div class="file-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div><div class="file-name">${esc(f.nom)}</div><a href="${fileUrl}" class="file-dl" target="_blank"><i class="fa-solid fa-download"></i></a></div>`;
+}).join('')}
         container.appendChild(div);
     });
 }
@@ -1237,7 +1239,7 @@ function openCompose(mode){
                 <p style="font-size:0.72rem;margin-top:4px;color:#aaa">${mode==='photo'?'JPG, PNG, WebP (max 2MB)':'PDF, DOCX, R, XLSX (max 5MB)'}</p>
                 <p id="selectedFileName" style="font-size:0.78rem;color:var(--green);margin-top:8px;font-weight:600"></p>
             </div>
-            <input type="file" id="postFile" style="display:none" accept="${mode==='photo'?'image/*':'.pdf,.zip,.docx,.r,.R,.xlsx,.shp,.tiff'}" onchange="document.getElementById('selectedFileName').textContent=this.files[0]?.name||''">`;
+            <input type="file" id="postFile" style="display:none" accept="${mode==='photo'?'image/*':'.pdf,.zip,.docx,.r,.R,.xlsx,.pptx,.shp,.tiff'}" onchange="document.getElementById('selectedFileName').textContent=this.files[0]?.name||''">`;
     } else {
         fields.innerHTML=`<input type="url" id="postUrl" placeholder="${mode==='github'?'https://github.com/user/repo':'Lien Google Drive / OneDrive / Dropbox'}">`;
     }
