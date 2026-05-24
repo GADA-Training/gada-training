@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GADA Academy — Formations SIG & Data Science Afrique</title>
+  <meta name="description" content="Formations certifiantes en SIG, télédétection et data science pour l'agriculture et l'environnement en Afrique centrale.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- ===== BCRYPT POUR LE HASHAGE DES MOTS DE PASSE ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+  
+  <!-- ===== EMAILJS POUR L'ENVOI D'EMAILS ===== -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  
+  <style>
+    /* ========== VARIABLES ========== */
+    :root {
+      --primary-blue: #0066b3;
+      --primary-blue-dark: #004c8a;
+      --primary-blue-light: #e6f2fa;
+      --accent-coral: #e85d04;
+      --gray-bg: #f7f9fc;
+      --white: #ffffff;
+      --gray-border: #e9ecef;
+      --gray-text: #4a5568;
+      --gray-text-light: #718096;
+      --gray-dark: #1a202c;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 32px -12px rgba(0,0,0,0.1);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-bg);
+      color: var(--gray-dark);
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* ========== TOPBAR ========== */
+    .global-topbar {
+      background: var(--gray-dark);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.7rem;
+      padding: 6px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .global-topbar a { color: rgba(255,255,255,0.7); text-decoration: none; }
+    .global-topbar a:hover { color: white; }
+    .global-topbar-right { display: flex; gap: 24px; }
+
+    /* ========== NAVIGATION ========== */
+    .academy-nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-brand { font-size: 1.4rem; font-weight: 700; color: var(--primary-blue); letter-spacing: -0.3px; }
+    .nav-brand span { color: var(--accent-coral); }
+    .nav-links { display: flex; gap: 0.25rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--gray-text); font-size: 0.85rem; font-weight: 500; padding: 8px 16px; border-radius: 6px; transition: all 0.2s; }
+    .nav-links a:hover { background: var(--primary-blue-light); color: var(--primary-blue); }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-nav { padding: 8px 18px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; cursor: pointer; border: none; background: transparent; font-family: inherit; text-decoration: none; display: inline-block; }
+    .btn-nav-outline { border: 1px solid var(--gray-border); color: var(--gray-dark); background: transparent; }
+    .btn-nav-outline:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+    .btn-nav-primary { background: var(--primary-blue); color: white; }
+    .btn-nav-primary:hover { background: var(--primary-blue-dark); transform: translateY(-1px); }
+    .user-avatar { display: flex; align-items: center; gap: 8px; background: var(--primary-blue-light); padding: 6px 14px; border-radius: 40px; cursor: pointer; position: relative; }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      min-width: 180px;
+      display: none;
+      z-index: 100;
+      margin-top: 8px;
+      border: 1px solid var(--gray-border);
+    }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--gray-dark);
+      font-size: 0.8rem;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .dropdown-menu a:hover { background: var(--primary-blue-light); }
+    .dropdown-menu hr { margin: 4px 0; border-color: var(--gray-border); }
+
+    /* ========== HERO ========== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 48px;
+      padding: 60px 5%;
+      position: relative;
+      overflow: hidden;
+      background: url('images/hero1.png') center/cover no-repeat;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(105deg, rgba(255,255,255,0.50) 0%, rgba(240,245,250,0.55) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    .hero-content { max-width: 560px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(4px);
+      padding: 5px 14px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero-title {
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: var(--gray-dark);
+    }
+    .hero-title .highlight { color: var(--primary-blue); }
+    .hero-title .highlight2 { color: var(--accent-coral); }
+    .hero-sub {
+      color: var(--gray-dark);
+      font-size: 1rem;
+      margin-bottom: 32px;
+      line-height: 1.6;
+      text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+    }
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+    .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--primary-blue); line-height: 1; }
+    .stat-label { font-size: 0.7rem; color: var(--gray-text-light); text-transform: uppercase; font-weight: 500; }
+
+    .hero-visuals { display: flex; flex-direction: column; gap: 20px; }
+    .visu-row { display: flex; gap: 20px; justify-content: flex-end; }
+    .visu-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-border);
+      width: 100%;
+    }
+    .visu-card:hover { transform: translateY(-4px); }
+    .visu-card-title { font-weight: 700; font-size: 0.85rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .visu-card-text { font-size: 0.7rem; color: var(--gray-text-light); }
+    .visu-badge {
+      display: inline-block;
+      background: var(--primary-blue-light);
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-top: 10px;
+    }
+    .visu-badge.orange { background: rgba(232,93,4,0.1); color: var(--accent-coral); }
+
+    /* ========== SECTION RECHERCHE ========== */
+    .search-section { background: var(--white); padding: 32px 5%; border-bottom: 1px solid var(--gray-border); }
+    .search-container { max-width: 700px; margin: 0 auto; text-align: center; }
+    .search-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-text-light); margin-bottom: 12px; }
+    .search-box {
+      display: flex;
+      gap: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-border);
+      border-radius: 60px;
+      padding: 4px 4px 4px 20px;
+    }
+    .search-box:focus-within { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0,102,179,0.1); }
+    .search-box input { flex: 1; border: none; padding: 14px 0; font-size: 0.9rem; outline: none; background: transparent; }
+    .search-box button { background: var(--primary-blue); border: none; padding: 10px 28px; border-radius: 50px; color: white; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .search-box button:hover { background: var(--primary-blue-dark); }
+
+    /* ========== QUICK NAV ========== */
+    .quick-nav { background: var(--primary-blue); padding: 20px 5%; }
+    .quick-grid { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .quick-item { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.85rem; font-weight: 500; }
+    .quick-item:hover { color: white; transform: translateY(-2px); }
+
+    /* ========== SECTIONS GÉNÉRALES ========== */
+    .section-container { padding: 64px 5%; }
+    .section-header { text-align: center; max-width: 700px; margin: 0 auto 48px; }
+    .section-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary-blue); font-weight: 600; margin-bottom: 12px; }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; }
+    .grid-2cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .grid-3cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    @media (max-width: 900px) {
+      .grid-2cols, .grid-3cols { grid-template-columns: 1fr; }
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .hero-content { margin: 0 auto; }
+      .hero-stats { justify-content: center; }
+    }
+
+    /* ========== CARDS SERVICES & FORMATIONS ========== */
+    .service-card, .course-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-border);
+      transition: all 0.25s;
+    }
+    .service-card:hover, .course-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-blue-light); }
+    .service-card img, .course-card img { width: 100%; height: 160px; object-fit: cover; background: var(--primary-blue-light); }
+    .service-card div, .course-body { padding: 20px; }
+    .service-title, .course-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .service-desc, .course-desc { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; margin-bottom: 12px; }
+    .tool-tag { display: inline-block; background: var(--primary-blue-light); padding: 4px 10px; border-radius: 40px; font-size: 0.65rem; font-weight: 600; color: var(--primary-blue); margin-right: 6px; margin-top: 8px; }
+    .course-level { font-size: 0.65rem; font-weight: 700; color: var(--primary-blue); text-transform: uppercase; margin-bottom: 8px; }
+    .course-meta { display: flex; gap: 16px; font-size: 0.7rem; color: var(--gray-text-light); border-top: 1px solid var(--gray-border); padding-top: 12px; margin-top: 12px; }
+
+    /* ========== LEVEL CARDS ========== */
+    .level-card {
+      text-align: center;
+      padding: 24px;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--gray-border);
+      transition: all 0.2s;
+    }
+    .level-card:hover { transform: translateY(-4px); border-color: var(--primary-blue-light); }
+    .level-num { font-size: 0.65rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 12px; }
+    .level-icon { font-size: 2rem; margin-bottom: 12px; }
+
+    /* ========== NOUVEAU STYLE COMMUNAUTÉ AVEC STICKERS ========== */
+    .communities-wrapper {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-border);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    /* Layout 3 colonnes */
+    .communities-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      gap: 0;
+      min-height: 600px;
+    }
+
+    @media (max-width: 1000px) {
+      .communities-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar gauche - Membres */
+    .communities-sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--gray-border);
+      height: 100%;
+    }
+
+    .sidebar-header {
+      background: var(--primary-blue);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-header h3 {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      margin: 0;
+    }
+
+    .member-count {
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+
+    /* Carte Assistant IA */
+    .assistant-card {
+      padding: 20px;
+      border-bottom: 1px solid var(--gray-border);
+      background: linear-gradient(135deg, #f8fafc, white);
+    }
+
+    .assistant-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .assistant-avatar i {
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .assistant-info strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .assistant-info span {
+      font-size: 0.7rem;
+      color: var(--gray-text-light);
+    }
+
+    .assistant-message {
+      background: var(--primary-blue-light);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      margin: 12px 0;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .assistant-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .assistant-actions button {
+      flex: 1;
+      min-width: calc(50% - 8px);
+      padding: 8px;
+      background: transparent;
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .assistant-actions button:hover {
+      border-color: var(--primary-blue);
+      background: var(--primary-blue-light);
+    }
+
+    .sidebar-nav {
+      padding: 16px 20px;
+    }
+
+    .sidebar-nav .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      color: var(--gray-text);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .sidebar-nav .nav-item:hover,
+    .sidebar-nav .nav-item.active {
+      background: var(--primary-blue-light);
+      color: var(--primary-blue);
+    }
+
+    /* Feed central */
+    .communities-feed {
+      background: var(--gray-bg);
+      height: 100%;
+    }
+
+    .feed-header {
+      padding: 20px 24px;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .feed-header h2 {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .feed-subtitle {
+      font-size: 0.75rem;
+      color: var(--gray-text-light);
+    }
+
+    /* Zone de composition */
+    .composer-card {
+      background: var(--white);
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .composer-avatar {
+      width: 44px;
+      height: 44px;
+      background: var(--primary-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .composer-input textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.85rem;
+      resize: vertical;
+    }
+
+    .composer-input textarea:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+    }
+
+    .composer-tools {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: 1px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      cursor: pointer;
+      color: var(--gray-text);
+      transition: all 0.2s;
+    }
+
+    .tool-btn:hover {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+      background: var(--primary-blue-light);
+    }
+
+    .publish-btn {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .publish-btn:hover {
+      background: var(--primary-blue-dark);
+    }
+
+    /* Feed des publications */
+    .feed-list {
+      padding: 0 24px 24px;
+    }
+
+    .post-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray-border);
+      transition: all 0.2s;
+    }
+
+    .post-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--primary-blue-light);
+    }
+
+    .post-card.highlight {
+      background: linear-gradient(90deg, #fff9f5, white);
+      border-left: 3px solid var(--accent-coral);
+    }
+
+    .post-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .post-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .post-avatar.admin {
+      background: var(--accent-coral);
+    }
+
+    .post-meta strong {
+      display: block;
+      font-size: 0.85rem;
+    }
+
+    .post-time {
+      font-size: 0.65rem;
+      color: var(--gray-text-light);
+    }
+
+    .post-badge {
+      background: var(--accent-coral);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+    }
+
+    .post-content {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--gray-dark);
+      margin-bottom: 16px;
+      padding-left: 52px;
+    }
+
+    .post-footer {
+      display: flex;
+      gap: 16px;
+      padding-left: 52px;
+      padding-top: 12px;
+      border-top: 1px solid var(--gray-border);
+      margin-top: 8px;
+    }
+
+    .post-action {
+      background: transparent;
+      border: none;
+      font-size: 0.7rem;
+      color: var(--gray-text-light);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .post-action:hover {
+      color: var(--primary-blue);
+    }
+
+    .post-action.delete:hover {
+      color: var(--accent-coral);
+    }
+
+    /* Rightbar */
+    .communities-rightbar {
+      background: var(--white);
+      border-left: 1px solid var(--gray-border);
+      height: 100%;
+    }
+
+    .stats-card, .resources-card, .deadline-card {
+      padding: 20px;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .stats-card h4, .resources-card h4, .deadline-card h4 {
+      font-size: 0.8rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .resource-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 0.75rem;
+      border-bottom: 1px solid var(--gray-border);
+      cursor: pointer;
+    }
+
+    .resource-item:hover {
+      color: var(--primary-blue);
+    }
+
+    .resource-item .size {
+      margin-left: auto;
+      color: var(--gray-text-light);
+      font-size: 0.65rem;
+    }
+
+    .deadline {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .deadline:last-child {
+      border-bottom: none;
+    }
+
+    .deadline .date {
+      color: var(--accent-coral);
+      font-weight: 600;
+      font-size: 0.7rem;
+    }
+
+    /* Grille des cartes communautés */
+    .communities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .community-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-border);
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .community-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary-blue-light);
+    }
+
+    .community-card-header {
+      padding: 24px 24px 16px;
+      background: linear-gradient(135deg, var(--primary-blue-light) 0%, rgba(0,102,179,0.05) 100%);
+    }
+
+    .community-sticker {
+      width: 64px;
+      height: 64px;
+      background: var(--white);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .community-sticker svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--primary-blue);
+    }
+
+    .community-card-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .community-description {
+      font-size: 0.8rem;
+      color: var(--gray-text);
+      line-height: 1.5;
+    }
+
+    .community-card-body {
+      padding: 20px 24px;
+    }
+
+    .community-stats {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-border);
+    }
+
+    .community-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--gray-text-light);
+    }
+
+    .community-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .tag-free {
+      background: #e6f2fa;
+      color: var(--primary-blue);
+    }
+
+    .tag-paid {
+      background: #fef3e8;
+      color: var(--accent-coral);
+    }
+
+    .access-button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .access-button.free {
+      background: var(--primary-blue);
+      color: white;
+    }
+
+    .access-button.free:hover {
+      background: var(--primary-blue-dark);
+    }
+
+    .access-button.paid {
+      background: var(--accent-coral);
+      color: white;
+    }
+
+    .access-button.paid:hover {
+      background: #cc5500;
+    }
+
+    .access-button.admin {
+      background: linear-gradient(135deg, var(--accent-coral), #cc5500);
+      color: white;
+    }
+
+    /* Empty feed */
+    .empty-feed {
+      text-align: center;
+      padding: 60px;
+      color: var(--gray-text-light);
+    }
+
+    .empty-feed i {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    /* ========== FEATURE CARD ========== */
+    .feature-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-border);
+      transition: all 0.25s;
+    }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary-blue-light); }
+    .card-icon { width: 52px; height: 52px; background: var(--primary-blue-light); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--primary-blue); margin-bottom: 20px; }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+    .card-desc { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; }
+
+    /* ========== MODALES ========== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+    }
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid var(--gray-border);
+      border-radius: 8px;
+      font-family: inherit;
+    }
+    .modal-content textarea {
+      resize: vertical;
+    }
+    .modal-content button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .close-modal { float: right; font-size: 1.5rem; cursor: pointer; }
+
+    /* Modale PIN */
+    #pinInput {
+      font-size: 1.2rem;
+      letter-spacing: 4px;
+      text-align: center;
+      font-weight: bold;
+    }
+    #pinVerificationModal .modal-content { text-align: center; }
+
+    /* Styles pour le chat privé */
+    .private-chat-panel {
+      position: fixed;
+      bottom: 80px;
+      right: 80px;
+      width: 360px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1001;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--gray-border);
+    }
+    .private-chat-header {
+      background: var(--primary-blue);
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .private-chat-messages {
+      height: 300px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #f7f9fc;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-bubble {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .chat-bubble.sent {
+      background: var(--primary-blue);
+      color: white;
+      align-self: flex-end;
+      border-radius: 12px 12px 4px 12px;
+    }
+    .chat-bubble.received {
+      background: white;
+      border: 1px solid var(--gray-border);
+      align-self: flex-start;
+      border-radius: 12px 12px 12px 4px;
+    }
+    .bubble-time {
+      font-size: 0.6rem;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    .private-chat-input {
+      display: flex;
+      padding: 12px;
+      gap: 8px;
+      border-top: 1px solid var(--gray-border);
+    }
+    .private-chat-input input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--gray-border);
+      border-radius: 20px;
+      font-family: inherit;
+    }
+    .private-chat-input button {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+
+    /* ========== WIDGET TAWK ========== */
+    .tawk-custom-widget {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-top: 40px;
+      border: 1px solid var(--gray-border);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    .tawk-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-border);
+    }
+    .tawk-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .tawk-icon i { font-size: 1.5rem; color: white; }
+    .tawk-title h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; color: var(--gray-dark); }
+    .tawk-title p { font-size: 0.7rem; color: var(--gray-text-light); }
+    .tawk-description { font-size: 0.8rem; color: var(--gray-text); line-height: 1.6; margin-bottom: 20px; }
+    .tawk-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-blue-light);
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--primary-blue);
+    }
+
+    /* ========== CHAT FLOTTANT ========== */
+    .chat-floating {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .chat-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #0066b3, #004c8a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,102,179,0.3);
+      transition: transform 0.2s;
+      position: relative;
+    }
+    .chat-icon:hover { transform: scale(1.05); }
+    .chat-icon i { font-size: 1.5rem; color: white; }
+    .chat-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #e85d04;
+      color: white;
+      font-size: 0.6rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+    .chat-window {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      width: 360px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e9ecef;
+    }
+    .chat-window.open { display: flex; }
+    .chat-header {
+      background: linear-gradient(135deg, #0066b3, #004c8a);
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-header-info { display: flex; align-items: center; gap: 10px; }
+    .chat-header-info i { font-size: 1.2rem; }
+    .chat-header-info span { font-weight: 600; font-size: 0.9rem; }
+    .chat-header-info small { font-size: 0.7rem; opacity: 0.8; }
+    .chat-header-actions { display: flex; gap: 12px; }
+    .chat-header-actions i { cursor: pointer; opacity: 0.8; transition: opacity 0.2s; }
+    .chat-header-actions i:hover { opacity: 1; }
+    .chat-messages-area {
+      height: 350px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #f7f9fc;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-message {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: fadeInUp 0.3s ease;
+    }
+    .chat-message.user { flex-direction: row-reverse; }
+    .chat-message.user .message-content { background: #0066b3; color: white; border-radius: 16px 16px 4px 16px; }
+    .chat-message.bot .message-content { background: white; border: 1px solid #e9ecef; border-radius: 16px 16px 16px 4px; }
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .chat-message.bot .message-avatar { background: #e6f2fa; color: #0066b3; }
+    .chat-message.user .message-avatar { background: #e85d04; color: white; }
+    .message-content {
+      max-width: 75%;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    .message-name {
+      font-weight: 700;
+      font-size: 0.7rem;
+      margin-bottom: 4px;
+    }
+    .chat-message.bot .message-name { color: #0066b3; }
+    .chat-message.user .message-name { color: #e85d04; text-align: right; }
+    .message-text { word-break: break-word; }
+    .chat-actions {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .chat-btn {
+      flex: 1;
+      padding: 8px;
+      background: #e6f2fa;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #0066b3;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .chat-btn:hover { background: #0066b3; color: white; }
+    .chat-input {
+      display: flex;
+      padding: 12px 16px;
+      background: white;
+      gap: 10px;
+      border-top: 1px solid #e9ecef;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #e9ecef;
+      border-radius: 25px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .chat-input input:focus { border-color: #0066b3; }
+    .chat-input button {
+      width: 36px;
+      height: 36px;
+      background: #0066b3;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .chat-input button:hover { background: #004c8a; }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--gray-border);
+      padding: 56px 5% 32px;
+      margin-top: 40px;
+    }
+    .footer-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 40px; margin-bottom: 48px; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+    .footer-links { display: flex; flex-direction: column; gap: 12px; }
+    .footer-links a { color: var(--gray-text-light); text-decoration: none; font-size: 0.8rem; }
+    .footer-links a:hover { color: var(--primary-blue); }
+    .footer-bottom { border-top: 1px solid var(--gray-border); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--gray-text-light); }
+    .social-links { display: flex; gap: 20px; }
+    .social-links a { color: var(--gray-text-light); font-size: 1rem; }
+    .social-links a:hover { color: var(--primary-blue); }
+
+    /* ========== ANIMATIONS ========== */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @keyframes fadeOut {
+      0% { opacity: 1; transform: translateY(0); }
+      70% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-20px); display: none; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .admin-panel-btn {
+      background: #e85d04;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .admin-panel-btn:hover { background: #cc5500; }
+    .transition-block { text-align: center; padding: 40px 5% 0; max-width: 800px; margin: 0 auto; }
+    .transition-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; color: var(--gray-dark); }
+    .transition-text { color: var(--gray-text); font-size: 0.95rem; line-height: 1.6; }
+
+    /* Section sub */
+    .section-sub {
+      color: var(--gray-text-light);
+      font-size: 0.9rem;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="global-topbar">
+  <span><i class="fas fa-map-marker-alt"></i> GADA — GeoAgri Data Analytics & Solution</span>
+  <div class="global-topbar-right">
+    <a href="https://wa.me/243898383148"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    <a href="mailto:gadasolution.rdc@gmail.com"><i class="far fa-envelope"></i> Email</a>
+  </div>
+</div>
+
+<!-- Navigation Academy -->
+<nav class="academy-nav">
+  <div class="nav-brand">GADA<span>Academy</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#formations">Formations</a></li>
+    <li><a href="#communities">Communauté</a></li>
+    <li><a href="#parcours">Parcours</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions" id="navActions"></div>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><i class="fas fa-graduation-cap"></i> GeoAgri Data Analytics & Solution</div>
+    <h1 class="hero-title">Maîtrisez le SIG & la Data Science pour<br><span class="highlight">l'Agriculture</span> et <span class="highlight2">l'Environnement</span></h1>
+    <p class="hero-sub">Des formations pratiques et certifiantes conçues pour relever les défis environnementaux en Afrique centrale.</p>
+    <div style="display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap;">
+      <a href="#contact" class="btn-nav btn-nav-primary" style="padding: 12px 28px;">Explorer les formations →</a>
+      <a href="#formations" class="btn-nav btn-nav-outline" style="padding: 12px 28px;">En savoir plus</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-number">500+</div><div class="stat-label">Apprenants formés</div></div>
+      <div><div class="stat-number">48+</div><div class="stat-label">Projets livrés</div></div>
+      <div><div class="stat-number">12</div><div class="stat-label">Pays couverts</div></div>
+    </div>
+  </div>
+  <div class="hero-visuals">
+    <div class="visu-row">
+      <div class="visu-card"><div class="visu-card-title"><i class="fas fa-map"></i> Analyse SIG</div><div class="visu-card-text">Cartographie, modélisation spatiale, analyses territoriales.</div><span class="visu-badge">QGIS · ArcGIS</span></div>
+      <div class="visu-card"><div class="visu-card-title"><i class="fas fa-satellite"></i> Télédétection</div><div class="visu-card-text">Suivi déforestation, indices NDVI, données Sentinel/Landsat.</div><span class="visu-badge orange">Google Earth Engine</span></div>
+    </div>
+    <div class="visu-row">
+      <div class="visu-card"><div class="visu-card-title"><i class="fas fa-chart-line"></i> Data Science</div><div class="visu-card-text">Python, R, Machine learning appliqué aux données agricoles.</div><span class="visu-badge">Python · R · TensorFlow</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="search-section">
+  <div class="search-container">
+    <div class="search-label"><i class="fas fa-search"></i> Rechercher la formation dont vous avez besoin</div>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Rechercher un cours, un outil (QGIS, GEE, Python)...">
+      <button id="searchBtn">RECHERCHER</button>
+    </div>
+  </div>
+</div>
+
+<div class="quick-nav">
+  <div class="quick-grid">
+    <a href="#" class="quick-item"><i class="fas fa-book-open"></i> Catalogue</a>
+    <a href="#" class="quick-item"><i class="fas fa-calendar-alt"></i> Calendrier</a>
+    <a href="#" class="quick-item"><i class="fas fa-chalkboard-user"></i> Formateurs</a>
+    <a href="#" class="quick-item"><i class="fas fa-certificate"></i> Certifications</a>
+    <a href="#" class="quick-item"><i class="fas fa-tachometer-alt"></i> Mon tableau de bord</a>
+  </div>
+</div>
+
+<div class="transition-block reveal">
+  <h3 class="transition-title">Nous sommes là pour faciliter votre parcours de formation.</h3>
+  <p class="transition-text">Que vous soyez débutant sur QGIS ou analyste chevronné cherchant à maîtriser Google Earth Engine et RStudio, nos ressources vous aident à atteindre vos objectifs professionnels.</p>
+</div>
+
+<!-- SECTION SERVICES -->
+<section id="services" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Nos expertises</div>
+    <h2 class="section-title">Services spécialisés</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="service-card"><img src="images/sig.jpg" alt="SIG"><div><div class="service-title">Analyse SIG & Spatiale</div><p class="service-desc">Cartographie, analyse géoréférencée, modélisation spatiale.</p><span class="tool-tag">QGIS</span><span class="tool-tag">ArcGIS</span></div></div>
+    <div class="service-card"><img src="images/gee.png" alt="GEE"><div><div class="service-title">Télédétection</div><p class="service-desc">Traitement d'images satellites, NDVI, occupation des sols.</p><span class="tool-tag">GEE</span><span class="tool-tag">Sentinel</span></div></div>
+    <div class="service-card"><img src="images/drone.jpg" alt="Drone"><div><div class="service-title">Agriculture de Précision</div><p class="service-desc">Monitoring des cultures, prévisions de rendement.</p><span class="tool-tag">Drone</span><span class="tool-tag">IoT</span></div></div>
+    <div class="service-card"><img src="images/python.webp" alt="Python"><div><div class="service-title">Data Science Appliquée</div><p class="service-desc">Modèles prédictifs, machine learning agricole.</p><span class="tool-tag">Python</span><span class="tool-tag">R</span></div></div>
+    <div class="service-card"><img src="images/database.png" alt="Database"><div><div class="service-title">Pipelines & Bases de Données</div><p class="service-desc">Bases spatiales, ETL automatisés, dashboards.</p><span class="tool-tag">PostgreSQL</span><span class="tool-tag">Airflow</span></div></div>
+    <div class="service-card"><img src="images/formation.jpg" alt="Formation"><div><div class="service-title">Formation & Conseil</div><p class="service-desc">Formation terrain, audit, stratégie analytique.</p><span class="tool-tag">Certification</span><span class="tool-tag">Ateliers</span></div></div>
+  </div>
+</section>
+
+<!-- SECTION FORMATIONS -->
+<section id="formations" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Académie GADA</div>
+    <h2 class="section-title">Formations certifiantes</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="course-card"><img src="images/formations/formation-sig.png" alt="Formation SIG"><div class="course-body"><div class="course-level">Débutant → Expert</div><div class="course-title">SIG avec QGIS & ArcGIS</div><p class="course-desc">Maîtrisez les outils SIG sur des projets concrets en RDC.</p><div class="course-meta"><span><i class="far fa-clock"></i> 40h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div>
+    <div class="course-card"><img src="images/formations/formation-gee.png" alt="Formation GEE"><div class="course-body"><div class="course-level">Intermédiaire</div><div class="course-title">Télédétection & Google Earth Engine</div><p class="course-desc">Analyse d'images satellites, suivi déforestation, NDVI.</p><div class="course-meta"><span><i class="far fa-clock"></i> 28h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div>
+    <div class="course-card"><img src="images/formations/formation-data.jpg" alt="Formation Data"><div class="course-body"><div class="course-level">Tous niveaux</div><div class="course-title">Analyse Statistique (R & Python)</div><p class="course-desc">Statistiques appliquées à l'agronomie, machine learning.</p><div class="course-meta"><span><i class="far fa-clock"></i> 35h</span><span><i class="fas fa-certificate"></i> Certifié</span></div></div></div>
+  </div>
+</section>
+
+<!-- SECTION COMMUNAUTÉS - NOUVELLE VERSION AMÉLIORÉE -->
+<section id="communities" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Réseau professionnel</div>
+    <h2 class="section-title">Communautés d'expertise</h2>
+    <p class="section-sub">Rejoignez des groupes de praticiens et partagez vos connaissances</p>
+  </div>
+  
+  <!-- Grille des cartes communautés -->
+  <div id="communitiesContainer" class="communities-grid"></div>
+  
+  <!-- Zone de feed (affichée quand une communauté est ouverte) -->
+  <div id="communityPrivateArea" style="display: none;">
+    <div class="communities-wrapper">
+      <div class="communities-layout">
+        
+        <!-- PANEL LATÉRAL GAUCHE - MEMBRES -->
+        <aside class="communities-sidebar">
+          <div class="sidebar-header">
+            <h3><i class="fas fa-users"></i> MEMBRES</h3>
+            <span class="member-count" id="memberCount">342 inscrits</span>
+          </div>
+          
+          <!-- Assistant IA -->
+          <div class="assistant-card">
+            <div class="assistant-avatar">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="assistant-info">
+              <strong>GADA Assistant IA</strong>
+              <span>Guide pédagogique - One Health</span>
+            </div>
+            <div class="assistant-message">
+              <i class="fas fa-comment-dots"></i>
+              Bonjour ! Je suis GADA Assistant. Comment puis-je vous aider ?
+            </div>
+            <div class="assistant-actions">
+              <button onclick="exploreModules()"><i class="fas fa-book"></i> Explorer les modules</button>
+              <button onclick="understandConcept()"><i class="fas fa-brain"></i> Comprendre un concept</button>
+              <button onclick="startQuiz()"><i class="fas fa-pen"></i> Quiz rapide</button>
+              <button onclick="getAssistance()"><i class="fas fa-headset"></i> Assistance</button>
+            </div>
+          </div>
+          
+          <!-- Navigation rapide -->
+          <div class="sidebar-nav">
+            <div class="nav-item active" onclick="showHomeFeed()"><i class="fas fa-home"></i> Accueil</div>
+            <div class="nav-item" onclick="openProfileEditor()"><i class="fas fa-user"></i> Mon profil</div>
+            <div class="nav-item" onclick="showMyProjects()"><i class="fas fa-folder"></i> Mes projets</div>
+            <div class="nav-item" onclick="showSchedule()"><i class="fas fa-calendar"></i> Semaines</div>
+          </div>
+        </aside>
+        
+        <!-- ZONE CENTRALE - FEED DES PUBLICATIONS -->
+        <main class="communities-feed">
+          <div class="feed-header">
+            <h2 id="currentCommunityTitle">Discussion live</h2>
+            <span class="feed-subtitle">Partagez vos réflexions en temps réel</span>
+          </div>
+          
+          <!-- Zone de composition -->
+          <div class="composer-card">
+            <div style="display: flex; gap: 16px;">
+              <div class="composer-avatar" id="composerAvatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="composer-input" style="flex: 1;">
+                <textarea id="newPostInput" rows="2" placeholder="Partagez une analyse, une ressource ou une question..."></textarea>
+                <div class="composer-tools">
+                  <button class="tool-btn" onclick="document.getElementById('postFiles').click()"><i class="fas fa-paperclip"></i> Joindre des fichiers</button>
+                  <button class="publish-btn" onclick="publishPost()"><i class="fas fa-paper-plane"></i> Publier</button>
+                </div>
+                <input type="file" id="postFiles" multiple style="display: none;">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Liste des publications -->
+          <div class="feed-list">
+            <div id="communityDiscussions"></div>
+          </div>
+        </main>
+        
+        <!-- PANEL LATÉRAL DROIT - STATISTIQUES -->
+        <aside class="communities-rightbar">
+          <div class="stats-card">
+            <h4><i class="fas fa-chart-line"></i> Statistiques</h4>
+            <div class="stat-item">
+              <span>👥 Membres actifs</span>
+              <strong id="activeMembersCount">156</strong>
+            </div>
+            <div class="stat-item">
+              <span>📄 Publications</span>
+              <strong id="postsCount">0</strong>
+            </div>
+            <div class="stat-item">
+              <span>💬 Discussions</span>
+              <strong>23</strong>
+            </div>
+          </div>
+          
+          <div class="resources-card">
+            <h4><i class="fas fa-database"></i> Ressources partagées</h4>
+            <div id="sharedResourcesList">
+              <div class="resource-item" onclick="downloadResource('TB_dataset_2026.csv')">
+                <i class="fas fa-file-csv"></i>
+                <span>TB_dataset_2026.csv</span>
+                <span class="size">1.8 MB</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="deadline-card">
+            <h4><i class="fas fa-clock"></i> Échéances</h4>
+            <div id="eventsList">
+              <div class="deadline">
+                <span><i class="fas fa-chart-simple"></i> TP Tuberculose</span>
+                <span class="date">26 mai 2025</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="tawk-custom-widget">
+    <div class="tawk-header">
+      <div class="tawk-icon"><i class="fas fa-headset"></i></div>
+      <div class="tawk-title"><h3>Support communautaire</h3><p>Assistance GADA Academy</p></div>
+    </div>
+    <div class="tawk-description"><p>Une question sur une formation, un accès, un module ou un projet ? Notre équipe est disponible pour vous accompagner.</p></div>
+    <div class="tawk-status"><i class="fas fa-circle" style="color: #10b981; font-size: 0.6rem;"></i><span>Équipe disponible en ligne</span></div>
+  </div>
+</section>
+
+<!-- SECTION PARCOURS -->
+<section id="parcours" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Votre progression</div>
+    <h2 class="section-title">Du débutant à l'expert reconnu</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="level-card"><div class="level-num">NIVEAU 1</div><div class="level-icon"><i class="fas fa-eye"></i></div><div class="card-title" style="font-size:1rem;">Observateur</div><p class="card-desc">Découvrez les bases du SIG et de l'analyse de données.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 2</div><div class="level-icon"><i class="fas fa-chart-simple"></i></div><div class="card-title" style="font-size:1rem;">Analyste</div><p class="card-desc">Maîtrisez QGIS et les analyses statistiques de base.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 3</div><div class="level-icon"><i class="fas fa-globe"></i></div><div class="card-title" style="font-size:1rem;">Expert SIG</div><p class="card-desc">Projets complexes, télédétection, données satellite.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 4</div><div class="level-icon"><i class="fas fa-microchip"></i></div><div class="card-title" style="font-size:1rem;">Data Scientist</div><p class="card-desc">Machine learning, modèles prédictifs, pipelines avancés.</p></div>
+    <div class="level-card"><div class="level-num">NIVEAU 5</div><div class="level-icon"><i class="fas fa-trophy"></i></div><div class="card-title" style="font-size:1rem;">Visionnaire GADA</div><p class="card-desc">Leader reconnu, mentor de la communauté.</p></div>
+  </div>
+</section>
+
+<!-- TÉMOIGNAGES -->
+<section id="testimonials" class="section-container">
+  <div class="section-header">
+    <div class="section-tag">Ils nous font confiance</div>
+    <h2 class="section-title">Ce que disent nos apprenants</h2>
+  </div>
+  <div class="grid-3cols reveal">
+    <div class="feature-card"><div style="color:var(--accent-coral); margin-bottom:16px;">★★★★★</div><p class="card-desc">"GADA Academy a transformé notre capacité à analyser les données agricoles. La formation SIG était précise et directement applicable."</p><div style="margin-top:20px; font-weight:600;">— Moïse Kabila, INERA-RDC</div></div>
+    <div class="feature-card"><div style="color:var(--accent-coral); margin-bottom:16px;">★★★★★</div><p class="card-desc">"Le dashboard SIG livré par GADA a révolutionné notre suivi de la déforestation. Résultats précis, livrés dans les délais."</p><div style="margin-top:20px; font-weight:600;">— Sarah Nzinga, ONG Forêt Congo</div></div>
+    <div class="feature-card"><div style="color:var(--accent-coral); margin-bottom:16px;">★★★★★</div><p class="card-desc">"La communauté GADA est unique en Afrique centrale. Échanges de qualité, datasets partagés, équipe disponible."</p><div style="margin-top:20px; font-weight:600;">— Eric Bongonga, Université de Kisangani</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section-container">
+  <div class="grid-2cols reveal">
+    <div><div class="section-tag">Contactez-nous</div><h2 class="section-title">Parlons de votre projet</h2><p class="card-desc" style="margin-top:16px;">Une question sur une formation ? Un besoin d'accompagnement ? Écrivez-nous, nous vous répondons sous 24h.</p><div style="margin-top:32px;"><div style="display:flex; gap:16px; align-items:center; margin-bottom:16px;"><i class="fab fa-whatsapp" style="font-size:1.4rem; color:var(--primary-blue);"></i><span>+243 898 383 148</span></div><div style="display:flex; gap:16px; align-items:center;"><i class="far fa-envelope" style="font-size:1.4rem; color:var(--primary-blue);"></i><span>gadasolution.rdc@gmail.com</span></div></div></div>
+    <form class="feature-card" style="padding:32px;" action="https://formspree.io/f/mwvzeyql" method="POST" id="contactForm"><div class="card-title">Envoyer une demande</div><input type="text" name="name" placeholder="Nom complet" style="width:100%; padding:12px; margin:10px 0; border:1px solid var(--gray-border); border-radius:8px;"><input type="email" name="email" placeholder="Email" style="width:100%; padding:12px; margin:10px 0; border:1px solid var(--gray-border); border-radius:8px;"><textarea name="message" rows="4" placeholder="Décrivez votre besoin..." style="width:100%; padding:12px; margin:10px 0; border:1px solid var(--gray-border); border-radius:8px;"></textarea><button type="submit" class="btn-nav btn-nav-primary" style="width:100%;">Envoyer →</button><div id="formSuccess" style="display:none; margin-top:16px; color:green;">✓ Message envoyé !</div></form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div><h4>GADA Academy</h4><div class="footer-links"><a href="#">À propos</a><a href="#">Nos valeurs</a><a href="#">Équipe</a></div></div>
+    <div><h4>Formations</h4><div class="footer-links"><a href="#">SIG & Cartographie</a><a href="#">Télédétection GEE</a><a href="#">Data Science</a><a href="#">Agriculture précision</a></div></div>
+    <div><h4>Ressources</h4><div class="footer-links"><a href="#">Blog & articles</a><a href="#">Webinaires</a><a href="#">Documentation</a><a href="#">Communauté</a></div></div>
+    <div><h4>Support</h4><div class="footer-links"><a href="#">FAQ</a><a href="#">Contact technique</a><a href="#">Devis</a></div></div>
+    <div><h4>Légal</h4><div class="footer-links"><a href="#">Mentions légales</a><a href="#">Confidentialité</a><a href="#">CGU</a></div></div>
+  </div>
+  <div class="footer-bottom"><div>© 2025 GADA Academy — GeoAgri Data Analytics & Solution · RDC</div><div class="social-links"><a href="#"><i class="fab fa-linkedin-in"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-github"></i></a></div></div>
+</footer>
+
+<!-- CHAT FLOTTANT -->
+<div class="chat-floating" id="chatFloating">
+  <div class="chat-icon" id="chatIcon">
+    <i class="fas fa-comments"></i>
+    <span class="chat-badge">1</span>
+  </div>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-header-info"><i class="fas fa-robot"></i><span>GADA Chat <small>Assistant formation</small></span></div>
+      <div class="chat-header-actions"><i class="fas fa-minus" id="chatMinimize"></i><i class="fas fa-times" id="chatClose"></i></div>
+    </div>
+    <div class="chat-messages-area" id="chatMessagesArea">
+      <div class="chat-message bot"><div class="message-avatar"><i class="fas fa-robot"></i></div><div class="message-content"><div class="message-name">GADA Chat</div><div class="message-text" id="welcomeMessage"></div></div></div>
+    </div>
+    <div class="chat-actions"><button class="chat-btn" id="btnResume"><i class="fas fa-graduation-cap"></i> Formations</button><button class="chat-btn" id="btnAlerts"><i class="fas fa-bell"></i> Alertes</button></div>
+    <div class="chat-input"><input type="text" id="chatInput" placeholder="Posez votre question sur les formations..."><button id="chatSend"><i class="fas fa-paper-plane"></i></button></div>
+  </div>
+</div>
+
+<!-- CHAT PRIVÉ -->
+<div id="privateChatPanel" class="private-chat-panel">
+  <div class="private-chat-header">
+    <span>💬 Discussion avec <span id="chatWithName"></span></span>
+    <button onclick="document.getElementById('privateChatPanel').style.display='none'" style="background: none; border: none; color: white; cursor: pointer;">✕</button>
+  </div>
+  <div id="privateMessages" class="private-chat-messages"></div>
+  <div class="private-chat-input">
+    <input type="text" id="privateMessageInput" placeholder="Votre message...">
+    <button onclick="sendPrivateMessage()">Envoyer</button>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div id="authModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <div id="modalLogin">
+      <h3>Connexion</h3>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Mot de passe" />
+      <button onclick="login()">Se connecter</button>
+      <p style="margin-top:12px; text-align:center;"><a href="#" onclick="showForgotPassword()">Mot de passe oublié ?</a> &nbsp;|&nbsp; <a href="#" onclick="showRegister()">Créer un compte</a></p>
+    </div>
+    <div id="modalRegister" style="display:none;">
+      <h3>Inscription</h3>
+      <input type="text" id="regName" placeholder="Nom complet" />
+      <input type="email" id="regEmail" placeholder="Email" />
+      <input type="password" id="regPassword" placeholder="Mot de passe" />
+      <button onclick="register()">S'inscrire</button>
+      <p style="margin-top:12px; text-align:center;"><a href="#" onclick="showLogin()">Déjà inscrit ? Se connecter</a></p>
+    </div>
+    <div id="modalForgotPassword" style="display:none;">
+      <h3>Réinitialisation du mot de passe</h3>
+      <p style="font-size:0.8rem; margin-bottom:16px;">Entrez votre email, nous vous enverrons un code PIN pour réinitialiser votre mot de passe.</p>
+      <input type="email" id="resetEmail" placeholder="Votre email" />
+      <button onclick="sendResetLink()">Envoyer le code PIN</button>
+      <p style="margin-top:12px; text-align:center;"><a href="#" onclick="showLogin()">Retour à la connexion</a></p>
+    </div>
+    <div id="modalResetPassword" style="display:none;">
+      <h3>Nouveau mot de passe</h3>
+      <input type="password" id="newPassword" placeholder="Nouveau mot de passe" />
+      <input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe" />
+      <button onclick="resetPassword()">Réinitialiser</button>
+      <p style="margin-top:12px; text-align:center;"><a href="#" onclick="showLogin()">Retour à la connexion</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE PROFIL -->
+<div id="profileModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <h3>Mon profil</h3>
+    <input type="text" id="profileName" placeholder="Nom complet">
+    <textarea id="profileBio" rows="4" placeholder="Bio (500 caractères max)"></textarea>
+    <input type="file" id="profilePhoto" accept="image/*">
+    <button onclick="updateProfile()">Enregistrer</button>
+  </div>
+</div>
+
+<div id="pinVerificationModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closePinModal()">&times;</span>
+    <h3>🔐 Vérification du code PIN</h3>
+    <p style="font-size:0.8rem; margin-bottom:16px;">Un code PIN à 6 chiffres vient d'être envoyé à votre adresse email.<br><strong>Veuillez le saisir ci-dessous :</strong></p>
+    <input type="text" id="pinInput" placeholder="Code PIN à 6 chiffres" maxlength="6" style="text-align:center; font-size:1.2rem; letter-spacing:4px;">
+    <button onclick="verifyPinAndReset()" style="margin-top:16px;">Vérifier et réinitialiser</button>
+    <p style="margin-top:12px; text-align:center;"><a href="#" onclick="resendPin()">📧 Renvoyer le code</a></p>
+  </div>
+</div>
+
+<script type="text/javascript">
+// ============================================================
+// ALIAS BCRYPT
+// ============================================================
+const bcrypt = dcodeIO.bcrypt;
+
+// ============================================================
+// CONFIGURATION SUPABASE
+// ============================================================
+const SUPABASE_URL = 'https://hbxehjffbxikkyzjcmij.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_gb8fh-HDOLox69dNslQX5w_L9PSSb3G';
+
+// Configuration EmailJS
+const EMAILJS_PUBLIC_KEY = 'zNxgUhUz3N29IqZOD';
+const EMAILJS_SERVICE_ID = 'service_dt9npkr';
+const EMAILJS_TEMPLATE_ID = 'template_hz9c9yf';
+
+// Initialisation EmailJS
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
+// Client Supabase
+const supabaseDB = {
+  async request(endpoint, method = 'GET', body = null) {
+    const headers = {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    };
+    const options = { method, headers };
+    if (body) options.body = JSON.stringify(body);
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, options);
+    const text = await response.text();
+    if (!text) return [];
+    if (!response.ok) throw new Error(text);
+    return JSON.parse(text);
+  },
+  
+  async getUsersByEmail(email) {
+    return this.request(`users?select=*&email=eq.${encodeURIComponent(email)}`);
+  },
+  
+  async getUserById(id) {
+    return this.request(`users?select=*&id=eq.${id}`);
+  },
+  
+  async insertUser(userData) {
+    return this.request('users', 'POST', userData);
+  },
+  
+  async updateUserPassword(userId, newPasswordHash) {
+    return this.request(`users?id=eq.${userId}`, 'PATCH', { password_hash: newPasswordHash, updated_at: new Date().toISOString() });
+  },
+  
+  async deleteUserSessions(userId) {
+    return this.request(`user_sessions?user_id=eq.${userId}`, 'DELETE');
+  },
+  
+  async insertSession(sessionData) {
+    return this.request('user_sessions', 'POST', sessionData);
+  },
+  
+  async createPasswordReset(userId, token, pinCode, expiresAt) {
+    return this.request('password_resets', 'POST', {
+      user_id: userId,
+      token: token,
+      pin_code: pinCode,
+      expires_at: expiresAt,
+      is_used: false
+    });
+  },
+  
+  async verifyPasswordReset(token, pinCode) {
+    const results = await this.request(`password_resets?select=*&token=eq.${token}&is_used=eq.false&expires_at=gt.${new Date().toISOString()}`);
+    if (results && results.length > 0 && results[0].pin_code === pinCode) {
+      return results[0];
+    }
+    return null;
+  },
+  
+  async markResetAsUsed(resetId) {
+    return this.request(`password_resets?id=eq.${resetId}`, 'PATCH', { is_used: true });
+  },
+  
+  async getCommunities() {
+    return this.request('communities?select=*');
+  },
+  
+  async insertPost(postData) {
+    return this.request('community_posts', 'POST', postData);
+  },
+  
+  // NOUVELLES MÉTHODES POUR LES FONCTIONNALITÉS AVANCÉES
+  async updateUserAvatar(userId, avatarUrl) {
+    return this.request(`users?id=eq.${userId}`, 'PATCH', { avatar_url: avatarUrl });
+  },
+  
+  async updateUserProfile(userId, data) {
+    return this.request(`users?id=eq.${userId}`, 'PATCH', data);
+  },
+  
+  async getAllUsers() {
+    return this.request('users?select=id,name,email,avatar_url,is_admin,is_paid,is_online');
+  },
+  
+  async getMessages(user1Id, user2Id) {
+    return this.request(`private_messages?select=*&or=(sender_id.eq.${user1Id},receiver_id.eq.${user1Id})&order=created_at.asc`);
+  },
+  
+  async insertMessage(messageData) {
+    return this.request('private_messages', 'POST', messageData);
+  },
+  
+  async insertResource(resourceData) {
+    return this.request('shared_resources', 'POST', resourceData);
+  },
+  
+  async getResources() {
+    return this.request('shared_resources?select=*,uploaded_by_name:users(name)&order=created_at.desc');
+  },
+  
+  async insertCompletedProject(projectData) {
+    return this.request('completed_projects', 'POST', projectData);
+  },
+  
+  async getCompletedProjects() {
+    return this.request('completed_projects?select=*&order=created_at.desc');
+  },
+  
+  async getEvents() {
+    return this.request('events?select=*&order=deadline.asc');
+  },
+  
+  async insertEventApplication(applicationData) {
+    return this.request('event_applications', 'POST', applicationData);
+  },
+  
+  async insertUserProject(projectData) {
+    return this.request('user_projects', 'POST', projectData);
+  },
+  
+  async getUserProjects(userId) {
+    return this.request(`user_projects?select=*&user_id=eq.${userId}&order=created_at.desc`);
+  }
+};
+
+// ============================================================
+// DONNÉES DES COMMUNAUTÉS AVEC STICKERS VECTORIELS
+// ============================================================
+let communitiesData = [
+  { 
+    id: 1, 
+    name: "Agriculture Intelligente", 
+    sticker: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 22v-4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M22 12h-4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>`,
+    access: "free", 
+    members: 342, 
+    description: "Discussions sur les pratiques agricoles durables, agriculture de précision et innovations agroécologiques.",
+    topics: ["Agroécologie", "Irrigation", "Agroforesterie"]
+  },
+  { 
+    id: 2, 
+    name: "Déforestation & Forêts", 
+    sticker: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+    access: "free", 
+    members: 218, 
+    description: "Analyses satellites, alertes déforestation, suivi des écosystèmes forestiers.",
+    topics: ["Télédétection", "NDVI", "Cartographie"]
+  },
+  { 
+    id: 3, 
+    name: "Gestion des Sols", 
+    sticker: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h20M5 3v18M19 3v18M3 7h18M3 11h18M3 15h18M3 19h18"/><path d="M8 7v10M12 7v10M16 7v10"/></svg>`,
+    access: "paid", 
+    members: 196, 
+    description: "Cartes détaillées, rapports experts, analyses pédologiques avancées.",
+    topics: ["Pédologie", "Érosion", "Fertilité"]
+  },
+  { 
+    id: 4, 
+    name: "Climat & Environnement", 
+    sticker: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`,
+    access: "paid", 
+    members: 275, 
+    description: "Modèles climatiques, formations avancées, données météorologiques.",
+    topics: ["Climatologie", "Prévisions", "Adaptation"]
+  }
+];
+
+let discussions = {
+  1: ["📢 Nouveau dataset NDVI disponible", "💡 Astuce GEE : utiliser ee.Reducer.percentile()", "❓ Comment masquer les nuages sur Sentinel-2 ?"],
+  2: ["🛰️ Alerte : baisse de 8% du couvert forestier au Kasaï", "📊 Script GEE pour analyse déforestation", "🗺️ Carte interactive des zones protégées"],
+  3: ["📈 Rapport mensuel sur l'érosion des sols - Mars 2025", "🔬 Méthodologie d'analyse des sols par télédétection"],
+  4: ["🌍 Prévisions climatiques pour l'Afrique centrale - Avril 2025", "🌡️ Modèle CMIP6 appliqué à la RDC", "💧 Analyse des précipitations saisonnières"]
+};
+
+let currentUser = null;
+let currentCommunityId = null;
+let activeChatUser = null;
+let resetToken = null;
+
+function saveDiscussions() {
+  localStorage.setItem('gada_discussions', JSON.stringify(discussions));
+}
+
+function loadDiscussionsFromStorage() {
+  const saved = localStorage.getItem('gada_discussions');
+  if (saved) discussions = JSON.parse(saved);
+}
+
+function isAdmin() {
+  return currentUser && currentUser.email === 'gadasolution.rdc@gmail.com';
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function showTemporaryMessage(message, isError = false) {
+  const msgDiv = document.createElement('div');
+  msgDiv.textContent = message;
+  msgDiv.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: ${isError ? '#e85d04' : '#0066b3'};
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 2000;
+    animation: fadeOut 3s forwards;
+    font-size: 0.8rem;
+    font-weight: 500;
+  `;
+  document.body.appendChild(msgDiv);
+  setTimeout(() => msgDiv.remove(), 3000);
+}
+
+// ============================================================
+// 1. UPLOAD DE PHOTO DE PROFIL AVEC APERÇU
+// ============================================================
+
+async function uploadProfilePhoto(file) {
+    const fileName = `${currentUser.id}_${Date.now()}.${file.name.split('.').pop()}`;
+    
+    const response = await fetch(`${SUPABASE_URL}/storage/v1/object/avatars/${fileName}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'apikey': SUPABASE_ANON_KEY
+        },
+        body: file
+    });
+    
+    if (response.ok) {
+        const avatarUrl = `${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`;
+        await supabaseDB.updateUserAvatar(currentUser.id, avatarUrl);
+        currentUser.avatar_url = avatarUrl;
+        
+        updateNav();
+        showTemporaryMessage("✅ Photo de profil mise à jour !");
+        return avatarUrl;
+    }
+    return null;
+}
+
+async function updateProfile() {
+    const name = document.getElementById('profileName').value;
+    const bio = document.getElementById('profileBio').value;
+    const photoFile = document.getElementById('profilePhoto').files[0];
+    
+    let avatarUrl = currentUser.avatar_url;
+    
+    if (photoFile) {
+        avatarUrl = await uploadProfilePhoto(photoFile);
+    }
+    
+    await supabaseDB.updateUserProfile(currentUser.id, { 
+        name, 
+        bio, 
+        avatar_url: avatarUrl,
+        updated_at: new Date().toISOString()
+    });
+    
+    currentUser.name = name;
+    currentUser.bio = bio;
+    currentUser.avatar_url = avatarUrl;
+    
+    showTemporaryMessage("✅ Profil mis à jour !");
+    closeModal();
+}
+
+function openProfileEditor() {
+    const modal = document.getElementById('profileModal');
+    document.getElementById('profileName').value = currentUser?.name || '';
+    document.getElementById('profileBio').value = currentUser?.bio || '';
+    modal.style.display = 'flex';
+}
+
+// ============================================================
+// 2. PUBLICATION AVEC FICHIERS MULTIPLES
+// ============================================================
+
+async function uploadPostFiles(files) {
+    const fileUrls = [];
+    const fileNames = [];
+    const fileTypes = [];
+    
+    for (let file of files) {
+        const fileName = `${currentUser.id}_${Date.now()}_${file.name}`;
+        const response = await fetch(`${SUPABASE_URL}/storage/v1/object/posts/${fileName}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'apikey': SUPABASE_ANON_KEY
+            },
+            body: file
+        });
+        
+        if (response.ok) {
+            const fileUrl = `${SUPABASE_URL}/storage/v1/object/public/posts/${fileName}`;
+            fileUrls.push(fileUrl);
+            fileNames.push(file.name);
+            fileTypes.push(file.type);
+        }
+    }
+    
+    return { fileUrls, fileNames, fileTypes };
+}
+
+async function publishPost() {
+    if (!currentUser) {
+        showTemporaryMessage("Connectez-vous pour publier", true);
+        openModal('login');
+        return;
+    }
+    
+    const content = document.getElementById('newPostInput').value;
+    const files = document.getElementById('postFiles').files;
+    
+    if (!content.trim() && files.length === 0) {
+        showTemporaryMessage("Veuillez écrire un message ou joindre un fichier", true);
+        return;
+    }
+    
+    let fileUrls = [], fileNames = [], fileTypes = [];
+    
+    if (files.length > 0) {
+        const uploadResult = await uploadPostFiles(files);
+        fileUrls = uploadResult.fileUrls;
+        fileNames = uploadResult.fileNames;
+        fileTypes = uploadResult.fileTypes;
+    }
+    
+    if (!discussions[currentCommunityId]) discussions[currentCommunityId] = [];
+    
+    let postContent = content;
+    if (fileUrls.length > 0) {
+        postContent += `\n\n📎 Fichiers joints: ${fileNames.join(', ')}`;
+    }
+    
+    const formattedPost = isAdmin() ? `👑 ADMIN - ${postContent}` : postContent;
+    discussions[currentCommunityId].unshift(formattedPost);
+    saveDiscussions();
+    
+    document.getElementById('newPostInput').value = '';
+    document.getElementById('postFiles').value = '';
+    openCommunity(currentCommunityId);
+    showTemporaryMessage(isAdmin() ? "👑 Publication administrateur envoyée !" : "📢 Publication envoyée !");
+}
+
+// ============================================================
+// 3. MESSAGERIE PRIVÉE
+// ============================================================
+
+async function loadMembersList() {
+    const members = await supabaseDB.getAllUsers();
+    const container = document.getElementById('membersListContainer');
+    
+    if (!container) return;
+    
+    container.innerHTML = members
+        .filter(m => m.id !== currentUser?.id)
+        .map(m => `
+            <div class="member-chat-item" onclick="startChat('${m.id}', '${escapeHtml(m.name)}')">
+                <img src="${m.avatar_url || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%230066b3%22%3E%3Cpath d=%22M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z%22/%3E%3C/svg%3E'}" class="member-avatar-sm">
+                <div class="member-info">
+                    <strong>${escapeHtml(m.name)}</strong>
+                    <span class="member-status ${m.is_online ? 'online' : 'offline'}"></span>
+                </div>
+            </div>
+        `).join('');
+}
+
+async function startChat(userId, userName) {
+    if (!currentUser) {
+        showTemporaryMessage("Connectez-vous pour discuter", true);
+        openModal('login');
+        return;
+    }
+    
+    activeChatUser = { id: userId, name: userName };
+    
+    const chatPanel = document.getElementById('privateChatPanel');
+    const chatWithSpan = document.getElementById('chatWithName');
+    const messagesContainer = document.getElementById('privateMessages');
+    
+    chatWithSpan.textContent = userName;
+    
+    const messages = await supabaseDB.getMessages(currentUser.id, userId);
+    
+    messagesContainer.innerHTML = messages.map(m => `
+        <div class="chat-bubble ${m.sender_id === currentUser.id ? 'sent' : 'received'}">
+            <div class="bubble-text">${escapeHtml(m.content)}</div>
+            <div class="bubble-time">${new Date(m.created_at).toLocaleTimeString()}</div>
+        </div>
+    `).join('');
+    
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    chatPanel.style.display = 'flex';
+}
+
+async function sendPrivateMessage() {
+    if (!currentUser || !activeChatUser) return;
+    
+    const input = document.getElementById('privateMessageInput');
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    await supabaseDB.insertMessage({
+        sender_id: currentUser.id,
+        receiver_id: activeChatUser.id,
+        content: content
+    });
+    
+    const messagesContainer = document.getElementById('privateMessages');
+    messagesContainer.innerHTML += `
+        <div class="chat-bubble sent">
+            <div class="bubble-text">${escapeHtml(content)}</div>
+            <div class="bubble-time">À l'instant</div>
+        </div>
+    `;
+    
+    input.value = '';
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// ============================================================
+// AUTHENTIFICATION
+// ============================================================
+
+async function register() {
+  const name = document.getElementById('regName').value;
+  const email = document.getElementById('regEmail').value;
+  const password = document.getElementById('regPassword').value;
+  
+  if (!name || !email || !password) {
+    alert("Tous les champs sont requis");
+    return;
+  }
+  
+  try {
+    const existingUsers = await supabaseDB.getUsersByEmail(email);
+    if (existingUsers && existingUsers.length > 0) {
+      alert("Cet email est déjà utilisé");
+      return;
+    }
+    
+    const salt = bcrypt.genSaltSync(10);
+    const passwordHash = bcrypt.hashSync(password, salt);
+    const isAdminAccount = (email === 'gadasolution.rdc@gmail.com');
+    
+    const newUsers = await supabaseDB.insertUser({
+      email, name, password_hash: passwordHash,
+      is_admin: isAdminAccount, is_paid: isAdminAccount,
+      created_at: new Date().toISOString()
+    });
+    
+    if (!newUsers || newUsers.length === 0) throw new Error("Erreur création utilisateur");
+    const newUser = newUsers[0];
+    
+    const token = btoa(email + Date.now() + Math.random());
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    await supabaseDB.insertSession({ user_id: newUser.id, token, expires_at: expiresAt });
+    
+    currentUser = { id: newUser.id, name, email, is_admin: newUser.is_admin, is_paid: newUser.is_paid, token, avatar_url: null, bio: null };
+    localStorage.setItem('gada_user', JSON.stringify({ id: newUser.id, name: newUser.name, email: newUser.email, token, expires_at: expiresAt, is_admin: currentUser.is_admin, is_paid: currentUser.is_paid }));
+    
+    closeModal();
+    updateNav();
+    loadCommunities();
+    showTemporaryMessage(isAdminAccount ? "👑 Bienvenue Administrateur GADA !" : "✅ Inscription réussie !");
+  } catch (error) {
+    alert("Erreur: " + error.message);
+  }
+}
+
+async function login() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  
+  try {
+    const users = await supabaseDB.getUsersByEmail(email);
+    if (!users || users.length === 0) { alert("Email ou mot de passe incorrect"); return; }
+    const user = users[0];
+    if (!bcrypt.compareSync(password, user.password_hash)) { alert("Email ou mot de passe incorrect"); return; }
+    
+    const token = btoa(email + Date.now() + Math.random());
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    await supabaseDB.insertSession({ user_id: user.id, token, expires_at: expiresAt });
+    
+    currentUser = { id: user.id, name: user.name, email: user.email, is_admin: user.is_admin, is_paid: user.is_paid, token, avatar_url: user.avatar_url, bio: user.bio };
+    localStorage.setItem('gada_user', JSON.stringify({ id: user.id, name: user.name, email: user.email, token, expires_at: expiresAt, is_admin: currentUser.is_admin, is_paid: currentUser.is_paid }));
+    
+    closeModal();
+    updateNav();
+    loadCommunities();
+    showTemporaryMessage(user.is_admin ? "👑 Mode Administrateur activé" : "✅ Connexion réussie !");
+  } catch (error) {
+    alert("Erreur: " + error.message);
+  }
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('gada_user');
+  updateNavLoggedOut();
+  loadCommunities();
+  showTemporaryMessage("👋 Vous êtes déconnecté");
+  closeDropdown();
+}
+
+async function checkSession() {
+  loadDiscussionsFromStorage();
+  const saved = localStorage.getItem('gada_user');
+  
+  if (!saved) {
+    updateNavLoggedOut();
+    loadCommunities();
+    return;
+  }
+  
+  const session = JSON.parse(saved);
+  
+  if (new Date(session.expires_at) < new Date()) {
+    localStorage.removeItem('gada_user');
+    updateNavLoggedOut();
+    loadCommunities();
+    showTemporaryMessage("Session expirée, veuillez vous reconnecter", true);
+    return;
+  }
+  
+  try {
+    const users = await supabaseDB.getUserById(session.id);
+    if (!users || users.length === 0) {
+      localStorage.removeItem('gada_user');
+      updateNavLoggedOut();
+      loadCommunities();
+      return;
+    }
+    const user = users[0];
+    currentUser = { id: user.id, name: user.name, email: user.email, is_admin: user.is_admin, is_paid: user.is_paid, token: session.token, avatar_url: user.avatar_url, bio: user.bio };
+    updateNav();
+    loadCommunities();
+  } catch (error) {
+    console.error("Erreur vérification session:", error);
+    updateNavLoggedOut();
+    loadCommunities();
+  }
+}
+
+// ============================================================
+// MOT DE PASSE OUBLIÉ - AVEC EMAILJS
+// ============================================================
+
+function showForgotPassword() {
+  document.getElementById('modalLogin').style.display = 'none';
+  document.getElementById('modalRegister').style.display = 'none';
+  document.getElementById('modalForgotPassword').style.display = 'block';
+  document.getElementById('modalResetPassword').style.display = 'none';
+}
+
+async function sendResetLink() {
+  const email = document.getElementById('resetEmail').value;
+  if (!email) {
+    alert("Veuillez entrer votre email");
+    return;
+  }
+  
+  const btn = document.querySelector('#modalForgotPassword button');
+  const originalText = btn.textContent;
+  btn.textContent = "⏳ Envoi en cours...";
+  btn.disabled = true;
+  
+  try {
+    const users = await supabaseDB.getUsersByEmail(email);
+    if (!users || users.length === 0) {
+      alert("Aucun compte associé à cet email");
+      return;
+    }
+    
+    const user = users[0];
+    const pinCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const token = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    
+    await supabaseDB.createPasswordReset(user.id, token, pinCode, expiresAt);
+    
+    sessionStorage.setItem('reset_token', token);
+    sessionStorage.setItem('reset_email', email);
+    sessionStorage.setItem('reset_pin', pinCode);
+    
+    const templateParams = { email: email, nouveau_pin: pinCode };
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+    
+    showPinVerificationModal();
+    closeModal();
+    
+  } catch (error) {
+    console.error("Erreur EmailJS:", error);
+    alert("Erreur lors de l'envoi de l'email. Détails: " + error.message);
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+function showPinVerificationModal() {
+  const pinModal = document.getElementById('pinVerificationModal');
+  if (pinModal) {
+    pinModal.style.display = 'flex';
+    document.getElementById('pinInput').value = '';
+  }
+}
+
+function closePinModal() {
+  const pinModal = document.getElementById('pinVerificationModal');
+  if (pinModal) pinModal.style.display = 'none';
+}
+
+async function verifyPinAndReset() {
+  const enteredPin = document.getElementById('pinInput').value;
+  const token = sessionStorage.getItem('reset_token');
+  
+  if (!enteredPin || enteredPin.length !== 6) {
+    alert("Veuillez entrer le code PIN à 6 chiffres");
+    return;
+  }
+  
+  if (!token) {
+    alert("Session expirée. Veuillez refaire une demande.");
+    closePinModal();
+    showForgotPassword();
+    return;
+  }
+  
+  try {
+    const resetRecord = await supabaseDB.verifyPasswordReset(token, enteredPin);
+    
+    if (!resetRecord) {
+      alert("❌ Code PIN incorrect ou expiré. Veuillez réessayer.");
+      return;
+    }
+    
+    sessionStorage.setItem('reset_id', resetRecord.id);
+    sessionStorage.setItem('reset_user_id', resetRecord.user_id);
+    
+    closePinModal();
+    openModal('reset');
+    
+  } catch (error) {
+    alert("Erreur: " + error.message);
+  }
+}
+
+async function resendPin() {
+  const email = sessionStorage.getItem('reset_email');
+  if (!email) {
+    showForgotPassword();
+    return;
+  }
+  
+  try {
+    const users = await supabaseDB.getUsersByEmail(email);
+    if (!users || users.length === 0) return;
+    
+    const user = users[0];
+    const newPin = Math.floor(100000 + Math.random() * 900000).toString();
+    const token = sessionStorage.getItem('reset_token');
+    
+    if (token) {
+      await supabaseDB.request(`password_resets?token=eq.${token}`, 'DELETE');
+    }
+    
+    const newToken = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    
+    await supabaseDB.createPasswordReset(user.id, newToken, newPin, expiresAt);
+    
+    sessionStorage.setItem('reset_token', newToken);
+    sessionStorage.setItem('reset_pin', newPin);
+    
+    const templateParams = { email: email, nouveau_pin: newPin };
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+    
+    showTemporaryMessage("✅ Nouveau code PIN envoyé ! Vérifiez votre email.");
+    
+  } catch (error) {
+    alert("Erreur lors du renvoi du code: " + error.message);
+  }
+}
+
+async function resetPassword() {
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  
+  if (!newPassword || !confirmPassword) {
+    alert("Veuillez remplir tous les champs");
+    return;
+  }
+  
+  if (newPassword !== confirmPassword) {
+    alert("Les mots de passe ne correspondent pas");
+    return;
+  }
+  
+  if (newPassword.length < 6) {
+    alert("Le mot de passe doit contenir au moins 6 caractères");
+    return;
+  }
+  
+  const resetId = sessionStorage.getItem('reset_id');
+  const userId = sessionStorage.getItem('reset_user_id');
+  
+  if (!resetId || !userId) {
+    alert("Session expirée. Veuillez refaire une demande.");
+    showLogin();
+    return;
+  }
+  
+  try {
+    const salt = bcrypt.genSaltSync(10);
+    const newPasswordHash = bcrypt.hashSync(newPassword, salt);
+    
+    await supabaseDB.updateUserPassword(userId, newPasswordHash);
+    await supabaseDB.deleteUserSessions(userId);
+    await supabaseDB.markResetAsUsed(resetId);
+    
+    sessionStorage.removeItem('reset_token');
+    sessionStorage.removeItem('reset_email');
+    sessionStorage.removeItem('reset_pin');
+    sessionStorage.removeItem('reset_id');
+    sessionStorage.removeItem('reset_user_id');
+    
+    showTemporaryMessage("✅ Mot de passe réinitialisé avec succès ! Connectez-vous.");
+    showLogin();
+    
+  } catch (error) {
+    alert("Erreur: " + error.message);
+  }
+}
+
+// ============================================================
+// UI / NAVIGATION
+// ============================================================
+
+function updateNav() {
+  const navActions = document.getElementById('navActions');
+  const adminBadge = isAdmin() ? '<span style="background:#e85d04; color:white; padding:2px 8px; border-radius:20px; font-size:0.6rem; margin-left:8px;"><i class="fas fa-crown"></i> ADMIN</span>' : '';
+  
+  navActions.innerHTML = `
+    <div class="user-avatar" onclick="toggleDropdown()">
+      <i class="fas fa-user-circle"></i>
+      <span>${currentUser?.name || ''}${adminBadge}</span>
+      <i class="fas fa-chevron-down" style="font-size:0.6rem; margin-left:6px;"></i>
+    </div>
+    <div class="dropdown-menu" id="userDropdown">
+      <a onclick="openDashboard()"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a>
+      <a onclick="openProfileEditor()"><i class="fas fa-user"></i> Mon profil</a>
+      <a onclick="showMyProjects()"><i class="fas fa-folder"></i> Mes projets</a>
+      <a onclick="loadMembersList()"><i class="fas fa-comments"></i> Messages privés</a>
+      <hr>
+      <a onclick="logout()" style="color:#e85d04;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+    </div>
+    ${isAdmin() ? '<button class="admin-panel-btn" onclick="openAdminPanel()"><i class="fas fa-shield-alt"></i> Panel Admin</button>' : ''}
+  `;
+}
+
+function updateNavLoggedOut() {
+  const navActions = document.getElementById('navActions');
+  navActions.innerHTML = `<button class="btn-nav btn-nav-outline" onclick="openModal('login')">Se connecter</button>
+                          <button class="btn-nav btn-nav-primary" onclick="openModal('register')">S'inscrire</button>`;
+}
+
+function toggleDropdown() {
+  const dropdown = document.getElementById('userDropdown');
+  if (dropdown) dropdown.classList.toggle('show');
+}
+
+function closeDropdown() {
+  const dropdown = document.getElementById('userDropdown');
+  if (dropdown) dropdown.classList.remove('show');
+}
+
+function viewProfile() {
+  alert(`📋 Mon profil\n\nNom: ${currentUser?.name}\nEmail: ${currentUser?.email}\nBio: ${currentUser?.bio || 'Non renseignée'}\nStatut: ${currentUser?.is_admin ? 'Administrateur' : (currentUser?.is_paid ? 'Membre Premium' : 'Membre Gratuit')}`);
+  closeDropdown();
+}
+
+function openDashboard() {
+  if (isAdmin()) {
+    alert(`👑 Tableau de bord Administrateur\n\nBienvenue ${currentUser?.name || ''} !\n\n📌 Privilèges :\n- Accès à TOUTES les communautés\n- Publication et modération\n\n📧 ${currentUser?.email || ''}`);
+  } else {
+    alert(`📚 Tableau de bord GADA\n\nBienvenue ${currentUser?.name || ''} !\n\n📧 ${currentUser?.email || ''}\n⭐ Statut: ${currentUser?.is_paid ? 'Membre Premium' : 'Membre Gratuit'}`);
+  }
+  closeDropdown();
+}
+
+function openAdminPanel() {
+  if (!isAdmin()) return;
+  let stats = "";
+  for (let id in discussions) {
+    const comm = communitiesData.find(c => c.id == id);
+    stats += `\n- ${comm ? comm.name : 'Comm ' + id} : ${discussions[id].length} messages`;
+  }
+  alert("👑 PANEL ADMINISTRATEUR GADA\n\n📊 Statistiques des communautés:" + stats + "\n\n✅ Accès complet à toutes les communautés\n✅ Publication et modération");
+}
+
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('userDropdown');
+  const avatar = document.querySelector('.user-avatar');
+  if (dropdown && avatar && !avatar.contains(e.target) && !dropdown.contains(e.target)) {
+    dropdown.classList.remove('show');
+  }
+});
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(type) {
+  document.getElementById('authModal').style.display = 'flex';
+  document.getElementById('modalLogin').style.display = 'none';
+  document.getElementById('modalRegister').style.display = 'none';
+  document.getElementById('modalForgotPassword').style.display = 'none';
+  document.getElementById('modalResetPassword').style.display = 'none';
+  
+  if (type === 'login') document.getElementById('modalLogin').style.display = 'block';
+  else if (type === 'register') document.getElementById('modalRegister').style.display = 'block';
+  else if (type === 'reset') document.getElementById('modalResetPassword').style.display = 'block';
+}
+
+function closeModal() { document.getElementById('authModal').style.display = 'none'; }
+function showRegister() { openModal('register'); }
+function showLogin() { openModal('login'); }
+
+// ============================================================
+// COMMUNAUTÉS
+// ============================================================
+
+async function loadCommunitiesFromSupabase() {
+  try {
+    const communities = await supabaseDB.getCommunities();
+    if (communities && communities.length > 0) {
+      communitiesData = communities.map(c => ({
+        id: c.id,
+        name: c.name,
+        sticker: `<i class="${c.icon_class || 'fas fa-users'}"></i>`,
+        access: c.access_type || 'free',
+        members: c.member_count || 0,
+        description: c.description || '',
+        topics: []
+      }));
+    }
+  } catch (error) {
+    console.log("Utilisation des communautés par défaut");
+  }
+}
+
+async function loadCommunities() {
+  await loadCommunitiesFromSupabase();
+  
+  const container = document.getElementById('communitiesContainer');
+  const isUserAdmin = isAdmin();
+  
+  if (!container) return;
+  
+  container.innerHTML = communitiesData.map(comm => {
+    let badgeClass = comm.access === 'free' ? 'tag-free' : 'tag-paid';
+    let badgeText = comm.access === 'free' ? 'Gratuit' : 'Premium ⭐';
+    let buttonClass = 'access-button';
+    let buttonHtml = '';
+    
+    if (isUserAdmin) {
+      buttonClass += ' admin';
+      buttonHtml = `<button class="${buttonClass}" onclick="openCommunity(${comm.id})"><i class="fas fa-crown"></i> Accès administrateur</button>`;
+    } else if (comm.access === 'free') {
+      buttonClass += ' free';
+      buttonHtml = `<button class="${buttonClass}" onclick="openCommunity(${comm.id})"><i class="fas fa-door-open"></i> Rejoindre la communauté</button>`;
+    } else {
+      buttonClass += ' paid';
+      buttonHtml = `<button class="${buttonClass}" onclick="showPremiumAlert()"><i class="fas fa-gem"></i> Devenir membre Premium</button>`;
+    }
+    
+    return `
+      <div class="community-card" onclick="openCommunity(${comm.id})">
+        <div class="community-card-header">
+          <div class="community-sticker">
+            ${comm.sticker}
+          </div>
+          <h3>${comm.name}</h3>
+          <p class="community-description">${comm.description.substring(0, 100)}${comm.description.length > 100 ? '...' : ''}</p>
+        </div>
+        <div class="community-card-body">
+          <div class="community-stats">
+            <div class="community-stat">
+              <i class="fas fa-users"></i>
+              <span><strong>${comm.members}</strong> membres</span>
+            </div>
+            <div class="community-tag ${badgeClass}">${badgeText}</div>
+          </div>
+          <div class="community-topics">
+            ${comm.topics.map(topic => `<span class="tool-tag">${topic}</span>`).join('')}
+          </div>
+          ${buttonHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function openCommunity(id) {
+  const comm = communitiesData.find(c => c.id === id);
+  if (!comm) return;
+  
+  currentCommunityId = id;
+  
+  const hasAccess = isAdmin() || (comm.access !== 'paid') || (currentUser && currentUser.is_paid);
+  
+  if (!hasAccess) {
+    showTemporaryMessage("🔒 Cette communauté est réservée aux membres Premium", true);
+    return;
+  }
+  
+  const privateArea = document.getElementById('communityPrivateArea');
+  const titleElement = document.getElementById('currentCommunityTitle');
+  const feedContainer = document.getElementById('communityDiscussions');
+  const postsCountSpan = document.getElementById('postsCount');
+  
+  privateArea.style.display = 'block';
+  titleElement.innerHTML = `${comm.name}`;
+  
+  const posts = discussions[id] || [];
+  postsCountSpan.textContent = posts.length;
+  
+  if (posts.length === 0) {
+    feedContainer.innerHTML = `<div class="empty-feed"><i class="fas fa-comments"></i><p>Aucune publication pour le moment</p><span style="font-size: 0.7rem;">Soyez le premier à partager !</span></div>`;
+  } else {
+    feedContainer.innerHTML = posts.map((post, idx) => {
+      const isAdminPost = post.startsWith('👑 ADMIN');
+      const cleanContent = isAdminPost ? post.replace('👑 ADMIN - ', '') : post;
+      
+      return `
+        <div class="post-card ${isAdminPost ? 'highlight' : ''}">
+          <div class="post-header">
+            <div class="post-avatar ${isAdminPost ? 'admin' : ''}">
+              <i class="fas ${isAdminPost ? 'fa-crown' : 'fa-user'}"></i>
+            </div>
+            <div class="post-meta">
+              <strong>${isAdminPost ? 'Administrateur GADA' : (currentUser?.name || 'Membre')}</strong>
+              ${isAdminPost ? '<span class="post-badge">Admin</span>' : ''}
+              <div class="post-time">Publié à l'instant</div>
+            </div>
+          </div>
+          <div class="post-content">
+            ${escapeHtml(cleanContent).replace(/\n/g, '<br>')}
+          </div>
+          <div class="post-footer">
+            <button class="post-action" onclick="likePost(${id}, ${idx})"><i class="far fa-heart"></i> ${Math.floor(Math.random() * 20) + 1}</button>
+            <button class="post-action" onclick="sharePost(${id}, ${idx})"><i class="far fa-share-alt"></i> Partager</button>
+            ${isAdmin() ? `<button class="post-action delete" onclick="deletePost(${id}, ${idx})"><i class="far fa-trash-alt"></i> Supprimer</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  
+  privateArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showCommunityPreview(id) {
+  if (!currentUser) { 
+    showTemporaryMessage("Connectez-vous pour accéder à la communauté", true); 
+    openModal('login'); 
+  } else if (!isAdmin() && communitiesData.find(c => c.id === id)?.access === 'paid') {
+    showTemporaryMessage("⭐ Cette communauté nécessite un abonnement Premium", true);
+  } else {
+    openCommunity(id);
+  }
+}
+
+function deletePost(id, idx) {
+  if (isAdmin() && confirm("Supprimer cette publication ?")) {
+    discussions[id].splice(idx, 1);
+    saveDiscussions();
+    openCommunity(id);
+    showTemporaryMessage("🗑️ Publication supprimée");
+  }
+}
+
+// ============================================================
+// FONCTIONS UTILITAIRES
+// ============================================================
+
+function exploreModules() { showTemporaryMessage("📚 Chargement des modules de formation..."); }
+function understandConcept() { showTemporaryMessage("🧠 Quel concept souhaitez-vous comprendre ?"); }
+function startQuiz() { showTemporaryMessage("📝 Lancement du quiz rapide..."); }
+function getAssistance() { showTemporaryMessage("🆘 Assistance demandée, un expert vous répondra bientôt."); }
+function showHomeFeed() { showTemporaryMessage("🏠 Retour à l'accueil"); }
+function showMyProjects() { showTemporaryMessage("📁 Vos projets personnels"); }
+function showSchedule() { showTemporaryMessage("📅 Calendrier des formations"); }
+function downloadResource(resource) { showTemporaryMessage(`📥 Téléchargement de ${resource}...`); }
+function showPremiumAlert() { showTemporaryMessage("⭐ Cette communauté nécessite un abonnement Premium", true); }
+function likePost(id, idx) { showTemporaryMessage("❤️ Merci pour votre like !"); }
+function sharePost(id, idx) { showTemporaryMessage("📤 Fonctionnalité de partage à venir"); }
+
+// ============================================================
+// CHAT FLOTTANT
+// ============================================================
+const chatIcon = document.getElementById('chatIcon');
+const chatWindow = document.getElementById('chatWindow');
+const chatClose = document.getElementById('chatClose');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const messagesArea = document.getElementById('chatMessagesArea');
+const welcomeMsgDiv = document.getElementById('welcomeMessage');
+
+function typeWelcomeMessage() {
+  welcomeMsgDiv.textContent = isAdmin() ? "👑 Bonjour Administrateur GADA !" : "Bonjour, je suis GADA Chat. Comment puis-je vous aider ?";
+}
+
+chatIcon.onclick = () => { chatWindow.classList.toggle('open'); if (messagesArea.children.length === 1) typeWelcomeMessage(); };
+chatClose.onclick = () => chatWindow.classList.remove('open');
+chatSend.onclick = () => {
+  const msg = chatInput.value.trim();
+  if (msg) {
+    messagesArea.innerHTML += `<div class="chat-message user"><div class="message-content">${escapeHtml(msg)}</div></div>`;
+    chatInput.value = '';
+    setTimeout(() => { messagesArea.innerHTML += `<div class="chat-message bot"><div class="message-content">Merci pour votre message !</div></div>`; messagesArea.scrollTop = messagesArea.scrollHeight; }, 500);
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+  }
+};
+chatInput.onkeypress = (e) => { if (e.key === 'Enter') chatSend.click(); };
+
+// ============================================================
+// INITIALISATION
+// ============================================================
+window.onclick = function(e) { if (e.target === document.getElementById('authModal')) closeModal(); };
+checkSession();
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')), { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
+
+document.getElementById('contactForm')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    const res = await fetch(e.target.action, { method:'POST', body:new FormData(e.target), headers:{'Accept':'application/json'} });
+    if(res.ok) { e.target.reset(); document.getElementById('formSuccess').style.display='block'; setTimeout(()=>document.getElementById('formSuccess').style.display='none',5000); }
+  } catch { alert('Erreur réseau'); }
+});
+
+// Tawk.to Widget
+var Tawk_API = Tawk_API || {};
+var Tawk_LoadStart = new Date();
+Tawk_API.visitor = { name: "Visiteur GADA Academy", email: "" };
+Tawk_API.customStyle = { primaryColor: "#0066b3", secondaryColor: "#004c8a", chatBubbleTitle: "Support GADA Academy" };
+</script>
+<script type="text/javascript">
+(function(){
+var s1 = document.createElement("script");
+var s0 = document.getElementsByTagName("script")[0];
+s1.async = true;
+s1.src = 'https://embed.tawk.to/6a0a039b2184221c350f610f/1jorhs6lr';
+s1.charset = 'UTF-8';
+s1.setAttribute('crossorigin', '*');
+s0.parentNode.insertBefore(s1, s0);
+})();
+</script>
+<script>
+(function() {
+  var checkInterval = setInterval(function() {
+    if (typeof Tawk_API !== 'undefined' && Tawk_API && Tawk_API.hideWidget && Tawk_API.showWidget) {
+      clearInterval(checkInterval);
+      function isCommunityActive() {
+        if (window.location.hash === '#communities') return true;
+        var communitiesSection = document.getElementById('communities');
+        if (communitiesSection) {
+          var rect = communitiesSection.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 100 && rect.bottom > 0) return true;
+        }
+        return false;
+      }
+      function updateTawkVisibility() {
+        if (isCommunityActive()) Tawk_API.showWidget();
+        else Tawk_API.hideWidget();
+      }
+      Tawk_API.hideWidget();
+      window.addEventListener('hashchange', updateTawkVisibility);
+      window.addEventListener('scroll', updateTawkVisibility);
+      setTimeout(updateTawkVisibility, 500);
+    }
+  }, 200);
+})();
+</script>
+</body>
+</html>
