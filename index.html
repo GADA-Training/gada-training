@@ -78,21 +78,70 @@
         .message-btn { background:var(--green); border:none; border-radius:20px; padding:5px 10px; color:white; cursor:pointer; font-size:0.7rem; transition:transform 0.2s; }
         .message-btn:hover { transform:scale(1.05); }
 
-        /* IA Panel */
+        /* IA Panel - CORRECTION DU DÉBORDEMENT */
         .ia-panel { background:linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); border-radius:var(--radius); overflow:hidden; border:none; }
         .ia-header { padding:16px; border-bottom:1px solid rgba(255,255,255,0.08); }
         .ia-header h4 { color:white; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; }
         .ia-header p { color:rgba(255,255,255,0.5); font-size:0.7rem; margin-top:3px; }
         .ia-dot { width:8px; height:8px; border-radius:50%; background:#7dff9a; animation:pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        .ia-messages { padding:14px; display:flex; flex-direction:column; gap:8px; max-height:240px; overflow-y:auto; }
-        .ia-msg { font-size:0.75rem; line-height:1.5; }
-        .ia-msg.bot { color:rgba(255,255,255,0.85); display:flex; gap:8px; align-items:flex-start; }
-        .ia-msg.user { text-align:right; color:#9ef7b0; }
-        .ia-bot-av { width:22px; height:22px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; font-size:10px; color:white; flex-shrink:0; }
-        .ia-bubble { background:rgba(255,255,255,0.07); padding:7px 10px; border-radius:0 10px 10px 10px; flex:1; }
+        .ia-messages { 
+            padding:14px; 
+            display:flex; 
+            flex-direction:column; 
+            gap:12px; 
+            max-height:280px; 
+            overflow-y:auto; 
+            overflow-x:hidden;
+            word-wrap:break-word;
+            word-break:break-word;
+        }
+        .ia-msg { 
+            font-size:0.75rem; 
+            line-height:1.5; 
+            max-width:100%;
+            overflow-x:auto;
+        }
+        .ia-msg.bot { 
+            color:rgba(255,255,255,0.85); 
+            display:flex; 
+            gap:8px; 
+            align-items:flex-start; 
+            max-width:100%;
+        }
+        .ia-msg.user { 
+            text-align:right; 
+            color:#9ef7b0; 
+            max-width:100%;
+            padding:6px 10px;
+            background:rgba(255,255,255,0.05);
+            border-radius:12px;
+            margin-left:auto;
+            width:fit-content;
+        }
+        .ia-bot-av { 
+            width:24px; 
+            height:24px; 
+            border-radius:50%; 
+            background:var(--green); 
+            display:flex; 
+            align-items:center; 
+            justify-content:center; 
+            font-size:10px; 
+            color:white; 
+            flex-shrink:0; 
+        }
+        .ia-bubble { 
+            background:rgba(255,255,255,0.07); 
+            padding:8px 12px; 
+            border-radius:0 12px 12px 12px; 
+            flex:1; 
+            max-width:calc(100% - 32px);
+            word-wrap:break-word;
+            white-space:pre-wrap;
+        }
         .ia-input-row { display:flex; gap:6px; padding:10px 14px; border-top:1px solid rgba(255,255,255,0.08); }
-        .ia-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:white; padding:7px 12px; font-size:0.75rem; font-family:'Plus Jakarta Sans',sans-serif; }
+        .ia-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:white; padding:8px 12px; font-size:0.75rem; font-family:'Plus Jakarta Sans',sans-serif; }
         .ia-input-row input::placeholder { color:rgba(255,255,255,0.3); }
         .ia-input-row input:focus { outline:none; border-color:var(--green-l); }
         .ia-input-row button { background:var(--green); border:none; border-radius:20px; color:white; padding:7px 12px; cursor:pointer; font-size:12px; }
@@ -138,7 +187,7 @@
         .type-github { background:#f1f5f9; color:#334155; }
         .type-cloud { background:#eff6ff; color:#1d4ed8; }
         .type-photo { background:#fdf4ff; color:#7e22ce; }
-        .post-link { display:flex; align-items:center; gap:10px; background:var(--bg); border-radius:12px; padding:12px; margin-bottom:10px; text-decoration:none; color:var(--text); border:1px solid var(--border); transition:border-color 0.2s; }
+        .post-link { display:flex; align-items:center; gap:10px; background:var(--bg); border-radius:12px; padding:12px; margin-bottom:10px; text-decoration:none; color:var(--text); border:1px solid var(--border); transition:border-color 0.2s; word-break:break-all; }
         .post-link:hover { border-color:var(--green); }
         .post-link i { font-size:1.2rem; color:var(--green); }
         .post-link-name { font-size:0.82rem; font-weight:600; }
@@ -146,7 +195,7 @@
         .post-footer { padding:10px 16px; border-top:1px solid var(--border); display:flex; gap:12px; }
         .post-action { display:flex; align-items:center; gap:5px; font-size:0.75rem; color:var(--muted); cursor:pointer; padding:5px 8px; border-radius:8px; transition:all 0.15s; background:none; border:none; }
         .post-action:hover { background:var(--bg); color:var(--green); }
-        .post-caption { margin-bottom:10px; white-space: pre-line; }
+        .post-caption { margin-bottom:10px; white-space:pre-wrap; word-break:break-word; }
         .empty-state { text-align:center; padding:48px 20px; color:var(--muted); }
         .empty-state i { font-size:2.5rem; margin-bottom:12px; opacity:0.4; }
 
@@ -195,7 +244,7 @@
         .icon-r { background:#dbeafe; color:#1d4ed8; }
         .icon-excel { background:#dcfce7; color:#16a34a; }
         .icon-ppt { background:#fef3c7; color:#d97706; }
-        .file-name { flex:1; font-size:0.78rem; font-weight:600; color:var(--text); }
+        .file-name { flex:1; font-size:0.78rem; font-weight:600; color:var(--text); word-break:break-word; }
         .file-dl { display:flex; align-items:center; gap:5px; background:var(--green-pale); color:var(--green); padding:5px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; text-decoration:none; transition:all 0.18s; }
         .file-dl:hover { background:var(--green); color:white; }
 
@@ -210,7 +259,7 @@
         .chat-msg.them { align-self:flex-start; }
         .chat-msg.me { align-self:flex-end; }
         .chat-msg.admin { align-self:flex-end; }
-        .chat-bubble { padding:8px 12px; border-radius:14px; font-size:0.78rem; line-height:1.5; }
+        .chat-bubble { padding:8px 12px; border-radius:14px; font-size:0.78rem; line-height:1.5; word-break:break-word; }
         .chat-msg.them .chat-bubble { background:white; border:1px solid var(--border); border-bottom-left-radius:4px; color:var(--text); }
         .chat-msg.me .chat-bubble,.chat-msg.admin .chat-bubble { background:linear-gradient(135deg,var(--green),var(--blue)); color:white; border-bottom-right-radius:4px; }
         .chat-meta { font-size:0.62rem; color:var(--muted); margin-bottom:3px; font-weight:600; }
@@ -238,7 +287,7 @@
         .details-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; }
         .detail-item { background:var(--bg); padding:12px 14px; border-radius:12px; }
         .detail-item label { font-size:0.65rem; text-transform:uppercase; color:var(--muted); letter-spacing:0.8px; font-weight:700; display:block; margin-bottom:4px; }
-        .detail-item p { font-size:0.85rem; font-weight:600; color:var(--text); }
+        .detail-item p { font-size:0.85rem; font-weight:600; color:var(--text); word-break:break-word; }
         .edit-btn { background:linear-gradient(135deg,var(--green),var(--blue)); color:white; border:none; padding:10px 22px; border-radius:40px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; }
 
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:500; display:none; align-items:center; justify-content:center; }
@@ -664,9 +713,9 @@ function appendIAMessage(role, text) {
     const div = document.createElement('div');
     div.className = `ia-msg ${role === 'user' ? 'user' : 'bot'}`;
     if(role === 'assistant') {
-        div.innerHTML = `<div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div><div class="ia-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+        div.innerHTML = `<div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div><div class="ia-bubble">${text.replace(/\n/g,'<br>').replace(/^/, '')}</div>`;
     } else {
-        div.textContent = text;
+        div.innerHTML = `<div style="background:rgba(255,255,255,0.05);padding:6px 10px;border-radius:12px;display:inline-block;max-width:100%">${text.replace(/\n/g,'<br>')}</div>`;
     }
     msgsDiv.appendChild(div);
     msgsDiv.scrollTop = msgsDiv.scrollHeight;
@@ -692,25 +741,25 @@ async function sendToLLM() {
     if(allPosts.length > 0) allPosts.slice(0,30).forEach(p => { contexte += `   - [${p.type}] ${p.author}: ${p.postTitle || p.caption || p.fileName}\n`; });
     contexte += "\n👥 **MEMBRES ACTIFS:**\n";
     allMembres.slice(0,20).forEach(m => { contexte += `   • ${m.nom} - ${m.titre}\n`; });
-    contexte += "\n**INSTRUCTIONS:** Réponds de façon précise en te basant sur ces données.\n";
+    contexte += "\n**INSTRUCTIONS:** Réponds de façon précise en te basant sur ces données. Lis ATTENTIVEMENT le contenu du plan de formation et des fichiers listés.\n";
     const messages = [{ role: "system", content: contexte }, ...conversationHistory.slice(-10), { role: "user", content: question }];
     try {
         const resp = await fetch(AI_CONFIG.ENDPOINT, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.5, max_tokens: 1000 })
+            body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.5, max_tokens: 2000 })
         });
         const data = await resp.json();
         if(data.error) throw new Error(data.error);
         const reply = data.choices[0].message.content;
         appendIAMessage('assistant', reply);
         sauvegarderConversation(question, reply);
-    } catch(err) { appendIAMessage('assistant', "⚠️ Service IA indisponible."); }
+    } catch(err) { appendIAMessage('assistant', "⚠️ Service IA temporairement indisponible. Veuillez réessayer."); }
 }
 
 async function initIA() {
     const historique = await getHistoriqueConversations(5);
-    let msg = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\n🎯 Je peux voir TOUT ce qui est partagé sur la plateforme en temps réel : plan de formation, fichiers, publications, membres.\n\n🔍 Exemples : 'Quel est le calendrier ?', 'Détaille la session 5', 'Résume tous les fichiers partagés'.";
+    let msg = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\n🎯 Je peux voir TOUT ce qui est partagé sur la plateforme en temps réel : plan de formation complet avec toutes les sessions et objectifs, fichiers de formation, publications des membres.\n\n🔍 **Exemples de questions :**\n• 'Quel est le calendrier détaillé de la formation ?'\n• 'Décris-moi en détail la session 5 sur les modèles linéaires'\n• 'Quels sont tous les objectifs pédagogiques ?'\n• 'Explique-moi en profondeur le NDVI et comment le calculer'\n• 'Résume tous les fichiers partagés dans la semaine 1'\n\n📚 **Je lis et analyse LE CONTENU COMPLET** des documents et du plan de formation, pas seulement les titres !";
     appendIAMessage('assistant', msg);
 }
 
@@ -993,7 +1042,7 @@ function buildPostHtml(post){
             ${post.type==='doc'?'<span class="post-type-badge type-doc"><i class="fa-regular fa-file"></i> Document</span>':post.type==='github'?'<span class="post-type-badge type-github"><i class="fab fa-github"></i> GitHub</span>':post.type==='cloud'?'<span class="post-type-badge type-cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>':post.type==='photo'?'<span class="post-type-badge type-photo"><i class="fa-regular fa-image"></i> Photo</span>':''}
             ${post.postTitle?`<div style="font-size:1.05rem;font-weight:800;color:var(--text);line-height:1.4;margin-bottom:6px">${esc(post.postTitle)}</div>`:''}
             ${post.postSubtitle?`<div style="font-size:0.82rem;font-style:italic;color:var(--muted);margin-bottom:10px">${esc(post.postSubtitle)}</div>`:''}
-            ${post.caption?`<div class="post-caption" style="white-space:pre-line;margin-bottom:10px">${esc(post.caption)}</div>`:''}
+            ${post.caption?`<div class="post-caption" style="white-space:pre-wrap;margin-bottom:10px">${esc(post.caption)}</div>`:''}
             ${post.postLink?`<a href="${post.postLink}" target="_blank" class="post-link"><i class="fa-solid fa-external-link-alt"></i><div><div class="post-link-name">${post.postLink.replace(/^https?:\/\//,'').substring(0,60)}...</div><div class="post-link-sub">Lien externe</div></div></a>`:''}
             ${post.type==='photo'&&post.url?`<div class="media-card" onclick="openLightbox(this.dataset.url, this.dataset.name)" data-url="${post.url}" data-name="${esc(post.fileName||'Photo')}"><img src="${post.url}" alt="Photo"><div class="media-badge"><i class="fa-regular fa-image"></i></div><div class="media-overlay"><div class="media-overlay-label"><i class="fa-solid fa-expand"></i> Agrandir</div></div></div>`:post.url?`<a class="post-link" href="${post.url}" target="_blank"><i class="fa-solid ${post.type==='github'?'fa-code-branch':post.type==='cloud'?'fa-cloud':'fa-file'}"></i><div><div class="post-link-name">${esc(post.fileName||post.url)}</div><div class="post-link-sub">${post.type==='github'?'Repository GitHub':post.type==='cloud'?'Lien cloud':'Fichier'}</div></div></a>`:''}
         </div>
