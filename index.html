@@ -462,6 +462,7 @@
 <div class="toast" id="toast"></div>
 
 <div id="app" style="display:none">
+    <!-- TOPBAR CORRIGÉE -->
     <div class="topbar">
         <span class="topbar-logo">
             <img src="images/logo-gada.png" alt="GADA" onerror="this.style.display='none';this.nextSibling.style.display='inline'">
@@ -472,7 +473,12 @@
             <div class="user-av" id="topAvatar"><i class="fa-solid fa-user"></i></div>
             <span id="topName">…</span>
         </div>
-        <button class="btn-quit" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Quitter</button>
+        <button class="btn-quit" onclick="switchToTFC()" style="background:linear-gradient(135deg,var(--green),var(--blue));color:white;margin-right:10px;">
+            <i class="fa-solid fa-users"></i> Clients TFC
+        </button>
+        <button class="btn-quit" onclick="doLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Quitter
+        </button>
     </div>
 
     <div class="layout">
@@ -1908,6 +1914,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Fonction pour basculer vers l'espace Clients TFC
+function switchToTFC() {
+    document.getElementById('adminTfcPanel').style.display = 'block';
+    document.getElementById('view-feed').style.display = 'none';
+    document.getElementById('view-profile').style.display = 'none';
+    document.getElementById('view-projets').style.display = 'none';
+    document.getElementById('view-semaines').style.display = 'none';
+    document.querySelector('.layout').style.display = 'none';
+    toast('📋 Mode Clients TFC activé');
+    if (typeof loadClientsList === 'function') {
+        loadClientsList();
+    }
+}
+
+// Fonction pour revenir à la Formation
+function switchToTraining() {
+    document.getElementById('adminTfcPanel').style.display = 'none';
+    document.getElementById('view-feed').style.display = 'block';
+    document.getElementById('view-profile').style.display = 'none';
+    document.getElementById('view-projets').style.display = 'none';
+    document.getElementById('view-semaines').style.display = 'none';
+    document.querySelector('.layout').style.display = 'grid';
+    showView('feed');
+    toast('🌍 Mode Formation activé');
+}
 </script>
 </body>
 </html>
