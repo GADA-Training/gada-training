@@ -107,9 +107,6 @@
         .ia-msg.user { text-align:right; color:#9ef7b0; }
         .ia-bot-av { width:22px; height:22px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; font-size:10px; color:white; flex-shrink:0; }
         .ia-bubble { background:rgba(255,255,255,0.07); padding:7px 10px; border-radius:0 10px 10px 10px; flex:1; }
-        .ia-options { padding:0 14px 14px; display:flex; flex-direction:column; gap:5px; }
-        .ia-opt-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.8); padding:7px 12px; border-radius:10px; font-size:0.72rem; font-weight:600; cursor:pointer; text-align:left; transition:all 0.18s; font-family:'Plus Jakarta Sans',sans-serif; }
-        .ia-opt-btn:hover { background:rgba(255,255,255,0.12); color:white; }
         .ia-input-row { display:flex; gap:6px; padding:10px 14px; border-top:1px solid rgba(255,255,255,0.08); }
         .ia-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:white; padding:7px 12px; font-size:0.75rem; font-family:'Plus Jakarta Sans',sans-serif; }
         .ia-input-row input::placeholder { color:rgba(255,255,255,0.3); }
@@ -423,7 +420,7 @@
                 </div>
                 <div class="ia-messages" id="iaMsgs"></div>
                 <div class="ia-input-row">
-                    <input type="text" id="iaInput" placeholder="Votre question..." onkeypress="if(event.key==='Enter')sendToLLM()">
+                    <input type="text" id="iaInput" placeholder="Votre question... (ex: résume les fichiers partagés)" onkeypress="if(event.key==='Enter')sendToLLM()">
                     <button onclick="sendToLLM()"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -626,8 +623,101 @@ function toast(msg,dur=3000){const el=document.getElementById('toast');el.textCo
 function showAuthMsg(msg,isErr=true){const el=document.getElementById('authMsg');el.textContent=msg;el.className='auth-msg '+(isErr?'err':'ok');}
 
 // ══════════════════════════════════════════════
-// IA GROQ (NOUVEAU)
+// IA AVEC ACCÈS COMPLET À TOUTES LES DONNÉES
 // ══════════════════════════════════════════════
+
+async function getAllPosts() {
+    return new Promise((resolve) => {
+        db.ref('user_projects').orderByChild('timestamp').once('value', (snap) => {
+            const posts = [];
+            snap.forEach(child => {
+                const post = child.val();
+                posts.push({
+                    id: child.key,
+                    author: post.userName || post.userEmail?.split('@')[0] || 'Anonyme',
+                    authorEmail: post.userEmail || '',
+                    type: post.type || 'document',
+                    caption: post.caption || '',
+                    fileName: post.fileName || '',
+                    url: post.url || '',
+                    timestamp: new Date(post.timestamp).toLocaleString('fr-FR'),
+                    timestampRaw: post.timestamp || 0
+                });
+            });
+            posts.sort((a,b) => b.timestampRaw - a.timestampRaw);
+            resolve(posts);
+        });
+    });
+}
+
+async function getAllFichiersFormation() {
+    const fichiers = [];
+    Object.entries(SEMAINES_DATA).forEach(([semaine, data]) => {
+        if(data.fichiers && data.fichiers.length > 0) {
+            data.fichiers.forEach(f => {
+                fichiers.push({
+                    semaine: semaine,
+                    titre: data.titre,
+                    nom: f.nom,
+                    type: f.type,
+                    url: GITHUB_BASE + encodeURIComponent(f.nom)
+                });
+            });
+        }
+    });
+    return fichiers;
+}
+
+async function getAllMembres() {
+    return new Promise((resolve) => {
+        db.ref('user_profiles').once('value', (snap) => {
+            const membres = [];
+            snap.forEach(child => {
+                const m = child.val();
+                membres.push({
+                    nom: m.fullName || m.email?.split('@')[0],
+                    email: m.email,
+                    titre: m.title || 'Apprenant',
+                    pays: m.pays || '',
+                    dateInscription: m.createdAt ? new Date(m.createdAt).toLocaleDateString('fr-FR') : 'Inconnue'
+                });
+            });
+            resolve(membres);
+        });
+    });
+}
+
+function sauvegarderConversation(question, reponse) {
+    if(!currentUser) return;
+    db.ref(`ia_conversations/${currentUser.uid}`).push({
+        question: question,
+        reponse: reponse,
+        timestamp: Date.now(),
+        date: new Date().toLocaleString('fr-FR')
+    });
+}
+
+async function getHistoriqueConversations(limit = 20) {
+    return new Promise((resolve) => {
+        if(!currentUser) {
+            resolve([]);
+            return;
+        }
+        db.ref(`ia_conversations/${currentUser.uid}`).orderByChild('timestamp').limitToLast(limit).once('value', (snap) => {
+            const historique = [];
+            snap.forEach(child => {
+                const conv = child.val();
+                historique.push({
+                    question: conv.question,
+                    reponse: conv.reponse,
+                    date: conv.date
+                });
+            });
+            resolve(historique.reverse());
+        });
+    });
+}
+
 function appendIAMessage(role, text) {
     const msgsDiv = document.getElementById('iaMsgs');
     if(!msgsDiv) return;
@@ -648,17 +738,90 @@ async function sendToLLM() {
     const input = document.getElementById('iaInput');
     const question = input.value.trim();
     if(!question) return;
+    
     appendIAMessage('user', question);
     input.value = '';
     
-    const systemPrompt = `Tu es GADA Assistant, expert en formation "Modélisation spatiale & One Health". Tu enseignes : NDVI/NDWI/SAVI/LST, MaxEnt, Random Forest, GLM, ArcGIS Pro, RStudio, One Health. Réponds de façon pédagogique, courte (max 200 mots), en français. Si tu ne sais pas, dis-le poliment.`;
-    const messages = [{ role: "system", content: systemPrompt }, ...conversationHistory.slice(-8), { role: "user", content: question }];
+    toast("📡 Consultation de la base de connaissances...", 1500);
+    
+    const [allPosts, fichiersFormation, allMembres] = await Promise.all([
+        getAllPosts(),
+        getAllFichiersFormation(),
+        getAllMembres()
+    ]);
+    
+    let contexte = "🏫 **BASE DE CONNAISSANCES GADA TRAINING**\n\n";
+    
+    contexte += "📚 **FICHIERS DE FORMATION :**\n";
+    const fichiersParSemaine = {};
+    fichiersFormation.forEach(f => {
+        if(!fichiersParSemaine[f.semaine]) fichiersParSemaine[f.semaine] = [];
+        fichiersParSemaine[f.semaine].push(f.nom);
+    });
+    Object.entries(fichiersParSemaine).forEach(([semaine, fichiers]) => {
+        contexte += `   • ${semaine}: ${fichiers.join(', ')}\n`;
+    });
+    contexte += "\n";
+    
+    contexte += `📝 **PUBLICATIONS DES MEMBRES (${allPosts.length} au total) :**\n`;
+    if(allPosts.length > 0) {
+        const postsRecents = allPosts.slice(0, 30);
+        const statsParType = {};
+        allPosts.forEach(p => { statsParType[p.type] = (statsParType[p.type] || 0) + 1; });
+        
+        contexte += `   📊 Statistiques : ${Object.entries(statsParType).map(([t,c]) => `${t}: ${c}`).join(' | ')}\n`;
+        contexte += `   🕐 Dernières publications :\n`;
+        postsRecents.forEach(p => {
+            contexte += `      - [${p.type.toUpperCase()}] ${p.author} (${p.timestamp}): ${p.caption || p.fileName || p.url || 'Partage'}\n`;
+        });
+        if(allPosts.length > 30) {
+            contexte += `      ... et ${allPosts.length - 30} autres publications\n`;
+        }
+    } else {
+        contexte += "   Aucune publication pour le moment.\n";
+    }
+    contexte += "\n";
+    
+    contexte += `👥 **MEMBRES ACTIFS (${allMembres.length}) :**\n`;
+    allMembres.slice(0, 20).forEach(m => {
+        contexte += `   • ${m.nom} - ${m.titre}${m.pays ? ` (${m.pays})` : ''}\n`;
+    });
+    if(allMembres.length > 20) {
+        contexte += `   ... et ${allMembres.length - 20} autres membres\n`;
+    }
+    contexte += "\n";
+    
+    contexte += `**INSTRUCTIONS SPÉCIALES :**
+- Tu as accès à TOUTES les publications et fichiers partagés ci-dessus
+- Tu peux résumer, commenter, analyser tout ce contenu
+- Tu connais tous les membres et leurs contributions
+- Réponds de façon précise en te basant sur ces données
+- Si on te demande "résume les fichiers partagés", liste-les avec leurs auteurs
+- Sois pédagogique et utile\n\n`;
+    
+    const systemPrompt = `Tu es GADA Assistant, expert en formation "Modélisation spatiale & One Health". 
+Tu enseignes : NDVI/NDWI/SAVI/LST, MaxEnt, Random Forest, GLM, ArcGIS Pro, RStudio, One Health.
+
+${contexte}
+
+MAINTENANT, RÉPONDS À LA QUESTION DE L'UTILISATEUR :`;
+
+    const messages = [
+        { role: "system", content: systemPrompt },
+        ...conversationHistory.slice(-10),
+        { role: "user", content: question }
+    ];
     
     try {
         const resp = await fetch(AI_CONFIG.ENDPOINT, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.5, max_tokens: 500 })
+            body: JSON.stringify({ 
+                model: AI_CONFIG.MODEL, 
+                messages: messages, 
+                temperature: 0.5, 
+                max_tokens: 1000
+            })
         });
         const data = await resp.json();
         if(data.error) {
@@ -668,15 +831,33 @@ async function sendToLLM() {
         }
         const reply = data.choices[0].message.content;
         appendIAMessage('assistant', reply);
+        sauvegarderConversation(question, reply);
     } catch(err) {
         console.error(err);
         appendIAMessage('assistant', "❌ Erreur réseau. Vérifiez votre connexion.");
     }
 }
 
-function initIA() {
-    const welcome = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\nPosez-moi vos questions sur : NDVI, MaxEnt, One Health, ArcGIS Pro, RStudio, analyse spatiale...";
-    appendIAMessage('assistant', welcome);
+async function initIA() {
+    const historique = await getHistoriqueConversations(5);
+    
+    let messageBienvenue = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\n";
+    messageBienvenue += "🎯 **Je peux voir TOUT ce qui est partagé sur la plateforme en temps réel :**\n";
+    messageBienvenue += "• 📚 Tous les fichiers de formation des semaines\n";
+    messageBienvenue += "• 📝 Toutes les publications des membres\n";
+    messageBienvenue += "• 👥 Tous les membres de la communauté\n";
+    messageBienvenue += "• 💬 Mes conversations précédentes avec toi\n\n";
+    messageBienvenue += "🔍 **Exemples de questions :**\n";
+    messageBienvenue += "• 'Résume-moi tous les fichiers partagés'\n";
+    messageBienvenue += "• 'Qui a posté quoi récemment ?'\n";
+    messageBienvenue += "• 'De quoi parlait la publication de XXX ?'\n";
+    messageBienvenue += "• 'Explique-moi le NDVI'\n\n";
+    
+    if(historique.length > 0) {
+        messageBienvenue += `📜 **Je me souviens de nos ${historique.length} dernières conversations !**\n`;
+    }
+    
+    appendIAMessage('assistant', messageBienvenue);
 }
 
 // ══════════════════════════════════════════════
