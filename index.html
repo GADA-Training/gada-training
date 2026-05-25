@@ -605,6 +605,53 @@ const SEMAINES_DATA = {
 const GITHUB_BASE = "https://raw.githubusercontent.com/GADA-Training/gada-training/main/documents/";
 
 // ══════════════════════════════════════════════
+// CONTENU TEXTUEL DU PLAN DE FORMATION (AJOUTÉ)
+// ══════════════════════════════════════════════
+const CONTENU_PLAN_FORMATION = `
+📋 PLAN DE FORMATION GADA 2026 - MODÉLISATION SPATIALE & ONE HEALTH
+
+📅 CALENDRIER GÉNÉRAL :
+• Semaine 1 (17-23 mai) : Fondements R - Statistiques descriptives, nettoyage, AED
+• Semaine 2 (24-30 mai) : Modélisation R - NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest
+• Semaine 3 (31 mai-6 juin) : ArcGIS Bases - Interface, géoréférencement, KDE
+• Semaine 4 (7-17 juin) : ArcGIS Avancé - AHP, modélisation spatiale, carte décisionnelle
+
+📋 SESSIONS DE FORMATION (14 sessions de 3h chacune) :
+Session 1 - Introduction à R et RStudio
+Session 2 - Statistiques descriptives et visualisation
+Session 3 - Nettoyage et structuration des données
+Session 4 - Analyse exploratoire des données (AED)
+Session 5 - Modèles linéaires et logistiques appliqués en santé/agriculture
+Session 6 - Corrélations spatiales : NDVI, NDWI, SAVI, LST
+Session 7 - One Health et analyse multi-critères
+Session 8 - Introduction à ArcGIS Pro
+Session 9 - Géoréférencement et digitalisation
+Session 10 - Cartes de densité KDE
+Session 11 - MaxEnt et modélisation de distribution d'espèces
+Session 12 - Random Forest et GLM appliqués
+Session 13 - Analyse multicritère AHP
+Session 14 - Carte thématique décisionnelle et présentation finale
+
+🎯 OBJECTIFS PÉDAGOGIQUES :
+- Maîtriser les outils R et ArcGIS Pro pour l'analyse spatiale
+- Appliquer l'approche One Health aux problèmes sanitaires et environnementaux
+- Produire des cartes décisionnelles pour l'aide à la décision
+- Modéliser la distribution de maladies vectorielles (paludisme, etc.)
+- Analyser des indices de végétation (NDVI, NDWI, SAVI) et température (LST)
+
+👨‍🏫 INTERVENANTS :
+- Formateur principal : GADA Solution
+- Assistants techniques : Équipe R&D
+
+📚 OUTILS UTILISÉS :
+- RStudio (packages : terra, sf, ggplot2, randomForest, maxnet)
+- ArcGIS Pro (Spatial Analyst, Geostatistical Wizard)
+
+🏆 CERTIFICATION :
+À l'issue de la formation, les apprenants reçoivent une attestation de participation.
+`;
+
+// ══════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════
 let currentUser = null;
@@ -752,6 +799,10 @@ async function sendToLLM() {
     
     let contexte = "🏫 **BASE DE CONNAISSANCES GADA TRAINING**\n\n";
     
+    // ⭐ AJOUT : PLAN DE FORMATION COMPLET
+    contexte += "📋 **PLAN DE FORMATION COMPLET :**\n";
+    contexte += CONTENU_PLAN_FORMATION + "\n\n";
+    
     contexte += "📚 **FICHIERS DE FORMATION :**\n";
     const fichiersParSemaine = {};
     fichiersFormation.forEach(f => {
@@ -792,11 +843,17 @@ async function sendToLLM() {
     contexte += "\n";
     
     contexte += `**INSTRUCTIONS SPÉCIALES :**
+- Tu as accès au PLAN DE FORMATION COMPLET ci-dessus (calendrier, sessions, objectifs, intervenants)
 - Tu as accès à TOUTES les publications et fichiers partagés ci-dessus
-- Tu peux résumer, commenter, analyser tout ce contenu
 - Tu connais tous les membres et leurs contributions
-- Réponds de façon précise en te basant sur ces données
-- Si on te demande "résume les fichiers partagés", liste-les avec leurs auteurs
+- Réponds de façon précise en te basant sur ces données textuelles
+- Si on te demande le calendrier, les sessions ou les objectifs, réponds directement à partir du plan de formation
+- Tu peux répondre aux questions comme :
+  * "Quel est le calendrier de la formation ?" → Liste les semaines avec dates
+  * "Détaille-moi la session 5" → Décris les modèles linéaires
+  * "Quels sont les objectifs pédagogiques ?" → Liste les objectifs
+  * "Quand a lieu la session sur MaxEnt ?" → Semaine 2, session 11
+  * "Résume tous les fichiers partagés" → Liste les publications récentes
 - Sois pédagogique et utile\n\n`;
     
     const systemPrompt = `Tu es GADA Assistant, expert en formation "Modélisation spatiale & One Health". 
@@ -843,14 +900,17 @@ async function initIA() {
     
     let messageBienvenue = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\n";
     messageBienvenue += "🎯 **Je peux voir TOUT ce qui est partagé sur la plateforme en temps réel :**\n";
+    messageBienvenue += "• 📋 Plan de formation complet (calendrier, sessions, objectifs)\n";
     messageBienvenue += "• 📚 Tous les fichiers de formation des semaines\n";
     messageBienvenue += "• 📝 Toutes les publications des membres\n";
     messageBienvenue += "• 👥 Tous les membres de la communauté\n";
     messageBienvenue += "• 💬 Mes conversations précédentes avec toi\n\n";
     messageBienvenue += "🔍 **Exemples de questions :**\n";
-    messageBienvenue += "• 'Résume-moi tous les fichiers partagés'\n";
-    messageBienvenue += "• 'Qui a posté quoi récemment ?'\n";
-    messageBienvenue += "• 'De quoi parlait la publication de XXX ?'\n";
+    messageBienvenue += "• 'Quel est le calendrier de la formation ?'\n";
+    messageBienvenue += "• 'Détaille-moi la session 5'\n";
+    messageBienvenue += "• 'Quels sont les objectifs pédagogiques ?'\n";
+    messageBienvenue += "• 'Quand a lieu la session sur MaxEnt ?'\n";
+    messageBienvenue += "• 'Résume tous les fichiers partagés'\n";
     messageBienvenue += "• 'Explique-moi le NDVI'\n\n";
     
     if(historique.length > 0) {
