@@ -627,7 +627,7 @@
     </div>
 </div>
 
-<!-- Interface Client TFC (vue spécifique) -->
+<!-- Interface Client TFC (vue spécifique) AVEC ASSISTANT IA -->
 <div id="tfcClientView" style="display: none;">
     <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
         <span class="topbar-logo">
@@ -658,7 +658,7 @@
                     <h3 style="margin-bottom: 16px;"><i class="fa-solid fa-upload"></i> Déposer un document</h3>
                     <div class="file-drop-area" onclick="document.getElementById('tfcFileInput').click()">
                         <i class="fa-solid fa-cloud-upload-alt"></i>
-                        <p>Cliquez pour déposer votre document (PDF, DOCX, ZIP, R, XLSX)</p>
+                        <p>Cliquez pour déposer votre document (PDF, DOCX, ZIP, R, XLSX, PPTX, JPG, PNG)</p>
                         <p style="font-size: 0.7rem; color: var(--muted); margin-top: 8px;">Max 10MB</p>
                     </div>
                     <input type="file" id="tfcFileInput" style="display: none" onchange="uploadTfcDocumentClient(this)">
@@ -673,8 +673,9 @@
                 </div>
             </div>
             
+            <!-- ASSISTANT IA POUR CLIENTS TFC -->
             <div>
-                <div class="chat-panel" style="height: 500px;">
+                <div class="chat-panel" style="height: 500px; margin-bottom: 20px;">
                     <div class="chat-panel-header">
                         <h4><i class="fa-regular fa-comment-dots"></i> Discussion avec l'encadreur</h4>
                         <p>Réponse garantie sous 48h</p>
@@ -683,6 +684,24 @@
                     <div class="chat-input-row">
                         <input type="text" id="tfcChatInput" placeholder="Votre message..." onkeypress="if(event.key==='Enter')sendTfcMessageClient()">
                         <button class="chat-send-btn" onclick="sendTfcMessageClient()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+                <!-- IA Panel pour les clients TFC -->
+                <div class="ia-panel" style="height: 400px; margin-top: 0;">
+                    <div class="ia-header">
+                        <h4><div class="ia-dot"></div> 🤖 Assistant IA TFC</h4>
+                        <p>Conseils méthodologiques pour votre mémoire</p>
+                    </div>
+                    <div class="ia-messages" id="tfcIaMsgs" style="height: 280px;">
+                        <div class="ia-msg bot">
+                            <div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div>
+                            <div class="ia-bubble">👋 Bonjour ! Je suis votre assistant IA spécialisé dans l'accompagnement des TFC et mémoires. Je peux vous aider à :<br><br>📌 Structurer votre travail<br>📌 Formuler une problématique<br>📌 Organiser votre bibliographie<br>📌 Améliorer votre rédaction<br>📌 Préparer votre soutenance<br><br>Que souhaitez-vous ?</div>
+                        </div>
+                    </div>
+                    <div class="ia-input-row">
+                        <input type="text" id="tfcIaInput" placeholder="Votre question sur votre TFC..." onkeypress="if(event.key==='Enter')sendToTfcLLM()">
+                        <button onclick="sendToTfcLLM()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -768,6 +787,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
 <script>
 // ==================== CONFIGURATION FIREBASE ET DONNÉES ====================
@@ -782,6 +802,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const storage = firebase.storage();
 
 const AI_CONFIG = {
     API_KEY: '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',
@@ -1490,7 +1511,111 @@ let currentTfcClientData = null;
 let isTfcMode = false;
 let currentAdminClientId = null;
 
-// Sélecteur de monde pour l'admin
+// ==================== ASSISTANT IA POUR CLIENTS TFC ====================
+
+function appendTfcIAMessage(role, text) {
+    const msgsDiv = document.getElementById('tfcIaMsgs');
+    if (!msgsDiv) return;
+    const div = document.createElement('div');
+    div.className = `ia-msg ${role === 'user' ? 'user' : 'bot'}`;
+    if (role === 'assistant') {
+        div.innerHTML = `<div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div><div class="ia-bubble">${text.replace(/\n/g, '<br>')}</div>`;
+    } else {
+        div.innerHTML = `<div style="background:rgba(255,255,255,0.05);padding:6px 10px;border-radius:12px;display:inline-block;max-width:100%">${text.replace(/\n/g, '<br>')}</div>`;
+    }
+    msgsDiv.appendChild(div);
+    msgsDiv.scrollTop = msgsDiv.scrollHeight;
+}
+
+async function sendToTfcLLM() {
+    const input = document.getElementById('tfcIaInput');
+    const question = input.value.trim();
+    if (!question) return;
+    
+    appendTfcIAMessage('user', question);
+    input.value = '';
+    toast("📡 Consultation de l'assistant TFC...", 1500);
+    
+    let contexte = `Tu es un assistant académique bienveillant spécialisé dans l'accompagnement des étudiants pour leurs Travaux de Fin de Cycle (TFC), mémoires et thèses.
+
+📋 INFORMATIONS ÉTUDIANT :
+- Nom: ${currentTfcClientData?.name || 'Étudiant'}
+- Université: ${currentTfcClientData?.university || 'Non spécifiée'}
+- Sujet du TFC: ${currentTfcClientData?.tfc_topic || 'Non spécifié'}
+
+📚 CONSEILS GÉNÉRAUX POUR UN TFC/MÉMOIRE :
+1. Structure standard : Introduction, Revue de littérature, Méthodologie, Résultats, Discussion, Conclusion
+2. Une bonne problématique doit être claire, précise et faisable
+3. La revue de littérature doit mobiliser au moins 20-30 références récentes
+4. La méthodologie doit être détaillée et reproductible
+5. Les résultats doivent répondre à la problématique posée
+6. La discussion doit confronter vos résultats à la littérature existante
+7. La bibliographie doit être formatée correctement (APA, MLA, etc.)
+
+📖 RÈGLES DE RÉPONSE :
+- Sois bienveillant et encourageant
+- Donne des conseils pratiques et applicables
+- Propose des exemples concrets si possible
+- Si tu ne sais pas, propose des pistes de recherche
+- Structure tes réponses avec des puces ou des paragraphes courts
+
+Question de l'étudiant : ${question}
+
+RÉPONSE (conseils utiles, bienveillants et structurés) :`;
+    
+    const messages = [
+        { role: "system", content: contexte },
+        { role: "user", content: question }
+    ];
+    
+    try {
+        const resp = await fetch(AI_CONFIG.ENDPOINT, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                model: AI_CONFIG.MODEL, 
+                messages: messages, 
+                temperature: 0.6,
+                max_tokens: 1000
+            })
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        const reply = data.choices[0].message.content;
+        appendTfcIAMessage('assistant', reply);
+        
+        if (currentTfcClientId) {
+            await db.ref(`tfc_clients/${currentTfcClientId}/ia_conversations`).push({
+                question: question,
+                reponse: reply,
+                timestamp: Date.now()
+            });
+        }
+    } catch (err) { 
+        console.error(err);
+        appendTfcIAMessage('assistant', "⚠️ Service IA temporairement indisponible. Veuillez réessayer dans quelques instants."); 
+    }
+}
+
+async function loadTfcIaHistory() {
+    if (!currentTfcClientId) return;
+    const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/ia_conversations`).once('value');
+    const conversations = [];
+    snapshot.forEach(child => conversations.push(child.val()));
+    conversations.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
+    
+    const msgsDiv = document.getElementById('tfcIaMsgs');
+    if (msgsDiv && conversations.length > 0) {
+        msgsDiv.innerHTML = '';
+        conversations.forEach(conv => {
+            if (conv.question) appendTfcIAMessage('user', conv.question);
+            if (conv.reponse) appendTfcIAMessage('assistant', conv.reponse);
+        });
+        msgsDiv.scrollTop = msgsDiv.scrollHeight;
+    }
+}
+
+// ==================== SÉLECTEUR DE MONDE POUR ADMIN ====================
 function initWorldSelector() {
     const topbar = document.querySelector('.topbar');
     if (!topbar) return;
@@ -1534,7 +1659,7 @@ function switchWorld(world) {
     }
 }
 
-// Gestion des clients (admin)
+// ==================== GESTION DES CLIENTS (ADMIN) ====================
 function openAddClientModal() {
     document.getElementById('addClientModal').classList.add('active');
     document.getElementById('newClientName').value = '';
@@ -1574,31 +1699,23 @@ async function createTfcClient() {
     loadClientsList();
 }
 
-// AJOUTÉ : Fonction pour afficher et copier le code d'accès d'un client
 async function showClientAccessCode(clientId) {
-    // Chercher le code associé à ce client
     const snapshot = await db.ref('tfc_access_codes').once('value');
     let foundCode = null;
-    
     snapshot.forEach(child => {
         if (child.val().clientId === clientId) {
             foundCode = child.key;
         }
     });
-    
     if (foundCode) {
         toast(`📋 Code d'accès : ${foundCode}`);
-        // Copier dans le presse-papier
         navigator.clipboard.writeText(foundCode);
-        setTimeout(() => {
-            toast('✅ Code copié dans le presse-papier !');
-        }, 500);
+        setTimeout(() => toast('✅ Code copié dans le presse-papier !'), 500);
     } else {
         toast('❌ Aucun code trouvé pour ce client');
     }
 }
 
-// MODIFIÉ : loadClientsList avec le bouton "Code" ajouté
 async function loadClientsList() {
     const snapshot = await db.ref('tfc_clients').once('value');
     const clients = [];
@@ -1633,7 +1750,7 @@ async function loadClientsList() {
     `).join('');
 }
 
-// Vue admin pour un client
+// ==================== VUE ADMIN POUR UN CLIENT ====================
 async function openClientWorkspace(clientId) {
     currentAdminClientId = clientId;
     const snapshot = await db.ref(`tfc_clients/${clientId}`).once('value');
@@ -1755,7 +1872,7 @@ function sendTfcMessageAdmin() {
     input.value = '';
 }
 
-// Login client TFC
+// ==================== LOGIN CLIENT TFC ====================
 async function doClientLogin() {
     const code = document.getElementById('clientAccessCode').value.trim().toUpperCase();
     const email = document.getElementById('clientEmail').value.trim().toLowerCase();
@@ -1780,6 +1897,7 @@ async function doClientLogin() {
     document.getElementById('tfcClientTopName').textContent = client.name;
     loadClientDocuments();
     loadClientChat();
+    loadTfcIaHistory();
 }
 
 function logoutTfcClient() {
@@ -1876,7 +1994,7 @@ function sendTfcMessageClient() {
     input.value = '';
 }
 
-// Ajout de l'onglet client dans l'auth
+// ==================== AJOUT DE L'ONGLET CLIENT DANS L'AUTH ====================
 function addClientLoginTab() {
     const authTabs = document.querySelector('.auth-tabs');
     if (authTabs && !document.getElementById('clientLoginTabBtn')) {
@@ -1900,7 +2018,6 @@ function addClientLoginTab() {
     authBox.appendChild(clientForm);
 }
 
-// Surcharge de switchTab pour gérer client_login
 const originalSwitchTab = switchTab;
 window.switchTab = function(tab) {
     if (tab === 'client_login') {
@@ -1919,7 +2036,7 @@ window.switchTab = function(tab) {
     }
 };
 
-// Initialisation au chargement
+// ==================== INITIALISATION ====================
 document.addEventListener('DOMContentLoaded', () => {
     addClientLoginTab();
     if (currentUser?.email === ADMIN_EMAIL) initWorldSelector();
@@ -1940,12 +2057,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('tfcClientTopName').textContent = currentTfcClientData.name;
                 loadClientDocuments();
                 loadClientChat();
+                loadTfcIaHistory();
             }
         });
     }
 });
 
-// Fonction pour basculer vers l'espace Clients TFC
+// ==================== FONCTIONS DE BASCULE ====================
 function switchToTFC() {
     document.getElementById('adminTfcPanel').style.display = 'block';
     document.getElementById('view-feed').style.display = 'none';
@@ -1959,7 +2077,6 @@ function switchToTFC() {
     }
 }
 
-// Fonction pour revenir à la Formation
 function switchToTraining() {
     document.getElementById('adminTfcPanel').style.display = 'none';
     document.getElementById('view-feed').style.display = 'block';
