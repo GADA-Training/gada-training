@@ -1574,6 +1574,31 @@ async function createTfcClient() {
     loadClientsList();
 }
 
+// AJOUTÉ : Fonction pour afficher et copier le code d'accès d'un client
+async function showClientAccessCode(clientId) {
+    // Chercher le code associé à ce client
+    const snapshot = await db.ref('tfc_access_codes').once('value');
+    let foundCode = null;
+    
+    snapshot.forEach(child => {
+        if (child.val().clientId === clientId) {
+            foundCode = child.key;
+        }
+    });
+    
+    if (foundCode) {
+        toast(`📋 Code d'accès : ${foundCode}`);
+        // Copier dans le presse-papier
+        navigator.clipboard.writeText(foundCode);
+        setTimeout(() => {
+            toast('✅ Code copié dans le presse-papier !');
+        }, 500);
+    } else {
+        toast('❌ Aucun code trouvé pour ce client');
+    }
+}
+
+// MODIFIÉ : loadClientsList avec le bouton "Code" ajouté
 async function loadClientsList() {
     const snapshot = await db.ref('tfc_clients').once('value');
     const clients = [];
@@ -1584,16 +1609,21 @@ async function loadClientsList() {
         return;
     }
     container.innerHTML = clients.map(client => `
-        <div class="client-card" style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+        <div class="client-card" style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; background: var(--card);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <div>
                     <h4 style="margin-bottom: 4px;">${esc(client.name)}</h4>
                     <p style="font-size: 0.75rem; color: var(--muted);">${esc(client.university)}</p>
                     <p style="font-size: 0.75rem; margin-top: 4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic)}</p>
                 </div>
-                <button class="btn-auth" style="width: auto; padding: 8px 20px;" onclick="openClientWorkspace('${client.id}')">
-                    <i class="fa-solid fa-folder-open"></i> Ouvrir
-                </button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-auth" style="width: auto; padding: 8px 20px;" onclick="openClientWorkspace('${client.id}')">
+                        <i class="fa-solid fa-folder-open"></i> Ouvrir
+                    </button>
+                    <button class="file-dl" style="background: var(--blue-pale); color: var(--blue);" onclick="showClientAccessCode('${client.id}')">
+                        <i class="fa-solid fa-key"></i> Code
+                    </button>
+                </div>
             </div>
             <div style="margin-top: 12px; display: flex; gap: 16px;">
                 <span class="badge-count">📄 ${Object.keys(client.documents || {}).length} docs</span>
