@@ -78,69 +78,85 @@
         .message-btn { background:var(--green); border:none; border-radius:20px; padding:5px 10px; color:white; cursor:pointer; font-size:0.7rem; transition:transform 0.2s; }
         .message-btn:hover { transform:scale(1.05); }
 
-        /* IA Panel - CORRECTION DU DÉBORDEMENT */
-        .ia-panel { background:linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); border-radius:var(--radius); overflow:hidden; border:none; }
-        .ia-header { padding:16px; border-bottom:1px solid rgba(255,255,255,0.08); }
+        /* IA Panel - CORRECTION BARRE DE DÉFILEMENT UNIQUE */
+        .ia-panel { 
+            background: linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); 
+            border-radius: var(--radius); 
+            overflow: hidden; 
+            border: none;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+        .ia-header { 
+            padding: 16px; 
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            flex-shrink: 0;
+        }
         .ia-header h4 { color:white; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; }
         .ia-header p { color:rgba(255,255,255,0.5); font-size:0.7rem; margin-top:3px; }
         .ia-dot { width:8px; height:8px; border-radius:50%; background:#7dff9a; animation:pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
         .ia-messages { 
-            padding:14px; 
-            display:flex; 
-            flex-direction:column; 
-            gap:12px; 
-            max-height:280px; 
-            overflow-y:auto; 
-            overflow-x:hidden;
-            word-wrap:break-word;
-            word-break:break-word;
+            flex: 1;
+            padding: 14px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
         .ia-msg { 
-            font-size:0.75rem; 
-            line-height:1.5; 
-            max-width:100%;
-            overflow-x:auto;
+            font-size: 0.75rem; 
+            line-height: 1.5; 
+            max-width: 100%;
         }
         .ia-msg.bot { 
-            color:rgba(255,255,255,0.85); 
-            display:flex; 
-            gap:8px; 
-            align-items:flex-start; 
-            max-width:100%;
+            color: rgba(255,255,255,0.85); 
+            display: flex; 
+            gap: 8px; 
+            align-items: flex-start; 
+            max-width: 100%;
         }
         .ia-msg.user { 
-            text-align:right; 
-            color:#9ef7b0; 
-            max-width:100%;
-            padding:6px 10px;
-            background:rgba(255,255,255,0.05);
-            border-radius:12px;
-            margin-left:auto;
-            width:fit-content;
+            text-align: right; 
+            color: #9ef7b0; 
+            max-width: 100%;
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            margin-left: auto;
+            width: fit-content;
         }
         .ia-bot-av { 
-            width:24px; 
-            height:24px; 
-            border-radius:50%; 
-            background:var(--green); 
-            display:flex; 
-            align-items:center; 
-            justify-content:center; 
-            font-size:10px; 
-            color:white; 
-            flex-shrink:0; 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background: var(--green); 
+            display: flex;
+            align-items: center; 
+            justify-content: center; 
+            font-size: 10px; 
+            color: white; 
+            flex-shrink: 0; 
         }
         .ia-bubble { 
-            background:rgba(255,255,255,0.07); 
-            padding:8px 12px; 
-            border-radius:0 12px 12px 12px; 
-            flex:1; 
-            max-width:calc(100% - 32px);
-            word-wrap:break-word;
-            white-space:pre-wrap;
+            background: rgba(255,255,255,0.07); 
+            padding: 8px 12px; 
+            border-radius: 0 12px 12px 12px; 
+            flex: 1; 
+            max-width: calc(100% - 32px);
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
-        .ia-input-row { display:flex; gap:6px; padding:10px 14px; border-top:1px solid rgba(255,255,255,0.08); }
+        .ia-input-row { 
+            display: flex; 
+            gap: 6px; 
+            padding: 10px 14px; 
+            border-top: 1px solid rgba(255,255,255,0.08);
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.2);
+        }
         .ia-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:white; padding:8px 12px; font-size:0.75rem; font-family:'Plus Jakarta Sans',sans-serif; }
         .ia-input-row input::placeholder { color:rgba(255,255,255,0.3); }
         .ia-input-row input:focus { outline:none; border-color:var(--green-l); }
@@ -309,7 +325,7 @@
         .toast.show { transform:translateX(-50%) translateY(0); }
 
         @media(max-width:1100px) { .layout { grid-template-columns:240px 1fr 280px; gap:12px; } }
-        @media(max-width:860px) { .layout { grid-template-columns:1fr; } .sidebar-left,.sidebar-right { position:static; } .chat-panel { height:450px; } }
+        @media(max-width:860px) { .layout { grid-template-columns:1fr; } .sidebar-left,.sidebar-right { position:static; } .chat-panel { height:450px; } .ia-panel { height: 350px; } }
     </style>
 </head>
 <body>
@@ -389,7 +405,7 @@
                 </div>
                 <div class="ia-messages" id="iaMsgs"></div>
                 <div class="ia-input-row">
-                    <input type="text" id="iaInput" placeholder="Votre question... (ex: résume les fichiers partagés)" onkeypress="if(event.key==='Enter')sendToLLM()">
+                    <input type="text" id="iaInput" placeholder="Votre question... (ex: détaille la session 5)" onkeypress="if(event.key==='Enter')sendToLLM()">
                     <button onclick="sendToLLM()"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -713,7 +729,7 @@ function appendIAMessage(role, text) {
     const div = document.createElement('div');
     div.className = `ia-msg ${role === 'user' ? 'user' : 'bot'}`;
     if(role === 'assistant') {
-        div.innerHTML = `<div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div><div class="ia-bubble">${text.replace(/\n/g,'<br>').replace(/^/, '')}</div>`;
+        div.innerHTML = `<div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div><div class="ia-bubble">${text.replace(/\n/g,'<br>')}</div>`;
     } else {
         div.innerHTML = `<div style="background:rgba(255,255,255,0.05);padding:6px 10px;border-radius:12px;display:inline-block;max-width:100%">${text.replace(/\n/g,'<br>')}</div>`;
     }
@@ -730,36 +746,94 @@ async function sendToLLM() {
     appendIAMessage('user', question);
     input.value = '';
     toast("📡 Consultation de la base de connaissances...", 1500);
+    
     const [allPosts, fichiersFormation, allMembres] = await Promise.all([getAllPosts(), getAllFichiersFormation(), getAllMembres()]);
-    let contexte = "🏫 **BASE DE CONNAISSANCES GADA TRAINING**\n\n";
-    contexte += CONTENU_PLAN_FORMATION + "\n\n";
-    contexte += "📚 **FICHIERS DE FORMATION :**\n";
+    
+    // Construction d'un contexte structuré et précis
+    let contexte = "Tu es GADA Assistant, un expert pédagogique en formation 'Modélisation spatiale & One Health'.\n\n";
+    contexte += "=== BASE DE CONNAISSANCES GADA TRAINING ===\n\n";
+    contexte += "1. PLAN DE FORMATION COMPLET :\n" + CONTENU_PLAN_FORMATION + "\n\n";
+    
+    contexte += "2. FICHIERS DE FORMATION PAR SEMAINE :\n";
     const fichiersParSemaine = {};
-    fichiersFormation.forEach(f => { if(!fichiersParSemaine[f.semaine]) fichiersParSemaine[f.semaine] = []; fichiersParSemaine[f.semaine].push(f.nom); });
-    Object.entries(fichiersParSemaine).forEach(([semaine, fichiers]) => { contexte += `   • ${semaine}: ${fichiers.join(', ')}\n`; });
-    contexte += "\n📝 **PUBLICATIONS DES MEMBRES:**\n";
-    if(allPosts.length > 0) allPosts.slice(0,30).forEach(p => { contexte += `   - [${p.type}] ${p.author}: ${p.postTitle || p.caption || p.fileName}\n`; });
-    contexte += "\n👥 **MEMBRES ACTIFS:**\n";
-    allMembres.slice(0,20).forEach(m => { contexte += `   • ${m.nom} - ${m.titre}\n`; });
-    contexte += "\n**INSTRUCTIONS:** Réponds de façon précise en te basant sur ces données. Lis ATTENTIVEMENT le contenu du plan de formation et des fichiers listés.\n";
-    const messages = [{ role: "system", content: contexte }, ...conversationHistory.slice(-10), { role: "user", content: question }];
+    fichiersFormation.forEach(f => { 
+        if(!fichiersParSemaine[f.semaine]) fichiersParSemaine[f.semaine] = []; 
+        fichiersParSemaine[f.semaine].push(f.nom); 
+    });
+    Object.entries(fichiersParSemaine).forEach(([semaine, fichiers]) => { 
+        contexte += `   • ${semaine}: ${fichiers.join(', ')}\n`; 
+    });
+    contexte += "\n";
+    
+    contexte += `3. PUBLICATIONS DES MEMBRES (${allPosts.length} au total) :\n`;
+    if(allPosts.length > 0) {
+        allPosts.slice(0, 20).forEach(p => { 
+            contexte += `   - [${p.type}] ${p.author}: ${p.postTitle || p.caption || p.fileName}\n`; 
+        });
+    } else {
+        contexte += "   Aucune publication pour le moment.\n";
+    }
+    contexte += "\n";
+    
+    contexte += `4. MEMBRES DE LA COMMUNAUTÉ (${allMembres.length}) :\n`;
+    allMembres.slice(0, 15).forEach(m => { 
+        contexte += `   • ${m.nom} - ${m.titre}\n`; 
+    });
+    contexte += "\n";
+    
+    contexte += `=== INSTRUCTIONS POUR RÉPONDRE ===\n`;
+    contexte += `1. Sois PRÉCIS et FACTUEL. Utilise UNIQUEMENT les informations ci-dessus.\n`;
+    contexte += `2. Si la question concerne le calendrier, les sessions ou les objectifs, réponds directement avec les dates et détails du plan de formation.\n`;
+    contexte += `3. Si on te demande un concept technique (NDVI, MaxEnt, Random Forest, etc.), explique-le clairement.\n`;
+    contexte += `4. Si on te demande de résumer des fichiers, liste-les par semaine avec leurs noms.\n`;
+    contexte += `5. Si tu ne trouves pas l'information, dis-le honnêtement sans inventer.\n`;
+    contexte += `6. Structure tes réponses avec des puces ou des paragraphes courts.\n`;
+    contexte += `7. Ne sors pas du contexte de la formation GADA.\n\n`;
+    contexte += `Question de l'utilisateur : ${question}\n\n`;
+    contexte += `RÉPONSE (précise, basée UNIQUEMENT sur les données ci-dessus) :`;
+    
+    const messages = [
+        { role: "system", content: contexte },
+        { role: "user", content: question }
+    ];
+    
     try {
         const resp = await fetch(AI_CONFIG.ENDPOINT, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.5, max_tokens: 2000 })
+            body: JSON.stringify({ 
+                model: AI_CONFIG.MODEL, 
+                messages: messages, 
+                temperature: 0.3,  // Plus bas = plus précis, moins de "créativité" hasardeuse
+                max_tokens: 1500
+            })
         });
         const data = await resp.json();
         if(data.error) throw new Error(data.error);
         const reply = data.choices[0].message.content;
         appendIAMessage('assistant', reply);
         sauvegarderConversation(question, reply);
-    } catch(err) { appendIAMessage('assistant', "⚠️ Service IA temporairement indisponible. Veuillez réessayer."); }
+    } catch(err) { 
+        console.error(err);
+        appendIAMessage('assistant', "⚠️ Service IA temporairement indisponible. Veuillez réessayer dans quelques instants."); 
+    }
 }
 
 async function initIA() {
     const historique = await getHistoriqueConversations(5);
-    let msg = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\n🎯 Je peux voir TOUT ce qui est partagé sur la plateforme en temps réel : plan de formation complet avec toutes les sessions et objectifs, fichiers de formation, publications des membres.\n\n🔍 **Exemples de questions :**\n• 'Quel est le calendrier détaillé de la formation ?'\n• 'Décris-moi en détail la session 5 sur les modèles linéaires'\n• 'Quels sont tous les objectifs pédagogiques ?'\n• 'Explique-moi en profondeur le NDVI et comment le calculer'\n• 'Résume tous les fichiers partagés dans la semaine 1'\n\n📚 **Je lis et analyse LE CONTENU COMPLET** des documents et du plan de formation, pas seulement les titres !";
+    let msg = "👋 **Bonjour ! Je suis GADA Assistant** (Llama 3.3).\n\n";
+    msg += "📚 **Je connais parfaitement :**\n";
+    msg += "• Le plan de formation complet (calendrier, 14 sessions, objectifs)\n";
+    msg += "• Tous les fichiers partagés dans les semaines\n";
+    msg += "• Les publications et projets des membres\n";
+    msg += "• Les concepts techniques : NDVI, NDWI, SAVI, LST, MaxEnt, Random Forest, GLM, KDE, AHP\n\n";
+    msg += "🔍 **Exemples de questions précises :**\n";
+    msg += "• 'Quand a lieu la session sur MaxEnt ?'\n";
+    msg += "• 'Détaille-moi le contenu de la session 5'\n";
+    msg += "• 'Explique le NDVI étape par étape'\n";
+    msg += "• 'Quels sont les objectifs pédagogiques de la semaine 2 ?'\n";
+    msg += "• 'Liste tous les fichiers de la semaine 1'\n\n";
+    msg += "💡 Posez-moi des questions précises, je vous répondrai avec exactitude !";
     appendIAMessage('assistant', msg);
 }
 
