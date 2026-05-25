@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GADA Training — Espace Privé Apprenants</title>
+    <title>GADA Training — Espace Privé Apprenants + TFC</title>
     <link rel="icon" type="image/png" href="images/logo-gada.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
@@ -78,7 +78,7 @@
         .message-btn { background:var(--green); border:none; border-radius:20px; padding:5px 10px; color:white; cursor:pointer; font-size:0.7rem; transition:transform 0.2s; }
         .message-btn:hover { transform:scale(1.05); }
 
-        /* IA Panel - CORRECTION BARRE DE DÉFILEMENT UNIQUE */
+        /* IA Panel */
         .ia-panel { 
             background: linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); 
             border-radius: var(--radius); 
@@ -326,6 +326,96 @@
 
         @media(max-width:1100px) { .layout { grid-template-columns:240px 1fr 280px; gap:12px; } }
         @media(max-width:860px) { .layout { grid-template-columns:1fr; } .sidebar-left,.sidebar-right { position:static; } .chat-panel { height:450px; } .ia-panel { height: 350px; } }
+        
+        /* Styles TFC additionnels */
+        .world-selector {
+            display: flex;
+            gap: 8px;
+            background: var(--bg);
+            padding: 4px;
+            border-radius: 40px;
+            margin-right: 16px;
+        }
+        .world-btn {
+            padding: 6px 16px;
+            border-radius: 32px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            background: transparent;
+            color: var(--muted);
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .world-btn.active {
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white;
+        }
+        .world-btn:hover:not(.active) {
+            background: var(--green-pale);
+            color: var(--green);
+        }
+        .client-card {
+            transition: all 0.2s ease;
+        }
+        .client-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .doc-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .doc-item:last-child { border-bottom: none; }
+        .doc-info { flex: 1; }
+        .doc-name { font-weight: 600; font-size: 0.85rem; }
+        .doc-meta { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+        .doc-status {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .status-attente { background: #fef3c7; color: #92400e; }
+        .status-valide { background: #dcfce7; color: #166534; }
+        .status-correction { background: #fee2e2; color: #dc2626; }
+        .feedback-box {
+            background: var(--blue-pale);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 0.78rem;
+        }
+        #adminClientView {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            z-index: 200;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            color: var(--blue);
+        }
+        .back-btn:hover { background: var(--bg); }
     </style>
 </head>
 <body>
@@ -531,11 +621,150 @@
     </div>
 </div>
 
+<!-- Interface Client TFC (vue spécifique) -->
+<div id="tfcClientView" style="display: none;">
+    <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
+        <span class="topbar-logo">
+            <span>📚 GADA TFC</span>
+        </span>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-user">
+            <div class="user-av" id="tfcClientAvatar"><i class="fa-solid fa-user"></i></div>
+            <span id="tfcClientTopName">...</span>
+        </div>
+        <button class="btn-quit" onclick="logoutTfcClient()">
+            <i class="fa-solid fa-right-from-bracket"></i> Quitter
+        </button>
+    </div>
+    
+    <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 320px; gap: 20px;">
+            <div>
+                <div class="card" style="margin-bottom: 20px;">
+                    <div style="padding: 20px;">
+                        <h2 id="tfcClientName">...</h2>
+                        <p id="tfcClientUniv" style="color: var(--muted); margin: 5px 0;"></p>
+                        <span class="profile-badge-tag" id="tfcClientTopic">📝 Sujet du TFC</span>
+                    </div>
+                </div>
+                
+                <div class="compose-box">
+                    <h3 style="margin-bottom: 16px;"><i class="fa-solid fa-upload"></i> Déposer un document</h3>
+                    <div class="file-drop-area" onclick="document.getElementById('tfcFileInput').click()">
+                        <i class="fa-solid fa-cloud-upload-alt"></i>
+                        <p>Cliquez pour déposer votre document (PDF, DOCX, ZIP, R, XLSX)</p>
+                        <p style="font-size: 0.7rem; color: var(--muted); margin-top: 8px;">Max 10MB</p>
+                    </div>
+                    <input type="file" id="tfcFileInput" style="display: none" onchange="uploadTfcDocumentClient(this)">
+                    <div id="tfcUploadProgress" style="display: none; margin-top: 10px;">
+                        <progress value="0" max="100" style="width: 100%; height: 8px; border-radius: 10px;"></progress>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 16px;"><i class="fa-regular fa-folder-open"></i> Mes documents</h3>
+                    <div id="tfcDocumentsListClient" style="background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden;"></div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="chat-panel" style="height: 500px;">
+                    <div class="chat-panel-header">
+                        <h4><i class="fa-regular fa-comment-dots"></i> Discussion avec l'encadreur</h4>
+                        <p>Réponse garantie sous 48h</p>
+                    </div>
+                    <div class="chat-msgs" id="tfcChatMsgs"></div>
+                    <div class="chat-input-row">
+                        <input type="text" id="tfcChatInput" placeholder="Votre message..." onkeypress="if(event.key==='Enter')sendTfcMessageClient()">
+                        <button class="chat-send-btn" onclick="sendTfcMessageClient()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vue Administrateur pour un client spécifique -->
+<div id="adminClientView" style="display: none;">
+    <button class="back-btn" onclick="closeAdminClientView()">
+        <i class="fa-solid fa-arrow-left"></i> Retour à la liste des clients
+    </button>
+    
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div class="card" style="margin-bottom: 20px;">
+            <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <h2 id="adminClientName">...</h2>
+                    <p id="adminClientUniv" style="color: var(--muted);"></p>
+                    <span class="profile-badge-tag" id="adminClientTopic">...</span>
+                </div>
+                <div>
+                    <button class="btn-auth" style="width: auto; padding: 10px 20px;" onclick="document.getElementById('adminDocInput').click()">
+                        <i class="fa-solid fa-upload"></i> Déposer un document
+                    </button>
+                    <input type="file" id="adminDocInput" style="display: none" onchange="uploadTfcDocumentAdmin(this)">
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px;">
+            <div>
+                <div class="card">
+                    <div class="card-header"><h4><i class="fa-regular fa-file"></i> Documents du client</h4></div>
+                    <div id="adminDocumentsList" style="padding: 8px 0;"></div>
+                </div>
+            </div>
+            <div>
+                <div class="chat-panel" style="height: 500px;">
+                    <div class="chat-panel-header">
+                        <h4><i class="fa-regular fa-comment-dots"></i> Discussion privée</h4>
+                    </div>
+                    <div class="chat-msgs" id="adminChatMsgs"></div>
+                    <div class="chat-input-row">
+                        <input type="text" id="adminChatInput" placeholder="Répondre au client..." onkeypress="if(event.key==='Enter')sendTfcMessageAdmin()">
+                        <button class="chat-send-btn" onclick="sendTfcMessageAdmin()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Panneau Admin TFC (dans l'interface principale) -->
+<div id="adminTfcPanel" style="display: none;">
+    <div class="card" style="margin-bottom: 16px;">
+        <div class="card-header">
+            <h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4>
+            <button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()">
+                <i class="fa-solid fa-plus"></i> Nouveau client
+            </button>
+        </div>
+        <div id="clientsList" style="padding: 16px;"></div>
+    </div>
+</div>
+
+<!-- Modal Ajout Client -->
+<div class="modal-overlay" id="addClientModal" onclick="if(event.target===this)closeAddClientModal()">
+    <div class="modal-box" style="max-width: 500px;">
+        <div class="modal-top">
+            <h3><i class="fa-solid fa-user-plus"></i> Nouveau client TFC</h3>
+            <button class="modal-close" onclick="closeAddClientModal()">×</button>
+        </div>
+        <div class="form-field"><label>Nom complet</label><input type="text" id="newClientName" placeholder="Jean Dupont"></div>
+        <div class="form-field"><label>Université / Institut</label><input type="text" id="newClientUniv" placeholder="UNIKIN, UCB, etc."></div>
+        <div class="form-field"><label>Sujet du TFC / Mémoire</label><input type="text" id="newClientTopic" placeholder="Impact du changement climatique sur..."></div>
+        <div class="form-field"><label>Email</label><input type="email" id="newClientEmail" placeholder="client@email.com"></div>
+        <div class="form-field"><label>Téléphone</label><input type="tel" id="newClientPhone" placeholder="+243 XXX XXX XXX"></div>
+        <button class="btn-auth" onclick="createTfcClient()">Créer le client</button>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
+// ==================== CONFIGURATION FIREBASE ET DONNÉES ====================
 const firebaseConfig = {
     apiKey:"AIzaSyC_G2Fu6ZN4tzavRzfKo9fjXj5R_Un0PyE",
     authDomain:"gada-training-chat.firebaseapp.com",
@@ -643,10 +872,12 @@ let currentConversationListener = null;
 let renderedPostKeys = new Set();
 let conversationHistory = [];
 
+// ==================== FONCTIONS UTILITAIRES ====================
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
 function toast(msg,dur=3000){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),dur);}
 function showAuthMsg(msg,isErr=true){const el=document.getElementById('authMsg');el.textContent=msg;el.className='auth-msg '+(isErr?'err':'ok');}
 
+// ==================== FONCTIONS DE RÉCUPÉRATION DE DONNÉES ====================
 async function getAllPosts() {
     return new Promise((resolve) => {
         db.ref('user_projects').orderByChild('timestamp').once('value', (snap) => {
@@ -758,7 +989,6 @@ async function sendToLLM() {
     
     const [allPosts, fichiersFormation, allMembres] = await Promise.all([getAllPosts(), getAllFichiersFormation(), getAllMembres()]);
     
-    // Construction d'un contexte structuré et précis
     let contexte = "Tu es GADA Assistant, un expert pédagogique en formation 'Modélisation spatiale & One Health'.\n\n";
     contexte += "=== BASE DE CONNAISSANCES GADA TRAINING ===\n\n";
     contexte += "1. PLAN DE FORMATION COMPLET :\n" + CONTENU_PLAN_FORMATION + "\n\n";
@@ -813,7 +1043,7 @@ async function sendToLLM() {
             body: JSON.stringify({ 
                 model: AI_CONFIG.MODEL, 
                 messages: messages, 
-                temperature: 0.3,  // Plus bas = plus précis, moins de "créativité" hasardeuse
+                temperature: 0.3,
                 max_tokens: 1500
             })
         });
@@ -829,7 +1059,7 @@ async function sendToLLM() {
 }
 
 async function initIA() {
-    const historique = await getHistoriqueConversations(5);
+    await getHistoriqueConversations(5);
     let msg = "👋 **Bonjour ! Je suis GADA Assistant** (Llama 3.3).\n\n";
     msg += "📚 **Je connais parfaitement :**\n";
     msg += "• Le plan de formation complet (calendrier, 14 sessions, objectifs)\n";
@@ -846,6 +1076,7 @@ async function initIA() {
     appendIAMessage('assistant', msg);
 }
 
+// ==================== AUTHENTIFICATION ====================
 function switchTab(tab){
     document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
     document.getElementById('registerForm').style.display=tab==='register'?'block':'none';
@@ -916,6 +1147,7 @@ firebase.auth().onAuthStateChanged(user=>{
     }
 });
 
+// ==================== GESTION MEMBRES ET PROFIL ====================
 function toggleMembersList(){
     const c=document.getElementById('membersListContainer'), ch=document.getElementById('membersChevron');
     if(c.classList.contains('expanded')){ c.classList.remove('expanded'); ch.classList.remove('rotated'); localStorage.setItem('membersExpanded','false'); }
@@ -1044,6 +1276,7 @@ function showView(v){
     if(v==='projets')loadUserProjets();
 }
 
+// ==================== SEMAINES ====================
 function renderSemaines(){
     const container=document.getElementById('semainesSection'); container.innerHTML='';
     Object.entries(SEMAINES_DATA).forEach(([key,s])=>{
@@ -1061,6 +1294,7 @@ function toggleSemaine(key){
     if(!isOpen){ files.classList.add('open'); if(chev)chev.classList.add('open'); }
 }
 
+// ==================== LIKES ET COMMENTAIRES ====================
 function toggleLike(postId){
     const userId=currentUser.uid;
     const likeRef=db.ref(`post_likes/${postId}/${userId}`);
@@ -1095,6 +1329,7 @@ function addComment(postId){
 }
 function deleteComment(postId,commentId){ if(confirm('Supprimer ?')){ db.ref(`post_comments/${postId}/${commentId}`).remove(); toast('✅ Supprimé'); } }
 
+// ==================== PUBLICATIONS ====================
 function listenPosts(){
     renderedPostKeys.clear();
     const feed=document.getElementById('postsFeed');
@@ -1211,6 +1446,7 @@ function loadUserProjets(){
     });
 }
 
+// ==================== CHAT PRINCIPAL ====================
 function listenChat(){
     const chatMsgs=document.getElementById('chatMsgs'); chatMsgs.innerHTML='';
     db.ref('forum_messages').limitToLast(50).on('child_added',snap=>{
@@ -1240,6 +1476,438 @@ function openLightbox(url,name){
     document.addEventListener('keydown',escHandler);
     document.body.appendChild(lb);
 }
+
+// ==================== SECTION CLIENTS TFC ====================
+
+let currentTfcClientId = null;
+let currentTfcClientData = null;
+let isTfcMode = false;
+let currentAdminClientId = null;
+
+// Sélecteur de monde pour l'admin
+function initWorldSelector() {
+    const topbar = document.querySelector('.topbar');
+    if (!topbar) return;
+    const selector = document.createElement('div');
+    selector.className = 'world-selector';
+    selector.id = 'worldSelector';
+    selector.innerHTML = `
+        <button class="world-btn active" data-world="training" onclick="switchWorld('training')">
+            <i class="fa-solid fa-graduation-cap"></i> Formation
+        </button>
+        <button class="world-btn" data-world="tfc" onclick="switchWorld('tfc')">
+            <i class="fa-solid fa-users"></i> Clients TFC
+        </button>
+    `;
+    topbar.insertBefore(selector, topbar.firstChild);
+}
+
+function switchWorld(world) {
+    if (currentUser?.email !== ADMIN_EMAIL) return;
+    document.querySelectorAll('.world-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.world === world);
+    });
+    if (world === 'training') {
+        document.getElementById('adminTfcPanel').style.display = 'none';
+        document.getElementById('view-feed').style.display = 'block';
+        document.getElementById('view-profile').style.display = 'none';
+        document.getElementById('view-projets').style.display = 'none';
+        document.getElementById('view-semaines').style.display = 'none';
+        document.querySelector('.layout').style.display = 'grid';
+        showView('feed');
+        toast('🌍 Mode Formation activé');
+    } else {
+        document.getElementById('adminTfcPanel').style.display = 'block';
+        document.getElementById('view-feed').style.display = 'none';
+        document.getElementById('view-profile').style.display = 'none';
+        document.getElementById('view-projets').style.display = 'none';
+        document.getElementById('view-semaines').style.display = 'none';
+        document.querySelector('.layout').style.display = 'none';
+        loadClientsList();
+        toast('📋 Mode Clients TFC activé');
+    }
+}
+
+// Gestion des clients (admin)
+function openAddClientModal() {
+    document.getElementById('addClientModal').classList.add('active');
+    document.getElementById('newClientName').value = '';
+    document.getElementById('newClientUniv').value = '';
+    document.getElementById('newClientTopic').value = '';
+    document.getElementById('newClientEmail').value = '';
+    document.getElementById('newClientPhone').value = '';
+}
+
+function closeAddClientModal() {
+    document.getElementById('addClientModal').classList.remove('active');
+}
+
+async function createTfcClient() {
+    const name = document.getElementById('newClientName').value.trim();
+    const university = document.getElementById('newClientUniv').value.trim();
+    const topic = document.getElementById('newClientTopic').value.trim();
+    const email = document.getElementById('newClientEmail').value.trim();
+    const phone = document.getElementById('newClientPhone').value.trim();
+    if (!name || !university || !topic || !email) {
+        toast('❌ Veuillez remplir tous les champs obligatoires');
+        return;
+    }
+    const newClientRef = db.ref('tfc_clients').push();
+    const clientId = newClientRef.key;
+    await newClientRef.set({
+        id: clientId, name: name, university: university, tfc_topic: topic,
+        email: email, phone: phone, createdAt: Date.now(), status: 'actif',
+        documents: {}, messages: {}, feedbacks: {}
+    });
+    const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    await db.ref(`tfc_access_codes/${accessCode}`).set({
+        clientId: clientId, createdAt: Date.now(), expiresAt: Date.now() + 30 * 24 * 3600000
+    });
+    toast(`✅ Client créé ! Code d'accès : ${accessCode}`);
+    closeAddClientModal();
+    loadClientsList();
+}
+
+async function loadClientsList() {
+    const snapshot = await db.ref('tfc_clients').once('value');
+    const clients = [];
+    snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
+    const container = document.getElementById('clientsList');
+    if (clients.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i class="fa-regular fa-folder-open"></i><p>Aucun client pour le moment</p></div>';
+        return;
+    }
+    container.innerHTML = clients.map(client => `
+        <div class="client-card" style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <h4 style="margin-bottom: 4px;">${esc(client.name)}</h4>
+                    <p style="font-size: 0.75rem; color: var(--muted);">${esc(client.university)}</p>
+                    <p style="font-size: 0.75rem; margin-top: 4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic)}</p>
+                </div>
+                <button class="btn-auth" style="width: auto; padding: 8px 20px;" onclick="openClientWorkspace('${client.id}')">
+                    <i class="fa-solid fa-folder-open"></i> Ouvrir
+                </button>
+            </div>
+            <div style="margin-top: 12px; display: flex; gap: 16px;">
+                <span class="badge-count">📄 ${Object.keys(client.documents || {}).length} docs</span>
+                <span class="badge-count">💬 ${Object.keys(client.messages || {}).length} messages</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Vue admin pour un client
+async function openClientWorkspace(clientId) {
+    currentAdminClientId = clientId;
+    const snapshot = await db.ref(`tfc_clients/${clientId}`).once('value');
+    const client = snapshot.val();
+    document.getElementById('adminClientName').textContent = client.name;
+    document.getElementById('adminClientUniv').textContent = client.university;
+    document.getElementById('adminClientTopic').innerHTML = `📝 ${esc(client.tfc_topic)}`;
+    document.getElementById('adminClientView').style.display = 'block';
+    document.getElementById('adminTfcPanel').style.display = 'none';
+    loadAdminDocuments(clientId);
+    loadAdminChat(clientId);
+}
+
+function closeAdminClientView() {
+    document.getElementById('adminClientView').style.display = 'none';
+    document.getElementById('adminTfcPanel').style.display = 'block';
+    currentAdminClientId = null;
+}
+
+async function loadAdminDocuments(clientId) {
+    const snapshot = await db.ref(`tfc_clients/${clientId}/documents`).once('value');
+    const docs = snapshot.val() || {};
+    const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
+    const container = document.getElementById('adminDocumentsList');
+    if (docsList.length === 0) {
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun document déposé</div>';
+        return;
+    }
+    container.innerHTML = docsList.map(doc => `
+        <div class="doc-item">
+            <div class="doc-info">
+                <div class="doc-name">📄 ${esc(doc.name)}</div>
+                <div class="doc-meta">Déposé par ${doc.uploadedBy === 'client' ? 'le client' : 'vous'} le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</div>
+                <span class="doc-status ${doc.status === 'valide' ? 'status-valide' : doc.status === 'correction' ? 'status-correction' : 'status-attente'}">
+                    ${doc.status === 'valide' ? '✅ Validé' : doc.status === 'correction' ? '🔧 Corrigez' : '⏳ En attente'}
+                </span>
+                ${doc.feedback ? `<div class="feedback-box"><strong>Votre retour :</strong><br>${esc(doc.feedback)}</div>` : ''}
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <a href="${doc.url}" target="_blank" class="file-dl" style="padding: 5px 10px;"><i class="fa-solid fa-download"></i></a>
+                <button onclick="openFeedbackModal('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="background: var(--blue-pale); color: var(--blue);">
+                    <i class="fa-solid fa-comment"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function uploadTfcDocumentAdmin(fileInput) {
+    if (!currentAdminClientId) return;
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { toast('❌ Fichier trop volumineux (max 10MB)'); return; }
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const docId = Date.now().toString();
+        const docData = {
+            id: docId, name: file.name, type: file.type, size: file.size,
+            url: e.target.result, uploadedAt: Date.now(), uploadedBy: 'admin',
+            status: 'valide', feedback: null
+        };
+        await db.ref(`tfc_clients/${currentAdminClientId}/documents/${docId}`).set(docData);
+        await db.ref(`tfc_clients/${currentAdminClientId}/notifications`).push({
+            type: 'new_document', message: `Votre encadreur a déposé un nouveau document : ${file.name}`,
+            timestamp: Date.now(), read: false
+        });
+        toast('✅ Document déposé');
+        fileInput.value = '';
+        loadAdminDocuments(currentAdminClientId);
+    };
+    reader.readAsDataURL(file);
+}
+
+function openFeedbackModal(clientId, docId, docName) {
+    const feedback = prompt(`Retour sur le document "${docName}" :\n(Validé / À corriger / Commentaires)`);
+    if (feedback && feedback.trim()) {
+        const status = feedback.toLowerCase().includes('valid') ? 'valide' : feedback.toLowerCase().includes('corrig') ? 'correction' : 'attente';
+        db.ref(`tfc_clients/${clientId}/documents/${docId}`).update({ status: status, feedback: feedback.trim() }).then(() => {
+            toast('✅ Feedback enregistré');
+            loadAdminDocuments(clientId);
+        });
+    }
+}
+
+async function loadAdminChat(clientId) {
+    const chatMsgs = document.getElementById('adminChatMsgs');
+    chatMsgs.innerHTML = '<div class="empty-state"><p>Chargement...</p></div>';
+    db.ref(`tfc_clients/${clientId}/messages`).on('value', (snap) => {
+        const messages = [];
+        snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
+        messages.sort((a,b) => a.timestamp - b.timestamp);
+        if (messages.length === 0) {
+            chatMsgs.innerHTML = '<div class="empty-state" style="padding: 40px;"><i class="fa-regular fa-comments"></i><p>Aucun message</p></div>';
+            return;
+        }
+        chatMsgs.innerHTML = messages.map(m => `
+            <div class="chat-msg ${m.from === 'admin' ? 'admin' : 'them'}">
+                <div class="chat-meta">${m.from === 'admin' ? 'Vous' : esc(m.fromName)}</div>
+                <div class="chat-bubble">${esc(m.text)}</div>
+                <div class="chat-time">${new Date(m.timestamp).toLocaleTimeString()}</div>
+            </div>
+        `).join('');
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    });
+}
+
+function sendTfcMessageAdmin() {
+    const input = document.getElementById('adminChatInput');
+    const text = input.value.trim();
+    if (!text || !currentAdminClientId) return;
+    db.ref(`tfc_clients/${currentAdminClientId}/messages`).push({
+        from: 'admin', fromName: currentProfile?.fullName || 'Encadreur',
+        text: text, timestamp: Date.now()
+    });
+    db.ref(`tfc_clients/${currentAdminClientId}/notifications`).push({
+        type: 'message', message: `Nouveau message de votre encadreur : "${text.substring(0, 50)}..."`,
+        timestamp: Date.now(), read: false
+    });
+    input.value = '';
+}
+
+// Login client TFC
+async function doClientLogin() {
+    const code = document.getElementById('clientAccessCode').value.trim().toUpperCase();
+    const email = document.getElementById('clientEmail').value.trim().toLowerCase();
+    if (!code || !email) { showAuthMsg('❌ Veuillez entrer le code et votre email'); return; }
+    const codeSnap = await db.ref(`tfc_access_codes/${code}`).once('value');
+    if (!codeSnap.exists()) { showAuthMsg('❌ Code invalide. Vérifiez auprès de votre encadreur.'); return; }
+    const clientId = codeSnap.val().clientId;
+    const clientSnap = await db.ref(`tfc_clients/${clientId}`).once('value');
+    const client = clientSnap.val();
+    if (!client || client.email !== email) { showAuthMsg('❌ Email ne correspond pas au code.'); return; }
+    isTfcMode = true;
+    currentTfcClientId = clientId;
+    currentTfcClientData = client;
+    sessionStorage.setItem('tfc_client_id', clientId);
+    sessionStorage.setItem('tfc_client_name', client.name);
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('tfcClientView').style.display = 'block';
+    document.getElementById('tfcClientName').textContent = client.name;
+    document.getElementById('tfcClientUniv').textContent = client.university;
+    document.getElementById('tfcClientTopic').innerHTML = `📝 ${esc(client.tfc_topic)}`;
+    document.getElementById('tfcClientTopName').textContent = client.name;
+    loadClientDocuments();
+    loadClientChat();
+}
+
+function logoutTfcClient() {
+    isTfcMode = false;
+    currentTfcClientId = null;
+    currentTfcClientData = null;
+    sessionStorage.clear();
+    document.getElementById('tfcClientView').style.display = 'none';
+    document.getElementById('authOverlay').style.display = 'flex';
+    switchTab('login');
+}
+
+async function loadClientDocuments() {
+    if (!currentTfcClientId) return;
+    const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/documents`).once('value');
+    const docs = snapshot.val() || {};
+    const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
+    const container = document.getElementById('tfcDocumentsListClient');
+    if (docsList.length === 0) {
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun document déposé</div>';
+        return;
+    }
+    container.innerHTML = docsList.map(doc => `
+        <div class="doc-item">
+            <div class="doc-info">
+                <div class="doc-name">📄 ${esc(doc.name)}</div>
+                <div class="doc-meta">Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</div>
+                <span class="doc-status ${doc.status === 'valide' ? 'status-valide' : doc.status === 'correction' ? 'status-correction' : 'status-attente'}">
+                    ${doc.status === 'valide' ? '✅ Validé' : doc.status === 'correction' ? '🔧 Corrigez' : '⏳ En attente de validation'}
+                </span>
+                ${doc.feedback ? `<div class="feedback-box"><strong>Retour de l\'encadreur :</strong><br>${esc(doc.feedback)}</div>` : ''}
+            </div>
+            <a href="${doc.url}" target="_blank" class="file-dl" style="padding: 5px 10px;"><i class="fa-solid fa-download"></i></a>
+        </div>
+    `).join('');
+}
+
+async function uploadTfcDocumentClient(fileInput) {
+    if (!currentTfcClientId) return;
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { toast('❌ Fichier trop volumineux (max 10MB)'); return; }
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const docId = Date.now().toString();
+        const docData = {
+            id: docId, name: file.name, type: file.type, size: file.size,
+            url: e.target.result, uploadedAt: Date.now(), uploadedBy: 'client',
+            status: 'attente', feedback: null
+        };
+        await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).set(docData);
+        await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
+            type: 'new_document', message: `${currentTfcClientData.name} a déposé un nouveau document : ${file.name}`,
+            timestamp: Date.now(), read: false
+        });
+        toast('✅ Document déposé avec succès');
+        fileInput.value = '';
+        loadClientDocuments();
+    };
+    reader.readAsDataURL(file);
+}
+
+async function loadClientChat() {
+    if (!currentTfcClientId) return;
+    const chatMsgs = document.getElementById('tfcChatMsgs');
+    chatMsgs.innerHTML = '<div class="empty-state"><p>Chargement...</p></div>';
+    db.ref(`tfc_clients/${currentTfcClientId}/messages`).on('value', (snap) => {
+        const messages = [];
+        snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
+        messages.sort((a,b) => a.timestamp - b.timestamp);
+        if (messages.length === 0) {
+            chatMsgs.innerHTML = '<div class="empty-state" style="padding: 40px;"><i class="fa-regular fa-comments"></i><p>Démarrez la conversation avec votre encadreur</p></div>';
+            return;
+        }
+        chatMsgs.innerHTML = messages.map(m => `
+            <div class="chat-msg ${m.from === 'client' ? 'me' : 'them'}">
+                <div class="chat-meta">${m.from === 'client' ? 'Moi' : 'Encadreur'}</div>
+                <div class="chat-bubble">${esc(m.text)}</div>
+                <div class="chat-time">${new Date(m.timestamp).toLocaleTimeString()}</div>
+            </div>
+        `).join('');
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    });
+}
+
+function sendTfcMessageClient() {
+    const input = document.getElementById('tfcChatInput');
+    const text = input.value.trim();
+    if (!text || !currentTfcClientId) return;
+    db.ref(`tfc_clients/${currentTfcClientId}/messages`).push({
+        from: 'client', fromName: currentTfcClientData.name,
+        text: text, timestamp: Date.now()
+    });
+    input.value = '';
+}
+
+// Ajout de l'onglet client dans l'auth
+function addClientLoginTab() {
+    const authTabs = document.querySelector('.auth-tabs');
+    if (authTabs && !document.getElementById('clientLoginTabBtn')) {
+        const clientBtn = document.createElement('button');
+        clientBtn.className = 'auth-tab-btn';
+        clientBtn.id = 'clientLoginTabBtn';
+        clientBtn.onclick = () => switchTab('client_login');
+        clientBtn.innerHTML = '<i class="fa-solid fa-users"></i> Espace TFC';
+        authTabs.appendChild(clientBtn);
+    }
+    const authBox = document.querySelector('.auth-box');
+    const clientForm = document.createElement('div');
+    clientForm.id = 'clientLoginForm';
+    clientForm.style.display = 'none';
+    clientForm.innerHTML = `
+        <div class="form-field"><label>Code d'accès</label><input type="text" id="clientAccessCode" placeholder="Ex: G7H3K9" onkeypress="if(event.key==='Enter')doClientLogin()"></div>
+        <div class="form-field"><label>Votre email</label><input type="email" id="clientEmail" placeholder="votre@email.com" onkeypress="if(event.key==='Enter')doClientLogin()"></div>
+        <button class="btn-auth" onclick="doClientLogin()">Accéder à mon espace</button>
+        <div style="text-align:center;margin-top:12px"><a onclick="switchTab('login')" style="font-size:0.78rem;color:var(--blue);cursor:pointer;text-decoration:underline">← Retour à la formation</a></div>
+    `;
+    authBox.appendChild(clientForm);
+}
+
+// Surcharge de switchTab pour gérer client_login
+const originalSwitchTab = switchTab;
+window.switchTab = function(tab) {
+    if (tab === 'client_login') {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('forgotForm').style.display = 'none';
+        document.getElementById('clientLoginForm').style.display = 'block';
+        document.getElementById('loginTabBtn').classList.remove('active');
+        document.getElementById('registerTabBtn').classList.remove('active');
+        document.getElementById('clientLoginTabBtn').classList.add('active');
+        document.getElementById('authMsg').className = 'auth-msg';
+    } else {
+        originalSwitchTab(tab);
+        if (document.getElementById('clientLoginForm')) document.getElementById('clientLoginForm').style.display = 'none';
+        if (document.getElementById('clientLoginTabBtn')) document.getElementById('clientLoginTabBtn').classList.remove('active');
+    }
+};
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    addClientLoginTab();
+    if (currentUser?.email === ADMIN_EMAIL) initWorldSelector();
+    const savedClientId = sessionStorage.getItem('tfc_client_id');
+    const savedClientName = sessionStorage.getItem('tfc_client_name');
+    if (savedClientId && savedClientName && !currentUser) {
+        db.ref(`tfc_clients/${savedClientId}`).once('value', (snap) => {
+            if (snap.exists()) {
+                isTfcMode = true;
+                currentTfcClientId = savedClientId;
+                currentTfcClientData = snap.val();
+                document.getElementById('authOverlay').style.display = 'none';
+                document.getElementById('app').style.display = 'none';
+                document.getElementById('tfcClientView').style.display = 'block';
+                document.getElementById('tfcClientName').textContent = currentTfcClientData.name;
+                document.getElementById('tfcClientUniv').textContent = currentTfcClientData.university;
+                document.getElementById('tfcClientTopic').innerHTML = `📝 ${esc(currentTfcClientData.tfc_topic)}`;
+                document.getElementById('tfcClientTopName').textContent = currentTfcClientData.name;
+                loadClientDocuments();
+                loadClientChat();
+            }
+        });
+    }
+});
 </script>
 </body>
 </html>
