@@ -37,6 +37,7 @@
         .auth-msg { padding:10px 14px; border-radius:10px; font-size:0.82rem; margin-bottom:16px; display:none; text-align:center; }
         .auth-msg.err { background:#fee2e2; color:#dc2626; display:block; }
         .auth-msg.ok  { background:#dcfce7; color:#166534; display:block; }
+        /* Lien mot de passe oublié */
         .forgot-link { text-align:right; margin-top:-8px; margin-bottom:16px; }
         .forgot-link a { font-size:0.78rem; color:var(--blue); cursor:pointer; text-decoration:underline; }
         .forgot-link a:hover { color:var(--green); }
@@ -62,12 +63,17 @@
         .card-header h4 { font-size:0.82rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:7px; }
         .badge-count { background:var(--green); color:white; font-size:0.68rem; font-weight:700; padding:1px 7px; border-radius:20px; }
 
+        /* Membres dropdown */
         .members-header { cursor:pointer; user-select:none; transition:background 0.2s; }
         .members-header:hover { background:var(--bg); }
         .members-header .chevron-icon { margin-left:auto; transition:transform 0.3s ease; font-size:0.75rem; color:var(--muted); }
         .members-header .chevron-icon.rotated { transform:rotate(180deg); }
         .members-list-container { max-height:0; overflow:hidden; transition:max-height 0.3s ease-out; }
         .members-list-container.expanded { max-height:400px; overflow-y:auto; transition:max-height 0.4s ease-in; }
+        .members-list-container::-webkit-scrollbar { width:4px; }
+        .members-list-container::-webkit-scrollbar-track { background:var(--bg); border-radius:4px; }
+        .members-list-container::-webkit-scrollbar-thumb { background:var(--green); border-radius:4px; }
+
         .member-item { display:flex; align-items:center; gap:10px; padding:10px 16px; transition:background 0.15s; border-radius:10px; margin:4px 8px; }
         .member-item:hover { background:var(--bg); }
         .member-av { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--green-pale),var(--blue-pale)); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--green); overflow:hidden; border:2px solid var(--green-pale); flex-shrink:0; cursor:pointer; }
@@ -77,6 +83,16 @@
         .member-role { font-size:0.7rem; color:var(--muted); }
         .message-btn { background:var(--green); border:none; border-radius:20px; padding:5px 10px; color:white; cursor:pointer; font-size:0.7rem; transition:transform 0.2s; }
         .message-btn:hover { transform:scale(1.05); }
+
+        /* Messagerie privée */
+        .message-modal .modal-box { max-width:500px; }
+        .conversation-messages { max-height:400px; overflow-y:auto; margin-bottom:15px; padding:10px; }
+        .message-item { padding:10px; margin-bottom:8px; border-radius:12px; max-width:85%; }
+        .message-item.sent { background:var(--green-pale); margin-left:auto; text-align:right; }
+        .message-item.received { background:var(--blue-pale); margin-right:auto; }
+        .message-sender { font-size:0.7rem; font-weight:600; color:var(--green); margin-bottom:4px; }
+        .message-text { font-size:0.8rem; color:var(--text); word-wrap:break-word; }
+        .message-time { font-size:0.6rem; color:var(--muted); margin-top:4px; }
 
         /* IA Panel */
         .ia-panel { background:linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); border-radius:var(--radius); overflow:hidden; border:none; }
@@ -97,6 +113,7 @@
         .ia-input-row input:focus { outline:none; border-color:var(--green-l); }
         .ia-input-row button { background:var(--green); border:none; border-radius:20px; color:white; padding:7px 12px; cursor:pointer; font-size:12px; }
 
+        /* Nav links */
         .nav-links { padding:8px; display:flex; flex-direction:column; gap:2px; }
         .nav-link { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; cursor:pointer; font-size:0.85rem; font-weight:600; color:var(--muted); transition:all 0.18s; border:none; background:none; width:100%; font-family:'Plus Jakarta Sans',sans-serif; text-align:left; }
         .nav-link:hover { background:var(--bg); color:var(--green); }
@@ -108,6 +125,7 @@
         .compose-box { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); padding:16px; box-shadow:var(--shadow); }
         .compose-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
         .compose-input { flex:1; background:var(--bg); border:none; border-radius:40px; padding:11px 16px; font-size:0.88rem; color:var(--muted); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; }
+        .compose-input:focus { outline:none; }
         .compose-actions { display:flex; gap:6px; flex-wrap:wrap; }
         .compose-btn { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:40px; font-size:0.78rem; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:none; color:var(--muted); transition:all 0.18s; font-family:'Plus Jakarta Sans',sans-serif; }
         .compose-btn:hover { border-color:var(--green); color:var(--green); background:var(--green-pale); }
@@ -115,10 +133,10 @@
         /* Compose modal */
         .compose-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:500; display:none; align-items:center; justify-content:center; }
         .compose-modal-overlay.active { display:flex; }
-        .compose-modal { background:white; border-radius:20px; width:560px; max-width:95%; padding:24px; box-shadow:var(--shadow-md); }
+        .compose-modal { background:white; border-radius:20px; width:520px; max-width:95%; padding:24px; box-shadow:var(--shadow-md); }
         .compose-modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
         .compose-modal-header h3 { font-size:1rem; color:var(--blue); font-weight:700; }
-        .compose-modal textarea { width:100%; border:2px solid var(--border); border-radius:12px; padding:12px; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; resize:vertical; margin-bottom:12px; }
+        .compose-modal textarea { width:100%; border:2px solid var(--border); border-radius:12px; padding:12px; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; resize:none; margin-bottom:12px; }
         .compose-modal textarea:focus { outline:none; border-color:var(--green); }
         .compose-modal input[type="text"],.compose-modal input[type="url"] { width:100%; border:2px solid var(--border); border-radius:12px; padding:10px 14px; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; margin-bottom:10px; }
         .compose-modal input:focus { outline:none; border-color:var(--green); }
@@ -146,26 +164,75 @@
         .post-footer { padding:10px 16px; border-top:1px solid var(--border); display:flex; gap:12px; }
         .post-action { display:flex; align-items:center; gap:5px; font-size:0.75rem; color:var(--muted); cursor:pointer; padding:5px 8px; border-radius:8px; transition:all 0.15s; background:none; border:none; }
         .post-action:hover { background:var(--bg); color:var(--green); }
-        .post-caption { margin-bottom:10px; white-space: pre-line; }
+        .post-caption { margin-bottom:10px; }
         .empty-state { text-align:center; padding:48px 20px; color:var(--muted); }
-        .empty-state i { font-size:2.5rem; margin-bottom:12px; opacity:0.4; }
 
-        /* MEDIA CARD */
-        .media-card { position: relative; border-radius: 14px; overflow: hidden; background: #0a0a0a; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); max-height: 320px; display: flex; align-items: center; justify-content: center; }
-        .media-card img { width: 100%; height: 100%; object-fit: cover; max-height: 320px; display: block; transition: transform 0.3s ease; }
+        /* ── MEDIA CARD (images & vidéos compactes) ── */
+        .media-card {
+            position: relative; border-radius: 14px; overflow: hidden;
+            background: #0a0a0a; margin-bottom: 10px; cursor: pointer;
+            border: 1px solid var(--border);
+            /* Hauteur fixe : l'image ne dépasse jamais 320px */
+            max-height: 320px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .media-card img {
+            width: 100%; height: 100%;
+            object-fit: cover; /* recadrage centré, pas d'étirement */
+            max-height: 320px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
         .media-card:hover img { transform: scale(1.02); }
-        .media-card .media-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%); opacity: 0; transition: opacity 0.25s; display: flex; align-items: flex-end; padding: 14px; }
+        /* Overlay au survol */
+        .media-card .media-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.25s;
+            display: flex; align-items: flex-end; padding: 14px;
+        }
         .media-card:hover .media-overlay { opacity: 1; }
-        .media-overlay-label { color: white; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(6px); padding: 5px 12px; border-radius: 20px; }
-        .media-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); color: white; font-size: 0.65rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
-
+        .media-overlay-label {
+            color: white; font-size: 0.72rem; font-weight: 700;
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(6px);
+            padding: 5px 12px; border-radius: 20px;
+        }
+        /* Badge ratio en haut à droite */
+        .media-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+            color: white; font-size: 0.65rem; font-weight: 700;
+            padding: 3px 9px; border-radius: 20px;
+        }
         /* Lightbox */
-        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
+        .lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            z-index: 9000; display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        .lightbox img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        .lightbox-close { position: absolute; top: 18px; right: 20px; color: white; font-size: 1.8rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .lightbox img {
+            max-width: 92vw; max-height: 88vh;
+            object-fit: contain; border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+        .lightbox-close {
+            position: absolute; top: 18px; right: 20px;
+            color: white; font-size: 1.8rem; cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.12); display: flex;
+            align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
         .lightbox-close:hover { background: rgba(255,255,255,0.25); }
-        .lightbox-filename { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.6); font-size: 0.75rem; font-weight: 600; background: rgba(0,0,0,0.4); padding: 5px 14px; border-radius: 20px; }
+        .lightbox-filename {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            color: rgba(255,255,255,0.6); font-size: 0.75rem; font-weight: 600;
+            background: rgba(0,0,0,0.4); padding: 5px 14px; border-radius: 20px;
+        }
+        .empty-state i { font-size:2.5rem; margin-bottom:12px; opacity:0.4; }
+        .empty-state p { font-size:0.88rem; }
 
         /* SEMAINES */
         .semaine-section { display:flex; flex-direction:column; gap:10px; }
@@ -241,13 +308,18 @@
         .detail-item p { font-size:0.85rem; font-weight:600; color:var(--text); }
         .edit-btn { background:linear-gradient(135deg,var(--green),var(--blue)); color:white; border:none; padding:10px 22px; border-radius:40px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; }
 
+        /* Modal */
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:500; display:none; align-items:center; justify-content:center; }
         .modal-overlay.active { display:flex; }
         .modal-box { background:white; border-radius:20px; max-width:520px; width:95%; max-height:85vh; overflow-y:auto; padding:28px; box-shadow:var(--shadow-md); }
         .modal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
         .modal-top h3 { font-size:1rem; font-weight:700; color:var(--blue); }
         .modal-close { background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--muted); }
+        .modal-box .form-field { margin-bottom:14px; }
+        .modal-box .form-field input,.modal-box .form-field textarea { width:100%; padding:10px 14px; border:2px solid var(--border); border-radius:12px; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; }
+        .modal-box .form-field input:focus,.modal-box .form-field textarea:focus { outline:none; border-color:var(--green); }
 
+        /* Share */
         .share-modal-buttons { display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
         .share-btn { width:55px; height:55px; border-radius:50%; border:none; cursor:pointer; font-size:1.5rem; transition:transform 0.2s,opacity 0.2s; display:inline-flex; align-items:center; justify-content:center; }
         .share-btn:hover { transform:scale(1.1); }
@@ -256,9 +328,11 @@
         .share-btn.whatsapp { background:#25d366; color:white; }
         .share-btn.copy { background:var(--green); color:white; }
 
+        /* Toast */
         .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(60px); background:#1e2b20; color:white; padding:10px 20px; border-radius:40px; font-size:0.82rem; font-weight:600; z-index:9000; transition:transform 0.3s; pointer-events:none; }
         .toast.show { transform:translateX(-50%) translateY(0); }
 
+        /* Responsive */
         @media(max-width:1100px) { .layout { grid-template-columns:240px 1fr 280px; gap:12px; } }
         @media(max-width:860px) { .layout { grid-template-columns:1fr; } .sidebar-left,.sidebar-right { position:static; } .chat-panel { height:450px; } }
     </style>
@@ -278,6 +352,7 @@
             <button class="auth-tab-btn" id="registerTabBtn" onclick="switchTab('register')">Créer un compte</button>
         </div>
 
+        <!-- LOGIN -->
         <div id="loginForm">
             <div class="form-field"><label>Email</label><input type="email" id="loginEmail" placeholder="votre@email.com" onkeypress="if(event.key==='Enter')doLogin()"></div>
             <div class="form-field"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder="••••••••" onkeypress="if(event.key==='Enter')doLogin()"></div>
@@ -285,6 +360,7 @@
             <button class="btn-auth" onclick="doLogin()">Se connecter</button>
         </div>
 
+        <!-- REGISTER -->
         <div id="registerForm" style="display:none">
             <div class="form-field"><label>Nom complet</label><input type="text" id="regName" placeholder="Votre nom"></div>
             <div class="form-field"><label>Pays</label><input type="text" id="regPays" placeholder="Votre pays"></div>
@@ -295,6 +371,7 @@
             <button class="btn-auth" onclick="doRegister()">Créer mon compte</button>
         </div>
 
+        <!-- FORGOT PASSWORD -->
         <div id="forgotForm" style="display:none">
             <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;text-align:center">Entrez votre email pour recevoir un lien de réinitialisation.</p>
             <div class="form-field"><label>Email</label><input type="email" id="forgotEmail" placeholder="votre@email.com" onkeypress="if(event.key==='Enter')sendResetEmail()"></div>
@@ -304,8 +381,10 @@
     </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- MAIN APP -->
 <div id="app" style="display:none">
     <div class="topbar">
         <span class="topbar-logo">
@@ -321,6 +400,7 @@
     </div>
 
     <div class="layout">
+        <!-- LEFT -->
         <div class="sidebar-left">
             <div class="card">
                 <div class="card-header members-header" onclick="toggleMembersList()">
@@ -355,6 +435,7 @@
             </div>
         </div>
 
+        <!-- CENTER -->
         <div class="feed" id="feedCenter">
             <div id="view-feed">
                 <div class="compose-box">
@@ -416,6 +497,7 @@
             </div>
         </div>
 
+        <!-- RIGHT: CHAT -->
         <div class="sidebar-right">
             <div class="chat-panel">
                 <div class="chat-panel-header">
@@ -434,21 +516,20 @@
     </div>
 </div>
 
+<!-- COMPOSE MODAL -->
 <div class="compose-modal-overlay" id="composeOverlay" onclick="if(event.target===this)closeCompose()">
     <div class="compose-modal">
         <div class="compose-modal-header">
             <h3 id="composeTitle">Publier un document</h3>
             <button style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)" onclick="closeCompose()">×</button>
         </div>
-        <input id="composeTitle2" type="text" placeholder="Titre principal (ex: Contribution à l'analyse...)" style="width:100%;border:2px solid var(--border);border-radius:12px;padding:10px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.92rem;font-weight:700;margin-bottom:10px">
-        <input id="composeSubtitle" type="text" placeholder="Sous-titre / cas d'étude (optionnel)" style="width:100%;border:2px solid var(--border);border-radius:12px;padding:9px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;color:var(--muted);margin-bottom:10px;font-style:italic">
-        <textarea id="composeCaption" rows="5" placeholder="Décrivez votre travail... (Entrée = nouvelle ligne conservée)"></textarea>
-        <input id="composeLink" type="url" placeholder="🔗 Lien externe (optionnel : article, Drive, GitHub...)" style="width:100%;border:2px solid var(--border);border-radius:12px;padding:9px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;margin-bottom:10px">
+        <textarea id="composeCaption" rows="3" placeholder="Ajoutez une description…"></textarea>
         <div id="composeFields"></div>
         <button class="btn-submit-post" onclick="submitPost()">Publier</button>
     </div>
 </div>
 
+<!-- EDIT PROFILE MODAL -->
 <div class="modal-overlay" id="editModalOverlay" onclick="if(event.target===this)closeEditModal()">
     <div class="modal-box">
         <div class="modal-top">
@@ -466,11 +547,15 @@
     </div>
 </div>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
 const firebaseConfig = {
     apiKey:"AIzaSyC_G2Fu6ZN4tzavRzfKo9fjXj5R_Un0PyE",
     authDomain:"gada-training-chat.firebaseapp.com",
@@ -483,6 +568,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// CONFIGURATION IA GROQ
 const AI_CONFIG = {
     API_KEY: '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',
     MODEL: 'llama-3.3-70b-versatile',
@@ -518,6 +604,9 @@ const SEMAINES_DATA = {
 };
 const GITHUB_BASE = "https://raw.githubusercontent.com/GADA-Training/gada-training/main/documents/";
 
+// ══════════════════════════════════════════════
+// CONTENU TEXTUEL DU PLAN DE FORMATION (AJOUTÉ)
+// ══════════════════════════════════════════════
 const CONTENU_PLAN_FORMATION = `
 📋 PLAN DE FORMATION GADA 2026 - MODÉLISATION SPATIALE & ONE HEALTH
 
@@ -550,7 +639,7 @@ Session 14 - Carte thématique décisionnelle et présentation finale
 - Modéliser la distribution de maladies vectorielles (paludisme, etc.)
 - Analyser des indices de végétation (NDVI, NDWI, SAVI) et température (LST)
 
-👨‍🏫 INTERVENANTS :
+👨🏫 INTERVENANTS :
 - Formateur principal : GADA Solution
 - Assistants techniques : Équipe R&D
 
@@ -562,16 +651,27 @@ Session 14 - Carte thématique décisionnelle et présentation finale
 À l'issue de la formation, les apprenants reçoivent une attestation de participation.
 `;
 
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
 let currentUser = null;
 let currentProfile = {};
 let composeMode = null;
 let currentConversationListener = null;
+// Garde les clés de posts déjà affichés pour éviter les doublons
 let renderedPostKeys = new Set();
-let conversationHistory = [];
+let conversationHistory = []; // Pour l'IA
 
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
 function toast(msg,dur=3000){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),dur);}
 function showAuthMsg(msg,isErr=true){const el=document.getElementById('authMsg');el.textContent=msg;el.className='auth-msg '+(isErr?'err':'ok');}
+
+// ══════════════════════════════════════════════
+// IA AVEC ACCÈS COMPLET À TOUTES LES DONNÉES
+// ══════════════════════════════════════════════
 
 async function getAllPosts() {
     return new Promise((resolve) => {
@@ -585,9 +685,6 @@ async function getAllPosts() {
                     authorEmail: post.userEmail || '',
                     type: post.type || 'document',
                     caption: post.caption || '',
-                    postTitle: post.postTitle || '',
-                    postSubtitle: post.postSubtitle || '',
-                    postLink: post.postLink || '',
                     fileName: post.fileName || '',
                     url: post.url || '',
                     timestamp: new Date(post.timestamp).toLocaleString('fr-FR'),
@@ -649,10 +746,20 @@ function sauvegarderConversation(question, reponse) {
 
 async function getHistoriqueConversations(limit = 20) {
     return new Promise((resolve) => {
-        if(!currentUser) { resolve([]); return; }
+        if(!currentUser) {
+            resolve([]);
+            return;
+        }
         db.ref(`ia_conversations/${currentUser.uid}`).orderByChild('timestamp').limitToLast(limit).once('value', (snap) => {
             const historique = [];
-            snap.forEach(child => { historique.push(child.val()); });
+            snap.forEach(child => {
+                const conv = child.val();
+                historique.push({
+                    question: conv.question,
+                    reponse: conv.reponse,
+                    date: conv.date
+                });
+            });
             resolve(historique.reverse());
         });
     });
@@ -678,42 +785,144 @@ async function sendToLLM() {
     const input = document.getElementById('iaInput');
     const question = input.value.trim();
     if(!question) return;
+    
     appendIAMessage('user', question);
     input.value = '';
+    
     toast("📡 Consultation de la base de connaissances...", 1500);
-    const [allPosts, fichiersFormation, allMembres] = await Promise.all([getAllPosts(), getAllFichiersFormation(), getAllMembres()]);
+    
+    const [allPosts, fichiersFormation, allMembres] = await Promise.all([
+        getAllPosts(),
+        getAllFichiersFormation(),
+        getAllMembres()
+    ]);
+    
     let contexte = "🏫 **BASE DE CONNAISSANCES GADA TRAINING**\n\n";
+    
+    // ⭐ AJOUT : PLAN DE FORMATION COMPLET
+    contexte += "📋 **PLAN DE FORMATION COMPLET :**\n";
     contexte += CONTENU_PLAN_FORMATION + "\n\n";
+    
     contexte += "📚 **FICHIERS DE FORMATION :**\n";
     const fichiersParSemaine = {};
-    fichiersFormation.forEach(f => { if(!fichiersParSemaine[f.semaine]) fichiersParSemaine[f.semaine] = []; fichiersParSemaine[f.semaine].push(f.nom); });
-    Object.entries(fichiersParSemaine).forEach(([semaine, fichiers]) => { contexte += `   • ${semaine}: ${fichiers.join(', ')}\n`; });
-    contexte += "\n📝 **PUBLICATIONS DES MEMBRES:**\n";
-    if(allPosts.length > 0) allPosts.slice(0,30).forEach(p => { contexte += `   - [${p.type}] ${p.author}: ${p.postTitle || p.caption || p.fileName}\n`; });
-    contexte += "\n👥 **MEMBRES ACTIFS:**\n";
-    allMembres.slice(0,20).forEach(m => { contexte += `   • ${m.nom} - ${m.titre}\n`; });
-    contexte += "\n**INSTRUCTIONS:** Réponds de façon précise en te basant sur ces données.\n";
-    const messages = [{ role: "system", content: contexte }, ...conversationHistory.slice(-10), { role: "user", content: question }];
+    fichiersFormation.forEach(f => {
+        if(!fichiersParSemaine[f.semaine]) fichiersParSemaine[f.semaine] = [];
+        fichiersParSemaine[f.semaine].push(f.nom);
+    });
+    Object.entries(fichiersParSemaine).forEach(([semaine, fichiers]) => {
+        contexte += `   • ${semaine}: ${fichiers.join(', ')}\n`;
+    });
+    contexte += "\n";
+    
+    contexte += `📝 **PUBLICATIONS DES MEMBRES (${allPosts.length} au total) :**\n`;
+    if(allPosts.length > 0) {
+        const postsRecents = allPosts.slice(0, 30);
+        const statsParType = {};
+        allPosts.forEach(p => { statsParType[p.type] = (statsParType[p.type] || 0) + 1; });
+        
+        contexte += `   📊 Statistiques : ${Object.entries(statsParType).map(([t,c]) => `${t}: ${c}`).join(' | ')}\n`;
+        contexte += `   🕐 Dernières publications :\n`;
+        postsRecents.forEach(p => {
+            contexte += `      - [${p.type.toUpperCase()}] ${p.author} (${p.timestamp}): ${p.caption || p.fileName || p.url || 'Partage'}\n`;
+        });
+        if(allPosts.length > 30) {
+            contexte += `      ... et ${allPosts.length - 30} autres publications\n`;
+        }
+    } else {
+        contexte += "   Aucune publication pour le moment.\n";
+    }
+    contexte += "\n";
+    
+    contexte += `👥 **MEMBRES ACTIFS (${allMembres.length}) :**\n`;
+    allMembres.slice(0, 20).forEach(m => {
+        contexte += `   • ${m.nom} - ${m.titre}${m.pays ? ` (${m.pays})` : ''}\n`;
+    });
+    if(allMembres.length > 20) {
+        contexte += `   ... et ${allMembres.length - 20} autres membres\n`;
+    }
+    contexte += "\n";
+    
+    contexte += `**INSTRUCTIONS SPÉCIALES :**
+- Tu as accès au PLAN DE FORMATION COMPLET ci-dessus (calendrier, sessions, objectifs, intervenants)
+- Tu as accès à TOUTES les publications et fichiers partagés ci-dessus
+- Tu connais tous les membres et leurs contributions
+- Réponds de façon précise en te basant sur ces données textuelles
+- Si on te demande le calendrier, les sessions ou les objectifs, réponds directement à partir du plan de formation
+- Tu peux répondre aux questions comme :
+  * "Quel est le calendrier de la formation ?" → Liste les semaines avec dates
+  * "Détaille-moi la session 5" → Décris les modèles linéaires
+  * "Quels sont les objectifs pédagogiques ?" → Liste les objectifs
+  * "Quand a lieu la session sur MaxEnt ?" → Semaine 2, session 11
+  * "Résume tous les fichiers partagés" → Liste les publications récentes
+- Sois pédagogique et utile\n\n`;
+    
+    const systemPrompt = `Tu es GADA Assistant, expert en formation "Modélisation spatiale & One Health". 
+Tu enseignes : NDVI/NDWI/SAVI/LST, MaxEnt, Random Forest, GLM, ArcGIS Pro, RStudio, One Health.
+
+${contexte}
+
+MAINTENANT, RÉPONDS À LA QUESTION DE L'UTILISATEUR :`;
+
+    const messages = [
+        { role: "system", content: systemPrompt },
+        ...conversationHistory.slice(-10),
+        { role: "user", content: question }
+    ];
+    
     try {
         const resp = await fetch(AI_CONFIG.ENDPOINT, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.5, max_tokens: 1000 })
+            body: JSON.stringify({ 
+                model: AI_CONFIG.MODEL, 
+                messages: messages, 
+                temperature: 0.5, 
+                max_tokens: 1000
+            })
         });
         const data = await resp.json();
-        if(data.error) throw new Error(data.error);
+        if(data.error) {
+            console.error(data.error);
+            appendIAMessage('assistant', "⚠️ Service IA temporairement indisponible.");
+            return;
+        }
         const reply = data.choices[0].message.content;
         appendIAMessage('assistant', reply);
         sauvegarderConversation(question, reply);
-    } catch(err) { appendIAMessage('assistant', "⚠️ Service IA indisponible."); }
+    } catch(err) {
+        console.error(err);
+        appendIAMessage('assistant', "❌ Erreur réseau. Vérifiez votre connexion.");
+    }
 }
 
 async function initIA() {
     const historique = await getHistoriqueConversations(5);
-    let msg = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\n🎯 Je peux voir TOUT ce qui est partagé sur la plateforme en temps réel : plan de formation, fichiers, publications, membres.\n\n🔍 Exemples : 'Quel est le calendrier ?', 'Détaille la session 5', 'Résume tous les fichiers partagés'.";
-    appendIAMessage('assistant', msg);
+    
+    let messageBienvenue = "👋 Bonjour ! Je suis **GADA Assistant** (Llama 3.3).\n\n";
+    messageBienvenue += "🎯 **Je peux voir TOUT ce qui est partagé sur la plateforme en temps réel :**\n";
+    messageBienvenue += "• 📋 Plan de formation complet (calendrier, sessions, objectifs)\n";
+    messageBienvenue += "• 📚 Tous les fichiers de formation des semaines\n";
+    messageBienvenue += "• 📝 Toutes les publications des membres\n";
+    messageBienvenue += "• 👥 Tous les membres de la communauté\n";
+    messageBienvenue += "• 💬 Mes conversations précédentes avec toi\n\n";
+    messageBienvenue += "🔍 **Exemples de questions :**\n";
+    messageBienvenue += "• 'Quel est le calendrier de la formation ?'\n";
+    messageBienvenue += "• 'Détaille-moi la session 5'\n";
+    messageBienvenue += "• 'Quels sont les objectifs pédagogiques ?'\n";
+    messageBienvenue += "• 'Quand a lieu la session sur MaxEnt ?'\n";
+    messageBienvenue += "• 'Résume tous les fichiers partagés'\n";
+    messageBienvenue += "• 'Explique-moi le NDVI'\n\n";
+    
+    if(historique.length > 0) {
+        messageBienvenue += `📜 **Je me souviens de nos ${historique.length} dernières conversations !**\n`;
+    }
+    
+    appendIAMessage('assistant', messageBienvenue);
 }
 
+// ══════════════════════════════════════════════
+// AUTH TABS
+// ══════════════════════════════════════════════
 function switchTab(tab){
     document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
     document.getElementById('registerForm').style.display=tab==='register'?'block':'none';
@@ -723,18 +932,25 @@ function switchTab(tab){
     document.getElementById('authMsg').className='auth-msg';
 }
 
+// ══════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════
 function doLogin(){
     const email=document.getElementById('loginEmail').value.trim().toLowerCase();
     const pwd=document.getElementById('loginPassword').value;
     if(!ELIGIBLE.includes(email)){showAuthMsg('❌ Accès refusé. Finalisez votre paiement ou contactez gadasolution.rdc@gmail.com');return;}
     showAuthMsg('Connexion en cours…',false);
-    firebase.auth().signInWithEmailAndPassword(email,pwd).catch(e=>{
-        if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')showAuthMsg('❌ Mot de passe incorrect.');
-        else if(e.code==='auth/user-not-found')showAuthMsg('❌ Aucun compte trouvé. Créez votre compte.');
-        else showAuthMsg('❌ '+e.message);
-    });
+    firebase.auth().signInWithEmailAndPassword(email,pwd)
+        .catch(e=>{
+            if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')showAuthMsg('❌ Mot de passe incorrect. Utilisez "Mot de passe oublié ?" si besoin.');
+            else if(e.code==='auth/user-not-found')showAuthMsg('❌ Aucun compte trouvé. Créez votre compte via l\'onglet ci-dessus.');
+            else showAuthMsg('❌ '+e.message);
+        });
 }
 
+// ══════════════════════════════════════════════
+// REGISTER
+// ══════════════════════════════════════════════
 function doRegister(){
     const name=document.getElementById('regName').value.trim();
     const pays=document.getElementById('regPays').value.trim();
@@ -742,26 +958,58 @@ function doRegister(){
     const email=document.getElementById('regEmail').value.trim().toLowerCase();
     const pwd=document.getElementById('regPwd').value;
     const pwd2=document.getElementById('regPwd2').value;
-    if(!ELIGIBLE.includes(email)){showAuthMsg('❌ Vous n\'êtes pas éligible.');return;}
+    if(!ELIGIBLE.includes(email)){showAuthMsg('❌ Vous n\'êtes pas éligible. Contactez gadasolution.rdc@gmail.com');return;}
     if(!name){showAuthMsg('❌ Entrez votre nom complet.');return;}
     if(pwd!==pwd2){showAuthMsg('❌ Les mots de passe ne correspondent pas.');return;}
     if(pwd.length<6){showAuthMsg('❌ Minimum 6 caractères.');return;}
     showAuthMsg('Création du compte…',false);
-    firebase.auth().createUserWithEmailAndPassword(email,pwd).then(cred=>{
-        db.ref('user_profiles/'+cred.user.uid).set({uid:cred.user.uid,fullName:name,pays,phone,email,title:'',bio:'',linkedin:'',github:'',avatar:'',createdAt:Date.now()});
-        showAuthMsg('✅ Compte créé !',false);
-    }).catch(e=>showAuthMsg('❌ '+e.message));
+    firebase.auth().createUserWithEmailAndPassword(email,pwd)
+        .then(cred=>{
+            const profile={uid:cred.user.uid,fullName:name,pays,phone,email,title:'',bio:'',linkedin:'',github:'',avatar:'',createdAt:Date.now()};
+            db.ref('user_profiles/'+cred.user.uid).set(profile);
+            showAuthMsg('✅ Compte créé ! Connexion automatique…',false);
+        })
+        .catch(e=>{
+            if(e.code==='auth/email-already-in-use')showAuthMsg('❌ Email déjà utilisé. Connectez-vous ou réinitialisez votre mot de passe.');
+            else showAuthMsg('❌ '+e.message);
+        });
 }
 
-function doForgotPassword(){ const e=document.getElementById('loginEmail').value.trim(); if(e)document.getElementById('forgotEmail').value=e; switchTab('forgot'); }
+// ══════════════════════════════════════════════
+// MOT DE PASSE OUBLIÉ
+// ══════════════════════════════════════════════
+function doForgotPassword(){
+    const existingEmail=document.getElementById('loginEmail').value.trim();
+    if(existingEmail)document.getElementById('forgotEmail').value=existingEmail;
+    switchTab('forgot');
+}
+
 function sendResetEmail(){
     const email=document.getElementById('forgotEmail').value.trim().toLowerCase();
-    if(!email){showAuthMsg('❌ Entrez votre email.');return;}
-    if(!ELIGIBLE.includes(email)){showAuthMsg('❌ Email non inscrit.');return;}
-    firebase.auth().sendPasswordResetEmail(email).then(()=>{showAuthMsg('✅ Email envoyé !',false); setTimeout(()=>switchTab('login'),4000);}).catch(e=>showAuthMsg('❌ '+e.message));
+    if(!email){showAuthMsg('❌ Entrez votre adresse email.');return;}
+    if(!ELIGIBLE.includes(email)){showAuthMsg('❌ Cet email n\'est pas inscrit à la formation GADA.');return;}
+    showAuthMsg('Envoi en cours…',false);
+    firebase.auth().sendPasswordResetEmail(email)
+        .then(()=>{
+            showAuthMsg('✅ Email envoyé ! Vérifiez votre boîte mail (et les spams). Cliquez sur le lien pour réinitialiser votre mot de passe.',false);
+            setTimeout(()=>switchTab('login'),4000);
+        })
+        .catch(e=>{
+            if(e.code==='auth/user-not-found')showAuthMsg('❌ Aucun compte trouvé avec cet email. Créez d\'abord un compte.');
+            else showAuthMsg('❌ Erreur: '+e.message);
+        });
 }
-function doLogout(){ firebase.auth().signOut(); }
 
+// ══════════════════════════════════════════════
+// LOGOUT
+// ══════════════════════════════════════════════
+function doLogout(){
+    firebase.auth().signOut();
+}
+
+// ══════════════════════════════════════════════
+// SESSION
+// ══════════════════════════════════════════════
 firebase.auth().onAuthStateChanged(user=>{
     if(user){
         if(!ELIGIBLE.includes(user.email)){firebase.auth().signOut();showAuthMsg('❌ Accès refusé.');return;}
@@ -784,26 +1032,72 @@ firebase.auth().onAuthStateChanged(user=>{
     }
 });
 
+// ══════════════════════════════════════════════
+// MENU MEMBRES
+// ══════════════════════════════════════════════
 function toggleMembersList(){
-    const c=document.getElementById('membersListContainer'), ch=document.getElementById('membersChevron');
-    if(c.classList.contains('expanded')){ c.classList.remove('expanded'); ch.classList.remove('rotated'); localStorage.setItem('membersExpanded','false'); }
-    else{ c.classList.add('expanded'); ch.classList.add('rotated'); localStorage.setItem('membersExpanded','true'); }
+    const container=document.getElementById('membersListContainer');
+    const chevron=document.getElementById('membersChevron');
+    if(container.classList.contains('expanded')){
+        container.classList.remove('expanded');chevron.classList.remove('rotated');
+        localStorage.setItem('membersExpanded','false');
+    } else {
+        container.classList.add('expanded');chevron.classList.add('rotated');
+        localStorage.setItem('membersExpanded','true');
+    }
 }
-function initMembersDropdown(){ if(localStorage.getItem('membersExpanded')==='true'){ document.getElementById('membersListContainer').classList.add('expanded'); document.getElementById('membersChevron').classList.add('rotated'); } }
+function initMembersDropdown(){
+    if(localStorage.getItem('membersExpanded')==='true'){
+        document.getElementById('membersListContainer').classList.add('expanded');
+        document.getElementById('membersChevron').classList.add('rotated');
+    }
+}
 
+// ══════════════════════════════════════════════
+// MESSAGERIE PRIVÉE
+// ══════════════════════════════════════════════
 function openConversation(memberId,memberName,memberEmail){
-    const modal=document.createElement('div'); modal.className='modal-overlay message-modal'; modal.style.display='flex';
+    const modal=document.createElement('div');
+    modal.className='modal-overlay message-modal';
+    modal.style.display='flex';
     modal.onclick=(e)=>{if(e.target===modal){modal.remove();if(currentConversationListener){currentConversationListener();}}};
-    modal.innerHTML=`<div class="modal-box" style="max-width:500px" onclick="event.stopPropagation()"><div class="modal-top"><h3><i class="fa-regular fa-comment-dots"></i> Message à ${esc(memberName)}</h3><button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button></div><div class="conversation-messages" id="conversationMessages"></div><div style="display:flex;gap:8px"><input type="text" id="newMessageInput" placeholder="Votre message..." style="flex:1;padding:10px;border:2px solid var(--border);border-radius:12px" onkeypress="if(event.key==='Enter')sendPrivateMessage('${memberId}','${memberName.replace(/'/g,"\\'")}','${memberEmail.replace(/'/g,"\\'")}')"><button onclick="sendPrivateMessage('${memberId}','${memberName.replace(/'/g,"\\'")}','${memberEmail.replace(/'/g,"\\'")}')" class="chat-send-btn" style="width:auto;padding:0 15px"><i class="fa-solid fa-paper-plane"></i></button></div></div>`;
+    modal.innerHTML=`
+        <div class="modal-box" style="max-width:500px" onclick="event.stopPropagation()">
+            <div class="modal-top">
+                <h3><i class="fa-regular fa-comment-dots"></i> Message à ${esc(memberName)}</h3>
+                <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+            </div>
+            <div class="conversation-messages" id="conversationMessages"></div>
+            <div style="display:flex;gap:8px">
+                <input type="text" id="newMessageInput" placeholder="Votre message..." style="flex:1;padding:10px;border:2px solid var(--border);border-radius:12px;font-family:inherit" onkeypress="if(event.key==='Enter')sendPrivateMessage('${memberId}','${memberName.replace(/'/g,"\\'")}','${memberEmail.replace(/'/g,"\\'")}')">
+                <button onclick="sendPrivateMessage('${memberId}','${memberName.replace(/'/g,"\\'")}','${memberEmail.replace(/'/g,"\\'")}' )" class="chat-send-btn" style="width:auto;padding:0 15px"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>`;
     document.body.appendChild(modal);
+    loadConversation(memberId);
+}
+
+function loadConversation(otherUserId){
     const userId=currentUser.uid;
     const ref=db.ref('private_messages');
     const handler=ref.on('value',snap=>{
-        const messages=[]; snap.forEach(c=>{ const m=c.val(); if((m.from===userId&&m.to===memberId)||(m.from===memberId&&m.to===userId)) messages.push({id:c.key,...m}); });
+        const messages=[];
+        snap.forEach(c=>{
+            const msg=c.val();
+            if((msg.from===userId&&msg.to===otherUserId)||(msg.from===otherUserId&&msg.to===userId))
+                messages.push({id:c.key,...msg});
+        });
         messages.sort((a,b)=>a.timestamp-b.timestamp);
         const container=document.getElementById('conversationMessages');
-        if(!container) return;
-        container.innerHTML=messages.length===0?'<div style="text-align:center;color:var(--muted);padding:20px">Démarrez la conversation 👋</div>':messages.map(m=>`<div class="message-item ${m.from===userId?'sent':'received'}"><div class="message-sender">${m.from===userId?'Moi':esc(m.fromName)}</div><div class="message-text">${esc(m.text)}</div><div class="message-time">${new Date(m.timestamp).toLocaleString('fr-FR')}</div></div>`).join('');
+        if(!container)return;
+        container.innerHTML=messages.length===0
+            ?'<div style="text-align:center;color:var(--muted);padding:20px;font-size:0.8rem">Démarrez la conversation 👋</div>'
+            :messages.map(m=>`
+            <div class="message-item ${m.from===userId?'sent':'received'}">
+                <div class="message-sender">${m.from===userId?'Moi':esc(m.fromName)}</div>
+                <div class="message-text">${esc(m.text)}</div>
+                <div class="message-time">${new Date(m.timestamp).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}</div>
+            </div>`).join('');
         container.scrollTop=container.scrollHeight;
     });
     currentConversationListener=()=>ref.off('value',handler);
@@ -813,23 +1107,56 @@ function sendPrivateMessage(toId,toName,toEmail){
     const input=document.getElementById('newMessageInput');
     const text=input.value.trim();
     if(!text){toast('❌ Écrivez un message');return;}
-    db.ref('private_messages').push({from:currentUser.uid,fromName:currentProfile.fullName||currentUser.email.split('@')[0],fromEmail:currentUser.email,to:toId,toName,toEmail,text,timestamp:Date.now(),read:false}).then(()=>{
+    const message={from:currentUser.uid,fromName:currentProfile.fullName||currentUser.email.split('@')[0],fromEmail:currentUser.email,to:toId,toName,toEmail,text,timestamp:Date.now(),read:false};
+    db.ref('private_messages').push(message).then(()=>{
         input.value='';
         db.ref(`user_notifications/${toId}`).push({type:'message',from:currentUser.uid,fromName:currentProfile.fullName||currentUser.email.split('@')[0],message:text.substring(0,50),timestamp:Date.now(),read:false});
     }).catch(e=>toast('❌ '+e.message));
 }
 
+// ══════════════════════════════════════════════
+// VOIR PROFIL MEMBRE
+// ══════════════════════════════════════════════
 function viewMemberProfile(memberId,memberEmail,memberName){
     db.ref('user_profiles').orderByChild('email').equalTo(memberEmail).once('value',snap=>{
-        let profile=null; snap.forEach(c=>{profile=c.val();});
-        if(!profile) profile={fullName:memberName,email:memberEmail,title:'Membre éligible',bio:'',pays:'',phone:'',linkedin:'',github:'',avatar:''};
-        const modal=document.createElement('div'); modal.className='modal-overlay'; modal.style.display='flex';
+        let profile=null;
+        snap.forEach(c=>{profile=c.val();});
+        if(!profile)profile={fullName:memberName,email:memberEmail,title:'Membre éligible',bio:'',pays:'',phone:'',linkedin:'',github:'',avatar:''};
+        const modal=document.createElement('div');
+        modal.className='modal-overlay';modal.style.display='flex';
         modal.onclick=(e)=>{if(e.target===modal)modal.remove();};
-        modal.innerHTML=`<div class="modal-box" style="max-width:450px" onclick="event.stopPropagation()"><div class="modal-top"><h3><i class="fa-solid fa-user"></i> ${esc(profile.fullName)}</h3><button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button></div><div style="text-align:center;margin-bottom:20px"><div class="user-av" style="width:80px;height:80px;margin:0 auto 12px">${profile.avatar?`<img src="${profile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user" style="font-size:35px"></i>'}</div><h3>${esc(profile.fullName)}</h3><span class="profile-badge-tag">${esc(profile.title||'Apprenant GADA')}</span></div><div class="details-grid"><div class="detail-item"><label>Email</label><p>${esc(profile.email)}</p></div><div class="detail-item"><label>Pays</label><p>${esc(profile.pays||'—')}</p></div><div class="detail-item"><label>Téléphone</label><p>${esc(profile.phone||'—')}</p></div><div class="detail-item"><label>Bio</label><p>${esc(profile.bio||'Aucune description')}</p></div></div>${profile.linkedin||profile.github?`<div style="text-align:center;margin-bottom:16px"><div class="profile-socials" style="justify-content:center">${profile.linkedin?`<a href="${profile.linkedin}" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>`:''}${profile.github?`<a href="${profile.github}" target="_blank" class="social-link"><i class="fab fa-github"></i></a>`:''}</div></div>`:''}<div style="display:flex;gap:10px"><button onclick="this.closest('.modal-overlay').remove();openConversation('${memberId}','${profile.fullName.replace(/'/g,"\\'")}','${profile.email}')" class="edit-btn" style="flex:1"><i class="fa-regular fa-comment"></i> Envoyer un message</button><button onclick="this.closest('.modal-overlay').remove()" style="flex:0.4;padding:10px;border-radius:40px;border:1.5px solid var(--border);background:none;cursor:pointer;font-weight:600">Fermer</button></div></div>`;
+        modal.innerHTML=`
+            <div class="modal-box" style="max-width:450px" onclick="event.stopPropagation()">
+                <div class="modal-top">
+                    <h3><i class="fa-solid fa-user"></i> ${esc(profile.fullName)}</h3>
+                    <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">×</button>
+                </div>
+                <div style="text-align:center;margin-bottom:20px">
+                    <div class="user-av" style="width:80px;height:80px;margin:0 auto 12px">
+                        ${profile.avatar?`<img src="${profile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user" style="font-size:35px"></i>'}
+                    </div>
+                    <h3 style="color:var(--blue)">${esc(profile.fullName)}</h3>
+                    <span class="profile-badge-tag">${esc(profile.title||'Apprenant GADA')}</span>
+                </div>
+                <div class="details-grid" style="margin-bottom:16px">
+                    <div class="detail-item"><label>Email</label><p style="font-size:0.75rem">${esc(profile.email)}</p></div>
+                    <div class="detail-item"><label>Pays</label><p>${esc(profile.pays||'—')}</p></div>
+                    <div class="detail-item"><label>Téléphone</label><p>${esc(profile.phone||'—')}</p></div>
+                    <div class="detail-item"><label>Bio</label><p style="font-size:0.75rem">${esc(profile.bio||'Aucune description')}</p></div>
+                </div>
+                ${profile.linkedin||profile.github?`<div style="text-align:center;margin-bottom:16px"><div class="profile-socials" style="justify-content:center">${profile.linkedin?`<a href="${profile.linkedin}" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>`:''} ${profile.github?`<a href="${profile.github}" target="_blank" class="social-link"><i class="fab fa-github"></i></a>`:''}</div></div>`:''}
+                <div style="display:flex;gap:10px">
+                    <button onclick="this.closest('.modal-overlay').remove();openConversation('${memberId}','${profile.fullName.replace(/'/g,"\\'")}','${profile.email}')" class="edit-btn" style="flex:1"><i class="fa-regular fa-comment"></i> Envoyer un message</button>
+                    <button onclick="this.closest('.modal-overlay').remove()" style="flex:0.4;padding:10px;border-radius:40px;border:1.5px solid var(--border);background:none;cursor:pointer;font-weight:600;color:var(--muted)">Fermer</button>
+                </div>
+            </div>`;
         document.body.appendChild(modal);
     });
 }
 
+// ══════════════════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════════════════
 function loadNotifications(){
     if(!currentUser)return;
     db.ref(`user_notifications/${currentUser.uid}`).limitToLast(20).on('child_added',snap=>{
@@ -841,10 +1168,16 @@ function loadNotifications(){
     });
 }
 
+// ══════════════════════════════════════════════
+// PROFIL
+// ══════════════════════════════════════════════
 function loadProfile(){
     db.ref('user_profiles/'+currentUser.uid).once('value',snap=>{
         if(snap.exists()){currentProfile=snap.val();}
-        else{ currentProfile={uid:currentUser.uid,fullName:currentUser.email.split('@')[0],email:currentUser.email,title:'',bio:'',pays:'',phone:'',linkedin:'',github:'',avatar:'',createdAt:Date.now()}; db.ref('user_profiles/'+currentUser.uid).set(currentProfile); }
+        else{
+            currentProfile={uid:currentUser.uid,fullName:currentUser.email.split('@')[0],email:currentUser.email,title:'',bio:'',pays:'',phone:'',linkedin:'',github:'',avatar:'',createdAt:Date.now()};
+            db.ref('user_profiles/'+currentUser.uid).set(currentProfile);
+        }
         updateProfileUI();
     });
 }
@@ -852,7 +1185,10 @@ function updateProfileUI(){
     const name=currentProfile.fullName||currentUser.email.split('@')[0];
     const isAdmin=currentUser.email===ADMIN_EMAIL;
     document.getElementById('topName').textContent=name+(isAdmin?' (Formateur)':'');
-    ['topAvatar','composeAv'].forEach(id=>{ const el=document.getElementById(id); el.innerHTML=currentProfile.avatar?`<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'; });
+    ['topAvatar','composeAv'].forEach(id=>{
+        const el=document.getElementById(id);
+        el.innerHTML=currentProfile.avatar?`<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:'<i class="fa-solid fa-user"></i>';
+    });
     document.getElementById('profileName').textContent=name;
     document.getElementById('profileTitle').textContent=currentProfile.title||'Apprenant GADA';
     document.getElementById('profileBio').textContent=currentProfile.bio||'';
@@ -860,8 +1196,10 @@ function updateProfileUI(){
     document.getElementById('dPays').textContent=currentProfile.pays||'—';
     document.getElementById('dPhone').textContent=currentProfile.phone||'—';
     document.getElementById('dDate').textContent=currentProfile.createdAt?new Date(currentProfile.createdAt).toLocaleDateString('fr-FR'):'—';
-    const avBig=document.getElementById('profileAvBig'); avBig.innerHTML=currentProfile.avatar?`<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>';
-    const socials=document.getElementById('profileSocials'); socials.innerHTML='';
+    const avBig=document.getElementById('profileAvBig');
+    avBig.innerHTML=currentProfile.avatar?`<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>';
+    const socials=document.getElementById('profileSocials');
+    socials.innerHTML='';
     if(currentProfile.linkedin)socials.innerHTML+=`<a href="${currentProfile.linkedin}" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>`;
     if(currentProfile.github)socials.innerHTML+=`<a href="${currentProfile.github}" target="_blank" class="social-link"><i class="fab fa-github"></i></a>`;
 }
@@ -869,7 +1207,11 @@ function uploadAvatar(input){
     if(!input.files[0])return;
     if(input.files[0].size>2000000){toast('❌ Image trop lourde (max 2MB)');return;}
     const r=new FileReader();
-    r.onload=e=>{ currentProfile.avatar=e.target.result; db.ref('user_profiles/'+currentUser.uid+'/avatar').set(e.target.result); updateProfileUI(); toast('✅ Photo mise à jour'); };
+    r.onload=e=>{
+        currentProfile.avatar=e.target.result;
+        db.ref('user_profiles/'+currentUser.uid+'/avatar').set(e.target.result);
+        updateProfileUI();toast('✅ Photo mise à jour');
+    };
     r.readAsDataURL(input.files[0]);
 }
 function openEditModal(){
@@ -892,154 +1234,326 @@ function saveProfile(){
     currentProfile.pays=document.getElementById('ePays').value;
     currentProfile.phone=document.getElementById('ePhone').value;
     db.ref('user_profiles/'+currentUser.uid).update(currentProfile);
-    updateProfileUI(); closeEditModal(); toast('✅ Profil mis à jour');
+    updateProfileUI();closeEditModal();toast('✅ Profil mis à jour');
 }
 
+// ══════════════════════════════════════════════
+// MEMBRES
+// ══════════════════════════════════════════════
 function loadMembers(){
     db.ref('user_profiles').on('value',snap=>{
-        const existingMembers=[]; const existingEmails=new Set();
-        snap.forEach(c=>{const m=c.val(); existingMembers.push(m); existingEmails.add(m.email);});
+        const existingMembers=[];const existingEmails=new Set();
+        snap.forEach(c=>{const m=c.val();existingMembers.push(m);existingEmails.add(m.email);});
         const allMembers=[...existingMembers];
-        ELIGIBLE.forEach(email=>{ if(!existingEmails.has(email)){ const n=email.split('@')[0]; allMembers.push({uid:'pending_'+email.replace(/[^a-zA-Z0-9]/g,'_'),fullName:n.charAt(0).toUpperCase()+n.slice(1),email,title:'Membre éligible',avatar:'',isPending:true}); } });
-        allMembers.sort((a,b)=>{ if(a.isPending&&!b.isPending)return 1; if(!a.isPending&&b.isPending)return -1; return (a.fullName||'').localeCompare(b.fullName||''); });
+        ELIGIBLE.forEach(email=>{
+            if(!existingEmails.has(email)){
+                const n=email.split('@')[0];
+                allMembers.push({uid:'pending_'+email.replace(/[^a-zA-Z0-9]/g,'_'),fullName:n.charAt(0).toUpperCase()+n.slice(1),email,title:'Membre éligible',avatar:'',isPending:true});
+            }
+        });
+        allMembers.sort((a,b)=>{
+            if(a.isPending&&!b.isPending)return 1;
+            if(!a.isPending&&b.isPending)return -1;
+            return(a.fullName||'').localeCompare(b.fullName||'');
+        });
         document.getElementById('membresCount').textContent=allMembers.length;
-        document.getElementById('membresList').innerHTML=allMembers.map(m=>`<div class="member-item"><div class="member-av" onclick="viewMemberProfile('${m.uid}','${m.email}','${m.fullName.replace(/'/g,"\\'")}')">${m.avatar?`<img src="${m.avatar}">`:'<i class="fa-solid fa-user" style="font-size:13px"></i>'}</div><div class="member-info" onclick="viewMemberProfile('${m.uid}','${m.email}','${m.fullName.replace(/'/g,"\\'")}')"><div class="member-name">${esc(m.fullName)} ${m.isPending?'<span style="font-size:0.6rem;color:orange">(à rejoindre)</span>':''}</div><div class="member-role">${esc(m.email===ADMIN_EMAIL?'📍 Formateur GADA':(m.title||'Apprenant'))}</div></div>${!m.isPending&&m.uid!==currentUser?.uid?`<button class="message-btn" onclick="event.stopPropagation();openConversation('${m.uid}','${m.fullName.replace(/'/g,"\\'")}','${m.email}')"><i class="fa-regular fa-comment"></i></button>`:''}</div>`).join('');
+        document.getElementById('membresList').innerHTML=allMembers.map(m=>`
+            <div class="member-item">
+                <div class="member-av" onclick="viewMemberProfile('${m.uid}','${m.email}','${m.fullName.replace(/'/g,"\\'")}')">
+                    ${m.avatar?`<img src="${m.avatar}">`:'<i class="fa-solid fa-user" style="font-size:13px"></i>'}
+                </div>
+                <div class="member-info" onclick="viewMemberProfile('${m.uid}','${m.email}','${m.fullName.replace(/'/g,"\\'")}')">
+                    <div class="member-name">${esc(m.fullName)} ${m.isPending?'<span style="font-size:0.6rem;color:orange">(à rejoindre)</span>':''}</div>
+                    <div class="member-role">${esc(m.email===ADMIN_EMAIL?'📍 Formateur GADA':(m.title||'Apprenant'))}</div>
+                </div>
+                ${!m.isPending&&m.uid!==currentUser?.uid?`<button class="message-btn" onclick="event.stopPropagation();openConversation('${m.uid}','${m.fullName.replace(/'/g,"\\'")}','${m.email}')"><i class="fa-regular fa-comment"></i></button>`:''}
+            </div>`).join('');
     });
 }
 
+// ══════════════════════════════════════════════
+// VIEWS
+// ══════════════════════════════════════════════
 function showView(v){
-    ['feed','profile','projets','semaines'].forEach(id=>{ document.getElementById('view-'+id).style.display=id===v?'block':'none'; document.getElementById('nav-'+id).classList.toggle('active',id===v); });
+    ['feed','profile','projets','semaines'].forEach(id=>{
+        document.getElementById('view-'+id).style.display=id===v?'block':'none';
+        document.getElementById('nav-'+id).classList.toggle('active',id===v);
+    });
     if(v==='projets')loadUserProjets();
 }
 
+// ══════════════════════════════════════════════
+// SEMAINES
+// ══════════════════════════════════════════════
 function renderSemaines(){
-    const container=document.getElementById('semainesSection'); container.innerHTML='';
-    Object.entries(SEMAINES_DATA).forEach(([key,s])=>{
-        const div=document.createElement('div'); div.className='semaine-card'+(s.locked?' locked':'');
-        div.innerHTML=`<div class="semaine-header" onclick="${s.locked?'':`toggleSemaine('${key}')`}"><div class="semaine-icon ${s.locked?'s-locked':'s-open'}"><i class="fa-solid ${s.locked?'fa-lock':'fa-folder-open'}"></i></div><div class="semaine-meta"><div class="semaine-title">${esc(s.titre)}</div><div class="semaine-date">${esc(s.date)}</div></div><span class="semaine-badge ${s.locked?'badge-locked':'badge-open'}">${esc(s.badge)}</span>${!s.locked?`<span class="semaine-chevron" id="chev-${key}"><i class="fa-solid fa-chevron-down"></i></span>`:''}</div><div class="semaine-desc">${esc(s.description)}</div>${!s.locked?`<div class="semaine-files" id="files-${key}">${s.fichiers.map(f=>{ const iconClass=f.type==='pdf'?'icon-pdf':f.type==='r'?'icon-r':f.type==='excel'?'icon-excel':'icon-ppt'; const iconFA=f.type==='pdf'?'fa-file-pdf':f.type==='r'?'fa-file-code':f.type==='excel'?'fa-file-excel':'fa-file-powerpoint'; return `<div class="file-row"><div class="file-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div><div class="file-name">${esc(f.nom)}</div><a href="${GITHUB_BASE+encodeURIComponent(f.nom)}" class="file-dl" target="_blank"><i class="fa-solid fa-download"></i> Télécharger</a></div>`; }).join('')}</div>`:''}`;
+    const container = document.getElementById('semainesSection');
+    container.innerHTML = '';
+    
+    Object.entries(SEMAINES_DATA).forEach(([key, s]) => {
+        const div = document.createElement('div');
+        div.className = 'semaine-card' + (s.locked ? ' locked' : '');
+        
+        div.innerHTML = `
+            <div class="semaine-header" onclick="${s.locked ? '' : `toggleSemaine('${key}')`}">
+                <div class="semaine-icon ${s.locked ? 's-locked' : 's-open'}">
+                    <i class="fa-solid ${s.locked ? 'fa-lock' : 'fa-folder-open'}"></i>
+                </div>
+                <div class="semaine-meta">
+                    <div class="semaine-title">${esc(s.titre)}</div>
+                    <div class="semaine-date">${esc(s.date)}</div>
+                </div>
+                <span class="semaine-badge ${s.locked ? 'badge-locked' : 'badge-open'}">${esc(s.badge)}</span>
+                ${!s.locked ? `<span class="semaine-chevron" id="chev-${key}"><i class="fa-solid fa-chevron-down"></i></span>` : ''}
+            </div>
+            <div class="semaine-desc">${esc(s.description)}</div>
+            ${!s.locked ? `<div class="semaine-files" id="files-${key}">
+                ${s.fichiers.map(f => {
+                    const iconClass = f.type === 'pdf' ? 'icon-pdf' : f.type === 'r' ? 'icon-r' : f.type === 'excel' ? 'icon-excel' : f.type === 'powerpoint' ? 'icon-ppt' : 'icon-pdf';
+                    const iconFA = f.type === 'pdf' ? 'fa-file-pdf' : f.type === 'r' ? 'fa-file-code' : f.type === 'excel' ? 'fa-file-excel' : f.type === 'powerpoint' ? 'fa-file-powerpoint' : 'fa-file';
+                    const fileUrl = GITHUB_BASE + encodeURIComponent(f.nom);
+                    return `<div class="file-row"><div class="file-icon ${iconClass}"><i class="fa-solid ${iconFA}"></i></div><div class="file-name">${esc(f.nom)}</div><a href="${fileUrl}" class="file-dl" target="_blank"><i class="fa-solid fa-download"></i> Télécharger</a></div>`;
+                }).join('')}
+            </div>` : ''}
+        `;
+        
         container.appendChild(div);
     });
 }
 function toggleSemaine(key){
-    const files=document.getElementById('files-'+key), chev=document.getElementById('chev-'+key);
+    const files=document.getElementById('files-'+key);
+    const chev=document.getElementById('chev-'+key);
     if(!files)return;
     const isOpen=files.classList.contains('open');
     document.querySelectorAll('.semaine-files.open').forEach(el=>el.classList.remove('open'));
     document.querySelectorAll('.semaine-chevron.open').forEach(el=>el.classList.remove('open'));
-    if(!isOpen){ files.classList.add('open'); if(chev)chev.classList.add('open'); }
+    if(!isOpen){files.classList.add('open');chev?.classList.add('open');}
 }
 
+// ══════════════════════════════════════════════
+// LIKES
+// ══════════════════════════════════════════════
 function toggleLike(postId){
     const userId=currentUser.uid;
     const likeRef=db.ref(`post_likes/${postId}/${userId}`);
-    likeRef.once('value',snap=>{ if(snap.exists())likeRef.remove(); else likeRef.set({userId,userName:currentProfile.fullName||currentUser.email.split('@')[0],timestamp:Date.now()}); });
+    likeRef.once('value',snap=>{
+        if(snap.exists()){likeRef.remove();}
+        else{likeRef.set({userId,userName:currentProfile.fullName||currentUser.email.split('@')[0],timestamp:Date.now()});}
+    });
 }
 function listenLikes(postId){
     db.ref(`post_likes/${postId}`).on('value',snap=>{
         const count=snap.numChildren();
-        const countEl=document.getElementById(`like-count-${postId}`); if(countEl)countEl.textContent=count;
-        const iconEl=document.getElementById(`like-icon-${postId}`); if(iconEl){ const userLiked=snap.child(currentUser.uid).exists(); iconEl.className=userLiked?'fa-solid fa-heart':'fa-regular fa-heart'; iconEl.style.color=userLiked?'#e11d48':''; }
+        const countEl=document.getElementById(`like-count-${postId}`);
+        const iconEl=document.getElementById(`like-icon-${postId}`);
+        if(countEl)countEl.textContent=count;
+        if(iconEl){const userLiked=snap.child(currentUser.uid).exists();iconEl.className=userLiked?'fa-solid fa-heart':'fa-regular fa-heart';iconEl.style.color=userLiked?'#e11d48':'';}
     });
 }
+
+// ══════════════════════════════════════════════
+// COMMENTAIRES
+// ══════════════════════════════════════════════
 function toggleComments(postId){
     const div=document.getElementById(`comments-${postId}`);
-    if(div.style.display==='none'||!div.style.display){ div.style.display='block'; listenComments(postId); }
+    if(div.style.display==='none'||!div.style.display){div.style.display='block';listenComments(postId);}
     else div.style.display='none';
 }
 function listenComments(postId){
-    const container=document.getElementById(`comments-list-${postId}`); if(!container)return;
+    const container=document.getElementById(`comments-list-${postId}`);
+    if(!container)return;
     db.ref(`post_comments/${postId}`).on('value',snap=>{
-        const comments=[]; snap.forEach(c=>comments.push({id:c.key,...c.val()}));
+        const comments=[];snap.forEach(c=>comments.push({id:c.key,...c.val()}));
         comments.sort((a,b)=>a.timestamp-b.timestamp);
-        if(!comments.length){ container.innerHTML='<div style="color:var(--muted);text-align:center;padding:12px">💬 Aucun commentaire</div>'; return; }
-        container.innerHTML=comments.map(c=>`<div style="padding:10px 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><div class="user-av" style="width:26px;height:26px;font-size:11px">${c.avatar?`<img src="${c.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'}</div><div><strong style="font-size:0.75rem">${esc(c.userName)}</strong><div style="font-size:0.65rem;color:var(--muted)">${new Date(c.timestamp).toLocaleString()}</div></div>${c.userId===currentUser.uid?`<button onclick="deleteComment('${postId}','${c.id}')" style="margin-left:auto;background:none;border:none;color:#dc2626;cursor:pointer"><i class="fa-regular fa-trash-alt"></i></button>`:''}</div><div style="font-size:0.78rem;margin-left:34px">${esc(c.text)}</div></div>`).join('');
+        if(!comments.length){container.innerHTML='<div style="color:var(--muted);text-align:center;padding:12px;font-size:0.75rem">💬 Aucun commentaire — soyez le premier !</div>';return;}
+        container.innerHTML=comments.map(c=>`
+            <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+                    <div class="user-av" style="width:26px;height:26px;font-size:11px">
+                        ${c.avatar?`<img src="${c.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'}
+                    </div>
+                    <div><strong style="font-size:0.75rem;color:var(--text)">${esc(c.userName)}</strong>
+                    <div style="font-size:0.65rem;color:var(--muted)">${new Date(c.timestamp).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}</div></div>
+                    ${c.userId===currentUser.uid?`<button onclick="deleteComment('${postId}','${c.id}')" style="margin-left:auto;background:none;border:none;color:#dc2626;cursor:pointer;font-size:0.7rem"><i class="fa-regular fa-trash-alt"></i></button>`:''}
+                </div>
+                <div style="font-size:0.78rem;color:var(--text);margin-left:34px;line-height:1.5">${esc(c.text)}</div>
+            </div>`).join('');
         container.scrollTop=container.scrollHeight;
     });
 }
 function addComment(postId){
-    const input=document.getElementById(`comment-input-${postId}`); const text=input.value.trim();
+    const input=document.getElementById(`comment-input-${postId}`);
+    const text=input.value.trim();
     if(!text){toast('❌ Écrivez un commentaire');return;}
-    db.ref(`post_comments/${postId}`).push({userId:currentUser.uid,userName:currentProfile.fullName||currentUser.email.split('@')[0],avatar:currentProfile.avatar||'',text,timestamp:Date.now()}).then(()=>{ input.value=''; toast('✅ Commentaire ajouté'); }).catch(e=>toast('❌ '+e.message));
+    db.ref(`post_comments/${postId}`).push({userId:currentUser.uid,userName:currentProfile.fullName||currentUser.email.split('@')[0],avatar:currentProfile.avatar||'',text,timestamp:Date.now()})
+        .then(()=>{input.value='';toast('✅ Commentaire ajouté');})
+        .catch(e=>toast('❌ '+e.message));
 }
-function deleteComment(postId,commentId){ if(confirm('Supprimer ?')){ db.ref(`post_comments/${postId}/${commentId}`).remove(); toast('✅ Supprimé'); } }
+function deleteComment(postId,commentId){
+    if(confirm('Supprimer ce commentaire ?')){db.ref(`post_comments/${postId}/${commentId}`).remove();toast('✅ Commentaire supprimé');}
+}
 
+// ══════════════════════════════════════════════
+// POSTS FEED
+// ══════════════════════════════════════════════
 function listenPosts(){
     renderedPostKeys.clear();
     const feed=document.getElementById('postsFeed');
     feed.innerHTML='<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>Chargement des publications…</p></div>';
+
     db.ref('user_projects').orderByChild('timestamp').on('child_added',snap=>{
         const post={_key:snap.key,...snap.val()};
         if(renderedPostKeys.has(post._key))return;
         renderedPostKeys.add(post._key);
-        const empty=feed.querySelector('.empty-state'); if(empty)empty.remove();
+        const empty=feed.querySelector('.empty-state');
+        if(empty)empty.remove();
         feed.insertAdjacentHTML('afterbegin',buildPostHtml(post));
         listenLikes(post._key);
     });
-    db.ref('user_projects').on('child_removed',snap=>{ const el=document.querySelector(`[data-post-id="${snap.key}"]`); if(el)el.remove(); renderedPostKeys.delete(snap.key); if(feed.children.length===0) feed.innerHTML='<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>Aucune publication.</p></div>'; });
-    db.ref('user_projects').on('child_changed',snap=>{ const el=document.querySelector(`[data-post-id="${snap.key}"] .post-caption`); if(el)el.innerHTML=snap.val().caption?`<p>${esc(snap.val().caption)}</p>`:''; });
+
+    db.ref('user_projects').on('child_removed',snap=>{
+        const el=document.querySelector(`[data-post-id="${snap.key}"]`);
+        if(el)el.remove();
+        renderedPostKeys.delete(snap.key);
+        if(feed.children.length===0){
+            feed.innerHTML='<div class="empty-state"><i class="fa-regular fa-newspaper"></i><p>Aucune publication pour le moment.<br>Soyez le premier à partager !</p></div>';
+        }
+    });
+
+    db.ref('user_projects').on('child_changed',snap=>{
+        const el=document.querySelector(`[data-post-id="${snap.key}"] .post-caption`);
+        if(el)el.innerHTML=snap.val().caption?`<p style="margin-bottom:10px">${esc(snap.val().caption)}</p>`:'';
+    });
 }
 
 function buildPostHtml(post){
     const isOwner=currentUser&&currentUser.uid===post.userId;
-    const safeCaption=(post.caption||'').replace(/'/g,"\\'");
+    const safeCaption=(post.caption||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
     const safeUser=(post.userName||'').replace(/'/g,"\\'");
-    return `<div class="post-card" data-post-id="${post._key}">
+    return `
+    <div class="post-card" data-post-id="${post._key}">
         <div class="post-header">
-            <div class="user-av" onclick="viewMemberProfile('${post.userId}','${post.userEmail||''}','${safeUser}')" style="cursor:pointer">${post.userAvatar?`<img src="${post.userAvatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'}</div>
-            <div style="flex:1"><div style="font-size:0.85rem;font-weight:700;cursor:pointer" onclick="viewMemberProfile('${post.userId}','${post.userEmail||''}','${safeUser}')">${esc(post.userName)}</div><div style="font-size:0.7rem;color:var(--muted)">${new Date(post.timestamp).toLocaleString('fr-FR')}</div></div>
-            <div style="display:flex;gap:8px"><button onclick="sharePost('${post._key}','${safeCaption}')" style="background:none;border:none;color:var(--green);cursor:pointer" title="Partager"><i class="fa-solid fa-share-alt"></i></button>${isOwner?`<button onclick="editPost('${post._key}')" style="background:none;border:none;color:var(--blue);cursor:pointer" title="Modifier"><i class="fa-regular fa-pen-to-square"></i></button><button onclick="deletePost('${post._key}')" style="background:none;border:none;color:#dc2626;cursor:pointer" title="Supprimer"><i class="fa-regular fa-trash-alt"></i></button>`:''}</div>
+            <div class="user-av" onclick="viewMemberProfile('${post.userId}','${post.userEmail||''}','${safeUser}')" style="cursor:pointer">
+                ${post.userAvatar?`<img src="${post.userAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:'<i class="fa-solid fa-user"></i>'}
+            </div>
+            <div style="flex:1">
+                <div style="font-size:0.85rem;font-weight:700;cursor:pointer" onclick="viewMemberProfile('${post.userId}','${post.userEmail||''}','${safeUser}')">${esc(post.userName)}</div>
+                <div style="font-size:0.7rem;color:var(--muted)">${new Date(post.timestamp).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+                <button onclick="sharePost('${post._key}','${safeCaption}')" style="background:none;border:none;color:var(--green);cursor:pointer;font-size:0.9rem" title="Partager"><i class="fa-solid fa-share-alt"></i></button>
+                ${isOwner?`
+                <button onclick="editPost('${post._key}')" style="background:none;border:none;color:var(--blue);cursor:pointer;font-size:0.9rem" title="Modifier"><i class="fa-regular fa-pen-to-square"></i></button>
+                <button onclick="deletePost('${post._key}')" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:0.9rem" title="Supprimer"><i class="fa-regular fa-trash-alt"></i></button>`:''}
+            </div>
         </div>
         <div class="post-content">
-            ${post.type==='doc'?'<span class="post-type-badge type-doc"><i class="fa-regular fa-file"></i> Document</span>':post.type==='github'?'<span class="post-type-badge type-github"><i class="fab fa-github"></i> GitHub</span>':post.type==='cloud'?'<span class="post-type-badge type-cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>':post.type==='photo'?'<span class="post-type-badge type-photo"><i class="fa-regular fa-image"></i> Photo</span>':''}
-            ${post.postTitle?`<div style="font-size:1.05rem;font-weight:800;color:var(--text);line-height:1.4;margin-bottom:6px">${esc(post.postTitle)}</div>`:''}
-            ${post.postSubtitle?`<div style="font-size:0.82rem;font-style:italic;color:var(--muted);margin-bottom:10px">${esc(post.postSubtitle)}</div>`:''}
-            ${post.caption?`<div class="post-caption" style="white-space:pre-line;margin-bottom:10px">${esc(post.caption)}</div>`:''}
-            ${post.postLink?`<a href="${post.postLink}" target="_blank" class="post-link"><i class="fa-solid fa-external-link-alt"></i><div><div class="post-link-name">${post.postLink.replace(/^https?:\/\//,'').substring(0,60)}...</div><div class="post-link-sub">Lien externe</div></div></a>`:''}
-            ${post.type==='photo'&&post.url?`<div class="media-card" onclick="openLightbox(this.dataset.url, this.dataset.name)" data-url="${post.url}" data-name="${esc(post.fileName||'Photo')}"><img src="${post.url}" alt="Photo"><div class="media-badge"><i class="fa-regular fa-image"></i></div><div class="media-overlay"><div class="media-overlay-label"><i class="fa-solid fa-expand"></i> Agrandir</div></div></div>`:post.url?`<a class="post-link" href="${post.url}" target="_blank"><i class="fa-solid ${post.type==='github'?'fa-code-branch':post.type==='cloud'?'fa-cloud':'fa-file'}"></i><div><div class="post-link-name">${esc(post.fileName||post.url)}</div><div class="post-link-sub">${post.type==='github'?'Repository GitHub':post.type==='cloud'?'Lien cloud':'Fichier'}</div></div></a>`:''}
+            ${post.type==='doc'?'<span class="post-type-badge type-doc"><i class="fa-regular fa-file"></i> Document</span>':''}
+            ${post.type==='github'?'<span class="post-type-badge type-github"><i class="fab fa-github"></i> GitHub</span>':''}
+            ${post.type==='cloud'?'<span class="post-type-badge type-cloud"><i class="fa-solid fa-cloud"></i> Cloud</span>':''}
+            ${post.type==='photo'?'<span class="post-type-badge type-photo"><i class="fa-regular fa-image"></i> Photo</span>':''}
+            <div class="post-caption" id="caption-${post._key}">${post.caption?`<p style="margin-bottom:10px">${esc(post.caption)}</p>`:''}</div>
+            ${post.type==='photo'&&post.url
+              ? `<div class="media-card" onclick="openLightbox(this.dataset.url, this.dataset.name)" data-url="${post.url}" data-name="${esc(post.fileName||'Photo')}">
+                   <img src="${post.url}" alt="${esc(post.fileName||'Photo')}">
+                   <div class="media-badge"><i class="fa-regular fa-image"></i></div>
+                   <div class="media-overlay"><div class="media-overlay-label"><i class="fa-solid fa-expand"></i> Agrandir</div></div>
+                 </div>`
+              : post.url
+                ? `<a class="post-link" href="${post.url}" target="_blank">
+                    <i class="fa-solid ${post.type==='github'?'fa-code-branch':post.type==='cloud'?'fa-cloud':'fa-file'}"></i>
+                    <div><div class="post-link-name">${esc(post.fileName||post.url)}</div><div class="post-link-sub">${post.type==='github'?'Repository GitHub':post.type==='cloud'?'Lien cloud':'Fichier'}</div></div>
+                  </a>`
+                : ''}
         </div>
         <div class="post-footer">
-            <button class="post-action" onclick="toggleLike('${post._key}')"><i class="fa-regular fa-heart" id="like-icon-${post._key}"></i> <span id="like-count-${post._key}">0</span></button>
-            <button class="post-action" onclick="toggleComments('${post._key}')"><i class="fa-regular fa-comment"></i> Commenter</button>
+            <button class="post-action" onclick="toggleLike('${post._key}')">
+                <i class="fa-regular fa-heart" id="like-icon-${post._key}"></i> <span id="like-count-${post._key}">0</span>
+            </button>
+            <button class="post-action" onclick="toggleComments('${post._key}')">
+                <i class="fa-regular fa-comment"></i> Commenter
+            </button>
         </div>
         <div id="comments-${post._key}" style="display:none;padding:0 16px 16px;border-top:1px solid var(--border)">
             <div id="comments-list-${post._key}" style="max-height:300px;overflow-y:auto;margin-bottom:12px"></div>
-            <div style="display:flex;gap:8px;align-items:center"><div class="user-av" style="width:26px;height:26px;font-size:11px;flex-shrink:0">${currentProfile.avatar?`<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'}</div><input type="text" id="comment-input-${post._key}" placeholder="Écrivez un commentaire..." style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:0.75rem" onkeypress="if(event.key==='Enter')addComment('${post._key}')"><button onclick="addComment('${post._key}')" style="background:var(--green);border:none;border-radius:20px;padding:6px 14px;color:white;cursor:pointer">Envoyer</button></div>
+            <div style="display:flex;gap:8px;align-items:center">
+                <div class="user-av" style="width:26px;height:26px;font-size:11px;flex-shrink:0">
+                    ${currentProfile.avatar?`<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'}
+                </div>
+                <input type="text" id="comment-input-${post._key}" placeholder="Écrivez un commentaire..." style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:0.75rem;font-family:inherit" onkeypress="if(event.key==='Enter')addComment('${post._key}')">
+                <button onclick="addComment('${post._key}')" style="background:var(--green);border:none;border-radius:20px;padding:6px 14px;color:white;cursor:pointer;font-size:0.72rem;font-weight:600">Envoyer</button>
+            </div>
         </div>
     </div>`;
 }
 
-function deletePost(postId){ if(confirm('Supprimer ?')){ db.ref(`user_projects/${postId}`).remove(); db.ref(`post_comments/${postId}`).remove(); db.ref(`post_likes/${postId}`).remove(); toast('✅ Supprimée'); } }
-function editPost(postId){ db.ref(`user_projects/${postId}/caption`).once('value',snap=>{ const cur=snap.val()||''; const nu=prompt('Modifier :',cur); if(nu!==null&&nu!==cur) db.ref(`user_projects/${postId}/caption`).set(nu); }); }
+function deletePost(postId){
+    if(confirm('⚠️ Supprimer cette publication ? Cette action est irréversible.')){
+        db.ref(`user_projects/${postId}`).remove();
+        db.ref(`post_comments/${postId}`).remove();
+        db.ref(`post_likes/${postId}`).remove();
+        toast('✅ Publication supprimée');
+    }
+}
+
+function editPost(postId){
+    db.ref(`user_projects/${postId}/caption`).once('value',snap=>{
+        const current=snap.val()||'';
+        const newVal=prompt('Modifier votre publication :',current);
+        if(newVal!==null&&newVal!==current){
+            db.ref(`user_projects/${postId}/caption`).set(newVal);
+            toast('✅ Publication modifiée');
+        }
+    });
+}
+
 function sharePost(postId,postContent){
-    const modal=document.createElement('div'); modal.className='compose-modal-overlay'; modal.style.display='flex';
+    const modal=document.createElement('div');
+    modal.className='compose-modal-overlay';modal.style.display='flex';
     modal.onclick=(e)=>{if(e.target===modal)modal.remove();};
-    modal.innerHTML=`<div class="compose-modal" style="max-width:400px;text-align:center" onclick="event.stopPropagation()"><div class="compose-modal-header"><h3><i class="fa-solid fa-share-alt"></i> Partager</h3><button style="background:none;border:none;font-size:1.4rem;cursor:pointer" onclick="this.closest('.compose-modal-overlay').remove()">×</button></div><div class="share-modal-buttons"><button class="share-btn facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href),'_blank')"><i class="fab fa-facebook-f"></i></button><button class="share-btn linkedin" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(window.location.href),'_blank')"><i class="fab fa-linkedin-in"></i></button><button class="share-btn whatsapp" onclick="window.open('https://wa.me/?text='+encodeURIComponent('${postContent} — GADA Training'),'_blank')"><i class="fab fa-whatsapp"></i></button><button class="share-btn copy" onclick="navigator.clipboard.writeText(window.location.href);toast('✅ Lien copié');this.closest('.compose-modal-overlay').remove()"><i class="fa-solid fa-link"></i></button></div></div>`;
+    modal.innerHTML=`
+        <div class="compose-modal" style="max-width:400px;text-align:center" onclick="event.stopPropagation()">
+            <div class="compose-modal-header">
+                <h3><i class="fa-solid fa-share-alt"></i> Partager sur</h3>
+                <button style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)" onclick="this.closest('.compose-modal-overlay').remove()">×</button>
+            </div>
+            <div class="share-modal-buttons">
+                <button class="share-btn facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(window.location.href),'_blank')"><i class="fab fa-facebook-f"></i></button>
+                <button class="share-btn linkedin" onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(window.location.href),'_blank')"><i class="fab fa-linkedin-in"></i></button>
+                <button class="share-btn whatsapp" onclick="window.open('https://wa.me/?text='+encodeURIComponent('${postContent} — GADA Training'),'_blank')"><i class="fab fa-whatsapp"></i></button>
+                <button class="share-btn copy" onclick="navigator.clipboard.writeText(window.location.href);toast('✅ Lien copié !');this.closest('.compose-modal-overlay').remove()"><i class="fa-solid fa-link"></i></button>
+            </div>
+            <p style="font-size:0.7rem;color:var(--muted)">Cliquez sur l'icône pour partager</p>
+        </div>`;
     document.body.appendChild(modal);
 }
 
+// ══════════════════════════════════════════════
+// COMPOSE
+// ══════════════════════════════════════════════
 function openCompose(mode){
     composeMode=mode;
     const titles={doc:'Partager un document',github:'Lier un repository GitHub',cloud:'Ajouter un lien Cloud',photo:'Partager une photo'};
     document.getElementById('composeTitle').textContent=titles[mode]||'Publier';
-    document.getElementById('composeTitle2').value='';
-    document.getElementById('composeSubtitle').value='';
     document.getElementById('composeCaption').value='';
-    document.getElementById('composeLink').value='';
     const fields=document.getElementById('composeFields');
     if(mode==='doc'||mode==='photo'){
-        fields.innerHTML=`<div class="file-drop-area" onclick="document.getElementById('postFile').click()"><i class="fa-solid ${mode==='photo'?'fa-image':'fa-file-arrow-up'}"></i><p>Cliquez pour sélectionner votre fichier</p><p style="font-size:0.72rem;margin-top:4px">${mode==='photo'?'JPG, PNG, WebP (max 2MB)':'PDF, DOCX, R, XLSX (max 5MB)'}</p><p id="selectedFileName" style="font-size:0.78rem;color:var(--green);margin-top:8px;font-weight:600"></p></div><input type="file" id="postFile" style="display:none" accept="${mode==='photo'?'image/*':'.pdf,.zip,.docx,.r,.R,.xlsx,.pptx,.shp,.tiff'}" onchange="document.getElementById('selectedFileName').textContent=this.files[0]?.name||''">`;
+        fields.innerHTML=`
+            <div class="file-drop-area" onclick="document.getElementById('postFile').click()">
+                <i class="fa-solid ${mode==='photo'?'fa-image':'fa-file-arrow-up'}"></i>
+                <p>Cliquez pour sélectionner votre fichier</p>
+                <p style="font-size:0.72rem;margin-top:4px;color:#aaa">${mode==='photo'?'JPG, PNG, WebP (max 2MB)':'PDF, DOCX, R, XLSX (max 5MB)'}</p>
+                <p id="selectedFileName" style="font-size:0.78rem;color:var(--green);margin-top:8px;font-weight:600"></p>
+            </div>
+            <input type="file" id="postFile" style="display:none" accept="${mode==='photo'?'image/*':'.pdf,.zip,.docx,.r,.R,.xlsx,.pptx,.shp,.tiff'}" onchange="document.getElementById('selectedFileName').textContent=this.files[0]?.name||''">`;
     } else {
         fields.innerHTML=`<input type="url" id="postUrl" placeholder="${mode==='github'?'https://github.com/user/repo':'Lien Google Drive / OneDrive / Dropbox'}">`;
     }
     document.getElementById('composeOverlay').classList.add('active');
 }
-function closeCompose(){ document.getElementById('composeOverlay').classList.remove('active'); }
+function closeCompose(){document.getElementById('composeOverlay').classList.remove('active');}
 
 function submitPost(){
     const caption=document.getElementById('composeCaption').value.trim();
-    const postTitle=document.getElementById('composeTitle2').value.trim();
-    const postSubtitle=document.getElementById('composeSubtitle').value.trim();
-    const postLink=document.getElementById('composeLink').value.trim();
     const name=currentProfile.fullName||currentUser.email.split('@')[0];
     const savePost=(postData)=>{
         postData.userId=currentUser.uid;
@@ -1048,64 +1562,90 @@ function submitPost(){
         postData.userAvatar=currentProfile.avatar||'';
         postData.timestamp=Date.now();
         postData.caption=caption;
-        postData.postTitle=postTitle;
-        postData.postSubtitle=postSubtitle;
-        postData.postLink=postLink;
-        db.ref('user_projects').push(postData).then(()=>{ closeCompose(); toast('✅ Publication partagée !'); }).catch(e=>toast('❌ Erreur: '+e.message));
+        db.ref('user_projects').push(postData)
+            .then(()=>{closeCompose();toast('✅ Publication partagée avec tous les membres !');})
+            .catch(e=>toast('❌ Erreur: '+e.message));
     };
     if(composeMode==='doc'||composeMode==='photo'){
         const file=document.getElementById('postFile')?.files[0];
-        if(!file){ toast('❌ Sélectionnez un fichier'); return; }
+        if(!file){toast('❌ Sélectionnez un fichier');return;}
         const maxSize=composeMode==='photo'?2000000:5000000;
-        if(file.size>maxSize){ toast(`❌ Fichier trop volumineux (max ${composeMode==='photo'?'2':'5'}MB)`); return; }
+        if(file.size>maxSize){toast(`❌ Fichier trop volumineux (max ${composeMode==='photo'?'2':'5'}MB)`);return;}
         const r=new FileReader();
         r.onload=e=>savePost({type:composeMode,fileName:file.name,url:e.target.result,fileType:file.type});
         r.readAsDataURL(file);
     } else {
         const url=document.getElementById('postUrl')?.value.trim();
-        if(!url||!url.startsWith('http')){ toast('❌ Entrez un lien valide (http://...)'); return; }
+        if(!url||!url.startsWith('http')){toast('❌ Entrez un lien valide (http://...)');return;}
         savePost({type:composeMode,url});
     }
 }
 
+// ══════════════════════════════════════════════
+// MES PROJETS
+// ══════════════════════════════════════════════
 function loadUserProjets(){
     if(!currentUser)return;
     db.ref('user_projects').orderByChild('userId').equalTo(currentUser.uid).once('value',snap=>{
-        const items=[]; snap.forEach(c=>items.push({_key:c.key,...c.val()}));
+        const items=[];snap.forEach(c=>items.push({_key:c.key,...c.val()}));
         items.sort((a,b)=>b.timestamp-a.timestamp);
-        const grid=document.getElementById('projetsGrid'); if(!grid)return;
-        if(!items.length){ grid.innerHTML='<div class="empty-state"><i class="fa-regular fa-folder-open"></i><p>Aucun projet publié.</p></div>'; return; }
-        grid.innerHTML=items.map(p=>`<div class="post-card"><div class="post-header"><div class="user-av">${p.userAvatar?`<img src="${p.userAvatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'}</div><div><div style="font-weight:700">${esc(p.postTitle||p.fileName||p.url||'Projet')}</div><div style="font-size:0.7rem;color:var(--muted)">${new Date(p.timestamp).toLocaleString()}</div></div></div>${p.caption?`<div class="post-content">${esc(p.caption)}</div>`:''}</div>`).join('');
+        const grid=document.getElementById('projetsGrid');if(!grid)return;
+        if(!items.length){grid.innerHTML='<div class="empty-state"><i class="fa-regular fa-folder-open"></i><p>Aucun projet publié pour l\'instant.</p></div>';return;}
+        grid.innerHTML=items.map(p=>`
+            <div class="post-card">
+                <div class="post-header">
+                    <div class="user-av">${p.userAvatar?`<img src="${p.userAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:'<i class="fa-solid fa-user"></i>'}</div>
+                    <div style="flex:1">
+                        <div style="font-size:0.85rem;font-weight:700">${esc(p.fileName||p.url||'Projet')}</div>
+                        <div style="font-size:0.7rem;color:var(--muted)">${new Date(p.timestamp).toLocaleString('fr-FR',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}</div>
+                    </div>
+                </div>
+                ${p.caption?`<div class="post-content">${esc(p.caption)}</div>`:''}
+            </div>`).join('');
     });
 }
 
+// ══════════════════════════════════════════════
+// LIVE CHAT
+// ══════════════════════════════════════════════
 function listenChat(){
-    const chatMsgs=document.getElementById('chatMsgs'); chatMsgs.innerHTML='';
+    const chatMsgs=document.getElementById('chatMsgs');chatMsgs.innerHTML='';
     db.ref('forum_messages').limitToLast(50).on('child_added',snap=>{
         const d=snap.val();
         const isAdmin=d.email===ADMIN_EMAIL;
         const isMe=d.email===currentUser?.email;
         const cls=isAdmin?'admin':isMe?'me':'them';
         const name=isAdmin?'📘 Formateur':(d.senderName||d.email?.split('@')[0]);
-        const div=document.createElement('div'); div.className=`chat-msg ${cls}`;
+        const div=document.createElement('div');
+        div.className=`chat-msg ${cls}`;
         div.innerHTML=`<div class="chat-meta">${esc(name)}</div><div class="chat-bubble">${esc(d.text)}</div><div class="chat-time">${d.timeStr||''}</div>`;
-        chatMsgs.appendChild(div); chatMsgs.scrollTop=chatMsgs.scrollHeight;
+        chatMsgs.appendChild(div);
+        chatMsgs.scrollTop=chatMsgs.scrollHeight;
     });
 }
 function sendChat(){
-    const input=document.getElementById('chatInput'); const text=input.value.trim();
+    const input=document.getElementById('chatInput');
+    const text=input.value.trim();
     if(!text||!currentUser)return;
     db.ref('forum_messages').push({email:currentUser.email,senderName:currentProfile.fullName||currentUser.email.split('@')[0],text,timestamp:Date.now(),timeStr:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
     input.value='';
 }
 
-function openLightbox(url,name){
+// ══════════════════════════════════════════════
+// LIGHTBOX
+// ══════════════════════════════════════════════
+function openLightbox(url, name){
     document.querySelector('.lightbox')?.remove();
-    const lb=document.createElement('div'); lb.className='lightbox';
-    lb.innerHTML=`<div class="lightbox-close" onclick="this.closest('.lightbox').remove()"><i class="fa-solid fa-xmark"></i></div><img src="${url}" alt="${name||''}">${name?`<div class="lightbox-filename"><i class="fa-regular fa-image"></i> ${name}</div>`:''}`;
-    lb.addEventListener('click',e=>{if(e.target===lb)lb.remove();});
-    const escHandler=e=>{if(e.key==='Escape'){lb.remove(); document.removeEventListener('keydown',escHandler);}};
-    document.addEventListener('keydown',escHandler);
+    const lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.innerHTML = `
+        <div class="lightbox-close" onclick="this.closest('.lightbox').remove()"><i class="fa-solid fa-xmark"></i></div>
+        <img src="${url}" alt="${name||''}">
+        ${name ? `<div class="lightbox-filename"><i class="fa-regular fa-image"></i> ${name}</div>` : ''}
+    `;
+    lb.addEventListener('click', e => { if(e.target === lb) lb.remove(); });
+    const escHandler = e => { if(e.key==='Escape'){lb.remove(); document.removeEventListener('keydown', escHandler);} };
+    document.addEventListener('keydown', escHandler);
     document.body.appendChild(lb);
 }
 </script>
