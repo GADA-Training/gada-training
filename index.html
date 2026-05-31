@@ -609,7 +609,7 @@
             </div>
         </div>
 
-        <!-- Section Fil d'actualité (comme le premier compartiment) -->
+        <!-- Section Fil d'actualité -->
         <div id="tfcFeedSection" class="tfc-section">
             <div class="compose-box" style="margin-bottom: 20px;">
                 <div class="compose-top">
@@ -626,52 +626,75 @@
             <div id="tfcPostsFeed" class="post-grid"></div>
         </div>
 
-        <!-- Section Ressources -->
+        <!-- Section Ressources - Version RÉELLE -->
         <div id="tfcRessourcesSection" class="tfc-section">
-            <div class="card">
+            <!-- Zone d'upload pour ADMIN uniquement -->
+            <div id="adminRessourcesPanel" class="card" style="margin-bottom: 20px; display: none;">
                 <div class="card-header">
-                    <h4><i class="fa-solid fa-book"></i> Ressources pédagogiques</h4>
+                    <h4><i class="fa-solid fa-plus-circle"></i> Ajouter une ressource (Admin)</h4>
                 </div>
                 <div style="padding: 16px;">
-                    <div class="file-row">
-                        <div class="file-icon icon-pdf"><i class="fa-solid fa-file-pdf"></i></div>
-                        <div class="file-name">Guide méthodologique du TFC</div>
-                        <button class="file-dl" onclick="downloadRessource('guide_tfc.pdf')"><i class="fa-solid fa-download"></i></button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                        <select id="newRessourceType" style="padding: 10px; border-radius: 12px; border: 2px solid var(--border);">
+                            <option value="document">📄 Document (PDF, DOCX, PPT, XLSX, ZIP)</option>
+                            <option value="video">🎥 Tutoriel vidéo (YouTube)</option>
+                            <option value="lien">🔗 Lien utile</option>
+                        </select>
+                        <input type="text" id="newRessourceTitle" placeholder="Titre de la ressource" style="padding: 10px; border-radius: 12px; border: 2px solid var(--border);">
                     </div>
-                    <div class="file-row">
-                        <div class="file-icon icon-r"><i class="fa-solid fa-file-code"></i></div>
-                        <div class="file-name">Template LaTeX pour mémoire</div>
-                        <button class="file-dl" onclick="downloadRessource('template_memoire.zip')"><i class="fa-solid fa-download"></i></button>
+                    <textarea id="newRessourceDesc" placeholder="Description (optionnelle)" rows="2" style="width: 100%; padding: 10px; border-radius: 12px; border: 2px solid var(--border); margin-bottom: 12px;"></textarea>
+                    
+                    <div id="docUploadArea">
+                        <div class="file-drop-area" onclick="document.getElementById('ressourceFile').click()">
+                            <i class="fa-solid fa-cloud-upload-alt"></i>
+                            <p>Cliquez pour sélectionner un fichier</p>
+                            <p style="font-size: 0.7rem;">PDF, DOCX, PPT, XLSX, ZIP (max 20MB)</p>
+                            <input type="file" id="ressourceFile" style="display: none" accept=".pdf,.docx,.pptx,.xlsx,.zip">
+                        </div>
                     </div>
-                    <div class="file-row">
-                        <div class="file-icon icon-ppt"><i class="fa-solid fa-file-powerpoint"></i></div>
-                        <div class="file-name">Présentation type pour soutenance</div>
-                        <button class="file-dl" onclick="downloadRessource('soutenance_template.pptx')"><i class="fa-solid fa-download"></i></button>
+                    
+                    <div id="videoUrlArea" style="display: none;">
+                        <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
                     </div>
-                    <div class="file-row">
-                        <div class="file-icon icon-excel"><i class="fa-solid fa-file-excel"></i></div>
-                        <div class="file-name">Grille d'évaluation TFC</div>
-                        <button class="file-dl" onclick="downloadRessource('grille_evaluation.xlsx')"><i class="fa-solid fa-download"></i></button>
+                    
+                    <div id="lienUrlArea" style="display: none;">
+                        <input type="url" id="lienUrl" placeholder="https://..." style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
                     </div>
+                    
+                    <div id="uploadProgressRessource" style="display: none; margin-top: 12px;">
+                        <div class="progress-bar"><div class="progress-fill" id="ressourceProgressFill"></div></div>
+                        <p id="ressourceProgressText" style="font-size: 0.7rem; margin-top: 5px;"></p>
+                    </div>
+                    
+                    <button class="btn-submit-post" onclick="addNewRessource()" style="margin-top: 16px;">
+                        <i class="fa-solid fa-save"></i> Publier la ressource
+                    </button>
                 </div>
             </div>
-            
-            <div class="card" style="margin-top: 20px;">
-                <div class="card-header">
-                    <h4><i class="fa-solid fa-video"></i> Tutoriels vidéo</h4>
-                </div>
-                <div style="padding: 16px;">
-                    <div class="file-row">
-                        <div class="file-icon"><i class="fa-brands fa-youtube" style="color:#ff0000;"></i></div>
-                        <div class="file-name">Comment structurer son mémoire</div>
-                        <button class="file-dl" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')"><i class="fa-solid fa-play"></i></button>
-                    </div>
-                    <div class="file-row">
-                        <div class="file-icon"><i class="fa-brands fa-youtube" style="color:#ff0000;"></i></div>
-                        <div class="file-name">Réussir sa soutenance de TFC</div>
-                        <button class="file-dl" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')"><i class="fa-solid fa-play"></i></button>
-                    </div>
-                </div>
+
+            <!-- Onglets catégories -->
+            <div class="tfc-nav-tabs" style="margin-bottom: 20px;">
+                <button class="tfc-tab-btn active" onclick="showRessourceCategory('documents')">📚 Documents</button>
+                <button class="tfc-tab-btn" onclick="showRessourceCategory('videos')">🎥 Tutoriels vidéo</button>
+                <button class="tfc-tab-btn" onclick="showRessourceCategory('liens')">🔗 Liens utiles</button>
+            </div>
+
+            <!-- Liste des documents -->
+            <div id="documentsCategory" class="card">
+                <div class="card-header"><h4><i class="fa-regular fa-folder-open"></i> Documents</h4></div>
+                <div id="documentsList" style="padding: 8px 0;"></div>
+            </div>
+
+            <!-- Liste des vidéos -->
+            <div id="videosCategory" class="card" style="display: none;">
+                <div class="card-header"><h4><i class="fa-brands fa-youtube"></i> Tutoriels vidéo</h4></div>
+                <div id="videosList" style="padding: 8px 0;"></div>
+            </div>
+
+            <!-- Liste des liens -->
+            <div id="liensCategory" class="card" style="display: none;">
+                <div class="card-header"><h4><i class="fa-solid fa-link"></i> Liens utiles</h4></div>
+                <div id="liensList" style="padding: 8px 0;"></div>
             </div>
         </div>
     </div>
@@ -1426,9 +1449,9 @@ async function initIA() {
     appendIAMessage('assistant', msg);
 }
 
-// ==================== SECTION CLIENTS TFC AMÉLIORÉE ====================
+// ==================== SECTION CLIENTS TFC COMPLÈTEMENT FONCTIONNELLE ====================
 
-// Upload avec Firebase Storage
+// Upload de document par le client
 async function uploadTfcDocumentWithStorage(fileInput) {
     if (!currentTfcClientId) return;
     const file = fileInput.files[0];
@@ -1468,11 +1491,6 @@ async function uploadTfcDocumentWithStorage(fileInput) {
                 status: 'attente', feedback: null
             };
             await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).set(docData);
-            await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
-                type: 'new_document',
-                message: `${currentTfcClientData.name} a déposé un document : ${file.name}`,
-                timestamp: Date.now(), read: false
-            });
             toast('✅ Document déposé avec succès');
             progressDiv.style.display = 'none';
             fileInput.value = '';
@@ -1496,6 +1514,8 @@ function showTfcSection(section) {
     } else if (section === 'ressources') {
         document.getElementById('tfcRessourcesSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[2].classList.add('active');
+        loadAllRessources();
+        checkAdminForRessources();
     }
 }
 
@@ -1583,7 +1603,7 @@ async function submitTfcPost() {
         progressDiv.style.display = 'block';
         const storageRef = storage.ref();
         const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/photos/${Date.now()}_${tfcPostMediaFile.name}`);
-        const uploadTask = await fileRef.put(tfcPostMediaFile);
+        await fileRef.put(tfcPostMediaFile);
         postData.mediaUrl = await fileRef.getDownloadURL();
         postData.mediaType = 'image';
         progressDiv.style.display = 'none';
@@ -1591,7 +1611,7 @@ async function submitTfcPost() {
         progressDiv.style.display = 'block';
         const storageRef = storage.ref();
         const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/documents/${Date.now()}_${tfcPostMediaFile.name}`);
-        const uploadTask = await fileRef.put(tfcPostMediaFile);
+        await fileRef.put(tfcPostMediaFile);
         postData.fileUrl = await fileRef.getDownloadURL();
         postData.fileName = tfcPostMediaFile.name;
         progressDiv.style.display = 'none';
@@ -1703,10 +1723,6 @@ function editTfcPost(postId) {
             }
         }
     });
-}
-
-function downloadRessource(fileName) {
-    toast(`📥 Téléchargement de ${fileName}...`);
 }
 
 // Chargement des documents client
@@ -1826,7 +1842,7 @@ async function loadTfcIaHistory() {
     
     const msgsDiv = document.getElementById('tfcIaMsgs');
     if (msgsDiv && conversations.length > 0) {
-        msgsDiv.innerHTML = '<div class="ia-msg bot"><div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div><div class="ia-bubble">Historique des conversations chargé.</div></div>';
+        msgsDiv.innerHTML = '';
         conversations.forEach(conv => {
             if (conv.question) appendTfcIAMessage('user', conv.question);
             if (conv.reponse) appendTfcIAMessage('assistant', conv.reponse);
@@ -1919,7 +1935,8 @@ async function uploadTfcAvatar(input) {
     const url = await fileRef.getDownloadURL();
     await db.ref(`tfc_clients/${currentTfcClientId}/avatar`).set(url);
     currentTfcClientData.avatar = url;
-    document.getElementById('tfcClientAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+    const avatarEl = document.getElementById('tfcClientAvatar');
+    if (avatarEl) avatarEl.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
     toast('✅ Photo de profil mise à jour');
 }
 
@@ -2088,6 +2105,306 @@ function sendTfcMessageAdmin() {
         text, timestamp: Date.now()
     });
     input.value = '';
+}
+
+// ==================== GESTION RESSOURCES TFC ====================
+
+function checkAdminForRessources() {
+    if (currentUser && currentUser.email === ADMIN_EMAIL) {
+        const adminPanel = document.getElementById('adminRessourcesPanel');
+        if (adminPanel) adminPanel.style.display = 'block';
+    }
+}
+
+// Gestionnaire d'événements pour le type de ressource
+document.addEventListener('DOMContentLoaded', () => {
+    const typeSelect = document.getElementById('newRessourceType');
+    if (typeSelect) {
+        typeSelect.addEventListener('change', function() {
+            const docArea = document.getElementById('docUploadArea');
+            const videoArea = document.getElementById('videoUrlArea');
+            const lienArea = document.getElementById('lienUrlArea');
+            if (docArea) docArea.style.display = this.value === 'document' ? 'block' : 'none';
+            if (videoArea) videoArea.style.display = this.value === 'video' ? 'block' : 'none';
+            if (lienArea) lienArea.style.display = this.value === 'lien' ? 'block' : 'none';
+        });
+    }
+});
+
+async function addNewRessource() {
+    const type = document.getElementById('newRessourceType').value;
+    const title = document.getElementById('newRessourceTitle').value.trim();
+    const description = document.getElementById('newRessourceDesc').value.trim();
+    
+    if (!title) {
+        toast('❌ Veuillez entrer un titre');
+        return;
+    }
+    
+    const progressDiv = document.getElementById('uploadProgressRessource');
+    const progressFill = document.getElementById('ressourceProgressFill');
+    const progressText = document.getElementById('ressourceProgressText');
+    progressDiv.style.display = 'block';
+    
+    const ressourceData = {
+        title: title,
+        description: description,
+        type: type,
+        uploadedAt: Date.now(),
+        uploadedBy: currentUser?.uid || 'admin',
+        downloadCount: 0,
+        viewCount: 0
+    };
+    
+    try {
+        if (type === 'document') {
+            const file = document.getElementById('ressourceFile').files[0];
+            if (!file) {
+                toast('❌ Sélectionnez un fichier');
+                progressDiv.style.display = 'none';
+                return;
+            }
+            if (file.size > 20 * 1024 * 1024) {
+                toast('❌ Fichier trop volumineux (max 20MB)');
+                progressDiv.style.display = 'none';
+                return;
+            }
+            
+            progressText.textContent = 'Upload du fichier...';
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`tfc_ressources/documents/${Date.now()}_${file.name}`);
+            
+            await fileRef.put(file);
+            const downloadURL = await fileRef.getDownloadURL();
+            
+            ressourceData.fileName = file.name;
+            ressourceData.fileSize = file.size;
+            ressourceData.fileType = file.type;
+            ressourceData.url = downloadURL;
+            
+        } else if (type === 'video') {
+            const videoUrl = document.getElementById('videoUrl').value.trim();
+            if (!videoUrl) {
+                toast('❌ Veuillez entrer l\'URL de la vidéo');
+                progressDiv.style.display = 'none';
+                return;
+            }
+            ressourceData.url = videoUrl;
+            
+        } else if (type === 'lien') {
+            const lienUrl = document.getElementById('lienUrl').value.trim();
+            if (!lienUrl) {
+                toast('❌ Veuillez entrer l\'URL du lien');
+                progressDiv.style.display = 'none';
+                return;
+            }
+            ressourceData.url = lienUrl;
+        }
+        
+        await db.ref('tfc_ressources').push(ressourceData);
+        toast('✅ Ressource ajoutée avec succès !');
+        
+        document.getElementById('newRessourceTitle').value = '';
+        document.getElementById('newRessourceDesc').value = '';
+        document.getElementById('ressourceFile').value = '';
+        document.getElementById('videoUrl').value = '';
+        document.getElementById('lienUrl').value = '';
+        progressDiv.style.display = 'none';
+        
+        loadAllRessources();
+        
+    } catch (error) {
+        console.error(error);
+        toast('❌ Erreur: ' + error.message);
+        progressDiv.style.display = 'none';
+    }
+}
+
+async function loadAllRessources() {
+    const snapshot = await db.ref('tfc_ressources').once('value');
+    const ressources = [];
+    snapshot.forEach(child => ressources.push({ id: child.key, ...child.val() }));
+    ressources.sort((a, b) => b.uploadedAt - a.uploadedAt);
+    
+    const documents = ressources.filter(r => r.type === 'document');
+    const videos = ressources.filter(r => r.type === 'video');
+    const liens = ressources.filter(r => r.type === 'lien');
+    
+    renderRessourcesList('documentsList', documents, 'document');
+    renderRessourcesList('videosList', videos, 'video');
+    renderRessourcesList('liensList', liens, 'lien');
+}
+
+function renderRessourcesList(containerId, items, category) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    if (items.length === 0) {
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucune ressource disponible</div>';
+        return;
+    }
+    
+    const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+    
+    container.innerHTML = items.map(item => {
+        const date = new Date(item.uploadedAt).toLocaleDateString('fr-FR');
+        
+        if (category === 'video') {
+            let videoId = '';
+            if (item.url.includes('youtube.com/watch')) {
+                videoId = item.url.split('v=')[1]?.split('&')[0];
+            } else if (item.url.includes('youtu.be')) {
+                videoId = item.url.split('/').pop();
+            }
+            const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : item.url;
+            
+            return `
+                <div class="file-row" style="justify-content: space-between; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px;">
+                        <div class="file-icon" style="background: #fee2e2; color: #dc2626;"><i class="fa-brands fa-youtube"></i></div>
+                        <div style="flex: 1;">
+                            <div class="file-name" style="font-weight: 600;">${esc(item.title)}</div>
+                            ${item.description ? `<div style="font-size: 0.7rem; color: var(--muted);">${esc(item.description)}</div>` : ''}
+                            <div style="font-size: 0.65rem; color: var(--muted); margin-top: 4px;">Ajouté le ${date} • 👁️ ${item.viewCount || 0} vues</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                        <button class="file-dl" onclick="watchVideo('${item.id}', '${embedUrl}', '${esc(item.title)}')"><i class="fa-solid fa-play"></i> Regarder</button>
+                        ${isAdmin ? `<button class="file-dl" onclick="deleteRessource('${item.id}')" style="background: #fee2e2; color: #dc2626;"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    </div>
+                </div>
+            `;
+        } else if (category === 'lien') {
+            return `
+                <div class="file-row" style="justify-content: space-between; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                        <div class="file-icon" style="background: #dbeafe; color: #1d4ed8;"><i class="fa-solid fa-link"></i></div>
+                        <div style="flex: 1;">
+                            <div class="file-name" style="font-weight: 600;">${esc(item.title)}</div>
+                            ${item.description ? `<div style="font-size: 0.7rem; color: var(--muted);">${esc(item.description)}</div>` : ''}
+                            <div style="font-size: 0.65rem; color: var(--muted); margin-top: 4px;">Ajouté le ${date}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="file-dl" onclick="window.open('${item.url}', '_blank')"><i class="fa-solid fa-external-link-alt"></i> Visiter</button>
+                        ${isAdmin ? `<button class="file-dl" onclick="deleteRessource('${item.id}')" style="background: #fee2e2; color: #dc2626;"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    </div>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="file-row" style="justify-content: space-between; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                        <div class="file-icon icon-pdf"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div style="flex: 1;">
+                            <div class="file-name" style="font-weight: 600;">${esc(item.title)}</div>
+                            ${item.description ? `<div style="font-size: 0.7rem; color: var(--muted);">${esc(item.description)}</div>` : ''}
+                            <div style="font-size: 0.65rem; color: var(--muted); margin-top: 4px;">${item.fileName || ''} • Ajouté le ${date} • 📥 ${item.downloadCount || 0} téléchargements</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                        <button class="file-dl" onclick="downloadDocumentRessource('${item.id}', '${item.title}', '${item.url}')"><i class="fa-solid fa-download"></i> Télécharger</button>
+                        <button class="file-dl" onclick="window.open('${item.url}', '_blank')" style="background: var(--blue-pale); color: var(--blue);"><i class="fa-solid fa-eye"></i> Aperçu</button>
+                        ${isAdmin ? `<button class="file-dl" onclick="deleteRessource('${item.id}')" style="background: #fee2e2; color: #dc2626;"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+    }).join('');
+}
+
+async function downloadDocumentRessource(ressourceId, title, fileUrl) {
+    try {
+        const ressourceRef = db.ref(`tfc_ressources/${ressourceId}`);
+        ressourceRef.transaction(current => {
+            if (current) {
+                current.downloadCount = (current.downloadCount || 0) + 1;
+            }
+            return current;
+        });
+        
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = title;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast(`📥 Téléchargement de ${title}...`);
+    } catch (error) {
+        toast('❌ Erreur lors du téléchargement');
+    }
+}
+
+async function watchVideo(ressourceId, embedUrl, title) {
+    try {
+        const ressourceRef = db.ref(`tfc_ressources/${ressourceId}`);
+        ressourceRef.transaction(current => {
+            if (current) {
+                current.viewCount = (current.viewCount || 0) + 1;
+            }
+            return current;
+        });
+        
+        const modalHtml = `
+            <div id="videoModal" class="modal-overlay" style="display: flex; z-index: 10000;">
+                <div class="modal-box" style="max-width: 800px; width: 90%;">
+                    <div class="modal-top">
+                        <h3>${esc(title)}</h3>
+                        <button class="modal-close" onclick="closeVideoModal()">×</button>
+                    </div>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                        <iframe src="${embedUrl}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    } catch (error) {
+        window.open(embedUrl, '_blank');
+    }
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    if (modal) modal.remove();
+}
+
+async function deleteRessource(ressourceId) {
+    if (!confirm('⚠️ Supprimer définitivement cette ressource ?')) return;
+    
+    try {
+        const ressource = await db.ref(`tfc_ressources/${ressourceId}`).once('value');
+        const data = ressource.val();
+        
+        if (data.type === 'document' && data.url && data.url.includes('firebasestorage')) {
+            try {
+                const storageRef = storage.refFromURL(data.url);
+                await storageRef.delete();
+            } catch(e) {
+                console.log('Fichier déjà supprimé');
+            }
+        }
+        
+        await db.ref(`tfc_ressources/${ressourceId}`).remove();
+        toast('✅ Ressource supprimée');
+        loadAllRessources();
+    } catch (error) {
+        toast('❌ Erreur lors de la suppression');
+    }
+}
+
+function showRessourceCategory(category) {
+    const documentsCat = document.getElementById('documentsCategory');
+    const videosCat = document.getElementById('videosCategory');
+    const liensCat = document.getElementById('liensCategory');
+    
+    if (documentsCat) documentsCat.style.display = category === 'documents' ? 'block' : 'none';
+    if (videosCat) videosCat.style.display = category === 'videos' ? 'block' : 'none';
+    if (liensCat) liensCat.style.display = category === 'liens' ? 'block' : 'none';
+    
+    const btns = document.querySelectorAll('#tfcRessourcesSection .tfc-tab-btn');
+    btns.forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
 }
 
 // Switch entre modes
