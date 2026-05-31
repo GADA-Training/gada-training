@@ -79,84 +79,19 @@
         .message-btn:hover { transform:scale(1.05); }
 
         /* IA Panel */
-        .ia-panel { 
-            background: linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); 
-            border-radius: var(--radius); 
-            overflow: hidden; 
-            border: none;
-            display: flex;
-            flex-direction: column;
-            height: 400px;
-        }
-        .ia-header { 
-            padding: 16px; 
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            flex-shrink: 0;
-        }
+        .ia-panel { background: linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); border-radius: var(--radius); overflow: hidden; border: none; display: flex; flex-direction: column; height: 400px; }
+        .ia-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
         .ia-header h4 { color:white; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; }
         .ia-header p { color:rgba(255,255,255,0.5); font-size:0.7rem; margin-top:3px; }
         .ia-dot { width:8px; height:8px; border-radius:50%; background:#7dff9a; animation:pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        .ia-messages { 
-            flex: 1;
-            padding: 14px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        .ia-msg { 
-            font-size: 0.75rem; 
-            line-height: 1.5; 
-            max-width: 100%;
-        }
-        .ia-msg.bot { 
-            color: rgba(255,255,255,0.85); 
-            display: flex; 
-            gap: 8px; 
-            align-items: flex-start; 
-            max-width: 100%;
-        }
-        .ia-msg.user { 
-            text-align: right; 
-            color: #9ef7b0; 
-            max-width: 100%;
-            padding: 6px 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            margin-left: auto;
-            width: fit-content;
-        }
-        .ia-bot-av { 
-            width: 24px; 
-            height: 24px; 
-            border-radius: 50%; 
-            background: var(--green); 
-            display: flex;
-            align-items: center; 
-            justify-content: center; 
-            font-size: 10px; 
-            color: white; 
-            flex-shrink: 0; 
-        }
-        .ia-bubble { 
-            background: rgba(255,255,255,0.07); 
-            padding: 8px 12px; 
-            border-radius: 0 12px 12px 12px; 
-            flex: 1; 
-            max-width: calc(100% - 32px);
-            word-wrap: break-word;
-            white-space: pre-wrap;
-        }
-        .ia-input-row { 
-            display: flex; 
-            gap: 6px; 
-            padding: 10px 14px; 
-            border-top: 1px solid rgba(255,255,255,0.08);
-            flex-shrink: 0;
-            background: rgba(0,0,0,0.2);
-        }
+        .ia-messages { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; overflow-x: hidden; }
+        .ia-msg { font-size: 0.75rem; line-height: 1.5; max-width: 100%; }
+        .ia-msg.bot { color: rgba(255,255,255,0.85); display: flex; gap: 8px; align-items: flex-start; max-width: 100%; }
+        .ia-msg.user { text-align: right; color: #9ef7b0; max-width: 100%; padding: 6px 10px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-left: auto; width: fit-content; }
+        .ia-bot-av { width: 24px; height: 24px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; color: white; flex-shrink: 0; }
+        .ia-bubble { background: rgba(255,255,255,0.07); padding: 8px 12px; border-radius: 0 12px 12px 12px; flex: 1; max-width: calc(100% - 32px); word-wrap: break-word; white-space: pre-wrap; }
+        .ia-input-row { display: flex; gap: 6px; padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; background: rgba(0,0,0,0.2); }
         .ia-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:white; padding:8px 12px; font-size:0.75rem; font-family:'Plus Jakarta Sans',sans-serif; }
         .ia-input-row input::placeholder { color:rgba(255,255,255,0.3); }
         .ia-input-row input:focus { outline:none; border-color:var(--green-l); }
@@ -328,150 +263,41 @@
         @media(max-width:860px) { .layout { grid-template-columns:1fr; } .sidebar-left,.sidebar-right { position:static; } .chat-panel { height:450px; } .ia-panel { height: 350px; } }
         
         /* Styles TFC additionnels */
-        .world-selector {
-            display: flex;
-            gap: 8px;
-            background: var(--bg);
-            padding: 4px;
-            border-radius: 40px;
-            margin-right: 16px;
-        }
-        .world-btn {
-            padding: 6px 16px;
-            border-radius: 32px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.75rem;
-            cursor: pointer;
-            background: transparent;
-            color: var(--muted);
-            transition: all 0.2s;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .world-btn.active {
-            background: linear-gradient(135deg, var(--green), var(--blue));
-            color: white;
-        }
-        .world-btn:hover:not(.active) {
-            background: var(--green-pale);
-            color: var(--green);
-        }
-        .client-card {
-            transition: all 0.2s ease;
-        }
-        .client-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-        .doc-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-        }
+        .world-selector { display: flex; gap: 8px; background: var(--bg); padding: 4px; border-radius: 40px; margin-right: 16px; }
+        .world-btn { padding: 6px 16px; border-radius: 32px; border: none; font-weight: 600; font-size: 0.75rem; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .world-btn.active { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; }
+        .world-btn:hover:not(.active) { background: var(--green-pale); color: var(--green); }
+        .client-card { transition: all 0.2s ease; }
+        .client-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .doc-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--border); }
         .doc-item:last-child { border-bottom: none; }
         .doc-info { flex: 1; }
         .doc-name { font-weight: 600; font-size: 0.85rem; }
         .doc-meta { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
-        .doc-status {
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
+        .doc-status { font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
         .status-attente { background: #fef3c7; color: #92400e; }
         .status-valide { background: #dcfce7; color: #166534; }
         .status-correction { background: #fee2e2; color: #dc2626; }
-        .feedback-box {
-            background: var(--blue-pale);
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 8px;
-            font-size: 0.78rem;
-        }
-        #adminClientView {
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg);
-            z-index: 200;
-            overflow-y: auto;
-            padding: 20px;
-        }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 20px;
-            color: var(--blue);
-        }
+        .feedback-box { background: var(--blue-pale); border-radius: 12px; padding: 12px; margin-top: 8px; font-size: 0.78rem; }
+        #adminClientView { position: fixed; top: 60px; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 200; overflow-y: auto; padding: 20px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); padding: 8px 16px; border-radius: 40px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-bottom: 20px; color: var(--blue); }
         .back-btn:hover { background: var(--bg); }
-
-        /* Tabs pour TFC */
-        .tfc-nav-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            background: var(--card);
-            border-radius: var(--radius);
-            padding: 8px;
-            border: 1px solid var(--border);
-        }
-        .tfc-tab-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--muted);
-        }
-        .tfc-tab-btn.active {
-            background: linear-gradient(135deg, var(--green), var(--blue));
-            color: white;
-        }
-        .tfc-tab-btn:hover:not(.active) {
-            background: var(--green-pale);
-            color: var(--green);
-        }
-        .tfc-section {
-            display: none;
-        }
-        .tfc-section.active {
-            display: block;
-        }
-        .post-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--green);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
+        .tfc-nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--card); border-radius: var(--radius); padding: 8px; border: 1px solid var(--border); }
+        .tfc-tab-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--muted); }
+        .tfc-tab-btn.active { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; }
+        .tfc-tab-btn:hover:not(.active) { background: var(--green-pale); color: var(--green); }
+        .tfc-section { display: none; }
+        .tfc-section.active { display: block; }
+        .post-grid { display: flex; flex-direction: column; gap: 16px; }
+        .progress-bar { width: 100%; height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: var(--green); width: 0%; transition: width 0.3s ease; }
+        
+        /* NOUVEAUX STYLES POUR TFC */
+        .post-actions-menu { display: flex; gap: 8px; margin-left: auto; }
+        .post-edit-btn, .post-delete-btn { background: none; border: none; cursor: pointer; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; }
+        .post-edit-btn:hover { background: var(--blue-pale); color: var(--blue); }
+        .post-delete-btn:hover { background: #fee2e2; color: #dc2626; }
+        .profile-edit-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -693,6 +519,9 @@
             <div class="user-av" id="tfcClientAvatar"><i class="fa-solid fa-user"></i></div>
             <span id="tfcClientTopName">...</span>
         </div>
+        <button class="btn-quit" onclick="editTfcClientProfile()" style="margin-right:10px;">
+            <i class="fa-solid fa-user-pen"></i> Profil
+        </button>
         <button class="btn-quit" onclick="logoutTfcClient()">
             <i class="fa-solid fa-right-from-bracket"></i> Quitter
         </button>
@@ -845,6 +674,28 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Modal édition profil TFC Client -->
+<div class="modal-overlay" id="tfcEditProfileModal" onclick="if(event.target===this)closeTfcEditProfileModal()">
+    <div class="modal-box">
+        <div class="modal-top">
+            <h3><i class="fa-solid fa-user-pen"></i> Mon profil TFC</h3>
+            <button class="modal-close" onclick="closeTfcEditProfileModal()">×</button>
+        </div>
+        <div class="form-field"><label>Nom complet</label><input type="text" id="tfcEditName"></div>
+        <div class="form-field"><label>Université / Institut</label><input type="text" id="tfcEditUniv"></div>
+        <div class="form-field"><label>Sujet du TFC / Mémoire</label><textarea id="tfcEditTopic" rows="3" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:12px;"></textarea></div>
+        <div class="form-field"><label>Téléphone</label><input type="tel" id="tfcEditPhone"></div>
+        <div class="profile-edit-section">
+            <div class="file-drop-area" onclick="document.getElementById('tfcAvatarInput').click()">
+                <i class="fa-solid fa-camera"></i>
+                <p>Changer ma photo de profil</p>
+            </div>
+            <input type="file" id="tfcAvatarInput" accept="image/*" style="display:none" onchange="uploadTfcAvatar(this)">
+        </div>
+        <button class="btn-submit-post" onclick="saveTfcClientProfile()" style="margin-top:20px;">Enregistrer les modifications</button>
     </div>
 </div>
 
@@ -1142,7 +993,7 @@ firebase.auth().onAuthStateChanged(user=>{
     }
 });
 
-// ==================== GESTION MEMBRES ET PROFIL (simplifié pour la longueur) ====================
+// ==================== GESTION MEMBRES ET PROFIL ====================
 function loadProfile(){
     db.ref('user_profiles/'+currentUser.uid).once('value',snap=>{
         if(snap.exists()){currentProfile=snap.val();}
@@ -1778,11 +1629,16 @@ async function loadTfcPosts() {
                 <div class="user-av">
                     ${post.authorAvatar ? `<img src="${post.authorAvatar}">` : '<i class="fa-solid fa-user-graduate"></i>'}
                 </div>
-                <div>
+                <div style="flex:1">
                     <div style="font-weight: 700;">${esc(post.authorName)}</div>
                     <div style="font-size: 0.7rem; color: var(--muted);">${esc(post.authorUniv)}</div>
                     <div style="font-size: 0.65rem; color: var(--muted);">${new Date(post.timestamp).toLocaleString()}</div>
                 </div>
+                ${post.authorId === currentTfcClientId ? `
+                <div class="post-actions-menu">
+                    <button class="post-edit-btn" onclick="editTfcPost('${post.id}')"><i class="fa-solid fa-pen"></i></button>
+                    <button class="post-delete-btn" onclick="deleteTfcPost('${post.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>` : ''}
             </div>
             <div class="post-content">
                 <div style="white-space: pre-wrap;">${esc(post.content)}</div>
@@ -1823,6 +1679,30 @@ function commentTfcPost(postId) {
         toast('✅ Commentaire ajouté');
         loadTfcPosts();
     }
+}
+
+function deleteTfcPost(postId) {
+    if (confirm('Supprimer cette publication ?')) {
+        db.ref(`tfc_posts/${postId}`).remove().then(() => {
+            toast('✅ Publication supprimée');
+            loadTfcPosts();
+        });
+    }
+}
+
+function editTfcPost(postId) {
+    const postRef = db.ref(`tfc_posts/${postId}`);
+    postRef.once('value', (snap) => {
+        const post = snap.val();
+        if (post.authorId === currentTfcClientId) {
+            const newContent = prompt("Modifier votre publication :", post.content);
+            if (newContent && newContent.trim()) {
+                postRef.update({ content: newContent.trim() });
+                toast('✅ Publication modifiée');
+                loadTfcPosts();
+            }
+        }
+    });
 }
 
 function downloadRessource(fileName) {
@@ -1988,6 +1868,59 @@ function logoutTfcClient() {
     document.getElementById('tfcClientView').style.display = 'none';
     document.getElementById('authOverlay').style.display = 'flex';
     switchTab('login');
+}
+
+// Fonctions d'édition du profil TFC Client
+function editTfcClientProfile() {
+    document.getElementById('tfcEditName').value = currentTfcClientData.name || '';
+    document.getElementById('tfcEditUniv').value = currentTfcClientData.university || '';
+    document.getElementById('tfcEditTopic').value = currentTfcClientData.tfc_topic || '';
+    document.getElementById('tfcEditPhone').value = currentTfcClientData.phone || '';
+    document.getElementById('tfcEditProfileModal').classList.add('active');
+}
+
+function closeTfcEditProfileModal() {
+    document.getElementById('tfcEditProfileModal').classList.remove('active');
+}
+
+async function saveTfcClientProfile() {
+    const updates = {};
+    const name = document.getElementById('tfcEditName').value.trim();
+    if (name) updates.name = name;
+    const univ = document.getElementById('tfcEditUniv').value.trim();
+    if (univ) updates.university = univ;
+    const topic = document.getElementById('tfcEditTopic').value.trim();
+    if (topic) updates.tfc_topic = topic;
+    const phone = document.getElementById('tfcEditPhone').value.trim();
+    if (phone) updates.phone = phone;
+    
+    await db.ref(`tfc_clients/${currentTfcClientId}`).update(updates);
+    currentTfcClientData = { ...currentTfcClientData, ...updates };
+    
+    document.getElementById('tfcClientName').textContent = currentTfcClientData.name;
+    document.getElementById('tfcClientUniv').textContent = currentTfcClientData.university || '';
+    document.getElementById('tfcClientTopic').innerHTML = `📝 ${esc(currentTfcClientData.tfc_topic || 'Sujet non défini')}`;
+    document.getElementById('tfcClientTopName').textContent = currentTfcClientData.name;
+    
+    toast('✅ Profil mis à jour');
+    closeTfcEditProfileModal();
+}
+
+async function uploadTfcAvatar(input) {
+    if (!input.files[0] || !currentTfcClientId) return;
+    const file = input.files[0];
+    if (file.size > 2 * 1024 * 1024) {
+        toast('❌ Image trop lourde (max 2MB)');
+        return;
+    }
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(`tfc_clients/${currentTfcClientId}/avatar_${Date.now()}`);
+    await fileRef.put(file);
+    const url = await fileRef.getDownloadURL();
+    await db.ref(`tfc_clients/${currentTfcClientId}/avatar`).set(url);
+    currentTfcClientData.avatar = url;
+    document.getElementById('tfcClientAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+    toast('✅ Photo de profil mise à jour');
 }
 
 // Admin TFC
