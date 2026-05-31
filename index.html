@@ -1956,27 +1956,55 @@ function closeAddClientModal() {
     document.getElementById('addClientModal').classList.remove('active');
 }
 
+// FONCTION CORRIGÉE - C'est ici que se trouve la correction !
 async function createTfcClient() {
     const name = document.getElementById('newClientName').value.trim();
     const university = document.getElementById('newClientUniv').value.trim();
     const topic = document.getElementById('newClientTopic').value.trim();
     const email = document.getElementById('newClientEmail').value.trim();
+    const phone = document.getElementById('newClientPhone').value.trim();
+    
     if (!name || !university || !topic || !email) {
         toast('❌ Remplissez tous les champs');
         return;
     }
+    
     const newClientRef = db.ref('tfc_clients').push();
     const clientId = newClientRef.key;
-    await newClientRef.set({
-        id: clientId, name, university, tfc_topic: topic,
-        email, createdAt: Date.now(), status: 'actif',
-        documents: {}, messages: {}
-    });
     const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-    await db.ref(`tfc_access_codes/${accessCode}`).set({ clientId, createdAt: Date.now() });
-    toast(`✅ Client créé ! Code: ${accessCode}`);
+    
+    await newClientRef.set({
+        id: clientId, 
+        name, 
+        university, 
+        tfc_topic: topic,
+        email, 
+        phone: phone || '',
+        accessCode: accessCode,
+        createdAt: Date.now(), 
+        status: 'actif',
+        documents: {}, 
+        messages: {}
+    });
+    
+    await db.ref(`tfc_access_codes/${accessCode}`).set({ 
+        clientId, 
+        createdAt: Date.now(),
+        email: email
+    });
+    
+    toast(`✅ Client créé ! Code d'accès: ${accessCode}`);
+    
+    // 🔥 CORRECTION : Fermer le modal et rafraîchir la liste
     closeAddClientModal();
-    loadClientsList();
+    loadClientsList();  // <-- C'est la ligne importante qui fait apparaître le client !
+    
+    // Vider le formulaire
+    document.getElementById('newClientName').value = '';
+    document.getElementById('newClientUniv').value = '';
+    document.getElementById('newClientTopic').value = '';
+    document.getElementById('newClientEmail').value = '';
+    document.getElementById('newClientPhone').value = '';
 }
 
 async function openClientWorkspace(clientId) {
