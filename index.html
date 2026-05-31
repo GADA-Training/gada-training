@@ -160,7 +160,7 @@
         .media-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); color: white; font-size: 0.65rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
 
         /* Lightbox */
-        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9000; display: flex; align-items: center; justify-content: center; animation:fadeIn 0.2s ease; }
+        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .lightbox img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
         .lightbox-close { position: absolute; top: 18px; right: 20px; color: white; font-size: 1.8rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
@@ -508,7 +508,7 @@
     </div>
 </div>
 
-<!-- Interface Client TFC -->
+<!-- Interface Client TFC AMÉLIORÉE avec publications sociales -->
 <div id="tfcClientView" style="display: none;">
     <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
         <span class="topbar-logo">
@@ -528,6 +528,7 @@
     </div>
     
     <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
+        <!-- Navigation Tabs -->
         <div class="tfc-nav-tabs">
             <button class="tfc-tab-btn active" onclick="showTfcSection('documents')">
                 <i class="fa-regular fa-folder"></i> Mes documents
@@ -540,6 +541,7 @@
             </button>
         </div>
 
+        <!-- Section Documents -->
         <div id="tfcDocumentsSection" class="tfc-section active">
             <div style="display: grid; grid-template-columns: 1fr 320px; gap: 20px;">
                 <div>
@@ -573,6 +575,7 @@
                     </div>
                 </div>
                 
+                <!-- Assistant IA -->
                 <div>
                     <div class="chat-panel" style="height: 500px; margin-bottom: 20px;">
                         <div class="chat-panel-header">
@@ -606,6 +609,7 @@
             </div>
         </div>
 
+        <!-- Section Fil d'actualité -->
         <div id="tfcFeedSection" class="tfc-section">
             <div class="compose-box" style="margin-bottom: 20px;">
                 <div class="compose-top">
@@ -622,7 +626,9 @@
             <div id="tfcPostsFeed" class="post-grid"></div>
         </div>
 
+        <!-- Section Ressources - Version RÉELLE -->
         <div id="tfcRessourcesSection" class="tfc-section">
+            <!-- Zone d'upload pour ADMIN uniquement -->
             <div id="adminRessourcesPanel" class="card" style="margin-bottom: 20px; display: none;">
                 <div class="card-header">
                     <h4><i class="fa-solid fa-plus-circle"></i> Ajouter une ressource (Admin)</h4>
@@ -666,22 +672,26 @@
                 </div>
             </div>
 
+            <!-- Onglets catégories -->
             <div class="tfc-nav-tabs" style="margin-bottom: 20px;">
                 <button class="tfc-tab-btn active" onclick="showRessourceCategory('documents')">📚 Documents</button>
                 <button class="tfc-tab-btn" onclick="showRessourceCategory('videos')">🎥 Tutoriels vidéo</button>
                 <button class="tfc-tab-btn" onclick="showRessourceCategory('liens')">🔗 Liens utiles</button>
             </div>
 
+            <!-- Liste des documents -->
             <div id="documentsCategory" class="card">
                 <div class="card-header"><h4><i class="fa-regular fa-folder-open"></i> Documents</h4></div>
                 <div id="documentsList" style="padding: 8px 0;"></div>
             </div>
 
+            <!-- Liste des vidéos -->
             <div id="videosCategory" class="card" style="display: none;">
                 <div class="card-header"><h4><i class="fa-brands fa-youtube"></i> Tutoriels vidéo</h4></div>
                 <div id="videosList" style="padding: 8px 0;"></div>
             </div>
 
+            <!-- Liste des liens -->
             <div id="liensCategory" class="card" style="display: none;">
                 <div class="card-header"><h4><i class="fa-solid fa-link"></i> Liens utiles</h4></div>
                 <div id="liensList" style="padding: 8px 0;"></div>
@@ -1439,7 +1449,7 @@ async function initIA() {
     appendIAMessage('assistant', msg);
 }
 
-// ==================== SECTION CLIENTS TFC ====================
+// ==================== SECTION CLIENTS TFC COMPLÈTEMENT FONCTIONNELLE ====================
 
 // Upload de document par le client
 async function uploadTfcDocumentWithStorage(fileInput) {
@@ -1742,92 +1752,40 @@ async function loadClientDocuments() {
     `).join('');
 }
 
-// Chat client - Version CORRIGÉE avec écoute en temps réel
+// Chat client
 async function loadClientChat() {
     if (!currentTfcClientId) return;
     const chatMsgs = document.getElementById('tfcChatMsgs');
     if (!chatMsgs) return;
-    
-    // Afficher un message de chargement
-    chatMsgs.innerHTML = '<div class="empty-state"><p>🔄 Connexion au chat...</p></div>';
-    
-    // Écouter les messages en temps réel (pas une seule fois)
-    db.ref(`tfc_clients/${currentTfcClientId}/messages`).off(); // Nettoyer l'ancien listener
+    chatMsgs.innerHTML = '<div class="empty-state"><p>Chargement...</p></div>';
     db.ref(`tfc_clients/${currentTfcClientId}/messages`).on('value', (snap) => {
         const messages = [];
         snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
-        messages.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
-        
+        messages.sort((a,b) => a.timestamp - b.timestamp);
         if (messages.length === 0) {
-            chatMsgs.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>💬 Aucun message. Démarrez la conversation !</p></div>';
+            chatMsgs.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>Démarrez la conversation</p></div>';
             return;
         }
-        
-        chatMsgs.innerHTML = messages.map(m => {
-            const isMe = m.from === 'client';
-            const senderName = isMe ? 'Moi' : (m.fromName || 'Encadreur');
-            const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
-            
-            return `
-                <div class="chat-msg ${isMe ? 'me' : 'them'}">
-                    <div class="chat-meta">${esc(senderName)}</div>
-                    <div class="chat-bubble">${esc(m.text)}</div>
-                    ${time ? `<div class="chat-time">${time}</div>` : ''}
-                </div>
-            `;
-        }).join('');
-        
-        // Scroll automatique vers le bas
+        chatMsgs.innerHTML = messages.map(m => `
+            <div class="chat-msg ${m.from === 'client' ? 'me' : 'them'}">
+                <div class="chat-meta">${m.from === 'client' ? 'Moi' : 'Encadreur'}</div>
+                <div class="chat-bubble">${esc(m.text)}</div>
+                <div class="chat-time">${new Date(m.timestamp).toLocaleTimeString()}</div>
+            </div>
+        `).join('');
         chatMsgs.scrollTop = chatMsgs.scrollHeight;
-    }, (error) => {
-        console.error("Erreur chargement chat:", error);
-        chatMsgs.innerHTML = '<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i><p>❌ Erreur de connexion au chat</p></div>';
     });
 }
 
-// Envoi de message client - Version CORRIGÉE
 function sendTfcMessageClient() {
     const input = document.getElementById('tfcChatInput');
     const text = input.value.trim();
-    
-    if (!text) {
-        toast('✏️ Écrivez un message d\'abord');
-        return;
-    }
-    
-    if (!currentTfcClientId || !currentTfcClientData) {
-        toast('❌ Session client invalide');
-        return;
-    }
-    
-    // Désactiver temporairement l'input pour éviter les doublons
-    const sendBtn = document.querySelector('#tfcChatInput + button');
-    if (sendBtn) sendBtn.disabled = true;
-    input.disabled = true;
-    
-    const messageData = {
-        from: 'client',
-        fromName: currentTfcClientData.name || 'Client',
-        text: text,
-        timestamp: Date.now(),
-        dateStr: new Date().toLocaleString('fr-FR')
-    };
-    
-    db.ref(`tfc_clients/${currentTfcClientId}/messages`).push(messageData)
-        .then(() => {
-            toast('✅ Message envoyé');
-            input.value = '';
-            // Réactiver
-            if (sendBtn) sendBtn.disabled = false;
-            input.disabled = false;
-            input.focus();
-        })
-        .catch((error) => {
-            console.error("Erreur envoi message:", error);
-            toast('❌ Erreur: ' + error.message);
-            if (sendBtn) sendBtn.disabled = false;
-            input.disabled = false;
-        });
+    if (!text || !currentTfcClientId) return;
+    db.ref(`tfc_clients/${currentTfcClientId}/messages`).push({
+        from: 'client', fromName: currentTfcClientData.name,
+        text: text, timestamp: Date.now()
+    });
+    input.value = '';
 }
 
 // IA TFC
@@ -2116,40 +2074,24 @@ function openFeedbackModal(clientId, docId, docName) {
     }
 }
 
-// Admin chat - Version CORRIGÉE
 async function loadAdminChat(clientId) {
     const chatMsgs = document.getElementById('adminChatMsgs');
     if (!chatMsgs) return;
-    
-    chatMsgs.innerHTML = '<div class="empty-state"><p>🔄 Connexion au chat...</p></div>';
-    
-    // Nettoyer l'ancien listener
-    db.ref(`tfc_clients/${clientId}/messages`).off();
-    
     db.ref(`tfc_clients/${clientId}/messages`).on('value', (snap) => {
         const messages = [];
         snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
-        messages.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
-        
+        messages.sort((a,b) => a.timestamp - b.timestamp);
         if (messages.length === 0) {
-            chatMsgs.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>💬 Aucun message</p></div>';
+            chatMsgs.innerHTML = '<div class="empty-state"><p>Aucun message</p></div>';
             return;
         }
-        
-        chatMsgs.innerHTML = messages.map(m => {
-            const isAdmin = m.from === 'admin';
-            const senderName = isAdmin ? 'Vous' : (m.fromName || 'Client');
-            const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
-            
-            return `
-                <div class="chat-msg ${isAdmin ? 'admin' : 'them'}">
-                    <div class="chat-meta">${esc(senderName)}</div>
-                    <div class="chat-bubble">${esc(m.text)}</div>
-                    ${time ? `<div class="chat-time">${time}</div>` : ''}
-                </div>
-            `;
-        }).join('');
-        
+        chatMsgs.innerHTML = messages.map(m => `
+            <div class="chat-msg ${m.from === 'admin' ? 'admin' : 'them'}">
+                <div class="chat-meta">${m.from === 'admin' ? 'Vous' : esc(m.fromName)}</div>
+                <div class="chat-bubble">${esc(m.text)}</div>
+                <div class="chat-time">${new Date(m.timestamp).toLocaleTimeString()}</div>
+            </div>
+        `).join('');
         chatMsgs.scrollTop = chatMsgs.scrollHeight;
     });
 }
@@ -2157,34 +2099,12 @@ async function loadAdminChat(clientId) {
 function sendTfcMessageAdmin() {
     const input = document.getElementById('adminChatInput');
     const text = input.value.trim();
-    
-    if (!text) {
-        toast('✏️ Écrivez un message');
-        return;
-    }
-    
-    if (!currentAdminClientId) {
-        toast('❌ Aucun client sélectionné');
-        return;
-    }
-    
-    const messageData = {
-        from: 'admin',
-        fromName: 'Encadreur GADA',
-        text: text,
-        timestamp: Date.now(),
-        dateStr: new Date().toLocaleString('fr-FR')
-    };
-    
-    db.ref(`tfc_clients/${currentAdminClientId}/messages`).push(messageData)
-        .then(() => {
-            toast('✅ Message envoyé');
-            input.value = '';
-        })
-        .catch((error) => {
-            console.error("Erreur envoi message admin:", error);
-            toast('❌ Erreur: ' + error.message);
-        });
+    if (!text || !currentAdminClientId) return;
+    db.ref(`tfc_clients/${currentAdminClientId}/messages`).push({
+        from: 'admin', fromName: 'Encadreur',
+        text, timestamp: Date.now()
+    });
+    input.value = '';
 }
 
 // ==================== GESTION RESSOURCES TFC ====================
@@ -2494,6 +2414,10 @@ function switchToTFC() {
         return;
     }
     document.getElementById('adminTfcPanel').style.display = 'block';
+    document.getElementById('view-feed').style.display = 'none';
+    document.getElementById('view-profile').style.display = 'none';
+    document.getElementById('view-projets').style.display = 'none';
+    document.getElementById('view-semaines').style.display = 'none';
     document.querySelector('.layout').style.display = 'none';
     toast('📋 Mode Clients TFC');
     loadClientsList();
@@ -2501,6 +2425,7 @@ function switchToTFC() {
 
 function switchToTraining() {
     document.getElementById('adminTfcPanel').style.display = 'none';
+    document.getElementById('view-feed').style.display = 'block';
     document.querySelector('.layout').style.display = 'grid';
     showView('feed');
 }
