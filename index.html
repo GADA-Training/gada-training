@@ -918,7 +918,6 @@ let currentTfcClientData = null;
 let currentAdminClientId = null;
 let currentTfcPostType = 'text';
 let tfcPostMediaFile = null;
-let clientsListenerAttached = false;
 
 // ==================== FONCTIONS UTILITAIRES ====================
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
@@ -1931,41 +1930,60 @@ async function uploadTfcAvatar(input) {
     toast('✅ Photo de profil mise à jour');
 }
 
-// Admin TFC - Liste des clients avec écoute temps réel
+// Admin TFC - Liste des clients avec écoute temps réel (CORRIGÉE)
 function loadClientsList() {
     const container = document.getElementById('clientsList');
     if (!container) return;
-    
-    if (clientsListenerAttached) return;
-    clientsListenerAttached = true;
-    
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Chargement...</div>';
-    
-    db.ref('tfc_clients').on('value', (snapshot) => {
+
+    // Afficher chargement
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">🔄 Chargement...</div>';
+
+    // Détacher l'ancien listener si existant pour éviter les doublons
+    if (window.clientsListRef) {
+        db.ref('tfc_clients').off('value', window.clientsListRef);
+    }
+
+    // Créer la fonction de callback
+    const callback = (snapshot) => {
         const clients = [];
         snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
-        
+
         if (clients.length === 0) {
-            container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p></div>';
+            container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p><p style="font-size:0.75rem;margin-top:8px;">Cliquez sur "Nouveau client" pour commencer</p></div>';
             return;
         }
-        
+
         clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        
+
         container.innerHTML = clients.map(client => `
-            <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
+            <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:all 0.2s;">
                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
                     <div>
-                        <h4 style="margin-bottom:4px;">${esc(client.name)}</h4>
-                        <p style="font-size:0.75rem;color:var(--muted);">${esc(client.university)}</p>
-                        <p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet:</strong> ${esc(client.tfc_topic)}</p>
-                        <p style="font-size:0.72rem;color:var(--green);margin-top:4px;">🔑 Code: <strong>${esc(client.accessCode)}</strong></p>
+                        <h4 style="margin-bottom:4px;">👤 ${esc(client.name)}</h4>
+                        <p style="font-size:0.75rem;color:var(--muted);">🏛️ ${esc(client.university || 'Non renseigné')}</p>
+                        <p style="font-size:0.75rem;margin-top:4px;"><strong>📖 Sujet :</strong> ${esc(client.tfc_topic || 'Non défini')}</p>
+                        <p style="font-size:0.72rem;color:var(--green);margin-top:4px;">
+                            🔑 Code : <strong style="background:var(--green-pale);padding:2px 8px;border-radius:12px;">${esc(client.accessCode)}</strong>
+                        </p>
+                        <p style="font-size:0.7rem;color:var(--muted);margin-top:4px;">
+                            📧 ${esc(client.email)} | 📞 ${esc(client.phone || 'Non renseigné')}
+                        </p>
                     </div>
-                    <button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')">Ouvrir</button>
+                    <button class="btn-auth" style="width:auto;padding:8px 20px;" 
+                            onclick="openClientWorkspace('${client.id}')">
+                        <i class="fa-solid fa-folder-open"></i> Ouvrir
+                    </button>
                 </div>
             </div>
         `).join('');
-    });
+        
+        // Log pour déboguer
+        console.log(`✅ ${clients.length} client(s) chargé(s)`);
+    };
+    
+    // Stocker la référence et attacher le listener
+    window.clientsListRef = callback;
+    db.ref('tfc_clients').on('value', callback);
 }
 
 function switchToTFC() {
@@ -1973,14 +1991,24 @@ function switchToTFC() {
         toast('❌ Accès réservé au formateur');
         return;
     }
-    clientsListenerAttached = false;
+    
+    // Cacher les vues apprenants
     document.getElementById('adminTfcPanel').style.display = 'block';
     document.querySelector('.layout').style.display = 'none';
-    ['view-feed','view-profile','view-projets','view-semaines'].forEach(id => {
+    
+    const views = ['view-feed', 'view-profile', 'view-projets', 'view-semaines'];
+    views.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
     });
-    toast('📋 Mode Clients TFC');
+    
+    toast('📋 Mode Gestion des TFC');
+    
+    // Forcer le rechargement de la liste des clients
+    if (window.clientsListRef) {
+        db.ref('tfc_clients').off('value', window.clientsListRef);
+        window.clientsListRef = null;
+    }
     loadClientsList();
 }
 
@@ -1999,21 +2027,49 @@ async function createTfcClient() {
         return;
     }
     
+    // Vérifier si l'email existe déjà
+    const existingClients = await db.ref('tfc_clients').orderByChild('email').equalTo(email).once('value');
+    if (existingClients.exists()) {
+        toast('❌ Cet email est déjà utilisé par un autre client');
+        return;
+    }
+    
     const newClientRef = db.ref('tfc_clients').push();
     const clientId = newClientRef.key;
     const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     
     await newClientRef.set({
-        id: clientId, name, university, tfc_topic: topic,
-        email, phone: phone || '', accessCode, createdAt: Date.now(),
-        status: 'actif', documents: {}, messages: {}
+        id: clientId, 
+        name, 
+        university, 
+        tfc_topic: topic,
+        email, 
+        phone: phone || '',
+        accessCode: accessCode,
+        createdAt: Date.now(), 
+        status: 'actif',
+        documents: {}, 
+        messages: {}
     });
     
-    await db.ref(`tfc_access_codes/${accessCode}`).set({ clientId, createdAt: Date.now(), email });
+    await db.ref(`tfc_access_codes/${accessCode}`).set({ 
+        clientId, 
+        createdAt: Date.now(),
+        email: email
+    });
     
     toast(`✅ Client créé ! Code d'accès: ${accessCode}`);
     closeAddClientModal();
-    ['newClientName','newClientUniv','newClientTopic','newClientEmail','newClientPhone'].forEach(id => document.getElementById(id).value = '');
+    
+    // Vider le formulaire
+    document.getElementById('newClientName').value = '';
+    document.getElementById('newClientUniv').value = '';
+    document.getElementById('newClientTopic').value = '';
+    document.getElementById('newClientEmail').value = '';
+    document.getElementById('newClientPhone').value = '';
+    
+    // La liste se met à jour automatiquement grâce au listener !
+    console.log(`📝 Nouveau client créé: ${name} - Code: ${accessCode}`);
 }
 
 async function openClientWorkspace(clientId) {
