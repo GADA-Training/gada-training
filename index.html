@@ -555,12 +555,15 @@
                     
                     <div class="compose-box">
                         <h3 style="margin-bottom: 16px;"><i class="fa-solid fa-upload"></i> Déposer un document</h3>
-                        <div class="file-drop-area" onclick="document.getElementById('tfcFileInput').click()">
+                        <!-- ✅ CORRECTION 2 : Label natif au lieu de div onclick -->
+                        <label for="tfcFileInput" class="file-drop-area" style="cursor:pointer;display:block;">
                             <i class="fa-solid fa-cloud-upload-alt"></i>
-                            <p>Cliquez pour déposer votre document (PDF, DOCX, ZIP, R, XLSX, PPTX, JPG, PNG)</p>
+                            <p>Appuyez pour déposer votre document (PDF, DOCX, ZIP, R, XLSX, PPTX, JPG, PNG)</p>
                             <p style="font-size: 0.7rem; color: var(--muted); margin-top: 8px;">Max 50MB</p>
-                        </div>
-                        <input type="file" id="tfcFileInput" style="display: none" onchange="uploadTfcDocumentWithStorage(this)">
+                        </label>
+                        <input type="file" id="tfcFileInput" style="display: none" 
+                               accept=".pdf,.docx,.zip,.r,.R,.xlsx,.pptx,.jpg,.jpeg,.png"
+                               onchange="uploadTfcDocumentWithStorage(this)">
                         <div id="tfcUploadProgress" style="display: none; margin-top: 10px;">
                             <div class="progress-bar">
                                 <div class="progress-fill" id="tfcProgressFill"></div>
@@ -575,7 +578,7 @@
                     </div>
                 </div>
                 
-                <!-- Chat et IA -->
+                <!-- Assistant IA -->
                 <div>
                     <div class="chat-panel" style="height: 500px; margin-bottom: 20px;">
                         <div class="chat-panel-header">
@@ -636,22 +639,23 @@
                     <div class="file-row">
                         <div class="file-icon icon-pdf"><i class="fa-solid fa-file-pdf"></i></div>
                         <div class="file-name">Guide méthodologique du TFC</div>
-                        <button class="file-dl" onclick="downloadRessource('guide_tfc.pdf')"><i class="fa-solid fa-download"></i></button>
+                        <!-- ✅ CORRECTION 2 : Bouton avec downloadDoc() au lieu de lien direct -->
+                        <button class="file-dl" onclick="downloadDoc('ressources/guide_tfc.pdf', 'guide_tfc.pdf')"><i class="fa-solid fa-download"></i></button>
                     </div>
                     <div class="file-row">
                         <div class="file-icon icon-r"><i class="fa-solid fa-file-code"></i></div>
                         <div class="file-name">Template LaTeX pour mémoire</div>
-                        <button class="file-dl" onclick="downloadRessource('template_memoire.zip')"><i class="fa-solid fa-download"></i></button>
+                        <button class="file-dl" onclick="downloadDoc('ressources/template_memoire.zip', 'template_memoire.zip')"><i class="fa-solid fa-download"></i></button>
                     </div>
                     <div class="file-row">
                         <div class="file-icon icon-ppt"><i class="fa-solid fa-file-powerpoint"></i></div>
                         <div class="file-name">Présentation type pour soutenance</div>
-                        <button class="file-dl" onclick="downloadRessource('soutenance_template.pptx')"><i class="fa-solid fa-download"></i></button>
+                        <button class="file-dl" onclick="downloadDoc('ressources/soutenance_template.pptx', 'soutenance_template.pptx')"><i class="fa-solid fa-download"></i></button>
                     </div>
                     <div class="file-row">
                         <div class="file-icon icon-excel"><i class="fa-solid fa-file-excel"></i></div>
                         <div class="file-name">Grille d'évaluation TFC</div>
-                        <button class="file-dl" onclick="downloadRessource('grille_evaluation.xlsx')"><i class="fa-solid fa-download"></i></button>
+                        <button class="file-dl" onclick="downloadDoc('ressources/grille_evaluation.xlsx', 'grille_evaluation.xlsx')"><i class="fa-solid fa-download"></i></button>
                     </div>
                 </div>
             </div>
@@ -689,10 +693,11 @@
         <div class="form-field"><label>Sujet du TFC / Mémoire</label><textarea id="tfcEditTopic" rows="3" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:12px;"></textarea></div>
         <div class="form-field"><label>Téléphone</label><input type="tel" id="tfcEditPhone"></div>
         <div class="profile-edit-section">
-            <div class="file-drop-area" onclick="document.getElementById('tfcAvatarInput').click()">
+            <!-- ✅ CORRECTION 2 : Label natif -->
+            <label for="tfcAvatarInput" class="file-drop-area" style="cursor:pointer;display:block;">
                 <i class="fa-solid fa-camera"></i>
                 <p>Changer ma photo de profil</p>
-            </div>
+            </label>
             <input type="file" id="tfcAvatarInput" accept="image/*" style="display:none" onchange="uploadTfcAvatar(this)">
         </div>
         <button class="btn-submit-post" onclick="saveTfcClientProfile()" style="margin-top:20px;">Enregistrer les modifications</button>
@@ -714,10 +719,13 @@
                     <span class="profile-badge-tag" id="adminClientTopic">...</span>
                 </div>
                 <div>
-                    <button class="btn-auth" style="width: auto; padding: 10px 20px;" onclick="document.getElementById('adminDocInput').click()">
+                    <!-- ✅ CORRECTION 2 : Label natif -->
+                    <label for="adminDocInput" class="btn-auth" style="display: inline-block; width: auto; padding: 10px 20px; cursor: pointer;">
                         <i class="fa-solid fa-upload"></i> Déposer un document
-                    </button>
-                    <input type="file" id="adminDocInput" style="display: none" onchange="uploadTfcDocumentAdmin(this)">
+                    </label>
+                    <input type="file" id="adminDocInput" style="display: none" 
+                           accept=".pdf,.docx,.zip,.r,.R,.xlsx,.pptx,.jpg,.jpeg,.png"
+                           onchange="uploadTfcDocumentAdmin(this)">
                 </div>
             </div>
         </div>
@@ -745,7 +753,7 @@
     </div>
 </div>
 
-<!-- Panneau Admin TFC -->
+<!-- ✅ CORRECTION 1 : Panneau Admin TFC avec listener temps réel -->
 <div id="adminTfcPanel" style="display: none;">
     <div class="card" style="margin-bottom: 16px;">
         <div class="card-header">
@@ -791,6 +799,127 @@
         <button class="btn-submit-post" onclick="submitTfcPost()">Publier</button>
     </div>
 </div>
+
+<!-- ✅ CORRECTION 2 : Fonction utilitaire de téléchargement compatible mobile -->
+<script>
+function downloadDoc(url, fileName) {
+    // Crée un lien temporaire — compatible iOS/Android
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName || 'document';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// ✅ CORRECTION 1 : Variable pour éviter les doublons de listener
+let clientsListenerAttached = false;
+
+// ✅ CORRECTION 1 : Fonction loadClientsList avec listener temps réel
+function loadClientsList() {
+    const container = document.getElementById('clientsList');
+    if (!container) return;
+
+    // Évite d'attacher plusieurs listeners si appelé plusieurs fois
+    if (clientsListenerAttached) return;
+    clientsListenerAttached = true;
+
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Chargement...</div>';
+
+    db.ref('tfc_clients').on('value', (snapshot) => {
+        const clients = [];
+        snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
+
+        if (clients.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p></div>';
+            return;
+        }
+
+        // Trier par date de création décroissante
+        clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        container.innerHTML = clients.map(client => `
+            <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <h4 style="margin-bottom:4px;">${esc(client.name)}</h4>
+                        <p style="font-size:0.75rem;color:var(--muted);">${esc(client.university)}</p>
+                        <p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic)}</p>
+                        <p style="font-size:0.72rem;color:var(--green);margin-top:4px;">
+                            🔑 Code : <strong>${esc(client.accessCode)}</strong>
+                        </p>
+                    </div>
+                    <button class="btn-auth" style="width:auto;padding:8px 20px;" 
+                            onclick="openClientWorkspace('${client.id}')">
+                        Ouvrir
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    });
+}
+
+// ✅ CORRECTION 1 : switchToTFC réinitialisé
+function switchToTFC() {
+    if (currentUser?.email !== ADMIN_EMAIL) {
+        toast('❌ Accès réservé au formateur');
+        return;
+    }
+    // Réinitialise pour permettre le rattachement du listener
+    clientsListenerAttached = false;
+
+    document.getElementById('adminTfcPanel').style.display = 'block';
+    document.querySelector('.layout').style.display = 'none';
+
+    // Cache toutes les vues apprenants
+    ['view-feed','view-profile','view-projets','view-semaines'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+
+    toast('📋 Mode Clients TFC');
+    loadClientsList(); // Le listener est attaché ici, se met à jour tout seul
+}
+
+// ✅ CORRECTION 1 : createTfcClient sans appel manuel à loadClientsList
+async function createTfcClient() {
+    const name = document.getElementById('newClientName').value;
+    const university = document.getElementById('newClientUniv').value;
+    const topic = document.getElementById('newClientTopic').value;
+    const email = document.getElementById('newClientEmail').value;
+    const phone = document.getElementById('newClientPhone').value;
+    
+    if (!name || !university || !topic || !email) {
+        toast('❌ Veuillez remplir tous les champs obligatoires');
+        return;
+    }
+    
+    const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    
+    const newClientRef = db.ref('tfc_clients').push();
+    const clientId = newClientRef.key;
+    
+    await newClientRef.set({
+        name, university, tfc_topic: topic, email, phone: phone || '',
+        accessCode, createdAt: Date.now(),
+        createdBy: currentUser?.uid || 'admin'
+    });
+    
+    await db.ref(`tfc_access_codes/${accessCode}`).set({ 
+        clientId, createdAt: Date.now(), email: email
+    });
+    
+    // ✅ Plus besoin de loadClientsList() ici — le listener s'en charge automatiquement
+    toast(`✅ Client créé ! Code d'accès : ${accessCode}`);
+    closeAddClientModal();
+    
+    // Vider le formulaire
+    ['newClientName','newClientUniv','newClientTopic','newClientEmail','newClientPhone']
+        .forEach(id => document.getElementById(id).value = '');
+}
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
