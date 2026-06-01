@@ -555,7 +555,6 @@
                     
                     <div class="compose-box">
                         <h3 style="margin-bottom: 16px;"><i class="fa-solid fa-upload"></i> Déposer un document</h3>
-                        <!-- ✅ CORRECTION 2 : Label natif au lieu de div onclick -->
                         <label for="tfcFileInput" class="file-drop-area" style="cursor:pointer;display:block;">
                             <i class="fa-solid fa-cloud-upload-alt"></i>
                             <p>Appuyez pour déposer votre document (PDF, DOCX, ZIP, R, XLSX, PPTX, JPG, PNG)</p>
@@ -578,7 +577,6 @@
                     </div>
                 </div>
                 
-                <!-- Assistant IA -->
                 <div>
                     <div class="chat-panel" style="height: 500px; margin-bottom: 20px;">
                         <div class="chat-panel-header">
@@ -600,7 +598,7 @@
                         <div class="ia-messages" id="tfcIaMsgs" style="height: 280px;">
                             <div class="ia-msg bot">
                                 <div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div>
-                                <div class="ia-bubble">👋 Bonjour ! Je suis votre assistant IA spécialisé dans l'accompagnement des TFC et mémoires. Je peux vous aider à :<br><br>📌 Structurer votre travail<br>📌 Formuler une problématique<br>📌 Organiser votre bibliographie<br>📌 Améliorer votre rédaction<br>📌 Préparer votre soutenance<br><br>Que souhaitez-vous ?</div>
+                                <div class="ia-bubble">👋 Bonjour ! Je suis votre assistant IA spécialisé dans l'accompagnement des TFC et mémoires.</div>
                             </div>
                         </div>
                         <div class="ia-input-row">
@@ -639,7 +637,6 @@
                     <div class="file-row">
                         <div class="file-icon icon-pdf"><i class="fa-solid fa-file-pdf"></i></div>
                         <div class="file-name">Guide méthodologique du TFC</div>
-                        <!-- ✅ CORRECTION 2 : Bouton avec downloadDoc() au lieu de lien direct -->
                         <button class="file-dl" onclick="downloadDoc('ressources/guide_tfc.pdf', 'guide_tfc.pdf')"><i class="fa-solid fa-download"></i></button>
                     </div>
                     <div class="file-row">
@@ -693,7 +690,6 @@
         <div class="form-field"><label>Sujet du TFC / Mémoire</label><textarea id="tfcEditTopic" rows="3" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:12px;"></textarea></div>
         <div class="form-field"><label>Téléphone</label><input type="tel" id="tfcEditPhone"></div>
         <div class="profile-edit-section">
-            <!-- ✅ CORRECTION 2 : Label natif -->
             <label for="tfcAvatarInput" class="file-drop-area" style="cursor:pointer;display:block;">
                 <i class="fa-solid fa-camera"></i>
                 <p>Changer ma photo de profil</p>
@@ -719,7 +715,6 @@
                     <span class="profile-badge-tag" id="adminClientTopic">...</span>
                 </div>
                 <div>
-                    <!-- ✅ CORRECTION 2 : Label natif -->
                     <label for="adminDocInput" class="btn-auth" style="display: inline-block; width: auto; padding: 10px 20px; cursor: pointer;">
                         <i class="fa-solid fa-upload"></i> Déposer un document
                     </label>
@@ -753,7 +748,7 @@
     </div>
 </div>
 
-<!-- ✅ CORRECTION 1 : Panneau Admin TFC avec listener temps réel -->
+<!-- Panneau Admin TFC -->
 <div id="adminTfcPanel" style="display: none;">
     <div class="card" style="margin-bottom: 16px;">
         <div class="card-header">
@@ -800,127 +795,6 @@
     </div>
 </div>
 
-<!-- ✅ CORRECTION 2 : Fonction utilitaire de téléchargement compatible mobile -->
-<script>
-function downloadDoc(url, fileName) {
-    // Crée un lien temporaire — compatible iOS/Android
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName || 'document';
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-// ✅ CORRECTION 1 : Variable pour éviter les doublons de listener
-let clientsListenerAttached = false;
-
-// ✅ CORRECTION 1 : Fonction loadClientsList avec listener temps réel
-function loadClientsList() {
-    const container = document.getElementById('clientsList');
-    if (!container) return;
-
-    // Évite d'attacher plusieurs listeners si appelé plusieurs fois
-    if (clientsListenerAttached) return;
-    clientsListenerAttached = true;
-
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Chargement...</div>';
-
-    db.ref('tfc_clients').on('value', (snapshot) => {
-        const clients = [];
-        snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
-
-        if (clients.length === 0) {
-            container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p></div>';
-            return;
-        }
-
-        // Trier par date de création décroissante
-        clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-        container.innerHTML = clients.map(client => `
-            <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-                    <div>
-                        <h4 style="margin-bottom:4px;">${esc(client.name)}</h4>
-                        <p style="font-size:0.75rem;color:var(--muted);">${esc(client.university)}</p>
-                        <p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic)}</p>
-                        <p style="font-size:0.72rem;color:var(--green);margin-top:4px;">
-                            🔑 Code : <strong>${esc(client.accessCode)}</strong>
-                        </p>
-                    </div>
-                    <button class="btn-auth" style="width:auto;padding:8px 20px;" 
-                            onclick="openClientWorkspace('${client.id}')">
-                        Ouvrir
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    });
-}
-
-// ✅ CORRECTION 1 : switchToTFC réinitialisé
-function switchToTFC() {
-    if (currentUser?.email !== ADMIN_EMAIL) {
-        toast('❌ Accès réservé au formateur');
-        return;
-    }
-    // Réinitialise pour permettre le rattachement du listener
-    clientsListenerAttached = false;
-
-    document.getElementById('adminTfcPanel').style.display = 'block';
-    document.querySelector('.layout').style.display = 'none';
-
-    // Cache toutes les vues apprenants
-    ['view-feed','view-profile','view-projets','view-semaines'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-
-    toast('📋 Mode Clients TFC');
-    loadClientsList(); // Le listener est attaché ici, se met à jour tout seul
-}
-
-// ✅ CORRECTION 1 : createTfcClient sans appel manuel à loadClientsList
-async function createTfcClient() {
-    const name = document.getElementById('newClientName').value;
-    const university = document.getElementById('newClientUniv').value;
-    const topic = document.getElementById('newClientTopic').value;
-    const email = document.getElementById('newClientEmail').value;
-    const phone = document.getElementById('newClientPhone').value;
-    
-    if (!name || !university || !topic || !email) {
-        toast('❌ Veuillez remplir tous les champs obligatoires');
-        return;
-    }
-    
-    const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-    
-    const newClientRef = db.ref('tfc_clients').push();
-    const clientId = newClientRef.key;
-    
-    await newClientRef.set({
-        name, university, tfc_topic: topic, email, phone: phone || '',
-        accessCode, createdAt: Date.now(),
-        createdBy: currentUser?.uid || 'admin'
-    });
-    
-    await db.ref(`tfc_access_codes/${accessCode}`).set({ 
-        clientId, createdAt: Date.now(), email: email
-    });
-    
-    // ✅ Plus besoin de loadClientsList() ici — le listener s'en charge automatiquement
-    toast(`✅ Client créé ! Code d'accès : ${accessCode}`);
-    closeAddClientModal();
-    
-    // Vider le formulaire
-    ['newClientName','newClientUniv','newClientTopic','newClientEmail','newClientPhone']
-        .forEach(id => document.getElementById(id).value = '');
-}
-</script>
-
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -966,7 +840,7 @@ const SEMAINES_DATA = {
             {nom:"GADA_Formation_RStudio_Jour2.pdf",type:"pdf"},
             {nom:"Script_Jour2.R",type:"r"},
             {nom:"Donnees_sorgho_Benoit_kajora_complet.xlsx",type:"excel"},
-            { nom: "GADA_Jour3_EDA_Paludisme.pptx", type: "powerpoint" },
+            {nom:"GADA_Jour3_EDA_Paludisme.pptx",type:"powerpoint"},
             {nom:"wmr2024_annex_4f.xlsx",type:"excel"}
         ]
     },
@@ -975,10 +849,10 @@ const SEMAINES_DATA = {
         description:"Corrélations spatiales : NDVI, NDWI, SAVI, LST & maladies vectorielles, Analyse One Health, impact des pesticides & modèles prédictifs, RStudio Modélisation spatiale avec MaxEnt, distribution de la chenille, Construction du modèle prédictif intégré (Random Forest et GLM)",
         badge:"5 fichiers",locked:false,
         fichiers:[
-            { nom: "Formation_Biostat_Spatiale.pptx", type: "powerpoint" },
+            {nom:"Formation_Biostat_Spatiale.pptx",type:"powerpoint"},
             {nom:"Formation_Biostat_Spatiale_CODE_COMPLET.R",type:"r"},
             {nom:"THA_RDC_Modelisation_One_Health.pdf",type:"pdf"},
-            { nom: "THA_RDC_OneHealth_Presentation.pptx", type: "powerpoint" },
+            {nom:"THA_RDC_OneHealth_Presentation.pptx",type:"powerpoint"},
             {nom:"analyse_THA_RDC_Crump_2021.R",type:"r"}
         ]
     },
@@ -1044,21 +918,45 @@ let currentTfcClientData = null;
 let currentAdminClientId = null;
 let currentTfcPostType = 'text';
 let tfcPostMediaFile = null;
-let tfcPostMediaType = null;
+let clientsListenerAttached = false;
 
 // ==================== FONCTIONS UTILITAIRES ====================
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
 function toast(msg,dur=3000){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),dur);}
 function showAuthMsg(msg,isErr=true){const el=document.getElementById('authMsg');el.textContent=msg;el.className='auth-msg '+(isErr?'err':'ok');}
+function downloadDoc(url, fileName) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName || 'document';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
 
 // ==================== AUTHENTIFICATION ====================
 function switchTab(tab){
-    document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
-    document.getElementById('registerForm').style.display=tab==='register'?'block':'none';
-    document.getElementById('forgotForm').style.display=tab==='forgot'?'block':'none';
-    document.getElementById('loginTabBtn').classList.toggle('active',tab==='login');
-    document.getElementById('registerTabBtn').classList.toggle('active',tab==='register');
-    document.getElementById('authMsg').className='auth-msg';
+    if (tab === 'client_login') {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('forgotForm').style.display = 'none';
+        document.getElementById('clientLoginForm').style.display = 'block';
+        document.getElementById('loginTabBtn').classList.remove('active');
+        document.getElementById('registerTabBtn').classList.remove('active');
+        if(document.getElementById('clientLoginTabBtn')) document.getElementById('clientLoginTabBtn').classList.add('active');
+        document.getElementById('authMsg').className = 'auth-msg';
+        document.getElementById('authMsg').style.display = 'none';
+    } else {
+        document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
+        document.getElementById('registerForm').style.display=tab==='register'?'block':'none';
+        document.getElementById('forgotForm').style.display=tab==='forgot'?'block':'none';
+        document.getElementById('loginTabBtn').classList.toggle('active',tab==='login');
+        document.getElementById('registerTabBtn').classList.toggle('active',tab==='register');
+        if (document.getElementById('clientLoginForm')) document.getElementById('clientLoginForm').style.display = 'none';
+        if (document.getElementById('clientLoginTabBtn')) document.getElementById('clientLoginTabBtn').classList.remove('active');
+        document.getElementById('authMsg').className='auth-msg';
+    }
 }
 
 function doLogin(){
@@ -1117,8 +1015,11 @@ firebase.auth().onAuthStateChanged(user=>{
     } else {
         currentUser=null;
         renderedPostKeys.clear();
-        document.getElementById('authOverlay').style.display='flex';
-        document.getElementById('app').style.display='none';
+        // Ne pas cacher la vue TFC si elle est active
+        if (!currentTfcClientId) {
+            document.getElementById('authOverlay').style.display='flex';
+            document.getElementById('app').style.display='none';
+        }
     }
 });
 
@@ -1159,14 +1060,8 @@ function loadMembers(){
     });
 }
 
-function viewMemberProfile(memberId,memberEmail,memberName){
-    toast(`👤 Profil de ${memberName} (fonctionnalité à venir)`);
-}
-
-function openConversation(memberId,memberName,memberEmail){
-    toast(`💬 Conversation avec ${memberName} (fonctionnalité à venir)`);
-}
-
+function viewMemberProfile(memberId,memberEmail,memberName){ toast(`👤 Profil de ${memberName} (fonctionnalité à venir)`); }
+function openConversation(memberId,memberName,memberEmail){ toast(`💬 Conversation avec ${memberName} (fonctionnalité à venir)`); }
 function loadNotifications(){}
 
 function showView(v){
@@ -1190,10 +1085,7 @@ function initMembersDropdown(){
     if(localStorage.getItem('membersExpanded')==='true'){ 
         const c=document.getElementById('membersListContainer');
         const ch=document.getElementById('membersChevron');
-        if(c && ch){
-            c.classList.add('expanded');
-            ch.classList.add('rotated');
-        }
+        if(c && ch){ c.classList.add('expanded'); ch.classList.add('rotated'); }
     } 
 }
 
@@ -1268,7 +1160,6 @@ function listenPosts(){
 }
 
 function buildPostHtml(post){
-    const isOwner=currentUser&&currentUser.uid===post.userId;
     return `<div class="post-card" data-post-id="${post._key}">
         <div class="post-header">
             <div class="user-av" style="cursor:pointer">${post.userAvatar?`<img src="${post.userAvatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'}</div>
@@ -1555,9 +1446,9 @@ async function initIA() {
     appendIAMessage('assistant', msg);
 }
 
-// ==================== SECTION CLIENTS TFC AMÉLIORÉE ====================
+// ==================== SECTION CLIENTS TFC ====================
 
-// Upload avec Firebase Storage
+// Upload document client
 async function uploadTfcDocumentWithStorage(fileInput) {
     if (!currentTfcClientId) return;
     const file = fileInput.files[0];
@@ -1610,7 +1501,7 @@ async function uploadTfcDocumentWithStorage(fileInput) {
     );
 }
 
-// Publications sociales TFC
+// Navigation TFC
 function showTfcSection(section) {
     document.querySelectorAll('.tfc-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tfc-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1618,6 +1509,7 @@ function showTfcSection(section) {
     if (section === 'documents') {
         document.getElementById('tfcDocumentsSection').classList.add('active');
         document.querySelector('.tfc-tab-btn:first-child').classList.add('active');
+        loadClientDocuments();
     } else if (section === 'feed') {
         document.getElementById('tfcFeedSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[1].classList.add('active');
@@ -1628,6 +1520,7 @@ function showTfcSection(section) {
     }
 }
 
+// Publications TFC
 function openTfcCompose(type = 'text') {
     currentTfcPostType = type;
     tfcPostMediaFile = null;
@@ -1639,20 +1532,20 @@ function openTfcCompose(type = 'text') {
     const mediaArea = document.getElementById('tfcPostMediaArea');
     if (type === 'photo') {
         mediaArea.innerHTML = `
-            <div class="file-drop-area" onclick="document.getElementById('tfcPhotoInput').click()">
+            <label for="tfcPhotoInput" class="file-drop-area" style="cursor:pointer;display:block;">
                 <i class="fa-regular fa-image"></i>
                 <p>Cliquez pour sélectionner une photo</p>
-                <input type="file" id="tfcPhotoInput" accept="image/*" style="display:none" onchange="previewTfcMedia(this, 'photo')">
-            </div>
+            </label>
+            <input type="file" id="tfcPhotoInput" accept="image/*" style="display:none" onchange="previewTfcMedia(this, 'photo')">
             <div id="tfcMediaPreview"></div>
         `;
     } else if (type === 'document') {
         mediaArea.innerHTML = `
-            <div class="file-drop-area" onclick="document.getElementById('tfcDocInput').click()">
+            <label for="tfcDocInput" class="file-drop-area" style="cursor:pointer;display:block;">
                 <i class="fa-regular fa-file"></i>
                 <p>Cliquez pour sélectionner un document</p>
-                <input type="file" id="tfcDocInput" accept=".pdf,.docx,.ppt,.xlsx,.zip" style="display:none" onchange="previewTfcMedia(this, 'document')">
-            </div>
+            </label>
+            <input type="file" id="tfcDocInput" accept=".pdf,.docx,.ppt,.xlsx,.zip" style="display:none" onchange="previewTfcMedia(this, 'document')">
             <div id="tfcMediaPreview"></div>
         `;
     } else if (type === 'link') {
@@ -1667,7 +1560,6 @@ function openTfcCompose(type = 'text') {
 function previewTfcMedia(input, type) {
     if (input.files && input.files[0]) {
         tfcPostMediaFile = input.files[0];
-        tfcPostMediaType = type;
         const preview = document.getElementById('tfcMediaPreview');
         if (type === 'photo') {
             const reader = new FileReader();
@@ -1702,40 +1594,46 @@ async function submitTfcPost() {
         type: currentTfcPostType,
         timestamp: Date.now(),
         likes: 0,
-        comments: []
+        commentsCount: 0
     };
     
     const progressDiv = document.getElementById('tfcPostProgress');
-    const progressFill = document.getElementById('tfcPostProgressFill');
     
-    if (currentTfcPostType === 'photo' && tfcPostMediaFile) {
-        progressDiv.style.display = 'block';
-        const storageRef = storage.ref();
-        const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/photos/${Date.now()}_${tfcPostMediaFile.name}`);
-        const uploadTask = await fileRef.put(tfcPostMediaFile);
-        postData.mediaUrl = await fileRef.getDownloadURL();
-        postData.mediaType = 'image';
-        progressDiv.style.display = 'none';
-    } else if (currentTfcPostType === 'document' && tfcPostMediaFile) {
-        progressDiv.style.display = 'block';
-        const storageRef = storage.ref();
-        const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/documents/${Date.now()}_${tfcPostMediaFile.name}`);
-        const uploadTask = await fileRef.put(tfcPostMediaFile);
-        postData.fileUrl = await fileRef.getDownloadURL();
-        postData.fileName = tfcPostMediaFile.name;
-        progressDiv.style.display = 'none';
-    } else if (currentTfcPostType === 'link') {
-        postData.linkUrl = document.getElementById('tfcLinkInput')?.value;
-        if (!postData.linkUrl || !postData.linkUrl.startsWith('http')) {
-            toast('❌ Lien invalide');
-            return;
+    try {
+        if (currentTfcPostType === 'photo' && tfcPostMediaFile) {
+            if (progressDiv) progressDiv.style.display = 'block';
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/photos/${Date.now()}_${tfcPostMediaFile.name}`);
+            await fileRef.put(tfcPostMediaFile);
+            postData.mediaUrl = await fileRef.getDownloadURL();
+            postData.mediaType = 'image';
+            if (progressDiv) progressDiv.style.display = 'none';
+        } else if (currentTfcPostType === 'document' && tfcPostMediaFile) {
+            if (progressDiv) progressDiv.style.display = 'block';
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/documents/${Date.now()}_${tfcPostMediaFile.name}`);
+            await fileRef.put(tfcPostMediaFile);
+            postData.fileUrl = await fileRef.getDownloadURL();
+            postData.fileName = tfcPostMediaFile.name;
+            if (progressDiv) progressDiv.style.display = 'none';
+        } else if (currentTfcPostType === 'link') {
+            const linkUrl = document.getElementById('tfcLinkInput')?.value;
+            if (!linkUrl || !linkUrl.startsWith('http')) {
+                toast('❌ Lien invalide');
+                return;
+            }
+            postData.linkUrl = linkUrl;
         }
+        
+        await db.ref('tfc_posts').push(postData);
+        toast('✅ Publication partagée !');
+        closeTfcCompose();
+        loadTfcPosts();
+    } catch (error) {
+        console.error(error);
+        toast('❌ Erreur: ' + error.message);
+        if (progressDiv) progressDiv.style.display = 'none';
     }
-    
-    await db.ref(`tfc_posts`).push(postData);
-    toast('✅ Publication partagée !');
-    closeTfcCompose();
-    loadTfcPosts();
 }
 
 async function loadTfcPosts() {
@@ -1765,7 +1663,6 @@ async function loadTfcPosts() {
                 </div>
                 ${post.authorId === currentTfcClientId ? `
                 <div class="post-actions-menu">
-                    <button class="post-edit-btn" onclick="editTfcPost('${post.id}')"><i class="fa-solid fa-pen"></i></button>
                     <button class="post-delete-btn" onclick="deleteTfcPost('${post.id}')"><i class="fa-solid fa-trash"></i></button>
                 </div>` : ''}
             </div>
@@ -1780,7 +1677,7 @@ async function loadTfcPosts() {
                     <i class="fa-regular fa-heart"></i> ${post.likes || 0}
                 </button>
                 <button onclick="commentTfcPost('${post.id}')" class="post-action">
-                    <i class="fa-regular fa-comment"></i> ${post.comments?.length || 0}
+                    <i class="fa-regular fa-comment"></i> ${post.commentsCount || 0}
                 </button>
             </div>
         </div>
@@ -1790,11 +1687,10 @@ async function loadTfcPosts() {
 function likeTfcPost(postId) {
     const postRef = db.ref(`tfc_posts/${postId}`);
     postRef.transaction(post => {
-        if (post) {
-            post.likes = (post.likes || 0) + 1;
-        }
+        if (post) post.likes = (post.likes || 0) + 1;
         return post;
     });
+    toast('❤️ Like ajouté !');
 }
 
 function commentTfcPost(postId) {
@@ -1805,37 +1701,21 @@ function commentTfcPost(postId) {
             text: comment,
             timestamp: Date.now()
         });
+        db.ref(`tfc_posts/${postId}`).transaction(post => {
+            if (post) post.commentsCount = (post.commentsCount || 0) + 1;
+            return post;
+        });
         toast('✅ Commentaire ajouté');
         loadTfcPosts();
     }
 }
 
-function deleteTfcPost(postId) {
+async function deleteTfcPost(postId) {
     if (confirm('Supprimer cette publication ?')) {
-        db.ref(`tfc_posts/${postId}`).remove().then(() => {
-            toast('✅ Publication supprimée');
-            loadTfcPosts();
-        });
+        await db.ref(`tfc_posts/${postId}`).remove();
+        toast('✅ Publication supprimée');
+        loadTfcPosts();
     }
-}
-
-function editTfcPost(postId) {
-    const postRef = db.ref(`tfc_posts/${postId}`);
-    postRef.once('value', (snap) => {
-        const post = snap.val();
-        if (post.authorId === currentTfcClientId) {
-            const newContent = prompt("Modifier votre publication :", post.content);
-            if (newContent && newContent.trim()) {
-                postRef.update({ content: newContent.trim() });
-                toast('✅ Publication modifiée');
-                loadTfcPosts();
-            }
-        }
-    });
-}
-
-function downloadRessource(fileName) {
-    toast(`📥 Téléchargement de ${fileName}...`);
 }
 
 // Chargement des documents client
@@ -1871,6 +1751,7 @@ async function loadClientChat() {
     const chatMsgs = document.getElementById('tfcChatMsgs');
     if (!chatMsgs) return;
     chatMsgs.innerHTML = '<div class="empty-state"><p>Chargement...</p></div>';
+    db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
     db.ref(`tfc_clients/${currentTfcClientId}/messages`).on('value', (snap) => {
         const messages = [];
         snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
@@ -1941,6 +1822,7 @@ async function sendToTfcLLM() {
         const data = await resp.json();
         const reply = data.choices[0].message.content;
         appendTfcIAMessage('assistant', reply);
+        await db.ref(`tfc_clients/${currentTfcClientId}/ia_conversations`).push({ question, reponse: reply, timestamp: Date.now() });
     } catch (err) { 
         appendTfcIAMessage('assistant', "⚠️ Service indisponible."); 
     }
@@ -1952,7 +1834,6 @@ async function loadTfcIaHistory() {
     const conversations = [];
     snapshot.forEach(child => conversations.push(child.val()));
     conversations.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
-    
     const msgsDiv = document.getElementById('tfcIaMsgs');
     if (msgsDiv && conversations.length > 0) {
         msgsDiv.innerHTML = '<div class="ia-msg bot"><div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div><div class="ia-bubble">Historique des conversations chargé.</div></div>';
@@ -1984,6 +1865,7 @@ async function doClientLogin() {
     document.getElementById('tfcClientUniv').textContent = client.university;
     document.getElementById('tfcClientTopic').innerHTML = `📝 ${esc(client.tfc_topic)}`;
     document.getElementById('tfcClientTopName').textContent = client.name;
+    if (client.avatar) document.getElementById('tfcClientAvatar').innerHTML = `<img src="${client.avatar}" style="width:100%;height:100%;object-fit:cover">`;
     loadClientDocuments();
     loadClientChat();
     loadTfcIaHistory();
@@ -1991,6 +1873,7 @@ async function doClientLogin() {
 }
 
 function logoutTfcClient() {
+    if (currentTfcClientId) db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
     currentTfcClientId = null;
     currentTfcClientData = null;
     sessionStorage.clear();
@@ -1999,7 +1882,7 @@ function logoutTfcClient() {
     switchTab('login');
 }
 
-// Fonctions d'édition du profil TFC Client
+// Profil TFC Client
 function editTfcClientProfile() {
     document.getElementById('tfcEditName').value = currentTfcClientData.name || '';
     document.getElementById('tfcEditUniv').value = currentTfcClientData.university || '';
@@ -2030,7 +1913,6 @@ async function saveTfcClientProfile() {
     document.getElementById('tfcClientUniv').textContent = currentTfcClientData.university || '';
     document.getElementById('tfcClientTopic').innerHTML = `📝 ${esc(currentTfcClientData.tfc_topic || 'Sujet non défini')}`;
     document.getElementById('tfcClientTopName').textContent = currentTfcClientData.name;
-    
     toast('✅ Profil mis à jour');
     closeTfcEditProfileModal();
 }
@@ -2038,10 +1920,7 @@ async function saveTfcClientProfile() {
 async function uploadTfcAvatar(input) {
     if (!input.files[0] || !currentTfcClientId) return;
     const file = input.files[0];
-    if (file.size > 2 * 1024 * 1024) {
-        toast('❌ Image trop lourde (max 2MB)');
-        return;
-    }
+    if (file.size > 2 * 1024 * 1024) { toast('❌ Image trop lourde (max 2MB)'); return; }
     const storageRef = storage.ref();
     const fileRef = storageRef.child(`tfc_clients/${currentTfcClientId}/avatar_${Date.now()}`);
     await fileRef.put(file);
@@ -2052,40 +1931,62 @@ async function uploadTfcAvatar(input) {
     toast('✅ Photo de profil mise à jour');
 }
 
-// Admin TFC
-async function loadClientsList() {
-    const snapshot = await db.ref('tfc_clients').once('value');
-    const clients = [];
-    snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
+// Admin TFC - Liste des clients avec écoute temps réel
+function loadClientsList() {
     const container = document.getElementById('clientsList');
     if (!container) return;
-    if (clients.length === 0) {
-        container.innerHTML = '<div class="empty-state"><p>Aucun client</p></div>';
+    
+    if (clientsListenerAttached) return;
+    clientsListenerAttached = true;
+    
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Chargement...</div>';
+    
+    db.ref('tfc_clients').on('value', (snapshot) => {
+        const clients = [];
+        snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
+        
+        if (clients.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p></div>';
+            return;
+        }
+        
+        clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        
+        container.innerHTML = clients.map(client => `
+            <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <h4 style="margin-bottom:4px;">${esc(client.name)}</h4>
+                        <p style="font-size:0.75rem;color:var(--muted);">${esc(client.university)}</p>
+                        <p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet:</strong> ${esc(client.tfc_topic)}</p>
+                        <p style="font-size:0.72rem;color:var(--green);margin-top:4px;">🔑 Code: <strong>${esc(client.accessCode)}</strong></p>
+                    </div>
+                    <button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')">Ouvrir</button>
+                </div>
+            </div>
+        `).join('');
+    });
+}
+
+function switchToTFC() {
+    if (currentUser?.email !== ADMIN_EMAIL) {
+        toast('❌ Accès réservé au formateur');
         return;
     }
-    container.innerHTML = clients.map(client => `
-        <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                    <h4>${esc(client.name)}</h4>
-                    <p style="font-size:0.75rem;color:var(--muted);">${esc(client.university)}</p>
-                    <p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet:</strong> ${esc(client.tfc_topic)}</p>
-                </div>
-                <button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')">Ouvrir</button>
-            </div>
-        </div>
-    `).join('');
+    clientsListenerAttached = false;
+    document.getElementById('adminTfcPanel').style.display = 'block';
+    document.querySelector('.layout').style.display = 'none';
+    ['view-feed','view-profile','view-projets','view-semaines'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    toast('📋 Mode Clients TFC');
+    loadClientsList();
 }
 
-function openAddClientModal() {
-    document.getElementById('addClientModal').classList.add('active');
-}
+function openAddClientModal() { document.getElementById('addClientModal').classList.add('active'); }
+function closeAddClientModal() { document.getElementById('addClientModal').classList.remove('active'); }
 
-function closeAddClientModal() {
-    document.getElementById('addClientModal').classList.remove('active');
-}
-
-// FONCTION CORRIGÉE - C'est ici que se trouve la correction !
 async function createTfcClient() {
     const name = document.getElementById('newClientName').value.trim();
     const university = document.getElementById('newClientUniv').value.trim();
@@ -2094,7 +1995,7 @@ async function createTfcClient() {
     const phone = document.getElementById('newClientPhone').value.trim();
     
     if (!name || !university || !topic || !email) {
-        toast('❌ Remplissez tous les champs');
+        toast('❌ Remplissez tous les champs obligatoires');
         return;
     }
     
@@ -2103,37 +2004,16 @@ async function createTfcClient() {
     const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     
     await newClientRef.set({
-        id: clientId, 
-        name, 
-        university, 
-        tfc_topic: topic,
-        email, 
-        phone: phone || '',
-        accessCode: accessCode,
-        createdAt: Date.now(), 
-        status: 'actif',
-        documents: {}, 
-        messages: {}
+        id: clientId, name, university, tfc_topic: topic,
+        email, phone: phone || '', accessCode, createdAt: Date.now(),
+        status: 'actif', documents: {}, messages: {}
     });
     
-    await db.ref(`tfc_access_codes/${accessCode}`).set({ 
-        clientId, 
-        createdAt: Date.now(),
-        email: email
-    });
+    await db.ref(`tfc_access_codes/${accessCode}`).set({ clientId, createdAt: Date.now(), email });
     
     toast(`✅ Client créé ! Code d'accès: ${accessCode}`);
-    
-    // 🔥 CORRECTION : Fermer le modal et rafraîchir la liste
     closeAddClientModal();
-    loadClientsList();  // <-- C'est la ligne importante qui fait apparaître le client !
-    
-    // Vider le formulaire
-    document.getElementById('newClientName').value = '';
-    document.getElementById('newClientUniv').value = '';
-    document.getElementById('newClientTopic').value = '';
-    document.getElementById('newClientEmail').value = '';
-    document.getElementById('newClientPhone').value = '';
+    ['newClientName','newClientUniv','newClientTopic','newClientEmail','newClientPhone'].forEach(id => document.getElementById(id).value = '');
 }
 
 async function openClientWorkspace(clientId) {
@@ -2150,6 +2030,7 @@ async function openClientWorkspace(clientId) {
 }
 
 function closeAdminClientView() {
+    if (currentAdminClientId) db.ref(`tfc_clients/${currentAdminClientId}/messages`).off();
     document.getElementById('adminClientView').style.display = 'none';
     document.getElementById('adminTfcPanel').style.display = 'block';
     currentAdminClientId = null;
@@ -2161,10 +2042,7 @@ async function loadAdminDocuments(clientId) {
     const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
     const container = document.getElementById('adminDocumentsList');
     if (!container) return;
-    if (docsList.length === 0) {
-        container.innerHTML = '<div style="padding:32px;text-align:center;">Aucun document</div>';
-        return;
-    }
+    if (docsList.length === 0) { container.innerHTML = '<div style="padding:32px;text-align:center;">Aucun document</div>'; return; }
     container.innerHTML = docsList.map(doc => `
         <div class="doc-item">
             <div class="doc-info">
@@ -2217,14 +2095,12 @@ function openFeedbackModal(clientId, docId, docName) {
 async function loadAdminChat(clientId) {
     const chatMsgs = document.getElementById('adminChatMsgs');
     if (!chatMsgs) return;
+    db.ref(`tfc_clients/${clientId}/messages`).off();
     db.ref(`tfc_clients/${clientId}/messages`).on('value', (snap) => {
         const messages = [];
         snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
         messages.sort((a,b) => a.timestamp - b.timestamp);
-        if (messages.length === 0) {
-            chatMsgs.innerHTML = '<div class="empty-state"><p>Aucun message</p></div>';
-            return;
-        }
+        if (messages.length === 0) { chatMsgs.innerHTML = '<div class="empty-state"><p>Aucun message</p></div>'; return; }
         chatMsgs.innerHTML = messages.map(m => `
             <div class="chat-msg ${m.from === 'admin' ? 'admin' : 'them'}">
                 <div class="chat-meta">${m.from === 'admin' ? 'Vous' : esc(m.fromName)}</div>
@@ -2245,29 +2121,6 @@ function sendTfcMessageAdmin() {
         text, timestamp: Date.now()
     });
     input.value = '';
-}
-
-// Switch entre modes
-function switchToTFC() {
-    if (currentUser?.email !== ADMIN_EMAIL) {
-        toast('❌ Accès réservé au formateur');
-        return;
-    }
-    document.getElementById('adminTfcPanel').style.display = 'block';
-    document.getElementById('view-feed').style.display = 'none';
-    document.getElementById('view-profile').style.display = 'none';
-    document.getElementById('view-projets').style.display = 'none';
-    document.getElementById('view-semaines').style.display = 'none';
-    document.querySelector('.layout').style.display = 'none';
-    toast('📋 Mode Clients TFC');
-    loadClientsList();
-}
-
-function switchToTraining() {
-    document.getElementById('adminTfcPanel').style.display = 'none';
-    document.getElementById('view-feed').style.display = 'block';
-    document.querySelector('.layout').style.display = 'grid';
-    showView('feed');
 }
 
 // Ajout onglet client login
@@ -2296,24 +2149,6 @@ function addClientLoginTab() {
     }
 }
 
-// Redéfinition de switchTab
-const originalSwitchTab = window.switchTab;
-window.switchTab = function(tab) {
-    if (tab === 'client_login') {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('registerForm').style.display = 'none';
-        document.getElementById('forgotForm').style.display = 'none';
-        document.getElementById('clientLoginForm').style.display = 'block';
-        document.getElementById('loginTabBtn').classList.remove('active');
-        document.getElementById('registerTabBtn').classList.remove('active');
-        if(document.getElementById('clientLoginTabBtn')) document.getElementById('clientLoginTabBtn').classList.add('active');
-    } else {
-        originalSwitchTab(tab);
-        if (document.getElementById('clientLoginForm')) document.getElementById('clientLoginForm').style.display = 'none';
-        if (document.getElementById('clientLoginTabBtn')) document.getElementById('clientLoginTabBtn').classList.remove('active');
-    }
-};
-
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     addClientLoginTab();
@@ -2330,6 +2165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('tfcClientUniv').textContent = currentTfcClientData.university;
                 document.getElementById('tfcClientTopic').innerHTML = `📝 ${esc(currentTfcClientData.tfc_topic)}`;
                 document.getElementById('tfcClientTopName').textContent = currentTfcClientData.name;
+                if (currentTfcClientData.avatar) document.getElementById('tfcClientAvatar').innerHTML = `<img src="${currentTfcClientData.avatar}" style="width:100%;height:100%;object-fit:cover">`;
                 loadClientDocuments();
                 loadClientChat();
                 loadTfcIaHistory();
