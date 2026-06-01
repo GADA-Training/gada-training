@@ -298,6 +298,18 @@
         .post-edit-btn:hover { background: var(--blue-pale); color: var(--blue); }
         .post-delete-btn:hover { background: #fee2e2; color: #dc2626; }
         .profile-edit-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+        /* Styles pour la vue complète */
+        .client-workspace-card { transition: all 0.3s ease; margin-bottom: 24px; }
+        .client-workspace-card:hover { box-shadow: var(--shadow-md); }
+        .client-tab-content { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .full-mgmt-btn { background: linear-gradient(135deg, #e67e22, #f39c12) !important; color: white !important; margin-left: 10px; }
+        .full-mgmt-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .stat-card { transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-3px); }
+        .share-work-btn { background: linear-gradient(135deg, #2196F3, #1976D2) !important; margin-left: 8px; }
+        .share-work-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -753,11 +765,40 @@
     <div class="card" style="margin-bottom: 16px;">
         <div class="card-header">
             <h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4>
-            <button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()">
-                <i class="fa-solid fa-plus"></i> Nouveau client
-            </button>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()">
+                    <i class="fa-solid fa-plus"></i> Nouveau client
+                </button>
+                <button class="btn-auth full-mgmt-btn" style="width: auto; padding: 6px 16px;" onclick="openTfcFullManagement()">
+                    <i class="fa-solid fa-table-list"></i> Vue complète
+                </button>
+            </div>
         </div>
         <div id="clientsList" style="padding: 16px;"></div>
+    </div>
+</div>
+
+<!-- Vue Complète Gestion TFC -->
+<div id="tfcFullManagement" style="display: none;">
+    <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
+        <span class="topbar-logo"><span>📋 Gestion Complète des TFC</span></span>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-user"><div class="user-av" id="adminTfcAvatar"><i class="fa-solid fa-user-tie"></i></div><span id="adminTfcName">Administrateur</span></div>
+        <button class="btn-quit" onclick="closeTfcFullManagement()"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+    </div>
+    <div style="max-width: 1400px; margin: 20px auto; padding: 0 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div class="card stat-card" style="padding: 20px; text-align: center;"><i class="fa-solid fa-users" style="font-size: 2rem; color: var(--green);"></i><h3 id="totalClientsCount">0</h3><p style="color: var(--muted);">Clients inscrits</p></div>
+            <div class="card stat-card" style="padding: 20px; text-align: center;"><i class="fa-regular fa-file" style="font-size: 2rem; color: var(--blue);"></i><h3 id="totalDocsCount">0</h3><p style="color: var(--muted);">Documents déposés</p></div>
+            <div class="card stat-card" style="padding: 20px; text-align: center;"><i class="fa-regular fa-newspaper" style="font-size: 2rem; color: #e67e22;"></i><h3 id="totalPostsCount">0</h3><p style="color: var(--muted);">Publications</p></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fa-solid fa-list"></i> Tous les clients et leurs travaux</h4>
+                <button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()"><i class="fa-solid fa-plus"></i> Nouveau client</button>
+            </div>
+            <div id="tfcFullClientsList" style="padding: 16px;"></div>
+        </div>
     </div>
 </div>
 
@@ -792,6 +833,29 @@
             </div>
         </div>
         <button class="btn-submit-post" onclick="submitTfcPost()">Publier</button>
+    </div>
+</div>
+
+<!-- Modal partage travail à un client -->
+<div class="modal-overlay" id="shareWorkModal" onclick="if(event.target===this)closeShareWorkModal()">
+    <div class="modal-box" style="max-width: 600px;">
+        <div class="modal-top">
+            <h3><i class="fa-solid fa-share-alt"></i> Partager un travail au client</h3>
+            <button class="modal-close" onclick="closeShareWorkModal()">×</button>
+        </div>
+        <div id="shareWorkClientInfo" style="background: var(--green-pale); padding: 12px; border-radius: 12px; margin-bottom: 16px;"></div>
+        <div class="form-field"><label>Titre du travail</label><input type="text" id="shareWorkTitle" placeholder="Ex: Correction du mémoire, Document de référence..."></div>
+        <div class="form-field"><label>Description / Commentaire</label><textarea id="shareWorkDescription" rows="4" placeholder="Détails sur le travail partagé..."></textarea></div>
+        <div class="form-field"><label>Fichier (optionnel)</label>
+            <label for="shareWorkFile" class="file-drop-area" style="cursor:pointer;display:block;">
+                <i class="fa-solid fa-cloud-upload-alt"></i>
+                <p>Cliquez pour joindre un fichier (PDF, DOCX, ZIP, image)</p>
+            </label>
+            <input type="file" id="shareWorkFile" style="display:none" accept=".pdf,.docx,.zip,.jpg,.jpeg,.png">
+            <div id="shareWorkFileName" style="font-size:0.75rem;color:var(--green);margin-top:5px;"></div>
+        </div>
+        <div class="form-field"><label>Lien supplémentaire (optionnel)</label><input type="url" id="shareWorkLink" placeholder="https://..."></div>
+        <button class="btn-auth" onclick="submitSharedWork()" style="margin-top:16px;">📤 Partager le travail</button>
     </div>
 </div>
 
@@ -918,6 +982,11 @@ let currentTfcClientData = null;
 let currentAdminClientId = null;
 let currentTfcPostType = 'text';
 let tfcPostMediaFile = null;
+
+// Variables pour le partage de travail
+let currentShareClientId = null;
+let currentShareClientName = null;
+let shareWorkFile = null;
 
 // ==================== FONCTIONS UTILITAIRES ====================
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
@@ -1930,20 +1999,17 @@ async function uploadTfcAvatar(input) {
     toast('✅ Photo de profil mise à jour');
 }
 
-// Admin TFC - Liste des clients avec écoute temps réel (CORRIGÉE)
+// Admin TFC - Liste des clients avec écoute temps réel
 function loadClientsList() {
     const container = document.getElementById('clientsList');
     if (!container) return;
 
-    // Afficher chargement
     container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">🔄 Chargement...</div>';
 
-    // Détacher l'ancien listener si existant pour éviter les doublons
     if (window.clientsListRef) {
         db.ref('tfc_clients').off('value', window.clientsListRef);
     }
 
-    // Créer la fonction de callback
     const callback = (snapshot) => {
         const clients = [];
         snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
@@ -1969,19 +2035,21 @@ function loadClientsList() {
                             📧 ${esc(client.email)} | 📞 ${esc(client.phone || 'Non renseigné')}
                         </p>
                     </div>
-                    <button class="btn-auth" style="width:auto;padding:8px 20px;" 
-                            onclick="openClientWorkspace('${client.id}')">
-                        <i class="fa-solid fa-folder-open"></i> Ouvrir
-                    </button>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')">
+                            <i class="fa-solid fa-folder-open"></i> Ouvrir
+                        </button>
+                        <button class="btn-auth share-work-btn" style="width:auto;padding:8px 20px;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')">
+                            <i class="fa-solid fa-share-alt"></i> Partager
+                        </button>
+                    </div>
                 </div>
             </div>
         `).join('');
         
-        // Log pour déboguer
         console.log(`✅ ${clients.length} client(s) chargé(s)`);
     };
     
-    // Stocker la référence et attacher le listener
     window.clientsListRef = callback;
     db.ref('tfc_clients').on('value', callback);
 }
@@ -1992,9 +2060,9 @@ function switchToTFC() {
         return;
     }
     
-    // Cacher les vues apprenants
     document.getElementById('adminTfcPanel').style.display = 'block';
     document.querySelector('.layout').style.display = 'none';
+    document.getElementById('tfcFullManagement').style.display = 'none';
     
     const views = ['view-feed', 'view-profile', 'view-projets', 'view-semaines'];
     views.forEach(id => {
@@ -2004,7 +2072,6 @@ function switchToTFC() {
     
     toast('📋 Mode Gestion des TFC');
     
-    // Forcer le rechargement de la liste des clients
     if (window.clientsListRef) {
         db.ref('tfc_clients').off('value', window.clientsListRef);
         window.clientsListRef = null;
@@ -2027,7 +2094,6 @@ async function createTfcClient() {
         return;
     }
     
-    // Vérifier si l'email existe déjà
     const existingClients = await db.ref('tfc_clients').orderByChild('email').equalTo(email).once('value');
     if (existingClients.exists()) {
         toast('❌ Cet email est déjà utilisé par un autre client');
@@ -2055,20 +2121,19 @@ async function createTfcClient() {
     await db.ref(`tfc_access_codes/${accessCode}`).set({ 
         clientId, 
         createdAt: Date.now(),
-        email: email
+        email: email,
+        name: name
     });
     
     toast(`✅ Client créé ! Code d'accès: ${accessCode}`);
     closeAddClientModal();
     
-    // Vider le formulaire
     document.getElementById('newClientName').value = '';
     document.getElementById('newClientUniv').value = '';
     document.getElementById('newClientTopic').value = '';
     document.getElementById('newClientEmail').value = '';
     document.getElementById('newClientPhone').value = '';
     
-    // La liste se met à jour automatiquement grâce au listener !
     console.log(`📝 Nouveau client créé: ${name} - Code: ${accessCode}`);
 }
 
@@ -2081,6 +2146,7 @@ async function openClientWorkspace(clientId) {
     document.getElementById('adminClientTopic').innerHTML = `📝 ${esc(client.tfc_topic)}`;
     document.getElementById('adminClientView').style.display = 'block';
     document.getElementById('adminTfcPanel').style.display = 'none';
+    document.getElementById('tfcFullManagement').style.display = 'none';
     loadAdminDocuments(clientId);
     loadAdminChat(clientId);
 }
@@ -2177,6 +2243,309 @@ function sendTfcMessageAdmin() {
         text, timestamp: Date.now()
     });
     input.value = '';
+}
+
+// ==================== PARTAGE DE TRAVAIL À UN CLIENT ====================
+function openShareWorkModal(clientId, clientName) {
+    currentShareClientId = clientId;
+    currentShareClientName = clientName;
+    shareWorkFile = null;
+    
+    document.getElementById('shareWorkClientInfo').innerHTML = `
+        <strong><i class="fa-solid fa-user"></i> Client :</strong> ${esc(clientName)}<br>
+        <small>Vous allez partager un travail avec ce client. Il recevra une notification.</small>
+    `;
+    document.getElementById('shareWorkTitle').value = '';
+    document.getElementById('shareWorkDescription').value = '';
+    document.getElementById('shareWorkLink').value = '';
+    document.getElementById('shareWorkFileName').innerHTML = '';
+    document.getElementById('shareWorkFile').value = '';
+    document.getElementById('shareWorkModal').classList.add('active');
+}
+
+function closeShareWorkModal() {
+    document.getElementById('shareWorkModal').classList.remove('active');
+    shareWorkFile = null;
+}
+
+// Prévisualisation du fichier à partager
+document.getElementById('shareWorkFile')?.addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+        shareWorkFile = e.target.files[0];
+        document.getElementById('shareWorkFileName').innerHTML = `<i class="fa-solid fa-paperclip"></i> ${shareWorkFile.name} (${(shareWorkFile.size / 1024).toFixed(1)} KB)`;
+    } else {
+        shareWorkFile = null;
+        document.getElementById('shareWorkFileName').innerHTML = '';
+    }
+});
+
+async function submitSharedWork() {
+    const title = document.getElementById('shareWorkTitle').value.trim();
+    const description = document.getElementById('shareWorkDescription').value.trim();
+    const link = document.getElementById('shareWorkLink').value.trim();
+    
+    if (!title && !description && !shareWorkFile && !link) {
+        toast('❌ Veuillez ajouter au moins un titre, une description, un fichier ou un lien');
+        return;
+    }
+    
+    toast('📤 Envoi du travail en cours...', false);
+    
+    const workData = {
+        id: Date.now().toString(),
+        title: title || 'Travail partagé',
+        description: description || '',
+        link: link || null,
+        sharedBy: currentProfile.fullName || currentUser.email.split('@')[0],
+        sharedByEmail: currentUser.email,
+        sharedAt: Date.now(),
+        read: false
+    };
+    
+    try {
+        // Upload du fichier si présent
+        if (shareWorkFile) {
+            if (shareWorkFile.size > 20 * 1024 * 1024) {
+                toast('❌ Fichier trop volumineux (max 20MB)');
+                return;
+            }
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`tfc_clients/${currentShareClientId}/shared_works/${Date.now()}_${shareWorkFile.name}`);
+            await fileRef.put(shareWorkFile);
+            workData.fileUrl = await fileRef.getDownloadURL();
+            workData.fileName = shareWorkFile.name;
+        }
+        
+        // Sauvegarder dans Firebase
+        await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
+        
+        // Ajouter une notification pour le client
+        await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({
+            type: 'shared_work',
+            message: `📁 Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`,
+            workId: workData.id,
+            timestamp: Date.now(),
+            read: false
+        });
+        
+        toast(`✅ Travail partagé avec succès à ${currentShareClientName} !`);
+        closeShareWorkModal();
+        
+        // Recharger la liste pour mettre à jour
+        if (window.clientsListRef) {
+            db.ref('tfc_clients').once('value', window.clientsListRef);
+        }
+    } catch (error) {
+        console.error(error);
+        toast('❌ Erreur: ' + error.message);
+    }
+}
+
+// ==================== VUE COMPLÈTE TFC ====================
+function openTfcFullManagement() {
+    console.log("📋 Ouverture vue complète");
+    document.getElementById('adminTfcPanel').style.display = 'none';
+    document.getElementById('tfcFullManagement').style.display = 'block';
+    document.querySelector('.layout').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('tfcClientView').style.display = 'none';
+    document.getElementById('adminClientView').style.display = 'none';
+    loadAllClientsWithWorks();
+}
+
+function closeTfcFullManagement() {
+    document.getElementById('tfcFullManagement').style.display = 'none';
+    document.getElementById('adminTfcPanel').style.display = 'block';
+    document.querySelector('.layout').style.display = 'grid';
+    document.getElementById('app').style.display = 'block';
+}
+
+async function loadAllClientsWithWorks() {
+    const container = document.getElementById('tfcFullClientsList');
+    if (!container) return;
+    
+    container.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
+    
+    try {
+        const clientsSnapshot = await db.ref('tfc_clients').once('value');
+        const clients = [];
+        clientsSnapshot.forEach(child => {
+            clients.push({ id: child.key, ...child.val() });
+        });
+        
+        document.getElementById('totalClientsCount').textContent = clients.length;
+        
+        if (clients.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fa-regular fa-user"></i><p>Aucun client. Cliquez sur "Nouveau client"</p></div>';
+            return;
+        }
+        
+        let totalDocs = 0;
+        let totalPosts = 0;
+        const clientsHtml = [];
+        
+        for (const client of clients) {
+            // Charger les documents
+            const docsSnapshot = await db.ref(`tfc_clients/${client.id}/documents`).once('value');
+            const documents = [];
+            docsSnapshot.forEach(child => {
+                documents.push({ id: child.key, ...child.val() });
+                totalDocs++;
+            });
+            documents.sort((a,b) => (b.uploadedAt||0) - (a.uploadedAt||0));
+            
+            // Charger les publications
+            const postsSnapshot = await db.ref('tfc_posts').orderByChild('authorId').equalTo(client.id).once('value');
+            const posts = [];
+            postsSnapshot.forEach(child => {
+                posts.push({ id: child.key, ...child.val() });
+                totalPosts++;
+            });
+            posts.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+            
+            // Charger les travaux partagés
+            const worksSnapshot = await db.ref(`tfc_clients/${client.id}/shared_works`).once('value');
+            const sharedWorks = [];
+            worksSnapshot.forEach(child => {
+                sharedWorks.push({ id: child.key, ...child.val() });
+            });
+            sharedWorks.sort((a,b) => (b.sharedAt||0) - (a.sharedAt||0));
+            
+            clientsHtml.push(`
+                <div class="client-workspace-card" style="border:2px solid var(--border);border-radius:16px;margin-bottom:24px;background:var(--card);overflow:hidden;">
+                    <div style="background:linear-gradient(135deg,var(--blue),var(--green));padding:20px;color:white;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+                            <div>
+                                <h2 style="margin-bottom:8px;">👤 ${esc(client.name)}</h2>
+                                <p>🏛️ ${esc(client.university||'Non renseigné')}</p>
+                                <p style="font-size:0.85rem;margin-top:8px;"><strong>📖 Sujet:</strong> ${esc(client.tfc_topic||'Non défini')}</p>
+                                <div style="display:flex;gap:12px;margin-top:10px;font-size:0.8rem;">
+                                    <span><i class="fa-regular fa-envelope"></i> ${esc(client.email)}</span>
+                                    ${client.phone?`<span><i class="fa-solid fa-phone"></i> ${esc(client.phone)}</span>`:''}
+                                    <span><i class="fa-solid fa-key"></i> Code: ${esc(client.accessCode)}</span>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:8px;">
+                                <button class="btn-auth" style="background:white;color:var(--blue);width:auto;" onclick="openClientWorkspace('${client.id}')">
+                                    <i class="fa-solid fa-folder-open"></i> Gérer
+                                </button>
+                                <button class="btn-auth share-work-btn" style="background:white;color:#2196F3;width:auto;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')">
+                                    <i class="fa-solid fa-share-alt"></i> Partager
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:16px;">
+                        <div style="display:flex;gap:8px;border-bottom:2px solid var(--border);margin-bottom:16px;">
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','docs')" id="tab-docs-${client.id}" style="border-radius:8px 8px 0 0;">📄 Documents (${documents.length})</button>
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','posts')" id="tab-posts-${client.id}" style="border-radius:8px 8px 0 0;">📝 Publications (${posts.length})</button>
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','works')" id="tab-works-${client.id}" style="border-radius:8px 8px 0 0;">📁 Travaux partagés (${sharedWorks.length})</button>
+                        </div>
+                        <div id="client-docs-${client.id}" class="client-tab-content" style="display:block;">
+                            ${documents.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun document déposé</div>':`
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    ${documents.map(doc => `
+                                        <div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;">
+                                            <div style="flex:1;">
+                                                <div class="doc-name"><i class="fa-solid fa-file"></i> ${esc(doc.name)}</div>
+                                                <div class="doc-meta">Déposé le ${new Date(doc.uploadedAt).toLocaleString()}</div>
+                                                <span class="doc-status ${doc.status==='valide'?'status-valide':doc.status==='correction'?'status-correction':'status-attente'}">
+                                                    ${doc.status==='valide'?'✅ Validé':doc.status==='correction'?'🔧 À corriger':'⏳ En attente'}
+                                                </span>
+                                                ${doc.feedback?`<div class="feedback-box" style="margin-top:8px;"><strong>Retour:</strong><br>${esc(doc.feedback)}</div>`:''}
+                                            </div>
+                                            <div><a href="${doc.url}" target="_blank" class="file-dl"><i class="fa-solid fa-download"></i></a></div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                        <div id="client-posts-${client.id}" class="client-tab-content" style="display:none;">
+                            ${posts.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucune publication</div>':`
+                                <div style="display:flex;flex-direction:column;gap:16px;">
+                                    ${posts.map(post => `
+                                        <div class="post-card" style="margin:0;">
+                                            <div class="post-header">
+                                                <div class="user-av">${client.avatar?`<img src="${client.avatar}">`:'<i class="fa-solid fa-user-graduate"></i>'}</div>
+                                                <div><div style="font-weight:700">${esc(post.authorName)}</div><div style="font-size:0.7rem;">${new Date(post.timestamp).toLocaleString()}</div></div>
+                                            </div>
+                                            <div class="post-content">
+                                                <div>${esc(post.content)}</div>
+                                                ${post.mediaUrl?`<img src="${post.mediaUrl}" style="max-width:100%;margin-top:10px;border-radius:12px;">`:''}
+                                                ${post.fileUrl?`<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:10px">📥 ${post.fileName}</a>`:''}
+                                                ${post.linkUrl?`<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:10px">🔗 Voir le lien</a>`:''}
+                                            </div>
+                                            <div class="post-footer">
+                                                <span class="post-action"><i class="fa-regular fa-heart"></i> ${post.likes||0}</span>
+                                                <span class="post-action"><i class="fa-regular fa-comment"></i> ${post.commentsCount||0}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                        <div id="client-works-${client.id}" class="client-tab-content" style="display:none;">
+                            ${sharedWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail partagé</div>':`
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    ${sharedWorks.map(work => `
+                                        <div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--blue-pale);">
+                                            <div style="flex:1;">
+                                                <div class="doc-name"><i class="fa-solid fa-share-alt"></i> ${esc(work.title)}</div>
+                                                <div class="doc-meta">Partagé par ${esc(work.sharedBy)} le ${new Date(work.sharedAt).toLocaleString()}</div>
+                                                ${work.description?`<p style="margin-top:8px;font-size:0.8rem;">${esc(work.description)}</p>`:''}
+                                                ${work.link?`<div style="margin-top:8px;"><a href="${work.link}" target="_blank" class="file-dl"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a></div>`:''}
+                                            </div>
+                                            ${work.fileUrl?`<div><a href="${work.fileUrl}" target="_blank" class="file-dl"><i class="fa-solid fa-download"></i> ${work.fileName}</a></div>`:''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        document.getElementById('totalDocsCount').textContent = totalDocs;
+        document.getElementById('totalPostsCount').textContent = totalPosts;
+        container.innerHTML = clientsHtml.join('');
+        console.log(`✅ Chargé: ${clients.length} clients, ${totalDocs} docs, ${totalPosts} posts`);
+    } catch(error) {
+        console.error(error);
+        container.innerHTML = `<div class="empty-state">Erreur: ${error.message}</div>`;
+    }
+}
+
+function toggleClientTab(clientId, tab) {
+    const docsDiv = document.getElementById(`client-docs-${clientId}`);
+    const postsDiv = document.getElementById(`client-posts-${clientId}`);
+    const worksDiv = document.getElementById(`client-works-${clientId}`);
+    const docsBtn = document.getElementById(`tab-docs-${clientId}`);
+    const postsBtn = document.getElementById(`tab-posts-${clientId}`);
+    const worksBtn = document.getElementById(`tab-works-${clientId}`);
+    
+    if (tab === 'docs') {
+        if(docsDiv) docsDiv.style.display = 'block';
+        if(postsDiv) postsDiv.style.display = 'none';
+        if(worksDiv) worksDiv.style.display = 'none';
+        if(docsBtn) docsBtn.classList.add('active');
+        if(postsBtn) postsBtn.classList.remove('active');
+        if(worksBtn) worksBtn.classList.remove('active');
+    } else if (tab === 'posts') {
+        if(docsDiv) docsDiv.style.display = 'none';
+        if(postsDiv) postsDiv.style.display = 'block';
+        if(worksDiv) worksDiv.style.display = 'none';
+        if(docsBtn) docsBtn.classList.remove('active');
+        if(postsBtn) postsBtn.classList.add('active');
+        if(worksBtn) worksBtn.classList.remove('active');
+    } else {
+        if(docsDiv) docsDiv.style.display = 'none';
+        if(postsDiv) postsDiv.style.display = 'none';
+        if(worksDiv) worksDiv.style.display = 'block';
+        if(docsBtn) docsBtn.classList.remove('active');
+        if(postsBtn) postsBtn.classList.remove('active');
+        if(worksBtn) worksBtn.classList.add('active');
+    }
 }
 
 // Ajout onglet client login
