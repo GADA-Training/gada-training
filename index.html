@@ -16,6 +16,22 @@
             --radius: 16px; --shadow: 0 2px 12px rgba(0,0,0,0.07);
             --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
         }
+
+        /* Mode sombre */
+        [data-theme="dark"] {
+            --green: #4c9f5e; --green-l: #6bb87b; --green-pale: #1a3a1a;
+            --blue: #3a7ca8; --blue-l: #5a9cc8; --blue-pale: #1a2a3a;
+            --earth: #8a6a5b; --bg: #1a1a1a; --card: #2d2d2d;
+            --border: #404040; --text: #e0e0e0; --muted: #a0a0a0;
+            --shadow: 0 2px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        /* Animation de transition */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
@@ -310,6 +326,100 @@
         .stat-card:hover { transform: translateY(-3px); }
         .share-work-btn { background: linear-gradient(135deg, #2196F3, #1976D2) !important; margin-left: 8px; }
         .share-work-btn:hover { opacity: 0.9; }
+
+        /* Mode sombre - ajustements supplémentaires */
+        [data-theme="dark"] .topbar {
+            background: var(--card);
+            border-bottom-color: var(--border);
+        }
+
+        [data-theme="dark"] .compose-input {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .chat-msgs {
+            background: #252525;
+        }
+
+        [data-theme="dark"] .chat-msg.them .chat-bubble {
+            background: #3a3a3a;
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .chat-input-row,
+        [data-theme="dark"] .compose-modal,
+        [data-theme="dark"] .modal-box {
+            background: var(--card);
+        }
+
+        [data-theme="dark"] .chat-input-row input,
+        [data-theme="dark"] .compose-modal input,
+        [data-theme="dark"] .compose-modal textarea,
+        [data-theme="dark"] .modal-box input,
+        [data-theme="dark"] .modal-box textarea {
+            background: var(--bg);
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .auth-box {
+            background: var(--card);
+        }
+
+        [data-theme="dark"] .auth-tab-btn.active {
+            background: var(--card);
+        }
+
+        [data-theme="dark"] .file-drop-area {
+            background: var(--bg);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .file-drop-area:hover {
+            background: var(--green-pale);
+        }
+
+        [data-theme="dark"] .post-card {
+            background: var(--card);
+        }
+
+        [data-theme="dark"] .post-link {
+            background: var(--bg);
+        }
+
+        [data-theme="dark"] .detail-item {
+            background: var(--bg);
+        }
+
+        [data-theme="dark"] .member-item:hover {
+            background: var(--bg);
+        }
+
+        [data-theme="dark"] .ia-panel {
+            background: linear-gradient(150deg, #1a2a1a 0%, #1a2a3a 100%);
+        }
+
+        [data-theme="dark"] .ia-bubble {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .theme-toggle-btn {
+            background: var(--bg) !important;
+            color: var(--text) !important;
+            border: 1.5px solid var(--border) !important;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--green) !important;
+            color: var(--green) !important;
+            background: var(--green-pale) !important;
+        }
+
+        [data-theme="dark"] .theme-toggle-btn {
+            background: var(--bg) !important;
+        }
     </style>
 </head>
 <body>
@@ -366,6 +476,9 @@
             <div class="user-av" id="topAvatar"><i class="fa-solid fa-user"></i></div>
             <span id="topName">…</span>
         </div>
+        <button class="btn-quit theme-toggle-btn" onclick="toggleTheme()" style="margin-right: 10px;">
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
         <button class="btn-quit" onclick="switchToTFC()" style="background:linear-gradient(135deg,var(--green),var(--blue));color:white;margin-right:10px;">
             <i class="fa-solid fa-users"></i> Clients TFC
         </button>
@@ -531,6 +644,9 @@
             <div class="user-av" id="tfcClientAvatar"><i class="fa-solid fa-user"></i></div>
             <span id="tfcClientTopName">...</span>
         </div>
+        <button class="btn-quit theme-toggle-btn" onclick="toggleTheme()" style="margin-right:10px;">
+            <i class="fa-solid fa-moon" id="themeIcon2"></i>
+        </button>
         <button class="btn-quit" onclick="editTfcClientProfile()" style="margin-right:10px;">
             <i class="fa-solid fa-user-pen"></i> Profil
         </button>
@@ -784,6 +900,9 @@
         <span class="topbar-logo"><span>📋 Gestion Complète des TFC</span></span>
         <div class="topbar-spacer"></div>
         <div class="topbar-user"><div class="user-av" id="adminTfcAvatar"><i class="fa-solid fa-user-tie"></i></div><span id="adminTfcName">Administrateur</span></div>
+        <button class="btn-quit theme-toggle-btn" onclick="toggleTheme()" style="margin-right:10px;">
+            <i class="fa-solid fa-moon" id="themeIcon3"></i>
+        </button>
         <button class="btn-quit" onclick="closeTfcFullManagement()"><i class="fa-solid fa-arrow-left"></i> Retour</button>
     </div>
     <div style="max-width: 1400px; margin: 20px auto; padding: 0 20px;">
@@ -1001,6 +1120,45 @@ function downloadDoc(url, fileName) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+// ==================== GESTION DU THÈME (MODE SOMBRE/CLAIR) ====================
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3');
+        themeIcons.forEach(icon => {
+            if (icon) icon.className = 'fa-solid fa-sun';
+        });
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3');
+        themeIcons.forEach(icon => {
+            if (icon) icon.className = 'fa-solid fa-moon';
+        });
+    }
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3');
+    
+    if (currentTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeIcons.forEach(icon => {
+            if (icon) icon.className = 'fa-solid fa-moon';
+        });
+        if (typeof toast === 'function') toast('☀️ Mode clair activé');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeIcons.forEach(icon => {
+            if (icon) icon.className = 'fa-solid fa-sun';
+        });
+        if (typeof toast === 'function') toast('🌙 Mode sombre activé');
+    }
 }
 
 // ==================== AUTHENTIFICATION ====================
@@ -2576,6 +2734,7 @@ function addClientLoginTab() {
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     addClientLoginTab();
     const savedClientId = sessionStorage.getItem('tfc_client_id');
     if (savedClientId && !currentUser) {
