@@ -280,14 +280,12 @@
         
         /* ==================== STYLES TFC PROFESSIONNELS ==================== */
         
-        /* Conteneur principal TFC */
         .tfc-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 24px;
         }
         
-        /* Cartes TFC */
         .tfc-card {
             background: var(--card);
             border-radius: 20px;
@@ -301,7 +299,6 @@
             box-shadow: var(--shadow-md);
         }
         
-        /* En-tête de carte TFC */
         .tfc-card-header {
             padding: 20px 24px;
             border-bottom: 1px solid var(--border);
@@ -323,7 +320,6 @@
             font-size: 1.2rem;
         }
         
-        /* Navigation TFC professionnelle */
         .tfc-nav-tabs {
             display: flex;
             gap: 8px;
@@ -367,7 +363,6 @@
             color: var(--green);
         }
         
-        /* Document item professionnel */
         .tfc-doc-item {
             display: flex;
             align-items: center;
@@ -438,25 +433,11 @@
             font-weight: 600;
         }
         
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-approved { background: #dcfce7; color: #166534; }
+        .status-revision { background: #fee2e2; color: #dc2626; }
         
-        .status-approved {
-            background: #dcfce7;
-            color: #166534;
-        }
-        
-        .status-revision {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-        
-        .tfc-doc-actions {
-            display: flex;
-            gap: 8px;
-        }
+        .tfc-doc-actions { display: flex; gap: 8px; }
         
         .tfc-btn-icon {
             width: 34px;
@@ -478,7 +459,6 @@
             color: white;
         }
         
-        /* Zone de dépôt de documents */
         .tfc-dropzone {
             border: 2px dashed var(--border);
             border-radius: 16px;
@@ -511,7 +491,6 @@
             margin-top: 8px;
         }
         
-        /* Chat TFC */
         .tfc-chat-panel {
             background: var(--card);
             border-radius: 20px;
@@ -553,17 +532,9 @@
             background: var(--bg);
         }
         
-        .tfc-chat-message {
-            max-width: 85%;
-        }
-        
-        .tfc-chat-message.client {
-            align-self: flex-end;
-        }
-        
-        .tfc-chat-message.supervisor {
-            align-self: flex-start;
-        }
+        .tfc-chat-message { max-width: 85%; }
+        .tfc-chat-message.client { align-self: flex-end; }
+        .tfc-chat-message.supervisor { align-self: flex-start; }
         
         .tfc-chat-bubble {
             padding: 10px 14px;
@@ -611,10 +582,7 @@
             color: var(--text);
         }
         
-        .tfc-chat-input input:focus {
-            outline: none;
-            border-color: var(--green);
-        }
+        .tfc-chat-input input:focus { outline: none; border-color: var(--green); }
         
         .tfc-chat-input button {
             width: 40px;
@@ -627,11 +595,8 @@
             transition: transform 0.2s;
         }
         
-        .tfc-chat-input button:hover {
-            transform: scale(1.05);
-        }
+        .tfc-chat-input button:hover { transform: scale(1.05); }
         
-        /* Widget IA TFC */
         .tfc-ia-widget {
             background: linear-gradient(150deg, #0f2617 0%, #1a3a4e 100%);
             border-radius: 20px;
@@ -659,7 +624,6 @@
             padding: 16px;
         }
         
-        /* Feed TFC */
         .tfc-feed-post {
             background: var(--card);
             border-radius: 20px;
@@ -669,9 +633,7 @@
             transition: all 0.3s ease;
         }
         
-        .tfc-feed-post:hover {
-            box-shadow: var(--shadow-md);
-        }
+        .tfc-feed-post:hover { box-shadow: var(--shadow-md); }
         
         .tfc-post-header {
             display: flex;
@@ -700,25 +662,10 @@
             object-fit: cover;
         }
         
-        .tfc-post-author {
-            flex: 1;
-        }
-        
-        .tfc-post-name {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text);
-        }
-        
-        .tfc-post-univ {
-            font-size: 0.7rem;
-            color: var(--muted);
-        }
-        
-        .tfc-post-date {
-            font-size: 0.65rem;
-            color: var(--muted);
-        }
+        .tfc-post-author { flex: 1; }
+        .tfc-post-name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+        .tfc-post-univ { font-size: 0.7rem; color: var(--muted); }
+        .tfc-post-date { font-size: 0.65rem; color: var(--muted); }
         
         .tfc-post-content {
             padding: 16px 20px;
@@ -769,22 +716,10 @@
             color: var(--green);
         }
         
-        /* Mode sombre TFC */
-        [data-theme="dark"] .tfc-dropzone {
-            background: var(--bg);
-        }
-        
-        [data-theme="dark"] .tfc-chat-messages {
-            background: var(--bg);
-        }
-        
-        [data-theme="dark"] .tfc-chat-message.supervisor .tfc-chat-bubble {
-            background: var(--card);
-        }
-        
-        [data-theme="dark"] .tfc-ia-widget {
-            background: linear-gradient(150deg, #1a2a1a 0%, #1a2a3a 100%);
-        }
+        [data-theme="dark"] .tfc-dropzone { background: var(--bg); }
+        [data-theme="dark"] .tfc-chat-messages { background: var(--bg); }
+        [data-theme="dark"] .tfc-chat-message.supervisor .tfc-chat-bubble { background: var(--card); }
+        [data-theme="dark"] .tfc-ia-widget { background: linear-gradient(150deg, #1a2a1a 0%, #1a2a3a 100%); }
 
         .theme-toggle-btn {
             background: var(--bg) !important;
@@ -798,9 +733,7 @@
             background: var(--green-pale) !important;
         }
 
-        [data-theme="dark"] .theme-toggle-btn {
-            background: var(--bg) !important;
-        }
+        [data-theme="dark"] .theme-toggle-btn { background: var(--bg) !important; }
     </style>
 </head>
 <body>
@@ -924,8 +857,12 @@
                 <div class="profile-card-big">
                     <div class="profile-top">
                         <div class="profile-av-wrap">
-                            <div class="profile-av-big" id="profileAvBig"><i class="fa-solid fa-user"></i></div>
-                            <button class="cam-btn" onclick="document.getElementById('avatarFile').click()"><i class="fa-solid fa-camera"></i></button>
+                            <div class="profile-av-big" id="profileAvBig">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <button class="cam-btn" onclick="document.getElementById('avatarFile').click()">
+                                <i class="fa-solid fa-camera"></i>
+                            </button>
                             <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
                         </div>
                         <div class="profile-info-main">
@@ -1017,9 +954,7 @@
 <!-- Interface Client TFC avec design professionnel -->
 <div id="tfcClientView" style="display: none;">
     <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
-        <span class="topbar-logo">
-            <span>GADA TFC</span>
-        </span>
+        <span class="topbar-logo"><span>GADA TFC</span></span>
         <div class="topbar-spacer"></div>
         <div class="topbar-user">
             <div class="user-av" id="tfcClientAvatar"><i class="fa-solid fa-user"></i></div>
@@ -1037,7 +972,6 @@
     </div>
     
     <div class="tfc-container">
-        <!-- Navigation Tabs -->
         <div class="tfc-nav-tabs">
             <button class="tfc-tab-btn active" onclick="showTfcSection('documents')">
                 <i class="fa-regular fa-folder"></i> Mes documents
@@ -1046,11 +980,9 @@
                 <i class="fa-regular fa-newspaper"></i> Fil d'actualité
             </button>
             <button class="tfc-tab-btn" onclick="showTfcSection('ressources')">
-                <i class="fa-solid fa-graduation-cap"></i> Ressources
-            </button>
+                <i class="fa-solid fa-graduation-cap"></i> Ressources            </button>
         </div>
 
-        <!-- Section Documents -->
         <div id="tfcDocumentsSection" class="tfc-section active">
             <div style="display: grid; grid-template-columns: 1fr 340px; gap: 24px;">
                 <div>
@@ -1128,7 +1060,6 @@
             </div>
         </div>
 
-        <!-- Section Fil d'actualité -->
         <div id="tfcFeedSection" class="tfc-section">
             <div class="compose-box" style="margin-bottom: 24px;">
                 <div class="compose-top">
@@ -1145,7 +1076,6 @@
             <div id="tfcPostsFeed" class="tfc-feed-list"></div>
         </div>
 
-        <!-- Section Ressources -->
         <div id="tfcRessourcesSection" class="tfc-section">
             <div class="tfc-card">
                 <div class="tfc-card-header">
@@ -1690,17 +1620,67 @@ function loadProfile(){
 }
 
 function updateProfileUI(){
-    const name=currentProfile.fullName||currentUser.email.split('@')[0];
-    const isAdmin=currentUser.email===ADMIN_EMAIL;
-    document.getElementById('topName').textContent=name+(isAdmin?' (Formateur)':'');
-    ['topAvatar','composeAv'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=currentProfile.avatar?`<img src="${currentProfile.avatar}" style="width:100%;height:100%;object-fit:cover">`:'<i class="fa-solid fa-user"></i>'; });
-    if(document.getElementById('profileName')) document.getElementById('profileName').textContent=name;
-    if(document.getElementById('profileTitle')) document.getElementById('profileTitle').textContent=currentProfile.title||'Apprenant GADA';
-    if(document.getElementById('profileBio')) document.getElementById('profileBio').textContent=currentProfile.bio||'';
-    if(document.getElementById('dEmail')) document.getElementById('dEmail').textContent=currentProfile.email||'—';
-    if(document.getElementById('dPays')) document.getElementById('dPays').textContent=currentProfile.pays||'—';
-    if(document.getElementById('dPhone')) document.getElementById('dPhone').textContent=currentProfile.phone||'—';
-    if(document.getElementById('dDate')) document.getElementById('dDate').textContent=currentProfile.createdAt?new Date(currentProfile.createdAt).toLocaleDateString('fr-FR'):'—';
+    const name = currentProfile.fullName || currentUser.email.split('@')[0];
+    const isAdmin = currentUser.email === ADMIN_EMAIL;
+    const avatarUrl = currentProfile.avatar;
+    
+    document.getElementById('topName').textContent = name + (isAdmin ? ' (Formateur)' : '');
+    
+    ['topAvatar', 'composeAv'].forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el) {
+            if(avatarUrl) {
+                el.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextSibling.style.display='flex';this.parentElement.style.background='linear-gradient(135deg,var(--green),var(--blue))'">`;
+                const img = el.querySelector('img');
+                if(img) {
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                        const fallback = document.createElement('i');
+                        fallback.className = 'fa-solid fa-user';
+                        this.parentElement.appendChild(fallback);
+                        this.parentElement.style.background = 'linear-gradient(135deg,var(--green),var(--blue))';
+                    };
+                }
+            } else {
+                el.innerHTML = '<i class="fa-solid fa-user"></i>';
+                el.style.background = 'linear-gradient(135deg,var(--green),var(--blue))';
+            }
+        }
+    });
+    
+    const profileAvBig = document.getElementById('profileAvBig');
+    if(profileAvBig) {
+        if(avatarUrl) {
+            profileAvBig.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`;
+            const img = profileAvBig.querySelector('img');
+            if(img) {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const fallback = document.createElement('i');
+                    fallback.className = 'fa-solid fa-user';
+                    this.parentElement.appendChild(fallback);
+                };
+            }
+        } else {
+            profileAvBig.innerHTML = '<i class="fa-solid fa-user"></i>';
+        }
+    }
+    
+    if(document.getElementById('profileName')) document.getElementById('profileName').textContent = name;
+    if(document.getElementById('profileTitle')) document.getElementById('profileTitle').textContent = currentProfile.title || 'Apprenant GADA';
+    if(document.getElementById('profileBio')) document.getElementById('profileBio').textContent = currentProfile.bio || '';
+    if(document.getElementById('dEmail')) document.getElementById('dEmail').textContent = currentProfile.email || '—';
+    if(document.getElementById('dPays')) document.getElementById('dPays').textContent = currentProfile.pays || '—';
+    if(document.getElementById('dPhone')) document.getElementById('dPhone').textContent = currentProfile.phone || '—';
+    if(document.getElementById('dDate')) document.getElementById('dDate').textContent = currentProfile.createdAt ? new Date(currentProfile.createdAt).toLocaleDateString('fr-FR') : '—';
+}
+
+function updateAllPostAvatars(userId, newAvatarUrl) {
+    db.ref('user_projects').orderByChild('userId').equalTo(userId).once('value', (snap) => {
+        snap.forEach((postSnap) => {
+            postSnap.ref.update({ userAvatar: newAvatarUrl });
+        });
+    });
 }
 
 function loadMembers(){
@@ -1747,11 +1727,47 @@ function initMembersDropdown(){
 }
 
 function uploadAvatar(input){
-    if(!input.files[0])return;
-    if(input.files[0].size>2000000){toast('Image trop lourde (max 2MB)');return;}
-    const r=new FileReader();
-    r.onload=e=>{ currentProfile.avatar=e.target.result; db.ref('user_profiles/'+currentUser.uid+'/avatar').set(e.target.result); updateProfileUI(); toast('Photo mise à jour'); };
-    r.readAsDataURL(input.files[0]);
+    if(!input.files || !input.files[0]){
+        toast('Veuillez sélectionner une image');
+        return;
+    }
+    
+    const file = input.files[0];
+    
+    if(!file.type.startsWith('image/')){
+        toast('Veuillez sélectionner une image (JPG, PNG, GIF)');
+        return;
+    }
+    
+    if(file.size > 2 * 1024 * 1024){
+        toast('Image trop lourde (max 2MB)');
+        return;
+    }
+    
+    toast('Téléchargement de la photo...', 2000);
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const imageUrl = e.target.result;
+        
+        db.ref('user_profiles/' + currentUser.uid).update({
+            avatar: imageUrl
+        }).then(() => {
+            currentProfile.avatar = imageUrl;
+            updateProfileUI();
+            updateAllPostAvatars(currentUser.uid, imageUrl);
+            toast('Photo de profil mise à jour !');
+        }).catch(error => {
+            console.error(error);
+            toast('Erreur lors de la sauvegarde');
+        });
+    };
+    
+    reader.onerror = function() {
+        toast('Erreur lors de la lecture du fichier');
+    };
+    
+    reader.readAsDataURL(file);
 }
 
 function openEditModal(){
@@ -1892,6 +1908,9 @@ function buildPostHtml(post){
             </button>
             <button class="post-action" onclick="toggleComments('${post._key}')">
                 <i class="fa-regular fa-comment"></i> Commenter
+            </button>
+            <button class="post-action" onclick="openShareModal('${post._key}', '${esc(post.postTitle || post.caption || "Publication")}')">
+                <i class="fa-solid fa-share-alt"></i> Partager
             </button>
         </div>
         <div id="comments-${post._key}" style="display:none;padding:0 16px 16px;border-top:1px solid var(--border)">
@@ -2123,6 +2142,70 @@ function openLightbox(imageUrl) {
     `;
     lightbox.onclick = () => lightbox.remove();
     document.body.appendChild(lightbox);
+}
+
+function openShareModal(postId, postTitle) {
+    const postUrl = window.location.href;
+    const shareText = `📢 ${postTitle} - GADA Training\n\nRejoignez-nous sur GADA Training !`;
+    
+    const modalHtml = `
+        <div class="modal-overlay active" id="shareModalOverlay" onclick="if(event.target===this)closeShareModal()">
+            <div class="modal-box" style="max-width: 400px;">
+                <div class="modal-top">
+                    <h3><i class="fa-solid fa-share-alt"></i> Partager cette publication</h3>
+                    <button class="modal-close" onclick="closeShareModal()">×</button>
+                </div>
+                <div class="share-modal-buttons">
+                    <button class="share-btn facebook" onclick="shareOnFacebook('${postUrl}', '${esc(shareText)}')">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="share-btn linkedin" onclick="shareOnLinkedIn('${postUrl}', '${esc(postTitle)}')">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="share-btn whatsapp" onclick="shareOnWhatsApp('${postUrl}', '${esc(shareText)}')">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                    <button class="share-btn copy" onclick="copyToClipboard('${postUrl}')">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+                <p style="text-align:center; font-size:0.75rem; color:var(--muted); margin-top:16px;">
+                    Partagez cette publication sur les réseaux sociaux
+                </p>
+            </div>
+        </div>
+    `;
+    
+    const oldModal = document.getElementById('shareModalOverlay');
+    if (oldModal) oldModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeShareModal() {
+    const modal = document.getElementById('shareModalOverlay');
+    if (modal) modal.remove();
+}
+
+function shareOnFacebook(url, text) {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
+}
+
+function shareOnLinkedIn(url, title) {
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
+}
+
+function shareOnWhatsApp(url, text) {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        toast('Lien copié dans le presse-papier !');
+        closeShareModal();
+    }).catch(() => {
+        toast('Erreur lors de la copie');
+    });
 }
 
 function openCompose(mode){
@@ -2376,7 +2459,6 @@ async function initIA() {
 
 // ==================== SECTION CLIENTS TFC ====================
 
-// Upload document client
 async function uploadTfcDocumentWithStorage(fileInput) {
     if (!currentTfcClientId) return;
     const file = fileInput.files[0];
@@ -2429,7 +2511,6 @@ async function uploadTfcDocumentWithStorage(fileInput) {
     );
 }
 
-// Navigation TFC
 function showTfcSection(section) {
     document.querySelectorAll('.tfc-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tfc-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -2448,7 +2529,6 @@ function showTfcSection(section) {
     }
 }
 
-// Publications TFC
 function openTfcCompose(type = 'text') {
     currentTfcPostType = type;
     tfcPostMediaFile = null;
@@ -2646,7 +2726,6 @@ async function deleteTfcPost(postId) {
     }
 }
 
-// Chargement des documents client
 async function loadClientDocuments() {
     if (!currentTfcClientId) return;
     const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/documents`).once('value');
@@ -2682,7 +2761,6 @@ async function loadClientDocuments() {
     `).join('');
 }
 
-// Chat client
 async function loadClientChat() {
     if (!currentTfcClientId) return;
     const chatMsgs = document.getElementById('tfcChatMsgs');
@@ -2719,7 +2797,6 @@ function sendTfcMessageClient() {
     input.value = '';
 }
 
-// IA TFC
 function appendTfcIAMessage(role, text) {
     const msgsDiv = document.getElementById('tfcIaMsgs');
     if (!msgsDiv) return;
@@ -2781,7 +2858,6 @@ async function loadTfcIaHistory() {
     }
 }
 
-// Login client TFC
 async function doClientLogin() {
     const code = document.getElementById('clientAccessCode').value.trim().toUpperCase();
     const email = document.getElementById('clientEmail').value.trim().toLowerCase();
@@ -2819,7 +2895,6 @@ function logoutTfcClient() {
     switchTab('login');
 }
 
-// Profil TFC Client
 function editTfcClientProfile() {
     document.getElementById('tfcEditName').value = currentTfcClientData.name || '';
     document.getElementById('tfcEditUniv').value = currentTfcClientData.university || '';
@@ -2868,7 +2943,6 @@ async function uploadTfcAvatar(input) {
     toast('Photo de profil mise à jour');
 }
 
-// Admin TFC - Liste des clients
 function loadClientsList() {
     const container = document.getElementById('clientsList');
     if (!container) return;
@@ -3114,7 +3188,6 @@ function sendTfcMessageAdmin() {
     input.value = '';
 }
 
-// ==================== PARTAGE DE TRAVAIL À UN CLIENT ====================
 function openShareWorkModal(clientId, clientName) {
     currentShareClientId = clientId;
     currentShareClientName = clientName;
@@ -3205,7 +3278,6 @@ async function submitSharedWork() {
     }
 }
 
-// ==================== VUE COMPLÈTE TFC ====================
 function openTfcFullManagement() {
     console.log("Ouverture vue complète");
     document.getElementById('adminTfcPanel').style.display = 'none';
@@ -3409,7 +3481,6 @@ function toggleClientTab(clientId, tab) {
     }
 }
 
-// Ajout onglet client login
 function addClientLoginTab() {
     const authTabs = document.querySelector('.auth-tabs');
     if (authTabs && !document.getElementById('clientLoginTabBtn')) {
@@ -3435,7 +3506,6 @@ function addClientLoginTab() {
     }
 }
 
-// Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     addClientLoginTab();
