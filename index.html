@@ -17,7 +17,6 @@
             --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
         }
 
-        /* Mode sombre */
         [data-theme="dark"] {
             --green: #4c9f5e; --green-l: #6bb87b; --green-pale: #1a3a1a;
             --blue: #3a7ca8; --blue-l: #5a9cc8; --blue-pale: #1a2a3a;
@@ -27,15 +26,10 @@
             --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
         }
 
-        /* Animation de transition */
-        * {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
+        * { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-        /* AUTH */
         #authOverlay { position:fixed; inset:0; background:linear-gradient(135deg,#0d1f10 0%,#1a3040 100%); z-index:9999; display:flex; align-items:center; justify-content:center; }
         .auth-box { background:white; border-radius:24px; padding:40px; width:100%; max-width:440px; box-shadow:var(--shadow-md); }
         .auth-logo { text-align:center; margin-bottom:28px; }
@@ -57,7 +51,6 @@
         .forgot-link a { font-size:0.78rem; color:var(--blue); cursor:pointer; text-decoration:underline; }
         .forgot-link a:hover { color:var(--green); }
 
-        /* TOPBAR */
         .topbar { height:60px; background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; gap:16px; position:sticky; top:0; z-index:100; }
         .topbar-logo { font-family:'Sora',sans-serif; font-weight:700; font-size:1.25rem; background:linear-gradient(130deg,var(--blue),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; white-space:nowrap; }
         .topbar-logo img { height:40px; object-fit:contain; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.1)); }
@@ -68,10 +61,7 @@
         .btn-quit { display:flex; align-items:center; gap:6px; background:none; border:1.5px solid var(--border); padding:6px 14px; border-radius:40px; font-size:0.78rem; font-weight:600; cursor:pointer; color:var(--muted); transition:all 0.2s; font-family:'Plus Jakarta Sans',sans-serif; }
         .btn-quit:hover { border-color:var(--green); color:var(--green); }
 
-        /* LAYOUT */
         .layout { display:grid; grid-template-columns:280px 1fr 300px; gap:16px; max-width:1260px; margin:20px auto; padding:0 16px; align-items:start; }
-
-        /* LEFT SIDEBAR */
         .sidebar-left { display:flex; flex-direction:column; gap:12px; position:sticky; top:76px; }
         .card { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow); }
         .card-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px 10px; border-bottom:1px solid var(--border); }
@@ -94,7 +84,6 @@
         .message-btn { background:var(--green); border:none; border-radius:20px; padding:5px 10px; color:white; cursor:pointer; font-size:0.7rem; transition:transform 0.2s; }
         .message-btn:hover { transform:scale(1.05); }
 
-        /* IA Panel */
         .ia-panel { background: linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); border-radius: var(--radius); overflow: hidden; border: none; display: flex; flex-direction: column; height: 400px; }
         .ia-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
         .ia-header h4 { color:white; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; }
@@ -119,7 +108,6 @@
         .nav-link.active { background:var(--green-pale); color:var(--green); }
         .nav-link i { width:18px; text-align:center; }
 
-        /* CENTER FEED */
         .feed { display:flex; flex-direction:column; gap:14px; }
         .compose-box { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); padding:16px; box-shadow:var(--shadow); }
         .compose-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
@@ -128,7 +116,6 @@
         .compose-btn { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:40px; font-size:0.78rem; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:none; color:var(--muted); transition:all 0.18s; font-family:'Plus Jakarta Sans',sans-serif; }
         .compose-btn:hover { border-color:var(--green); color:var(--green); background:var(--green-pale); }
 
-        /* Compose modal */
         .compose-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:500; display:none; align-items:center; justify-content:center; }
         .compose-modal-overlay.active { display:flex; }
         .compose-modal { background:white; border-radius:20px; width:560px; max-width:95%; padding:24px; box-shadow:var(--shadow-md); }
@@ -144,7 +131,6 @@
         .file-drop-area p { font-size:0.82rem; color:var(--muted); }
         .btn-submit-post { width:100%; padding:12px; background:linear-gradient(95deg,var(--green),var(--blue)); color:white; border:none; border-radius:40px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; }
 
-        /* Post card */
         .post-card { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow); animation:fadeUp 0.3s ease; margin-bottom:16px; }
         @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         .post-header { display:flex; align-items:center; gap:10px; padding:14px 16px 10px; }
@@ -166,7 +152,6 @@
         .empty-state { text-align:center; padding:48px 20px; color:var(--muted); }
         .empty-state i { font-size:2.5rem; margin-bottom:12px; opacity:0.4; }
 
-        /* MEDIA CARD */
         .media-card { position: relative; border-radius: 14px; overflow: hidden; background: #0a0a0a; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); max-height: 320px; display: flex; align-items: center; justify-content: center; }
         .media-card img { width: 100%; height: 100%; object-fit: cover; max-height: 320px; display: block; transition: transform 0.3s ease; }
         .media-card:hover img { transform: scale(1.02); }
@@ -175,7 +160,6 @@
         .media-overlay-label { color: white; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); backdrop-filter: blur(6px); padding: 5px 12px; border-radius: 20px; }
         .media-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); color: white; font-size: 0.65rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
 
-        /* Lightbox */
         .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease; }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .lightbox img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
@@ -183,7 +167,6 @@
         .lightbox-close:hover { background: rgba(255,255,255,0.25); }
         .lightbox-filename { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.6); font-size: 0.75rem; font-weight: 600; background: rgba(0,0,0,0.4); padding: 5px 14px; border-radius: 20px; }
 
-        /* SEMAINES */
         .semaine-section { display:flex; flex-direction:column; gap:10px; }
         .semaine-card { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; box-shadow:var(--shadow); transition:transform 0.2s,box-shadow 0.2s; }
         .semaine-card:not(.locked):hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
@@ -215,7 +198,6 @@
         .file-dl { display:flex; align-items:center; gap:5px; background:var(--green-pale); color:var(--green); padding:5px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; text-decoration:none; transition:all 0.18s; }
         .file-dl:hover { background:var(--green); color:white; }
 
-        /* RIGHT SIDEBAR */
         .sidebar-right { position:sticky; top:76px; }
         .chat-panel { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; display:flex; flex-direction:column; height:600px; box-shadow:var(--shadow); }
         .chat-panel-header { background:linear-gradient(135deg,var(--blue),var(--green)); padding:14px 16px; }
@@ -239,7 +221,6 @@
         .chat-send-btn { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--blue)); border:none; color:white; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 0.15s; }
         .chat-send-btn:hover { transform:scale(1.08); }
 
-        /* PROFILE */
         .profile-card-big { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); padding:28px; box-shadow:var(--shadow); }
         .profile-top { display:flex; gap:24px; align-items:flex-start; margin-bottom:24px; }
         .profile-av-wrap { position:relative; }
@@ -277,8 +258,6 @@
 
         @media(max-width:1100px) { .layout { grid-template-columns:240px 1fr 280px; gap:12px; } }
         @media(max-width:860px) { .layout { grid-template-columns:1fr; } .sidebar-left,.sidebar-right { position:static; } .chat-panel { height:450px; } .ia-panel { height: 350px; } }
-        
-        /* ==================== STYLES TFC PROFESSIONNELS ==================== */
         
         .tfc-container {
             max-width: 1400px;
@@ -734,6 +713,61 @@
         }
 
         [data-theme="dark"] .theme-toggle-btn { background: var(--bg) !important; }
+        
+        /* Styles pour le panneau admin publication */
+        .admin-post-section {
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .admin-post-section .card-header {
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white;
+        }
+        
+        .admin-post-section .card-header h4 {
+            color: white;
+        }
+        
+        .admin-post-section .card-header h4 i {
+            color: white;
+        }
+        
+        .admin-publish-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 16px;
+        }
+        
+        .admin-publish-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.2s;
+        }
+        
+        .admin-publish-btn:hover {
+            border-color: var(--green);
+            background: var(--green-pale);
+            color: var(--green);
+            transform: translateY(-2px);
+        }
+        
+        .admin-publish-btn i {
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -773,6 +807,14 @@
             <div class="form-field"><label>Email</label><input type="email" id="forgotEmail" placeholder="votre@email.com" onkeypress="if(event.key==='Enter')sendResetEmail()"></div>
             <button class="btn-auth" onclick="sendResetEmail()"><i class="fa-solid fa-paper-plane"></i> Envoyer le lien</button>
             <div style="text-align:center;margin-top:12px"><a onclick="switchTab('login')" style="font-size:0.78rem;color:var(--blue);cursor:pointer;text-decoration:underline">← Retour à la connexion</a></div>
+        </div>
+        
+        <div id="clientLoginForm" style="display:none; margin-top: 20px;">
+            <div style="border-top: 1px solid var(--border); margin-top: 16px; padding-top: 16px;"></div>
+            <div class="form-field"><label>Code d'accès TFC</label><input type="text" id="clientAccessCode" placeholder="Ex: G7H3K9"></div>
+            <div class="form-field"><label>Email</label><input type="email" id="clientEmail" placeholder="votre@email.com"></div>
+            <button class="btn-auth" onclick="doClientLogin()">Accéder à mon espace TFC</button>
+            <div style="text-align:center;margin-top:12px"><a onclick="switchTab('login')" style="font-size:0.78rem;cursor:pointer;">← Retour</a></div>
         </div>
     </div>
 </div>
@@ -951,10 +993,10 @@
     </div>
 </div>
 
-<!-- Interface Client TFC avec design professionnel -->
+<!-- Interface Client TFC -->
 <div id="tfcClientView" style="display: none;">
     <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
-        <span class="topbar-logo"><span>GADA TFC</span></span>
+        <span class="topbar-logo"><span>GADA TFC - Espace Client</span></span>
         <div class="topbar-spacer"></div>
         <div class="topbar-user">
             <div class="user-av" id="tfcClientAvatar"><i class="fa-solid fa-user"></i></div>
@@ -980,7 +1022,8 @@
                 <i class="fa-regular fa-newspaper"></i> Fil d'actualité
             </button>
             <button class="tfc-tab-btn" onclick="showTfcSection('ressources')">
-                <i class="fa-solid fa-graduation-cap"></i> Ressources            </button>
+                <i class="fa-solid fa-graduation-cap"></i> Ressources
+            </button>
         </div>
 
         <div id="tfcDocumentsSection" class="tfc-section active">
@@ -1011,8 +1054,8 @@
                                    accept=".pdf,.docx,.zip,.r,.R,.xlsx,.pptx,.jpg,.jpeg,.png"
                                    onchange="uploadTfcDocumentWithStorage(this)">
                             <div id="tfcUploadProgress" style="display: none; margin-top: 16px;">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" id="tfcProgressFill"></div>
+                                <div class="progress-bar" style="background:var(--border);border-radius:10px;overflow:hidden;">
+                                    <div class="progress-fill" id="tfcProgressFill" style="width:0%;height:6px;background:var(--green);transition:width 0.3s;"></div>
                                 </div>
                                 <p id="tfcProgressText" style="font-size: 0.7rem; margin-top: 8px; color: var(--muted);"></p>
                             </div>
@@ -1048,7 +1091,7 @@
                         <div class="tfc-ia-messages" id="tfcIaMsgs">
                             <div class="ia-msg bot" style="margin-bottom: 12px;">
                                 <div class="ia-bot-av"><i class="fa-solid fa-leaf"></i></div>
-                                <div class="ia-bubble">Bonjour ! Je suis votre assistant IA spécialisé dans l'accompagnement des TFC et mémoires.</div>
+                                <div class="ia-bubble">Bonjour ! Je suis votre assistant IA spécialisé dans l'accompagnement des TFC et mémoires. Posez-moi vos questions !</div>
                             </div>
                         </div>
                         <div class="ia-input-row">
@@ -1192,11 +1235,15 @@
 
 <!-- Vue Administrateur pour un client spécifique -->
 <div id="adminClientView" style="display: none;">
-    <button class="back-btn" onclick="closeAdminClientView()">
-        <i class="fa-solid fa-arrow-left"></i> Retour à la liste des clients
-    </button>
+    <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
+        <span class="topbar-logo"><span>Gestion Client TFC</span></span>
+        <div class="topbar-spacer"></div>
+        <button class="btn-quit" onclick="closeAdminClientView()">
+            <i class="fa-solid fa-arrow-left"></i> Retour
+        </button>
+    </div>
     
-    <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
         <div class="card" style="margin-bottom: 20px;">
             <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                 <div>
@@ -1204,13 +1251,16 @@
                     <p id="adminClientUniv" style="color: var(--muted);"></p>
                     <span class="profile-badge-tag" id="adminClientTopic">...</span>
                 </div>
-                <div>
+                <div style="display: flex; gap: 10px;">
                     <label for="adminDocInput" class="btn-auth" style="display: inline-block; width: auto; padding: 10px 20px; cursor: pointer;">
                         <i class="fa-solid fa-upload"></i> Déposer un document
                     </label>
                     <input type="file" id="adminDocInput" style="display: none" 
                            accept=".pdf,.docx,.zip,.r,.R,.xlsx,.pptx,.jpg,.jpeg,.png"
                            onchange="uploadTfcDocumentAdmin(this)">
+                    <button class="btn-auth" style="width: auto; padding: 10px 20px;" onclick="openAdminTfcPost()">
+                        <i class="fa-solid fa-newspaper"></i> Publier une annonce
+                    </button>
                 </div>
             </div>
         </div>
@@ -1226,6 +1276,7 @@
                 <div class="chat-panel" style="height: 500px;">
                     <div class="chat-panel-header">
                         <h4><i class="fa-regular fa-comment-dots"></i> Discussion privée</h4>
+                        <p>Répondez aux questions du client</p>
                     </div>
                     <div class="chat-msgs" id="adminChatMsgs"></div>
                     <div class="chat-input-row">
@@ -1240,19 +1291,53 @@
 
 <!-- Panneau Admin TFC -->
 <div id="adminTfcPanel" style="display: none;">
-    <div class="card" style="margin-bottom: 16px;">
-        <div class="card-header">
-            <h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4>
-            <div style="display: flex; gap: 8px;">
-                <button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()">
-                    <i class="fa-solid fa-plus"></i> Nouveau client
+    <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
+        <span class="topbar-logo"><span>Gestion TFC - Administrateur</span></span>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-user"><div class="user-av" id="adminTfcAvatar"><i class="fa-solid fa-user-tie"></i></div><span id="adminTfcName">Administrateur</span></div>
+        <button class="btn-quit theme-toggle-btn" onclick="toggleTheme()" style="margin-right:10px;">
+            <i class="fa-solid fa-moon" id="themeIcon3"></i>
+        </button>
+        <button class="btn-quit" onclick="closeTfcFullManagement()">
+            <i class="fa-solid fa-arrow-left"></i> Retour
+        </button>
+    </div>
+    
+    <div style="max-width: 1400px; margin: 20px auto; padding: 0 20px;">
+        <div class="admin-post-section" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <h4><i class="fa-solid fa-bullhorn"></i> Publier une annonce pour tous les clients</h4>
+            </div>
+            <div class="admin-publish-buttons">
+                <button class="admin-publish-btn" onclick="openAdminGlobalPost('text')">
+                    <i class="fa-solid fa-paragraph"></i> Texte
                 </button>
-                <button class="btn-auth full-mgmt-btn" style="width: auto; padding: 6px 16px;" onclick="openTfcFullManagement()">
-                    <i class="fa-solid fa-table-list"></i> Vue complète
+                <button class="admin-publish-btn" onclick="openAdminGlobalPost('photo')">
+                    <i class="fa-regular fa-image"></i> Photo
+                </button>
+                <button class="admin-publish-btn" onclick="openAdminGlobalPost('document')">
+                    <i class="fa-regular fa-file"></i> Document
+                </button>
+                <button class="admin-publish-btn" onclick="openAdminGlobalPost('link')">
+                    <i class="fa-solid fa-link"></i> Lien
                 </button>
             </div>
         </div>
-        <div id="clientsList" style="padding: 16px;"></div>
+        
+        <div class="card" style="margin-bottom: 16px;">
+            <div class="card-header">
+                <h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()">
+                        <i class="fa-solid fa-plus"></i> Nouveau client
+                    </button>
+                    <button class="btn-auth full-mgmt-btn" style="width: auto; padding: 6px 16px;" onclick="openTfcFullManagement()">
+                        <i class="fa-solid fa-table-list"></i> Vue complète
+                    </button>
+                </div>
+            </div>
+            <div id="clientsList" style="padding: 16px;"></div>
+        </div>
     </div>
 </div>
 
@@ -1261,9 +1346,9 @@
     <div class="topbar" style="position: sticky; top: 0; z-index: 100;">
         <span class="topbar-logo"><span>Gestion Complète des TFC</span></span>
         <div class="topbar-spacer"></div>
-        <div class="topbar-user"><div class="user-av" id="adminTfcAvatar"><i class="fa-solid fa-user-tie"></i></div><span id="adminTfcName">Administrateur</span></div>
+        <div class="topbar-user"><div class="user-av" id="adminTfcAvatarFull"><i class="fa-solid fa-user-tie"></i></div><span id="adminTfcNameFull">Administrateur</span></div>
         <button class="btn-quit theme-toggle-btn" onclick="toggleTheme()" style="margin-right:10px;">
-            <i class="fa-solid fa-moon" id="themeIcon3"></i>
+            <i class="fa-solid fa-moon" id="themeIcon4"></i>
         </button>
         <button class="btn-quit" onclick="closeTfcFullManagement()"><i class="fa-solid fa-arrow-left"></i> Retour</button>
     </div>
@@ -1309,8 +1394,8 @@
         <textarea id="tfcPostContent" rows="4" placeholder="Partagez votre avancement, posez une question, ou partagez une ressource..." style="width:100%;margin-bottom:12px;padding:12px;border-radius:12px;border:2px solid var(--border);"></textarea>
         <div id="tfcPostMediaArea"></div>
         <div id="tfcPostProgress" style="display: none;">
-            <div class="progress-bar">
-                <div class="progress-fill" id="tfcPostProgressFill"></div>
+            <div class="progress-bar" style="background:var(--border);border-radius:10px;overflow:hidden;">
+                <div class="progress-fill" id="tfcPostProgressFill" style="width:0%;height:6px;background:var(--green);transition:width 0.3s;"></div>
             </div>
         </div>
         <button class="btn-submit-post" onclick="submitTfcPost()">Publier</button>
@@ -1337,6 +1422,24 @@
         </div>
         <div class="form-field"><label>Lien supplémentaire (optionnel)</label><input type="url" id="shareWorkLink" placeholder="https://..."></div>
         <button class="btn-auth" onclick="submitSharedWork()" style="margin-top:16px;">Partager le travail</button>
+    </div>
+</div>
+
+<!-- Modal publication admin pour client spécifique -->
+<div class="compose-modal-overlay" id="adminTfcPostOverlay" onclick="if(event.target===this)closeAdminTfcPost()">
+    <div class="compose-modal">
+        <div class="compose-modal-header">
+            <h3 id="adminTfcPostTitle">Publier une annonce</h3>
+            <button onclick="closeAdminTfcPost()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;">×</button>
+        </div>
+        <textarea id="adminTfcPostContent" rows="4" placeholder="Contenu de l'annonce..." style="width:100%;margin-bottom:12px;padding:12px;border-radius:12px;border:2px solid var(--border);"></textarea>
+        <div id="adminTfcPostMediaArea"></div>
+        <div id="adminTfcPostProgress" style="display: none;">
+            <div class="progress-bar" style="background:var(--border);border-radius:10px;overflow:hidden;">
+                <div class="progress-fill" id="adminTfcPostProgressFill" style="width:0%;height:6px;background:var(--green);"></div>
+            </div>
+        </div>
+        <button class="btn-submit-post" onclick="submitAdminTfcPost()">Publier</button>
     </div>
 </div>
 
@@ -1463,6 +1566,9 @@ let currentTfcClientData = null;
 let currentAdminClientId = null;
 let currentTfcPostType = 'text';
 let tfcPostMediaFile = null;
+let adminTfcPostType = 'text';
+let adminTfcPostMediaFile = null;
+let adminTfcGlobalPostTarget = null;
 
 // Variables pour le partage de travail
 let currentShareClientId = null;
@@ -1489,13 +1595,13 @@ function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3');
+        const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3, #themeIcon4');
         themeIcons.forEach(icon => {
             if (icon) icon.className = 'fa-solid fa-sun';
         });
     } else {
         document.documentElement.setAttribute('data-theme', 'light');
-        const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3');
+        const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3, #themeIcon4');
         themeIcons.forEach(icon => {
             if (icon) icon.className = 'fa-solid fa-moon';
         });
@@ -1504,7 +1610,7 @@ function initTheme() {
 
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
-    const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3');
+    const themeIcons = document.querySelectorAll('#themeIcon, #themeIcon2, #themeIcon3, #themeIcon4');
     
     if (currentTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'light');
@@ -1816,7 +1922,7 @@ function toggleSemaine(key){
     if(!isOpen){ files.classList.add('open'); if(chev)chev.classList.add('open'); }
 }
 
-// ==================== PUBLICATIONS CORRIGÉES ====================
+// ==================== PUBLICATIONS ====================
 
 function buildPostHtml(post){
     const isOwner = currentUser && post.userId === currentUser.uid;
@@ -1880,11 +1986,11 @@ function buildPostHtml(post){
                 <div style="font-size:0.7rem;color:var(--muted)">${new Date(post.timestamp).toLocaleString('fr-FR')}</div>
             </div>
             ${canModify ? `
-            <div class="post-actions-menu">
-                <button class="post-edit-btn" onclick="editPost('${post._key}')" title="Modifier">
+            <div class="post-actions-menu" style="display:flex;gap:5px;">
+                <button class="post-edit-btn" onclick="editPost('${post._key}')" title="Modifier" style="background:none;border:none;color:var(--muted);cursor:pointer;">
                     <i class="fa-solid fa-pen"></i>
                 </button>
-                <button class="post-delete-btn" onclick="deletePost('${post._key}')" title="Supprimer">
+                <button class="post-delete-btn" onclick="deletePost('${post._key}')" title="Supprimer" style="background:none;border:none;color:var(--muted);cursor:pointer;">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>` : ''}
@@ -2670,8 +2776,8 @@ async function loadTfcPosts() {
                 </div>
                 <div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}</div>
                 ${post.authorId === currentTfcClientId ? `
-                <div class="post-actions-menu">
-                    <button class="post-delete-btn" onclick="deleteTfcPost('${post.id}')"><i class="fa-solid fa-trash"></i></button>
+                <div class="post-actions-menu" style="display:flex;gap:5px;">
+                    <button class="post-delete-btn" onclick="deleteTfcPost('${post.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
                 </div>` : ''}
             </div>
             <div class="tfc-post-content">
@@ -2751,7 +2857,7 @@ async function loadClientDocuments() {
                             ${doc.status === 'valide' ? 'Validé' : doc.status === 'correction' ? 'À corriger' : 'En attente'}
                         </span>
                     </div>
-                    ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;"><strong>Retour :</strong><br>${esc(doc.feedback)}</div>` : ''}
+                    ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;"><strong>Retour :</strong><br>${esc(doc.feedback)}</div>` : ''}
                 </div>
             </div>
             <div class="tfc-doc-actions">
@@ -3109,18 +3215,18 @@ async function loadAdminDocuments(clientId) {
     if (!container) return;
     if (docsList.length === 0) { container.innerHTML = '<div style="padding:32px;text-align:center;">Aucun document</div>'; return; }
     container.innerHTML = docsList.map(doc => `
-        <div class="doc-item">
-            <div class="doc-info">
-                <div class="doc-name">${esc(doc.name)}</div>
-                <div class="doc-meta">${doc.uploadedBy === 'client' ? 'Client' : 'Vous'} - ${new Date(doc.uploadedAt).toLocaleDateString()}</div>
-                <span class="doc-status ${doc.status === 'valide' ? 'status-valide' : doc.status === 'correction' ? 'status-correction' : 'status-attente'}">
+        <div class="doc-item" style="border-bottom:1px solid var(--border);padding:12px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="flex:1;">
+                <div class="doc-name"><strong>${esc(doc.name)}</strong></div>
+                <div class="doc-meta" style="font-size:0.7rem;color:var(--muted);">${doc.uploadedBy === 'client' ? 'Client' : 'Vous'} - ${new Date(doc.uploadedAt).toLocaleDateString()}</div>
+                <span class="doc-status ${doc.status === 'valide' ? 'status-approved' : doc.status === 'correction' ? 'status-revision' : 'status-pending'}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;">
                     ${doc.status === 'valide' ? 'Validé' : doc.status === 'correction' ? 'À corriger' : 'En attente'}
                 </span>
-                ${doc.feedback ? `<div class="feedback-box"><strong>Retour:</strong><br>${esc(doc.feedback)}</div>` : ''}
+                ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;font-size:0.75rem;"><strong>Retour:</strong> ${esc(doc.feedback)}</div>` : ''}
             </div>
             <div style="display:flex;gap:8px;">
-                <a href="${doc.url}" target="_blank" class="file-dl"><i class="fa-solid fa-download"></i></a>
-                <button onclick="openFeedbackModal('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="background:var(--blue-pale);">✏️</button>
+                <a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a>
+                <button onclick="openFeedbackModal('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--blue-pale);">✏️</button>
             </div>
         </div>
     `).join('');
@@ -3186,6 +3292,143 @@ function sendTfcMessageAdmin() {
         text, timestamp: Date.now()
     });
     input.value = '';
+}
+
+// ==================== ADMIN PUBLICATION DANS TFC ====================
+
+function openAdminGlobalPost(type = 'text') {
+    if (currentUser?.email !== ADMIN_EMAIL) {
+        toast('Accès réservé au formateur');
+        return;
+    }
+    adminTfcPostType = type;
+    adminTfcPostMediaFile = null;
+    
+    const titles = { text: 'Publier une annonce pour tous les clients', photo: 'Partager une photo', document: 'Partager un document', link: 'Partager un lien' };
+    document.getElementById('adminTfcPostTitle').textContent = titles[type] || 'Publier une annonce';
+    document.getElementById('adminTfcPostContent').value = '';
+    
+    const mediaArea = document.getElementById('adminTfcPostMediaArea');
+    if (type === 'photo') {
+        mediaArea.innerHTML = `
+            <label for="adminPhotoInput" class="file-drop-area" style="cursor:pointer;display:block;">
+                <i class="fa-regular fa-image"></i>
+                <p>Cliquez pour sélectionner une photo</p>
+            </label>
+            <input type="file" id="adminPhotoInput" accept="image/*" style="display:none" onchange="previewAdminTfcMedia(this, 'photo')">
+            <div id="adminTfcMediaPreview"></div>
+        `;
+    } else if (type === 'document') {
+        mediaArea.innerHTML = `
+            <label for="adminDocInput" class="file-drop-area" style="cursor:pointer;display:block;">
+                <i class="fa-regular fa-file"></i>
+                <p>Cliquez pour sélectionner un document</p>
+            </label>
+            <input type="file" id="adminDocInput" accept=".pdf,.docx,.ppt,.xlsx,.zip" style="display:none" onchange="previewAdminTfcMedia(this, 'document')">
+            <div id="adminTfcMediaPreview"></div>
+        `;
+    } else if (type === 'link') {
+        mediaArea.innerHTML = `<input type="url" id="adminLinkInput" placeholder="https://..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:12px;">`;
+    } else {
+        mediaArea.innerHTML = '';
+    }
+    
+    document.getElementById('adminTfcPostOverlay').classList.add('active');
+}
+
+function previewAdminTfcMedia(input, type) {
+    if (input.files && input.files[0]) {
+        adminTfcPostMediaFile = input.files[0];
+        const preview = document.getElementById('adminTfcMediaPreview');
+        if (type === 'photo') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:200px;border-radius:12px;margin-top:10px;">`;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.innerHTML = `<div class="file-row" style="margin-top:10px;"><i class="fa-solid fa-file"></i> ${input.files[0].name}</div>`;
+        }
+    }
+}
+
+function closeAdminTfcPost() {
+    document.getElementById('adminTfcPostOverlay').classList.remove('active');
+    adminTfcPostMediaFile = null;
+}
+
+async function submitAdminTfcPost() {
+    const content = document.getElementById('adminTfcPostContent').value.trim();
+    if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') {
+        toast('Veuillez écrire quelque chose');
+        return;
+    }
+    
+    const postData = {
+        authorId: 'admin',
+        authorName: currentProfile.fullName || 'Formateur',
+        authorUniv: 'GADA Training',
+        authorAvatar: currentProfile.avatar || null,
+        content: content,
+        type: adminTfcPostType,
+        timestamp: Date.now(),
+        isGlobal: true,
+        likes: 0,
+        commentsCount: 0
+    };
+    
+    const progressDiv = document.getElementById('adminTfcPostProgress');
+    const progressFill = document.getElementById('adminTfcPostProgressFill');
+    
+    try {
+        if (adminTfcPostType === 'photo' && adminTfcPostMediaFile) {
+            if (progressDiv) progressDiv.style.display = 'block';
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`tfc_posts/admin/announcements/${Date.now()}_${adminTfcPostMediaFile.name}`);
+            await fileRef.put(adminTfcPostMediaFile);
+            postData.mediaUrl = await fileRef.getDownloadURL();
+            if (progressDiv) progressDiv.style.display = 'none';
+        } else if (adminTfcPostType === 'document' && adminTfcPostMediaFile) {
+            if (progressDiv) progressDiv.style.display = 'block';
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`tfc_posts/admin/documents/${Date.now()}_${adminTfcPostMediaFile.name}`);
+            await fileRef.put(adminTfcPostMediaFile);
+            postData.fileUrl = await fileRef.getDownloadURL();
+            postData.fileName = adminTfcPostMediaFile.name;
+            if (progressDiv) progressDiv.style.display = 'none';
+        } else if (adminTfcPostType === 'link') {
+            const linkUrl = document.getElementById('adminLinkInput')?.value;
+            if (!linkUrl || !linkUrl.startsWith('http')) {
+                toast('Lien invalide');
+                return;
+            }
+            postData.linkUrl = linkUrl;
+        }
+        
+        await db.ref('tfc_posts').push(postData);
+        
+        const clientsSnapshot = await db.ref('tfc_clients').once('value');
+        clientsSnapshot.forEach(client => {
+            db.ref(`tfc_clients/${client.key}/notifications`).push({
+                type: 'admin_announcement',
+                message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
+                timestamp: Date.now(),
+                read: false
+            });
+        });
+        
+        toast('Annonce publiée pour tous les clients !');
+        closeAdminTfcPost();
+        loadTfcPosts();
+    } catch (error) {
+        console.error(error);
+        toast('Erreur: ' + error.message);
+        if (progressDiv) progressDiv.style.display = 'none';
+    }
+}
+
+function openAdminTfcPost() {
+    openAdminGlobalPost('text');
 }
 
 function openShareWorkModal(clientId, clientName) {
@@ -3286,6 +3529,7 @@ function openTfcFullManagement() {
     document.getElementById('app').style.display = 'none';
     document.getElementById('tfcClientView').style.display = 'none';
     document.getElementById('adminClientView').style.display = 'none';
+    document.getElementById('adminTfcNameFull').textContent = currentProfile?.fullName || 'Administrateur';
     loadAllClientsWithWorks();
 }
 
@@ -3382,12 +3626,12 @@ async function loadAllClientsWithWorks() {
                                             <div style="flex:1;">
                                                 <div class="doc-name"><i class="fa-solid fa-file"></i> ${esc(doc.name)}</div>
                                                 <div class="doc-meta">Déposé le ${new Date(doc.uploadedAt).toLocaleString()}</div>
-                                                <span class="doc-status ${doc.status==='valide'?'status-valide':doc.status==='correction'?'status-correction':'status-attente'}">
+                                                <span class="doc-status ${doc.status==='valide'?'status-approved':doc.status==='correction'?'status-revision':'status-pending'}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;">
                                                     ${doc.status==='valide'?'Validé':doc.status==='correction'?'À corriger':'En attente'}
                                                 </span>
-                                                ${doc.feedback?`<div class="feedback-box" style="margin-top:8px;"><strong>Retour:</strong><br>${esc(doc.feedback)}</div>`:''}
+                                                ${doc.feedback?`<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(doc.feedback)}</div>`:''}
                                             </div>
-                                            <div><a href="${doc.url}" target="_blank" class="file-dl"><i class="fa-solid fa-download"></i></a></div>
+                                            <div><a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a></div>
                                         </div>
                                     `).join('')}
                                 </div>
@@ -3404,7 +3648,7 @@ async function loadAllClientsWithWorks() {
                                             </div>
                                             <div class="post-content">
                                                 <div>${esc(post.content)}</div>
-                                                ${post.mediaUrl?`<img src="${post.mediaUrl}" style="max-width:100%;margin-top:10px;border-radius:12px;">`:''}
+                                                ${post.mediaUrl?`<img src="${post.mediaUrl}" style="max-width:100%;margin-top:10px;border-radius:12px;cursor:pointer;" onclick="openLightbox('${post.mediaUrl}')">`:''}
                                                 ${post.fileUrl?`<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:10px">📥 ${post.fileName}</a>`:''}
                                                 ${post.linkUrl?`<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:10px">🔗 Voir le lien</a>`:''}
                                             </div>
@@ -3426,9 +3670,9 @@ async function loadAllClientsWithWorks() {
                                                 <div class="doc-name"><i class="fa-solid fa-share-alt"></i> ${esc(work.title)}</div>
                                                 <div class="doc-meta">Partagé par ${esc(work.sharedBy)} le ${new Date(work.sharedAt).toLocaleString()}</div>
                                                 ${work.description?`<p style="margin-top:8px;font-size:0.8rem;">${esc(work.description)}</p>`:''}
-                                                ${work.link?`<div style="margin-top:8px;"><a href="${work.link}" target="_blank" class="file-dl"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a></div>`:''}
+                                                ${work.link?`<div style="margin-top:8px;"><a href="${work.link}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a></div>`:''}
                                             </div>
-                                            ${work.fileUrl?`<div><a href="${work.fileUrl}" target="_blank" class="file-dl"><i class="fa-solid fa-download"></i> ${work.fileName}</a></div>`:''}
+                                            ${work.fileUrl?`<div><a href="${work.fileUrl}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i> ${work.fileName}</a></div>`:''}
                                         </div>
                                     `).join('')}
                                 </div>
@@ -3506,9 +3750,11 @@ function addClientLoginTab() {
     }
 }
 
+// Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     addClientLoginTab();
+    
     const savedClientId = sessionStorage.getItem('tfc_client_id');
     if (savedClientId && !currentUser) {
         db.ref(`tfc_clients/${savedClientId}`).once('value', (snap) => {
