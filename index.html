@@ -342,7 +342,6 @@
             color: var(--green);
         }
         
-        /* ========== CSS CORRIGÉ POUR LES SECTIONS TFC ========== */
         .tfc-section {
             display: none;
         }
@@ -788,6 +787,52 @@
             background: var(--green);
             transition: width 0.3s;
         }
+        
+        /* Nouveaux styles pour l'onglet Travail de l'étudiant */
+        .student-work-card {
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .student-work-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .student-work-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--green-pale);
+        }
+        
+        .student-work-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .work-status-pending { background: #fef3c7; color: #92400e; }
+        .work-status-approved { background: #dcfce7; color: #166534; }
+        .work-status-revision { background: #fee2e2; color: #dc2626; }
+        
+        .student-work-feedback {
+            background: var(--blue-pale);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 12px;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -1045,6 +1090,10 @@
             <button class="tfc-tab-btn" onclick="showTfcSection('ressources')">
                 <i class="fa-solid fa-graduation-cap"></i> Ressources
             </button>
+            <!-- Nouvel onglet pour le travail de l'étudiant -->
+            <button class="tfc-tab-btn" onclick="showTfcSection('mywork')">
+                <i class="fa-solid fa-briefcase"></i> Mon travail
+            </button>
         </div>
 
         <div id="tfcDocumentsSection" class="tfc-section active">
@@ -1229,6 +1278,38 @@
                 </div>
             </div>
         </div>
+
+        <!-- Nouvelle section pour le travail de l'étudiant -->
+        <div id="tfcMyWorkSection" class="tfc-section">
+            <div class="tfc-card">
+                <div class="tfc-card-header">
+                    <h3><i class="fa-solid fa-briefcase"></i> Déposer mon travail</h3>
+                </div>
+                <div style="padding: 24px;">
+                    <div class="tfc-dropzone" onclick="document.getElementById('studentWorkFile').click()">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <p>Cliquez pour déposer votre travail (mémoire, rapport, présentation...)</p>
+                        <p class="small">PDF, DOCX, PPTX, ZIP (max 50MB)</p>
+                    </div>
+                    <input type="file" id="studentWorkFile" style="display: none" 
+                           accept=".pdf,.docx,.pptx,.zip"
+                           onchange="uploadStudentWork(this)">
+                    <div id="studentWorkProgress" style="display: none; margin-top: 16px;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="studentWorkProgressFill"></div>
+                        </div>
+                        <p id="studentWorkProgressText" style="font-size: 0.7rem; margin-top: 8px; color: var(--muted);"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tfc-card" style="margin-top: 24px;">
+                <div class="tfc-card-header">
+                    <h3><i class="fa-regular fa-clock"></i> Historique de mes travaux</h3>
+                </div>
+                <div id="studentWorksList"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1291,6 +1372,11 @@
                 <div class="card">
                     <div class="card-header"><h4><i class="fa-regular fa-file"></i> Documents du client</h4></div>
                     <div id="adminDocumentsList" style="padding: 8px 0;"></div>
+                </div>
+                <!-- Nouvelle section pour voir les travaux de l'étudiant -->
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header"><h4><i class="fa-solid fa-briefcase"></i> Travaux de l'étudiant</h4></div>
+                    <div id="adminStudentWorksList" style="padding: 8px 0;"></div>
                 </div>
             </div>
             <div>
@@ -2652,10 +2738,14 @@ function showTfcSection(section) {
     } else if (section === 'feed') {
         document.getElementById('tfcFeedSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[1].classList.add('active');
-        loadTfcPosts(); // Le listener est déjà actif
+        loadTfcPosts();
     } else if (section === 'ressources') {
         document.getElementById('tfcRessourcesSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[2].classList.add('active');
+    } else if (section === 'mywork') {
+        document.getElementById('tfcMyWorkSection').classList.add('active');
+        document.querySelectorAll('.tfc-tab-btn')[3].classList.add('active');
+        loadStudentWorks();
     }
 }
 
@@ -2732,7 +2822,6 @@ function closeTfcCompose() {
     tfcPostMediaFile = null;
 }
 
-// Fonction submitTfcPost corrigée - utilise FileReader comme dans submitPost
 async function submitTfcPost() {
     const content = document.getElementById('tfcPostContent').value.trim();
     
@@ -2753,7 +2842,6 @@ async function submitTfcPost() {
         commentsCount: 0
     };
     
-    // Gestion du fichier avec FileReader
     if ((currentTfcPostType === 'photo' || currentTfcPostType === 'document') && tfcPostMediaFile) {
         const maxSize = currentTfcPostType === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024;
         if (tfcPostMediaFile.size > maxSize) {
@@ -2788,7 +2876,6 @@ async function submitTfcPost() {
         return;
     }
     
-    // Gestion du lien
     if (currentTfcPostType === 'link' && tfcLinkInput) {
         const linkUrl = tfcLinkInput.value.trim();
         if (!linkUrl || !linkUrl.startsWith('http')) {
@@ -2798,7 +2885,6 @@ async function submitTfcPost() {
         postData.linkUrl = linkUrl;
     }
     
-    // Publication simple (texte ou lien)
     try {
         await db.ref('tfc_posts').push(postData);
         toast('Publication partagée avec succès !');
@@ -2810,7 +2896,6 @@ async function submitTfcPost() {
     }
 }
 
-// Fonction loadTfcPosts avec écoute en temps réel
 function loadTfcPosts() {
     const feedDiv = document.getElementById('tfcPostsFeed');
     if (!feedDiv) return;
@@ -3032,6 +3117,453 @@ async function loadTfcIaHistory() {
     }
 }
 
+// ==================== NOUVELLES FONCTIONS POUR LE TRAVAIL DE L'ÉTUDIANT ====================
+
+async function uploadStudentWork(fileInput) {
+    if (!currentTfcClientId) return;
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) { toast('Fichier trop volumineux (max 50MB)'); return; }
+
+    const progressDiv = document.getElementById('studentWorkProgress');
+    const progressFill = document.getElementById('studentWorkProgressFill');
+    const progressText = document.getElementById('studentWorkProgressText');
+    progressDiv.style.display = 'block';
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Préparation...';
+
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(`tfc_clients/${currentTfcClientId}/student_works/${Date.now()}_${file.name}`);
+    
+    const uploadTask = fileRef.put(file);
+    
+    uploadTask.on('state_changed',
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `${Math.round(progress)}% uploadé...`;
+        },
+        (error) => {
+            console.error(error);
+            toast('Erreur upload: ' + error.message);
+            progressDiv.style.display = 'none';
+        },
+        async () => {
+            const downloadURL = await fileRef.getDownloadURL();
+            const workId = Date.now().toString();
+            const workData = {
+                id: workId,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                url: downloadURL,
+                storagePath: fileRef.fullPath,
+                uploadedAt: Date.now(),
+                status: 'pending', // pending, approved, revision
+                feedback: null,
+                feedbackDate: null
+            };
+            await db.ref(`tfc_clients/${currentTfcClientId}/student_works/${workId}`).set(workData);
+            
+            // Notification à l'administrateur
+            await db.ref('admin_notifications').push({
+                type: 'new_student_work',
+                clientId: currentTfcClientId,
+                clientName: currentTfcClientData.name,
+                workName: file.name,
+                message: `${currentTfcClientData.name} a déposé un nouveau travail : ${file.name}`,
+                timestamp: Date.now(),
+                read: false
+            });
+            
+            toast('Travail déposé avec succès !');
+            progressDiv.style.display = 'none';
+            fileInput.value = '';
+            loadStudentWorks();
+        }
+    );
+}
+
+async function loadStudentWorks() {
+    if (!currentTfcClientId) return;
+    const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/student_works`).once('value');
+    const works = [];
+    snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
+    works.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
+    
+    const container = document.getElementById('studentWorksList');
+    if (!container) return;
+    
+    if (works.length === 0) {
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun travail déposé pour le moment</div>';
+        return;
+    }
+    
+    container.innerHTML = works.map(work => `
+        <div class="student-work-card">
+            <div class="student-work-header">
+                <div class="tfc-doc-icon ${work.type?.includes('pdf') ? 'pdf' : work.type?.includes('word') ? 'word' : work.type?.includes('powerpoint') ? 'ppt' : 'file'}">
+                    <i class="fa-regular fa-${work.type?.includes('pdf') ? 'file-pdf' : work.type?.includes('word') ? 'file-word' : work.type?.includes('powerpoint') ? 'file-powerpoint' : 'file'}"></i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 700;">${esc(work.name)}</div>
+                    <div style="font-size: 0.7rem; color: var(--muted);">Déposé le ${new Date(work.uploadedAt).toLocaleDateString('fr-FR')}</div>
+                </div>
+                <span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}">
+                    ${work.status === 'approved' ? '✅ Validé' : work.status === 'revision' ? '🔄 À corriger' : '⏳ En attente'}
+                </span>
+            </div>
+            <div style="padding: 16px;">
+                <a href="${work.url}" target="_blank" class="file-dl" style="display: inline-flex; margin-bottom: 12px;">
+                    <i class="fa-solid fa-download"></i> Télécharger mon travail
+                </a>
+                ${work.feedback ? `
+                    <div class="student-work-feedback">
+                        <strong><i class="fa-solid fa-comment-dots"></i> Retour de l'encadreur :</strong><br>
+                        ${esc(work.feedback)}
+                        ${work.feedbackDate ? `<div style="font-size: 0.65rem; margin-top: 6px; color: var(--muted);">${new Date(work.feedbackDate).toLocaleString()}</div>` : ''}
+                    </div>
+                ` : ''}
+                ${work.status === 'revision' ? `
+                    <button class="btn-auth" style="margin-top: 12px; width: auto; padding: 6px 16px;" onclick="document.getElementById('studentWorkFile').click(); toast('Veuillez déposer une version corrigée')">
+                        <i class="fa-solid fa-upload"></i> Déposer une version corrigée
+                    </button>
+                ` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// ==================== FONCTIONS ADMIN POUR VOIR LES TRAVAUX DES ÉTUDIANTS ====================
+
+async function loadAdminStudentWorks(clientId) {
+    const snapshot = await db.ref(`tfc_clients/${clientId}/student_works`).once('value');
+    const works = [];
+    snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
+    works.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
+    
+    const container = document.getElementById('adminStudentWorksList');
+    if (!container) return;
+    
+    if (works.length === 0) {
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun travail déposé par l\'étudiant</div>';
+        return;
+    }
+    
+    container.innerHTML = works.map(work => `
+        <div class="doc-item" style="border-bottom: 1px solid var(--border); padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                <div style="flex: 1;">
+                    <div style="font-weight: 700;">${esc(work.name)}</div>
+                    <div style="font-size: 0.7rem; color: var(--muted);">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div>
+                    <span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">
+                        ${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}
+                    </span>
+                    ${work.feedback ? `<div style="margin-top: 8px; padding: 6px; background: var(--blue-pale); border-radius: 6px; font-size: 0.75rem;"><strong>Retour donné:</strong> ${esc(work.feedback)}</div>` : ''}
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <a href="${work.url}" target="_blank" class="file-dl" style="padding: 4px 8px;"><i class="fa-solid fa-download"></i></a>
+                    <button onclick="openStudentWorkFeedback('${clientId}', '${work.id}', '${esc(work.name)}')" class="file-dl" style="padding: 4px 8px; background: var(--blue-pale);">✏️ Évaluer</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openStudentWorkFeedback(clientId, workId, workName) {
+    const feedback = prompt(`Évaluation du travail "${workName}" :\n\nChoisissez le statut et laissez un commentaire.\n\nStatuts possibles:\n- VALIDE: Travail accepté\n- REVISION: À corriger\n\nEntrez votre commentaire (précisez le statut au début si besoin):`);
+    if (feedback && feedback.trim()) {
+        let status = 'pending';
+        let comment = feedback.trim();
+        
+        if (feedback.toLowerCase().includes('valide') || feedback.toLowerCase().includes('accept')) {
+            status = 'approved';
+        } else if (feedback.toLowerCase().includes('revision') || feedback.toLowerCase().includes('corrig')) {
+            status = 'revision';
+        }
+        
+        db.ref(`tfc_clients/${clientId}/student_works/${workId}`).update({
+            status: status,
+            feedback: comment,
+            feedbackDate: Date.now()
+        }).then(() => {
+            toast('Évaluation enregistrée');
+            
+            // Notification à l'étudiant
+            db.ref(`tfc_clients/${clientId}/notifications`).push({
+                type: 'work_evaluated',
+                message: `Votre travail "${workName}" a été évalué. Statut: ${status === 'approved' ? 'Validé' : status === 'revision' ? 'À corriger' : 'En attente'}`,
+                workId: workId,
+                timestamp: Date.now(),
+                read: false
+            });
+            
+            if (currentAdminClientId === clientId) {
+                loadAdminStudentWorks(clientId);
+            }
+        });
+    }
+}
+
+// ==================== FONCTIONS DE PARTAGE DE TRAVAIL À UN ÉTUDIANT SPÉCIFIQUE ====================
+
+function openShareWorkModal(clientId, clientName) {
+    currentShareClientId = clientId;
+    currentShareClientName = clientName;
+    shareWorkFile = null;
+    
+    document.getElementById('shareWorkClientInfo').innerHTML = `
+        <strong><i class="fa-solid fa-user"></i> Client :</strong> ${esc(clientName)}<br>
+        <small>Vous allez partager un travail avec ce client. Il recevra une notification.</small>
+    `;
+    document.getElementById('shareWorkTitle').value = '';
+    document.getElementById('shareWorkDescription').value = '';
+    document.getElementById('shareWorkLink').value = '';
+    document.getElementById('shareWorkFileName').innerHTML = '';
+    document.getElementById('shareWorkFile').value = '';
+    document.getElementById('shareWorkModal').classList.add('active');
+}
+
+function closeShareWorkModal() {
+    document.getElementById('shareWorkModal').classList.remove('active');
+    shareWorkFile = null;
+}
+
+document.getElementById('shareWorkFile')?.addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+        shareWorkFile = e.target.files[0];
+        document.getElementById('shareWorkFileName').innerHTML = `<i class="fa-solid fa-paperclip"></i> ${shareWorkFile.name} (${(shareWorkFile.size / 1024).toFixed(1)} KB)`;
+    } else {
+        shareWorkFile = null;
+        document.getElementById('shareWorkFileName').innerHTML = '';
+    }
+});
+
+async function submitSharedWork() {
+    const title = document.getElementById('shareWorkTitle').value.trim();
+    const description = document.getElementById('shareWorkDescription').value.trim();
+    const link = document.getElementById('shareWorkLink').value.trim();
+    
+    if (!title && !description && !shareWorkFile && !link) {
+        toast('Veuillez ajouter au moins un titre, une description, un fichier ou un lien');
+        return;
+    }
+    
+    toast('Envoi du travail en cours...', false);
+    
+    const workData = {
+        id: Date.now().toString(),
+        title: title || 'Travail partagé',
+        description: description || '',
+        link: link || null,
+        sharedBy: currentProfile.fullName || currentUser.email.split('@')[0],
+        sharedByEmail: currentUser.email,
+        sharedAt: Date.now(),
+        read: false
+    };
+    
+    try {
+        if (shareWorkFile) {
+            if (shareWorkFile.size > 20 * 1024 * 1024) {
+                toast('Fichier trop volumineux (max 20MB)');
+                return;
+            }
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(`tfc_clients/${currentShareClientId}/shared_works/${Date.now()}_${shareWorkFile.name}`);
+            await fileRef.put(shareWorkFile);
+            workData.fileUrl = await fileRef.getDownloadURL();
+            workData.fileName = shareWorkFile.name;
+        }
+        
+        await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
+        
+        await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({
+            type: 'shared_work',
+            message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`,
+            workId: workData.id,
+            timestamp: Date.now(),
+            read: false
+        });
+        
+        toast(`Travail partagé avec succès à ${currentShareClientName} !`);
+        closeShareWorkModal();
+        
+        if (window.clientsListRef) {
+            db.ref('tfc_clients').once('value', window.clientsListRef);
+        }
+    } catch (error) {
+        console.error(error);
+        toast('Erreur: ' + error.message);
+    }
+}
+
+// ==================== FONCTIONS ADMIN ANNONCES GLOBALES ====================
+
+function openAdminGlobalPost(type = 'text') {
+    if (currentUser?.email !== ADMIN_EMAIL) {
+        toast('Accès réservé au formateur');
+        return;
+    }
+    adminTfcPostType = type;
+    adminTfcPostMediaFile = null;
+    
+    const titles = { text: 'Publier une annonce pour tous les clients', photo: 'Partager une photo', document: 'Partager un document', link: 'Partager un lien' };
+    document.getElementById('adminTfcPostTitle').textContent = titles[type] || 'Publier une annonce';
+    document.getElementById('adminTfcPostContent').value = '';
+    
+    const mediaArea = document.getElementById('adminTfcPostMediaArea');
+    if (type === 'photo') {
+        mediaArea.innerHTML = `
+            <div class="file-drop-area" onclick="document.getElementById('adminPhotoInputElem').click()">
+                <i class="fa-regular fa-image"></i>
+                <p>Cliquez pour sélectionner une photo</p>
+            </div>
+            <input type="file" id="adminPhotoInputElem" accept="image/*" style="display:none">
+            <div id="adminTfcMediaPreview"></div>
+        `;
+        adminPhotoInput = document.getElementById('adminPhotoInputElem');
+        if (adminPhotoInput) {
+            adminPhotoInput.onchange = function(e) { previewAdminTfcMedia(e.target, 'photo'); };
+        }
+    } else if (type === 'document') {
+        mediaArea.innerHTML = `
+            <div class="file-drop-area" onclick="document.getElementById('adminDocFileInputElem').click()">
+                <i class="fa-regular fa-file"></i>
+                <p>Cliquez pour sélectionner un document</p>
+            </div>
+            <input type="file" id="adminDocFileInputElem" accept=".pdf,.docx,.zip,.xlsx,.pptx" style="display:none">
+            <div id="adminTfcMediaPreview"></div>
+        `;
+        adminDocFileInput = document.getElementById('adminDocFileInputElem');
+        if (adminDocFileInput) {
+            adminDocFileInput.onchange = function(e) { previewAdminTfcMedia(e.target, 'document'); };
+        }
+    } else if (type === 'link') {
+        mediaArea.innerHTML = `<input type="url" id="adminLinkInputElem" placeholder="https://..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:12px;">`;
+        adminLinkInputElem = document.getElementById('adminLinkInputElem');
+    } else {
+        mediaArea.innerHTML = '';
+    }
+    
+    document.getElementById('adminTfcPostOverlay').classList.add('active');
+}
+
+function previewAdminTfcMedia(input, type) {
+    if (input.files && input.files[0]) {
+        adminTfcPostMediaFile = input.files[0];
+        const preview = document.getElementById('adminTfcMediaPreview');
+        if (type === 'photo') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:200px;border-radius:12px;margin-top:10px;">`;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.innerHTML = `<div class="file-row" style="margin-top:10px;"><i class="fa-solid fa-file"></i> ${input.files[0].name}</div>`;
+        }
+    }
+}
+
+function closeAdminTfcPost() {
+    document.getElementById('adminTfcPostOverlay').classList.remove('active');
+    adminTfcPostMediaFile = null;
+}
+
+async function submitAdminTfcPost() {
+    const content = document.getElementById('adminTfcPostContent').value.trim();
+    if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') {
+        toast('Veuillez écrire quelque chose');
+        return;
+    }
+    
+    const postData = {
+        authorId: 'admin',
+        authorName: currentProfile.fullName || 'Formateur',
+        authorUniv: 'GADA Training',
+        authorAvatar: currentProfile.avatar || null,
+        content: content,
+        type: adminTfcPostType,
+        timestamp: Date.now(),
+        isGlobal: true,
+        likes: 0,
+        commentsCount: 0
+    };
+    
+    if ((adminTfcPostType === 'photo' || adminTfcPostType === 'document') && adminTfcPostMediaFile) {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                if (adminTfcPostType === 'photo') {
+                    postData.mediaUrl = e.target.result;
+                } else {
+                    postData.fileUrl = e.target.result;
+                    postData.fileName = adminTfcPostMediaFile.name;
+                }
+                
+                await db.ref('tfc_posts').push(postData);
+                
+                const clientsSnapshot = await db.ref('tfc_clients').once('value');
+                clientsSnapshot.forEach(client => {
+                    db.ref(`tfc_clients/${client.key}/notifications`).push({
+                        type: 'admin_announcement',
+                        message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
+                        timestamp: Date.now(),
+                        read: false
+                    });
+                });
+                
+                toast('Annonce publiée pour tous les clients !');
+                closeAdminTfcPost();
+                if (currentTfcClientId) loadTfcPosts();
+            } catch (error) {
+                console.error(error);
+                toast('Erreur: ' + error.message);
+            }
+        };
+        reader.onerror = function() {
+            toast('Erreur lors de la lecture du fichier');
+        };
+        reader.readAsDataURL(adminTfcPostMediaFile);
+        return;
+    }
+    
+    if (adminTfcPostType === 'link' && adminLinkInputElem) {
+        const linkUrl = adminLinkInputElem.value.trim();
+        if (!linkUrl || !linkUrl.startsWith('http')) {
+            toast('Lien invalide');
+            return;
+        }
+        postData.linkUrl = linkUrl;
+    }
+    
+    try {
+        await db.ref('tfc_posts').push(postData);
+        
+        const clientsSnapshot = await db.ref('tfc_clients').once('value');
+        clientsSnapshot.forEach(client => {
+            db.ref(`tfc_clients/${client.key}/notifications`).push({
+                type: 'admin_announcement',
+                message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
+                timestamp: Date.now(),
+                read: false
+            });
+        });
+        
+        toast('Annonce publiée pour tous les clients !');
+        closeAdminTfcPost();
+        if (currentTfcClientId) loadTfcPosts();
+    } catch (error) {
+        console.error(error);
+        toast('Erreur: ' + error.message);
+    }
+}
+
+function openAdminTfcPost() {
+    openAdminGlobalPost('text');
+}
+
+// ==================== AUTRES FONCTIONS ADMIN ====================
+
 async function doClientLogin() {
     const code = document.getElementById('clientAccessCode').value.trim().toUpperCase();
     const email = document.getElementById('clientEmail').value.trim().toLowerCase();
@@ -3056,7 +3588,8 @@ async function doClientLogin() {
     loadClientDocuments();
     loadClientChat();
     loadTfcIaHistory();
-    loadTfcPosts(); // Démarrer l'écoute des posts
+    loadTfcPosts();
+    loadStudentWorks();
     showTfcSection('documents');
 }
 
@@ -3264,6 +3797,7 @@ async function openClientWorkspace(clientId) {
     document.getElementById('tfcFullManagement').style.display = 'none';
     loadAdminDocuments(clientId);
     loadAdminChat(clientId);
+    loadAdminStudentWorks(clientId);
 }
 
 function closeAdminClientView() {
@@ -3360,266 +3894,6 @@ function sendTfcMessageAdmin() {
     input.value = '';
 }
 
-// ==================== ADMIN PUBLICATION DANS TFC ====================
-
-let adminPhotoInput = null;
-let adminDocFileInput = null;
-let adminLinkInputElem = null;
-
-function openAdminGlobalPost(type = 'text') {
-    if (currentUser?.email !== ADMIN_EMAIL) {
-        toast('Accès réservé au formateur');
-        return;
-    }
-    adminTfcPostType = type;
-    adminTfcPostMediaFile = null;
-    
-    const titles = { text: 'Publier une annonce pour tous les clients', photo: 'Partager une photo', document: 'Partager un document', link: 'Partager un lien' };
-    document.getElementById('adminTfcPostTitle').textContent = titles[type] || 'Publier une annonce';
-    document.getElementById('adminTfcPostContent').value = '';
-    
-    const mediaArea = document.getElementById('adminTfcPostMediaArea');
-    if (type === 'photo') {
-        mediaArea.innerHTML = `
-            <div class="file-drop-area" onclick="document.getElementById('adminPhotoInputElem').click()">
-                <i class="fa-regular fa-image"></i>
-                <p>Cliquez pour sélectionner une photo</p>
-            </div>
-            <input type="file" id="adminPhotoInputElem" accept="image/*" style="display:none">
-            <div id="adminTfcMediaPreview"></div>
-        `;
-        adminPhotoInput = document.getElementById('adminPhotoInputElem');
-        if (adminPhotoInput) {
-            adminPhotoInput.onchange = function(e) { previewAdminTfcMedia(e.target, 'photo'); };
-        }
-    } else if (type === 'document') {
-        mediaArea.innerHTML = `
-            <div class="file-drop-area" onclick="document.getElementById('adminDocFileInputElem').click()">
-                <i class="fa-regular fa-file"></i>
-                <p>Cliquez pour sélectionner un document</p>
-            </div>
-            <input type="file" id="adminDocFileInputElem" accept=".pdf,.docx,.zip,.xlsx,.pptx" style="display:none">
-            <div id="adminTfcMediaPreview"></div>
-        `;
-        adminDocFileInput = document.getElementById('adminDocFileInputElem');
-        if (adminDocFileInput) {
-            adminDocFileInput.onchange = function(e) { previewAdminTfcMedia(e.target, 'document'); };
-        }
-    } else if (type === 'link') {
-        mediaArea.innerHTML = `<input type="url" id="adminLinkInputElem" placeholder="https://..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:12px;">`;
-        adminLinkInputElem = document.getElementById('adminLinkInputElem');
-    } else {
-        mediaArea.innerHTML = '';
-    }
-    
-    document.getElementById('adminTfcPostOverlay').classList.add('active');
-}
-
-function previewAdminTfcMedia(input, type) {
-    if (input.files && input.files[0]) {
-        adminTfcPostMediaFile = input.files[0];
-        const preview = document.getElementById('adminTfcMediaPreview');
-        if (type === 'photo') {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:200px;border-radius:12px;margin-top:10px;">`;
-            };
-            reader.readAsDataURL(input.files[0]);
-        } else {
-            preview.innerHTML = `<div class="file-row" style="margin-top:10px;"><i class="fa-solid fa-file"></i> ${input.files[0].name}</div>`;
-        }
-    }
-}
-
-function closeAdminTfcPost() {
-    document.getElementById('adminTfcPostOverlay').classList.remove('active');
-    adminTfcPostMediaFile = null;
-}
-
-// Fonction submitAdminTfcPost corrigée
-async function submitAdminTfcPost() {
-    const content = document.getElementById('adminTfcPostContent').value.trim();
-    if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') {
-        toast('Veuillez écrire quelque chose');
-        return;
-    }
-    
-    const postData = {
-        authorId: 'admin',
-        authorName: currentProfile.fullName || 'Formateur',
-        authorUniv: 'GADA Training',
-        authorAvatar: currentProfile.avatar || null,
-        content: content,
-        type: adminTfcPostType,
-        timestamp: Date.now(),
-        isGlobal: true,
-        likes: 0,
-        commentsCount: 0
-    };
-    
-    if ((adminTfcPostType === 'photo' || adminTfcPostType === 'document') && adminTfcPostMediaFile) {
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            try {
-                if (adminTfcPostType === 'photo') {
-                    postData.mediaUrl = e.target.result;
-                } else {
-                    postData.fileUrl = e.target.result;
-                    postData.fileName = adminTfcPostMediaFile.name;
-                }
-                
-                await db.ref('tfc_posts').push(postData);
-                
-                const clientsSnapshot = await db.ref('tfc_clients').once('value');
-                clientsSnapshot.forEach(client => {
-                    db.ref(`tfc_clients/${client.key}/notifications`).push({
-                        type: 'admin_announcement',
-                        message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
-                        timestamp: Date.now(),
-                        read: false
-                    });
-                });
-                
-                toast('Annonce publiée pour tous les clients !');
-                closeAdminTfcPost();
-                if (currentTfcClientId) loadTfcPosts();
-            } catch (error) {
-                console.error(error);
-                toast('Erreur: ' + error.message);
-            }
-        };
-        reader.onerror = function() {
-            toast('Erreur lors de la lecture du fichier');
-        };
-        reader.readAsDataURL(adminTfcPostMediaFile);
-        return;
-    }
-    
-    if (adminTfcPostType === 'link' && adminLinkInputElem) {
-        const linkUrl = adminLinkInputElem.value.trim();
-        if (!linkUrl || !linkUrl.startsWith('http')) {
-            toast('Lien invalide');
-            return;
-        }
-        postData.linkUrl = linkUrl;
-    }
-    
-    try {
-        await db.ref('tfc_posts').push(postData);
-        
-        const clientsSnapshot = await db.ref('tfc_clients').once('value');
-        clientsSnapshot.forEach(client => {
-            db.ref(`tfc_clients/${client.key}/notifications`).push({
-                type: 'admin_announcement',
-                message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
-                timestamp: Date.now(),
-                read: false
-            });
-        });
-        
-        toast('Annonce publiée pour tous les clients !');
-        closeAdminTfcPost();
-        if (currentTfcClientId) loadTfcPosts();
-    } catch (error) {
-        console.error(error);
-        toast('Erreur: ' + error.message);
-    }
-}
-
-function openAdminTfcPost() {
-    openAdminGlobalPost('text');
-}
-
-function openShareWorkModal(clientId, clientName) {
-    currentShareClientId = clientId;
-    currentShareClientName = clientName;
-    shareWorkFile = null;
-    
-    document.getElementById('shareWorkClientInfo').innerHTML = `
-        <strong><i class="fa-solid fa-user"></i> Client :</strong> ${esc(clientName)}<br>
-        <small>Vous allez partager un travail avec ce client. Il recevra une notification.</small>
-    `;
-    document.getElementById('shareWorkTitle').value = '';
-    document.getElementById('shareWorkDescription').value = '';
-    document.getElementById('shareWorkLink').value = '';
-    document.getElementById('shareWorkFileName').innerHTML = '';
-    document.getElementById('shareWorkFile').value = '';
-    document.getElementById('shareWorkModal').classList.add('active');
-}
-
-function closeShareWorkModal() {
-    document.getElementById('shareWorkModal').classList.remove('active');
-    shareWorkFile = null;
-}
-
-document.getElementById('shareWorkFile')?.addEventListener('change', function(e) {
-    if (e.target.files && e.target.files[0]) {
-        shareWorkFile = e.target.files[0];
-        document.getElementById('shareWorkFileName').innerHTML = `<i class="fa-solid fa-paperclip"></i> ${shareWorkFile.name} (${(shareWorkFile.size / 1024).toFixed(1)} KB)`;
-    } else {
-        shareWorkFile = null;
-        document.getElementById('shareWorkFileName').innerHTML = '';
-    }
-});
-
-async function submitSharedWork() {
-    const title = document.getElementById('shareWorkTitle').value.trim();
-    const description = document.getElementById('shareWorkDescription').value.trim();
-    const link = document.getElementById('shareWorkLink').value.trim();
-    
-    if (!title && !description && !shareWorkFile && !link) {
-        toast('Veuillez ajouter au moins un titre, une description, un fichier ou un lien');
-        return;
-    }
-    
-    toast('Envoi du travail en cours...', false);
-    
-    const workData = {
-        id: Date.now().toString(),
-        title: title || 'Travail partagé',
-        description: description || '',
-        link: link || null,
-        sharedBy: currentProfile.fullName || currentUser.email.split('@')[0],
-        sharedByEmail: currentUser.email,
-        sharedAt: Date.now(),
-        read: false
-    };
-    
-    try {
-        if (shareWorkFile) {
-            if (shareWorkFile.size > 20 * 1024 * 1024) {
-                toast('Fichier trop volumineux (max 20MB)');
-                return;
-            }
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(`tfc_clients/${currentShareClientId}/shared_works/${Date.now()}_${shareWorkFile.name}`);
-            await fileRef.put(shareWorkFile);
-            workData.fileUrl = await fileRef.getDownloadURL();
-            workData.fileName = shareWorkFile.name;
-        }
-        
-        await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
-        
-        await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({
-            type: 'shared_work',
-            message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`,
-            workId: workData.id,
-            timestamp: Date.now(),
-            read: false
-        });
-        
-        toast(`Travail partagé avec succès à ${currentShareClientName} !`);
-        closeShareWorkModal();
-        
-        if (window.clientsListRef) {
-            db.ref('tfc_clients').once('value', window.clientsListRef);
-        }
-    } catch (error) {
-        console.error(error);
-        toast('Erreur: ' + error.message);
-    }
-}
-
 function openTfcFullManagement() {
     document.getElementById('adminTfcPanel').style.display = 'none';
     document.getElementById('tfcFullManagement').style.display = 'block';
@@ -3686,6 +3960,13 @@ async function loadAllClientsWithWorks() {
             });
             sharedWorks.sort((a,b) => (b.sharedAt||0) - (a.sharedAt||0));
             
+            const studentWorksSnapshot = await db.ref(`tfc_clients/${client.id}/student_works`).once('value');
+            const studentWorks = [];
+            studentWorksSnapshot.forEach(child => {
+                studentWorks.push({ id: child.key, ...child.val() });
+            });
+            studentWorks.sort((a,b) => (b.uploadedAt||0) - (a.uploadedAt||0));
+            
             clientsHtml.push(`
                 <div class="client-workspace-card" style="border:2px solid var(--border);border-radius:16px;margin-bottom:24px;background:var(--card);overflow:hidden;">
                     <div style="background:linear-gradient(135deg,var(--blue),var(--green));padding:20px;color:white;">
@@ -3715,6 +3996,7 @@ async function loadAllClientsWithWorks() {
                             <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','docs')" id="tab-docs-${client.id}" style="border-radius:8px 8px 0 0;">Documents (${documents.length})</button>
                             <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','posts')" id="tab-posts-${client.id}" style="border-radius:8px 8px 0 0;">Publications (${posts.length})</button>
                             <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','works')" id="tab-works-${client.id}" style="border-radius:8px 8px 0 0;">Travaux partagés (${sharedWorks.length})</button>
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','studentworks')" id="tab-studentworks-${client.id}" style="border-radius:8px 8px 0 0;">Travaux étudiant (${studentWorks.length})</button>
                         </div>
                         <div id="client-docs-${client.id}" class="client-tab-content" style="display:block;">
                             ${documents.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun document déposé</div>':`
@@ -3776,6 +4058,25 @@ async function loadAllClientsWithWorks() {
                                 </div>
                             `}
                         </div>
+                        <div id="client-studentworks-${client.id}" class="client-tab-content" style="display:none;">
+                            ${studentWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail déposé par l\'étudiant</div>':`
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    ${studentWorks.map(work => `
+                                        <div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;">
+                                            <div style="flex:1;">
+                                                <div class="doc-name"><i class="fa-solid fa-briefcase"></i> ${esc(work.name)}</div>
+                                                <div class="doc-meta">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div>
+                                                <span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">
+                                                    ${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}
+                                                </span>
+                                                ${work.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(work.feedback)}</div>` : ''}
+                                            </div>
+                                            <div><a href="${work.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a></div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
                     </div>
                 </div>
             `);
@@ -3794,31 +4095,48 @@ function toggleClientTab(clientId, tab) {
     const docsDiv = document.getElementById(`client-docs-${clientId}`);
     const postsDiv = document.getElementById(`client-posts-${clientId}`);
     const worksDiv = document.getElementById(`client-works-${clientId}`);
+    const studentWorksDiv = document.getElementById(`client-studentworks-${clientId}`);
     const docsBtn = document.getElementById(`tab-docs-${clientId}`);
     const postsBtn = document.getElementById(`tab-posts-${clientId}`);
     const worksBtn = document.getElementById(`tab-works-${clientId}`);
+    const studentWorksBtn = document.getElementById(`tab-studentworks-${clientId}`);
     
     if (tab === 'docs') {
         if(docsDiv) docsDiv.style.display = 'block';
         if(postsDiv) postsDiv.style.display = 'none';
         if(worksDiv) worksDiv.style.display = 'none';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'none';
         if(docsBtn) docsBtn.classList.add('active');
         if(postsBtn) postsBtn.classList.remove('active');
         if(worksBtn) worksBtn.classList.remove('active');
+        if(studentWorksBtn) studentWorksBtn.classList.remove('active');
     } else if (tab === 'posts') {
         if(docsDiv) docsDiv.style.display = 'none';
         if(postsDiv) postsDiv.style.display = 'block';
         if(worksDiv) worksDiv.style.display = 'none';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'none';
         if(docsBtn) docsBtn.classList.remove('active');
         if(postsBtn) postsBtn.classList.add('active');
         if(worksBtn) worksBtn.classList.remove('active');
-    } else {
+        if(studentWorksBtn) studentWorksBtn.classList.remove('active');
+    } else if (tab === 'works') {
         if(docsDiv) docsDiv.style.display = 'none';
         if(postsDiv) postsDiv.style.display = 'none';
         if(worksDiv) worksDiv.style.display = 'block';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'none';
         if(docsBtn) docsBtn.classList.remove('active');
         if(postsBtn) postsBtn.classList.remove('active');
         if(worksBtn) worksBtn.classList.add('active');
+        if(studentWorksBtn) studentWorksBtn.classList.remove('active');
+    } else if (tab === 'studentworks') {
+        if(docsDiv) docsDiv.style.display = 'none';
+        if(postsDiv) postsDiv.style.display = 'none';
+        if(worksDiv) worksDiv.style.display = 'none';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'block';
+        if(docsBtn) docsBtn.classList.remove('active');
+        if(postsBtn) postsBtn.classList.remove('active');
+        if(worksBtn) worksBtn.classList.remove('active');
+        if(studentWorksBtn) studentWorksBtn.classList.add('active');
     }
 }
 
@@ -3851,6 +4169,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadClientChat();
                 loadTfcIaHistory();
                 loadTfcPosts();
+                loadStudentWorks();
                 showTfcSection('documents');
             }
         });
