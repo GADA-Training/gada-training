@@ -788,7 +788,6 @@
             transition: width 0.3s;
         }
         
-        /* Nouveaux styles pour l'onglet Travail de l'étudiant */
         .student-work-card {
             background: var(--card);
             border-radius: 20px;
@@ -1090,7 +1089,6 @@
             <button class="tfc-tab-btn" onclick="showTfcSection('ressources')">
                 <i class="fa-solid fa-graduation-cap"></i> Ressources
             </button>
-            <!-- Nouvel onglet pour le travail de l'étudiant -->
             <button class="tfc-tab-btn" onclick="showTfcSection('mywork')">
                 <i class="fa-solid fa-briefcase"></i> Mon travail
             </button>
@@ -1118,7 +1116,7 @@
                             <div class="tfc-dropzone" onclick="document.getElementById('tfcFileInput').click()">
                                 <i class="fa-regular fa-file-lines"></i>
                                 <p>Cliquez pour déposer votre document</p>
-                                <p class="small">PDF, DOCX, ZIP, R, XLSX, PPTX, JPG, PNG (max 50MB)</p>
+                                <p class="small">PDF, DOCX, ZIP, R, XLSX, PPTX, JPG, PNG (max 10MB)</p>
                             </div>
                             <input type="file" id="tfcFileInput" style="display: none" 
                                    accept=".pdf,.docx,.zip,.r,.R,.xlsx,.pptx,.jpg,.jpeg,.png"
@@ -1279,7 +1277,6 @@
             </div>
         </div>
 
-        <!-- Nouvelle section pour le travail de l'étudiant -->
         <div id="tfcMyWorkSection" class="tfc-section">
             <div class="tfc-card">
                 <div class="tfc-card-header">
@@ -1289,7 +1286,7 @@
                     <div class="tfc-dropzone" onclick="document.getElementById('studentWorkFile').click()">
                         <i class="fa-regular fa-file-lines"></i>
                         <p>Cliquez pour déposer votre travail (mémoire, rapport, présentation...)</p>
-                        <p class="small">PDF, DOCX, PPTX, ZIP (max 50MB)</p>
+                        <p class="small">PDF, DOCX, PPTX, ZIP (max 15MB)</p>
                     </div>
                     <input type="file" id="studentWorkFile" style="display: none" 
                            accept=".pdf,.docx,.pptx,.zip"
@@ -1373,7 +1370,6 @@
                     <div class="card-header"><h4><i class="fa-regular fa-file"></i> Documents du client</h4></div>
                     <div id="adminDocumentsList" style="padding: 8px 0;"></div>
                 </div>
-                <!-- Nouvelle section pour voir les travaux de l'étudiant -->
                 <div class="card" style="margin-top: 20px;">
                     <div class="card-header"><h4><i class="fa-solid fa-briefcase"></i> Travaux de l'étudiant</h4></div>
                     <div id="adminStudentWorksList" style="padding: 8px 0;"></div>
@@ -2408,7 +2404,7 @@ function shareOnFacebook(url, text) {
 }
 
 function shareOnLinkedIn(url, title) {
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?u=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
 }
 
 function shareOnWhatsApp(url, text) {
@@ -2673,58 +2669,80 @@ async function initIA() {
     appendIAMessage('assistant', msg);
 }
 
-// ==================== SECTION CLIENTS TFC ====================
+// ==================== SECTION CLIENTS TFC - VERSION CORRIGÉE (BASE64) ====================
 
 async function uploadTfcDocumentWithStorage(fileInput) {
     if (!currentTfcClientId) return;
     const file = fileInput.files[0];
     if (!file) return;
-    if (file.size > 50 * 1024 * 1024) { toast('Fichier trop volumineux (max 50MB)'); return; }
+    
+    // Limite à 10MB pour les documents TFC (comme dans la partie formation)
+    if (file.size > 10 * 1024 * 1024) { 
+        toast('Fichier trop volumineux (max 10MB)'); 
+        return; 
+    }
 
     const progressDiv = document.getElementById('tfcUploadProgress');
     const progressFill = document.getElementById('tfcProgressFill');
     const progressText = document.getElementById('tfcProgressText');
-    progressDiv.style.display = 'block';
-    progressFill.style.width = '0%';
-    progressText.textContent = 'Préparation...';
+    
+    if (progressDiv) progressDiv.style.display = 'block';
+    if (progressFill) progressFill.style.width = '0%';
+    if (progressText) progressText.textContent = 'Préparation...';
 
-    const storageRef = storage.ref();
-    const fileRef = storageRef.child(`tfc_clients/${currentTfcClientId}/documents/${Date.now()}_${file.name}`);
+    // UTILISATION DE BASE64 (comme dans la partie formation)
+    const reader = new FileReader();
     
-    const uploadTask = fileRef.put(file);
-    
-    uploadTask.on('state_changed',
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            progressFill.style.width = progress + '%';
-            progressText.textContent = `${Math.round(progress)}% uploadé...`;
-        },
-        (error) => {
-            console.error(error);
-            toast('Erreur upload: ' + error.message);
-            progressDiv.style.display = 'none';
-        },
-        async () => {
-            const downloadURL = await fileRef.getDownloadURL();
-            const docId = Date.now().toString();
-            const docData = {
-                id: docId, name: file.name, type: file.type, size: file.size,
-                storagePath: fileRef.fullPath, url: downloadURL,
-                uploadedAt: Date.now(), uploadedBy: 'client',
-                status: 'attente', feedback: null
-            };
+    reader.onload = async function(e) {
+        const docId = Date.now().toString();
+        const docData = {
+            id: docId, 
+            name: file.name, 
+            type: file.type, 
+            size: file.size,
+            url: e.target.result, // Contenu Base64
+            uploadedAt: Date.now(), 
+            uploadedBy: 'client',
+            status: 'attente', 
+            feedback: null
+        };
+        
+        try {
             await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).set(docData);
+            
+            // Notification pour l'admin
             await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
                 type: 'new_document',
                 message: `${currentTfcClientData.name} a déposé un document : ${file.name}`,
-                timestamp: Date.now(), read: false
+                timestamp: Date.now(), 
+                read: false
             });
+            
             toast('Document déposé avec succès');
-            progressDiv.style.display = 'none';
+            if (progressDiv) progressDiv.style.display = 'none';
             fileInput.value = '';
-            loadClientDocuments();
+            loadClientDocuments(); // Recharge la liste
+        } catch (error) {
+            console.error(error);
+            toast('Erreur: ' + error.message);
+            if (progressDiv) progressDiv.style.display = 'none';
         }
-    );
+    };
+    
+    reader.onprogress = function(event) {
+        if (event.lengthComputable && progressFill) {
+            const percent = (event.loaded / event.total) * 100;
+            progressFill.style.width = percent + '%';
+            if (progressText) progressText.textContent = `${Math.round(percent)}% encodage...`;
+        }
+    };
+    
+    reader.onerror = function() {
+        toast('Erreur lors de la lecture du fichier');
+        if (progressDiv) progressDiv.style.display = 'none';
+    };
+    
+    reader.readAsDataURL(file); // Encodage Base64
 }
 
 function showTfcSection(section) {
@@ -2996,28 +3014,66 @@ async function loadClientDocuments() {
         container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun document déposé</div>';
         return;
     }
-    container.innerHTML = docsList.map(doc => `
-        <div class="tfc-doc-item">
-            <div class="tfc-doc-info">
-                <div class="tfc-doc-icon ${doc.type?.includes('pdf') ? 'pdf' : doc.type?.includes('word') ? 'word' : doc.type?.includes('excel') ? 'excel' : doc.type?.includes('powerpoint') ? 'ppt' : 'file'}">
-                    <i class="fa-regular fa-${doc.type?.includes('pdf') ? 'file-pdf' : doc.type?.includes('word') ? 'file-word' : doc.type?.includes('excel') ? 'file-excel' : doc.type?.includes('powerpoint') ? 'file-powerpoint' : 'file'}"></i>
-                </div>
-                <div class="tfc-doc-details">
-                    <div class="tfc-doc-name">${esc(doc.name)}</div>
-                    <div class="tfc-doc-meta">
-                        <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</span>
-                        <span class="tfc-doc-status ${doc.status === 'valide' ? 'status-approved' : doc.status === 'correction' ? 'status-revision' : 'status-pending'}">
-                            ${doc.status === 'valide' ? 'Validé' : doc.status === 'correction' ? 'À corriger' : 'En attente'}
-                        </span>
+    container.innerHTML = docsList.map(doc => {
+        // Déterminer l'icône selon l'extension
+        let iconClass = 'fa-file';
+        let iconBg = 'file';
+        const ext = doc.name.split('.').pop().toLowerCase();
+        
+        if (ext === 'pdf') {
+            iconClass = 'fa-file-pdf';
+            iconBg = 'pdf';
+        } else if (ext === 'docx' || ext === 'doc') {
+            iconClass = 'fa-file-word';
+            iconBg = 'word';
+        } else if (ext === 'xlsx' || ext === 'xls') {
+            iconClass = 'fa-file-excel';
+            iconBg = 'excel';
+        } else if (ext === 'pptx' || ext === 'ppt') {
+            iconClass = 'fa-file-powerpoint';
+            iconBg = 'ppt';
+        } else if (ext === 'zip' || ext === 'rar' || ext === '7z') {
+            iconClass = 'fa-file-archive';
+            iconBg = 'zip';
+        } else if (doc.type && doc.type.startsWith('image/')) {
+            iconClass = 'fa-file-image';
+            iconBg = 'image';
+        }
+        
+        const statusClass = doc.status === 'valide' ? 'status-approved' : 
+                           (doc.status === 'correction' ? 'status-revision' : 'status-pending');
+        const statusText = doc.status === 'valide' ? '✓ Validé' : 
+                          (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
+        
+        return `
+            <div class="tfc-doc-item">
+                <div class="tfc-doc-info">
+                    <div class="tfc-doc-icon ${iconBg}">
+                        <i class="fa-regular ${iconClass}"></i>
                     </div>
-                    ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;"><strong>Retour :</strong><br>${esc(doc.feedback)}</div>` : ''}
+                    <div class="tfc-doc-details">
+                        <div class="tfc-doc-name">${esc(doc.name)}</div>
+                        <div class="tfc-doc-meta">
+                            <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</span>
+                            <span class="tfc-doc-status ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </div>
+                        ${doc.feedback ? `
+                            <div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;">
+                                <strong>📝 Retour :</strong><br>${esc(doc.feedback)}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="tfc-doc-actions">
+                    <a href="${doc.url}" target="_blank" class="tfc-btn-icon" download="${doc.name}">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
                 </div>
             </div>
-            <div class="tfc-doc-actions">
-                <a href="${doc.url}" target="_blank" class="tfc-btn-icon"><i class="fa-solid fa-download"></i></a>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 async function loadClientChat() {
@@ -3117,7 +3173,7 @@ async function loadTfcIaHistory() {
     }
 }
 
-// ==================== NOUVELLES FONCTIONS POUR LE TRAVAIL DE L'ÉTUDIANT ====================
+// ==================== FONCTIONS POUR LE TRAVAIL DE L'ÉTUDIANT (BASE64) ====================
 
 async function uploadStudentWork(fileInput) {
     if (!currentTfcClientId) {
@@ -3131,8 +3187,8 @@ async function uploadStudentWork(fileInput) {
         return;
     }
     
-    if (file.size > 50 * 1024 * 1024) { 
-        toast('Fichier trop volumineux (max 50MB)'); 
+    if (file.size > 15 * 1024 * 1024) { 
+        toast('Fichier trop volumineux (max 15MB)'); 
         return; 
     }
 
@@ -3144,69 +3200,54 @@ async function uploadStudentWork(fileInput) {
     if (progressFill) progressFill.style.width = '0%';
     if (progressText) progressText.textContent = 'Préparation...';
 
-    try {
-        const timestamp = Date.now();
-        const fileName = `${timestamp}_${file.name}`;
-        const storagePath = `tfc_clients/${currentTfcClientId}/student_works/${fileName}`;
+    // Encodage Base64 comme dans la partie formation
+    const reader = new FileReader();
+    
+    reader.onload = async function(e) {
+        const workId = Date.now().toString();
+        const workData = {
+            id: workId,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            url: e.target.result, // Contenu Base64
+            uploadedAt: Date.now(),
+            status: 'pending',
+            feedback: null,
+            feedbackDate: null
+        };
         
-        // Utilisation correcte de firebase.storage()
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(storagePath);
-        
-        const uploadTask = fileRef.put(file);
-        
-        uploadTask.on('state_changed',
-            (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                if (progressFill) progressFill.style.width = progress + '%';
-                if (progressText) progressText.textContent = `${Math.round(progress)}% uploadé...`;
-            },
-            (error) => {
-                console.error('Erreur upload:', error);
-                toast('Erreur upload: ' + error.message);
-                if (progressDiv) progressDiv.style.display = 'none';
-            },
-            async () => {
-                const downloadURL = await fileRef.getDownloadURL();
-                
-                const workId = timestamp.toString();
-                const workData = {
-                    id: workId,
-                    name: file.name,
-                    type: file.type,
-                    size: file.size,
-                    url: downloadURL,
-                    storagePath: storagePath,
-                    uploadedAt: Date.now(),
-                    status: 'pending',
-                    feedback: null,
-                    feedbackDate: null
-                };
-                
-                await db.ref(`tfc_clients/${currentTfcClientId}/student_works/${workId}`).set(workData);
-                
-                await db.ref('admin_notifications').push({
-                    type: 'new_student_work',
-                    clientId: currentTfcClientId,
-                    clientName: currentTfcClientData.name,
-                    workName: file.name,
-                    message: `${currentTfcClientData.name} a déposé un nouveau travail : ${file.name}`,
-                    timestamp: Date.now(),
-                    read: false
-                });
-                
-                toast('Travail déposé avec succès !');
-                if (progressDiv) progressDiv.style.display = 'none';
-                fileInput.value = '';
-                
-                await loadStudentWorks();
-            }
-        );
-    } catch (error) {
-        console.error('Erreur:', error);
-        toast('Erreur: ' + error.message);
+        try {
+            await db.ref(`tfc_clients/${currentTfcClientId}/student_works/${workId}`).set(workData);
+            
+            // Notification à l'admin
+            await db.ref('admin_notifications').push({
+                type: 'new_student_work',
+                clientId: currentTfcClientId,
+                clientName: currentTfcClientData.name,
+                workName: file.name,
+                message: `${currentTfcClientData.name} a déposé un nouveau travail : ${file.name}`,
+                timestamp: Date.now(),
+                read: false
+            });
+            
+            toast('Travail déposé avec succès !');
+            if (progressDiv) progressDiv.style.display = 'none';
+            fileInput.value = '';
+            await loadStudentWorks();
+        } catch (error) {
+            console.error(error);
+            toast('Erreur: ' + error.message);
+            if (progressDiv) progressDiv.style.display = 'none';
+        }
+    };
+    
+    reader.onerror = function() {
+        toast('Erreur lors de la lecture du fichier');
         if (progressDiv) progressDiv.style.display = 'none';
-    }
+    };
+    
+    reader.readAsDataURL(file);
 }
 
 async function loadStudentWorks() {
@@ -3440,11 +3481,30 @@ async function submitSharedWork() {
                 toast('Fichier trop volumineux (max 20MB)');
                 return;
             }
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(`tfc_clients/${currentShareClientId}/shared_works/${Date.now()}_${shareWorkFile.name}`);
-            await fileRef.put(shareWorkFile);
-            workData.fileUrl = await fileRef.getDownloadURL();
-            workData.fileName = shareWorkFile.name;
+            // Utilisation de Base64 pour le partage aussi
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                workData.fileUrl = e.target.result;
+                workData.fileName = shareWorkFile.name;
+                
+                await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
+                
+                await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({
+                    type: 'shared_work',
+                    message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`,
+                    workId: workData.id,
+                    timestamp: Date.now(),
+                    read: false
+                });
+                
+                toast(`Travail partagé avec succès à ${currentShareClientName} !`);
+                closeShareWorkModal();
+            };
+            reader.onerror = function() {
+                toast('Erreur lors de la lecture du fichier');
+            };
+            reader.readAsDataURL(shareWorkFile);
+            return;
         }
         
         await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
@@ -3459,10 +3519,6 @@ async function submitSharedWork() {
         
         toast(`Travail partagé avec succès à ${currentShareClientName} !`);
         closeShareWorkModal();
-        
-        if (window.clientsListRef) {
-            db.ref('tfc_clients').once('value', window.clientsListRef);
-        }
     } catch (error) {
         console.error(error);
         toast('Erreur: ' + error.message);
@@ -3714,14 +3770,16 @@ async function uploadTfcAvatar(input) {
     if (!input.files[0] || !currentTfcClientId) return;
     const file = input.files[0];
     if (file.size > 2 * 1024 * 1024) { toast('Image trop lourde (max 2MB)'); return; }
-    const storageRef = storage.ref();
-    const fileRef = storageRef.child(`tfc_clients/${currentTfcClientId}/avatar_${Date.now()}`);
-    await fileRef.put(file);
-    const url = await fileRef.getDownloadURL();
-    await db.ref(`tfc_clients/${currentTfcClientId}/avatar`).set(url);
-    currentTfcClientData.avatar = url;
-    document.getElementById('tfcClientAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
-    toast('Photo de profil mise à jour');
+    // Utilisation de Base64 pour l'avatar aussi
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const url = e.target.result;
+        await db.ref(`tfc_clients/${currentTfcClientId}/avatar`).set(url);
+        currentTfcClientData.avatar = url;
+        document.getElementById('tfcClientAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+        toast('Photo de profil mise à jour');
+    };
+    reader.readAsDataURL(file);
 }
 
 function loadClientsList() {
@@ -3908,20 +3966,31 @@ async function uploadTfcDocumentAdmin(fileInput) {
     if (!currentAdminClientId) return;
     const file = fileInput.files[0];
     if (!file) return;
-    if (file.size > 50 * 1024 * 1024) { toast('Trop volumineux'); return; }
-    const storageRef = storage.ref();
-    const fileRef = storageRef.child(`tfc_clients/${currentAdminClientId}/documents/${Date.now()}_${file.name}`);
-    await fileRef.put(file);
-    const downloadURL = await fileRef.getDownloadURL();
-    const docData = {
-        id: Date.now().toString(), name: file.name, type: file.type, size: file.size,
-        storagePath: fileRef.fullPath, url: downloadURL,
-        uploadedAt: Date.now(), uploadedBy: 'admin', status: 'valide', feedback: null
+    if (file.size > 10 * 1024 * 1024) { toast('Trop volumineux (max 10MB)'); return; }
+    
+    // Utilisation de Base64 pour l'admin aussi
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const docData = {
+            id: Date.now().toString(), 
+            name: file.name, 
+            type: file.type, 
+            size: file.size,
+            url: e.target.result,
+            uploadedAt: Date.now(), 
+            uploadedBy: 'admin', 
+            status: 'valide', 
+            feedback: null
+        };
+        await db.ref(`tfc_clients/${currentAdminClientId}/documents/${docData.id}`).set(docData);
+        toast('Document déposé');
+        fileInput.value = '';
+        loadAdminDocuments(currentAdminClientId);
     };
-    await db.ref(`tfc_clients/${currentAdminClientId}/documents/${docData.id}`).set(docData);
-    toast('Document déposé');
-    fileInput.value = '';
-    loadAdminDocuments(currentAdminClientId);
+    reader.onerror = function() {
+        toast('Erreur lors de la lecture du fichier');
+    };
+    reader.readAsDataURL(file);
 }
 
 function openFeedbackModal(clientId, docId, docName) {
