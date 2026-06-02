@@ -832,6 +832,20 @@
             margin-top: 12px;
             font-size: 0.8rem;
         }
+
+        .shared-work-card {
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .shared-work-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
     </style>
 </head>
 <body>
@@ -1092,6 +1106,9 @@
             <button class="tfc-tab-btn" onclick="showTfcSection('mywork')">
                 <i class="fa-solid fa-briefcase"></i> Mon travail
             </button>
+            <button class="tfc-tab-btn" onclick="showTfcSection('shared')">
+                <i class="fa-solid fa-share-alt"></i> Travaux reçus
+            </button>
         </div>
 
         <div id="tfcDocumentsSection" class="tfc-section active">
@@ -1305,6 +1322,17 @@
                     <h3><i class="fa-regular fa-clock"></i> Historique de mes travaux</h3>
                 </div>
                 <div id="studentWorksList"></div>
+            </div>
+        </div>
+
+        <div id="tfcSharedSection" class="tfc-section">
+            <div class="tfc-card">
+                <div class="tfc-card-header">
+                    <h3><i class="fa-solid fa-share-alt"></i> Travaux partagés par l'encadreur</h3>
+                </div>
+                <div id="sharedWorksList" style="padding: 16px;">
+                    <div style="text-align:center;padding:40px;color:var(--muted);">Chargement...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -2676,7 +2704,6 @@ async function uploadTfcDocumentWithStorage(fileInput) {
     const file = fileInput.files[0];
     if (!file) return;
     
-    // Limite à 10MB pour les documents TFC (comme dans la partie formation)
     if (file.size > 10 * 1024 * 1024) { 
         toast('Fichier trop volumineux (max 10MB)'); 
         return; 
@@ -2690,7 +2717,6 @@ async function uploadTfcDocumentWithStorage(fileInput) {
     if (progressFill) progressFill.style.width = '0%';
     if (progressText) progressText.textContent = 'Préparation...';
 
-    // UTILISATION DE BASE64 (comme dans la partie formation)
     const reader = new FileReader();
     
     reader.onload = async function(e) {
@@ -2700,7 +2726,7 @@ async function uploadTfcDocumentWithStorage(fileInput) {
             name: file.name, 
             type: file.type, 
             size: file.size,
-            url: e.target.result, // Contenu Base64
+            url: e.target.result,
             uploadedAt: Date.now(), 
             uploadedBy: 'client',
             status: 'attente', 
@@ -2710,7 +2736,6 @@ async function uploadTfcDocumentWithStorage(fileInput) {
         try {
             await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).set(docData);
             
-            // Notification pour l'admin
             await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
                 type: 'new_document',
                 message: `${currentTfcClientData.name} a déposé un document : ${file.name}`,
@@ -2721,7 +2746,7 @@ async function uploadTfcDocumentWithStorage(fileInput) {
             toast('Document déposé avec succès');
             if (progressDiv) progressDiv.style.display = 'none';
             fileInput.value = '';
-            loadClientDocuments(); // Recharge la liste
+            loadClientDocuments();
         } catch (error) {
             console.error(error);
             toast('Erreur: ' + error.message);
@@ -2742,7 +2767,7 @@ async function uploadTfcDocumentWithStorage(fileInput) {
         if (progressDiv) progressDiv.style.display = 'none';
     };
     
-    reader.readAsDataURL(file); // Encodage Base64
+    reader.readAsDataURL(file);
 }
 
 function showTfcSection(section) {
@@ -2764,6 +2789,49 @@ function showTfcSection(section) {
         document.getElementById('tfcMyWorkSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[3].classList.add('active');
         loadStudentWorks();
+    } else if (section === 'shared') {
+        document.getElementById('tfcSharedSection').classList.add('active');
+        document.querySelectorAll('.tfc-tab-btn')[4].classList.add('active');
+        loadSharedWorks();
+    }
+}
+
+// Fonction pour charger les travaux partagés chez le client
+async function loadSharedWorks() {
+    if (!currentTfcClientId) return;
+    
+    const container = document.getElementById('sharedWorksList');
+    if (!container) return;
+    
+    try {
+        const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).once('value');
+        const works = [];
+        snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
+        works.sort((a, b) => (b.sharedAt || 0) - (a.sharedAt || 0));
+        
+        if (works.length === 0) {
+            container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun travail partagé pour le moment</div>';
+            return;
+        }
+        
+        container.innerHTML = works.map(work => `
+            <div class="shared-work-card">
+                <div style="background: var(--blue-pale); padding: 12px 16px;">
+                    <div style="font-weight: 700; color: var(--blue);">📎 ${esc(work.title)}</div>
+                    <div style="font-size: 0.7rem; color: var(--muted);">Partagé par ${esc(work.sharedBy)} le ${new Date(work.sharedAt).toLocaleString()}</div>
+                </div>
+                <div style="padding: 16px;">
+                    ${work.description ? `<p style="font-size: 0.85rem; margin-bottom: 12px;">${esc(work.description)}</p>` : ''}
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        ${work.fileUrl ? `<a href="${work.fileUrl}" target="_blank" class="file-dl" style="display: inline-flex;"><i class="fa-solid fa-download"></i> ${esc(work.fileName)}</a>` : ''}
+                        ${work.link ? `<a href="${work.link}" target="_blank" class="file-dl" style="display: inline-flex; background: var(--blue-pale); color: var(--blue);"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Erreur chargement travaux partagés:', error);
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Erreur de chargement</div>';
     }
 }
 
@@ -2934,8 +3002,10 @@ function loadTfcPosts() {
             return;
         }
         
+        const isAdmin = currentUser?.email === ADMIN_EMAIL;
+        
         feedDiv.innerHTML = posts.map(post => `
-            <div class="tfc-feed-post">
+            <div class="tfc-feed-post" id="tfc-post-${post.id}">
                 <div class="tfc-post-header">
                     <div class="tfc-post-avatar">
                         ${post.authorAvatar ? `<img src="${post.authorAvatar}">` : '<i class="fa-solid fa-user-graduate"></i>'}
@@ -2945,10 +3015,16 @@ function loadTfcPosts() {
                         <div class="tfc-post-univ">${esc(post.authorUniv || '')}</div>
                     </div>
                     <div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}</div>
-                    ${post.authorId === currentTfcClientId ? `
                     <div class="post-actions-menu" style="display:flex;gap:5px;">
-                        <button class="post-delete-btn" onclick="deleteTfcPost('${post.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
-                    </div>` : ''}
+                        ${(post.authorId === currentTfcClientId || isAdmin) ? `
+                            <button onclick="editTfcPost('${post.id}')" class="tfc-btn-icon" title="Modifier" style="width:32px;height:32px;">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteTfcPost('${post.id}')" class="tfc-btn-icon" title="Supprimer" style="width:32px;height:32px;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
                 <div class="tfc-post-content">
                     ${post.content ? `<div style="white-space:pre-wrap">${esc(post.content)}</div>` : ''}
@@ -3003,6 +3079,21 @@ async function deleteTfcPost(postId) {
     }
 }
 
+function editTfcPost(postId) {
+    const newContent = prompt("Modifier votre publication :");
+    if (newContent && newContent.trim()) {
+        db.ref(`tfc_posts/${postId}`).update({
+            content: newContent.trim(),
+            editedAt: Date.now(),
+            edited: true
+        }).then(() => {
+            toast('Publication modifiée avec succès');
+        }).catch(error => {
+            toast('Erreur: ' + error.message);
+        });
+    }
+}
+
 async function loadClientDocuments() {
     if (!currentTfcClientId) return;
     const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/documents`).once('value');
@@ -3015,7 +3106,6 @@ async function loadClientDocuments() {
         return;
     }
     container.innerHTML = docsList.map(doc => {
-        // Déterminer l'icône selon l'extension
         let iconClass = 'fa-file';
         let iconBg = 'file';
         const ext = doc.name.split('.').pop().toLowerCase();
@@ -3046,7 +3136,7 @@ async function loadClientDocuments() {
                           (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
         
         return `
-            <div class="tfc-doc-item">
+            <div class="tfc-doc-item" id="doc-item-${doc.id}">
                 <div class="tfc-doc-info">
                     <div class="tfc-doc-icon ${iconBg}">
                         <i class="fa-regular ${iconClass}"></i>
@@ -3070,10 +3160,51 @@ async function loadClientDocuments() {
                     <a href="${doc.url}" target="_blank" class="tfc-btn-icon" download="${doc.name}">
                         <i class="fa-solid fa-download"></i>
                     </a>
+                    <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon" title="Modifier">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name)}')" class="tfc-btn-icon" title="Supprimer">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
                 </div>
             </div>
         `;
     }).join('');
+}
+
+async function deleteClientDocument(docId, docName) {
+    if (!confirm(`Supprimer définitivement le document "${docName}" ?`)) return;
+    
+    try {
+        await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).remove();
+        toast('Document supprimé avec succès');
+        
+        await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
+            type: 'document_deleted',
+            message: `${currentTfcClientData.name} a supprimé un document : ${docName}`,
+            timestamp: Date.now(),
+            read: false
+        });
+        
+        loadClientDocuments();
+    } catch (error) {
+        console.error(error);
+        toast('Erreur lors de la suppression');
+    }
+}
+
+function editClientDocument(docId) {
+    const newName = prompt("Nouveau nom du document :");
+    if (newName && newName.trim()) {
+        db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).update({
+            name: newName.trim()
+        }).then(() => {
+            toast('Document renommé avec succès');
+            loadClientDocuments();
+        }).catch(error => {
+            toast('Erreur: ' + error.message);
+        });
+    }
 }
 
 async function loadClientChat() {
@@ -3200,7 +3331,6 @@ async function uploadStudentWork(fileInput) {
     if (progressFill) progressFill.style.width = '0%';
     if (progressText) progressText.textContent = 'Préparation...';
 
-    // Encodage Base64 comme dans la partie formation
     const reader = new FileReader();
     
     reader.onload = async function(e) {
@@ -3210,7 +3340,7 @@ async function uploadStudentWork(fileInput) {
             name: file.name,
             type: file.type,
             size: file.size,
-            url: e.target.result, // Contenu Base64
+            url: e.target.result,
             uploadedAt: Date.now(),
             status: 'pending',
             feedback: null,
@@ -3220,7 +3350,6 @@ async function uploadStudentWork(fileInput) {
         try {
             await db.ref(`tfc_clients/${currentTfcClientId}/student_works/${workId}`).set(workData);
             
-            // Notification à l'admin
             await db.ref('admin_notifications').push({
                 type: 'new_student_work',
                 clientId: currentTfcClientId,
@@ -3481,7 +3610,6 @@ async function submitSharedWork() {
                 toast('Fichier trop volumineux (max 20MB)');
                 return;
             }
-            // Utilisation de Base64 pour le partage aussi
             const reader = new FileReader();
             reader.onload = async function(e) {
                 workData.fileUrl = e.target.result;
@@ -3718,6 +3846,7 @@ async function doClientLogin() {
     loadTfcIaHistory();
     loadTfcPosts();
     loadStudentWorks();
+    loadSharedWorks();
     showTfcSection('documents');
 }
 
@@ -3770,7 +3899,6 @@ async function uploadTfcAvatar(input) {
     if (!input.files[0] || !currentTfcClientId) return;
     const file = input.files[0];
     if (file.size > 2 * 1024 * 1024) { toast('Image trop lourde (max 2MB)'); return; }
-    // Utilisation de Base64 pour l'avatar aussi
     const reader = new FileReader();
     reader.onload = async function(e) {
         const url = e.target.result;
@@ -3956,10 +4084,28 @@ async function loadAdminDocuments(clientId) {
             </div>
             <div style="display:flex;gap:8px;">
                 <a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a>
+                <button onclick="editAdminDocument('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--blue-pale);"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteAdminDocument('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--green-pale);color:var(--green);"><i class="fa-solid fa-trash"></i></button>
                 <button onclick="openFeedbackModal('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--blue-pale);">✏️</button>
             </div>
         </div>
     `).join('');
+}
+
+async function editAdminDocument(clientId, docId, docName) {
+    const newName = prompt("Modifier le nom du document :", docName);
+    if (newName && newName.trim()) {
+        await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update({ name: newName.trim() });
+        toast('Document renommé');
+        loadAdminDocuments(clientId);
+    }
+}
+
+async function deleteAdminDocument(clientId, docId, docName) {
+    if (!confirm(`Supprimer le document "${docName}" ?`)) return;
+    await db.ref(`tfc_clients/${clientId}/documents/${docId}`).remove();
+    toast('Document supprimé');
+    loadAdminDocuments(clientId);
 }
 
 async function uploadTfcDocumentAdmin(fileInput) {
@@ -3968,7 +4114,6 @@ async function uploadTfcDocumentAdmin(fileInput) {
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) { toast('Trop volumineux (max 10MB)'); return; }
     
-    // Utilisation de Base64 pour l'admin aussi
     const reader = new FileReader();
     reader.onload = async function(e) {
         const docData = {
@@ -4281,13 +4426,8 @@ function toggleClientTab(clientId, tab) {
     }
 }
 
-// Fonction addClientLoginTab vide - le tab et le formulaire sont déjà dans le HTML
-function addClientLoginTab() {
-    // Le tab et le formulaire sont déjà dans le HTML
-    // Cette fonction est conservée pour compatibilité mais ne fait rien
-}
+function addClientLoginTab() {}
 
-// Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     addClientLoginTab();
@@ -4311,6 +4451,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadTfcIaHistory();
                 loadTfcPosts();
                 loadStudentWorks();
+                loadSharedWorks();
                 showTfcSection('documents');
             }
         });
