@@ -1434,12 +1434,13 @@
         <div class="form-field"><label>Titre du travail</label><input type="text" id="shareWorkTitle" placeholder="Ex: Correction du mémoire, Document de référence..."></div>
         <div class="form-field"><label>Description / Commentaire</label><textarea id="shareWorkDescription" rows="4" placeholder="Détails sur le travail partagé..."></textarea></div>
         <div class="form-field"><label>Fichier (optionnel)</label>
-    <label for="shareWorkFile" class="file-drop-area" style="cursor:pointer;display:block;">
-        <i class="fa-solid fa-cloud-upload-alt"></i>
-        <p>Cliquez pour joindre un fichier (PDF, DOCX, ZIP, image)</p>
-    </label>
-    <input type="file" id="shareWorkFile" style="display:none" accept=".pdf,.docx,.zip,.jpg,.jpeg,.png" onchange="selectedShareWorkFile = this.files[0]; document.getElementById('shareWorkFileName').textContent = this.files[0] ? 'Fichier sélectionné : ' + this.files[0].name : '';">
-</div>
+            <label for="shareWorkFile" class="file-drop-area" style="cursor:pointer;display:block;">
+                <i class="fa-solid fa-cloud-upload-alt"></i>
+                <p>Cliquez pour joindre un fichier (PDF, DOCX, ZIP, image)</p>
+            </label>
+            <input type="file" id="shareWorkFile" style="display:none" accept=".pdf,.docx,.zip,.jpg,.jpeg,.png">
+            <div id="shareWorkFileName" style="font-size:0.75rem;color:var(--green);margin-top:5px;"></div>
+        </div>
         <div class="form-field"><label>Lien supplémentaire (optionnel)</label><input type="url" id="shareWorkLink" placeholder="https://..."></div>
         <button class="btn-auth" onclick="submitSharedWork()" style="margin-top:16px;">Partager le travail</button>
     </div>
@@ -3561,15 +3562,12 @@ document.getElementById('shareWorkFile')?.addEventListener('change', function(e)
     }
 });
 
-// Variable pour stocker les fichiers
-let selectedShareWorkFile = null; 
-
 async function submitSharedWork() {
     const title = document.getElementById('shareWorkTitle').value.trim();
     const description = document.getElementById('shareWorkDescription').value.trim();
     const link = document.getElementById('shareWorkLink').value.trim();
     
-    if (!title && !description && !selectedShareWorkFile && !link) {
+    if (!title && !description && !shareWorkFile && !link) {
         toast('Veuillez ajouter au moins un titre, une description, un fichier ou un lien');
         return;
     }
@@ -3581,23 +3579,23 @@ async function submitSharedWork() {
         title: title || 'Travail partagé',
         description: description || '',
         link: link || null,
-        sharedBy: currentProfile?.fullName || currentUser.email.split('@')[0],
+        sharedBy: currentProfile.fullName || currentUser.email.split('@')[0],
         sharedByEmail: currentUser.email,
         sharedAt: Date.now(),
         read: false
     };
     
     try {
-        if (selectedShareWorkFile) {
-    if (selectedShareWorkFile.size > 20 * 1024 * 1024) {
-        toast('Fichier trop volumineux (max 20MB)');
-        return;
-    }
+        if (shareWorkFile) {
+            if (shareWorkFile.size > 20 * 1024 * 1024) {
+                toast('Fichier trop volumineux (max 20MB)');
+                return;
+            }
             const storageRef = storage.ref();
-            const fileRef = storageRef.child(`tfc_clients/${currentShareClientId}/shared_works/${Date.now()}_${selectedShareWorkFile.name}`);
-            await fileRef.put(selectedShareWorkFile);
+            const fileRef = storageRef.child(`tfc_clients/${currentShareClientId}/shared_works/${Date.now()}_${shareWorkFile.name}`);
+            await fileRef.put(shareWorkFile);
             workData.fileUrl = await fileRef.getDownloadURL();
-            workData.fileName = selectedShareWorkFile.name;
+            workData.fileName = shareWorkFile.name;
         }
         
         await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
@@ -3611,15 +3609,6 @@ async function submitSharedWork() {
         });
         
         toast(`Travail partagé avec succès à ${currentShareClientName} !`);
-        
-        // --- RÉINITIALISATION DES CHAMPS APRÈS SUCCÈS ---
-        document.getElementById('shareWorkTitle').value = '';
-        document.getElementById('shareWorkDescription').value = '';
-        document.getElementById('shareWorkLink').value = '';
-        document.getElementById('shareWorkFile').value = ''; // Reset l'input HTML
-        document.getElementById('shareWorkFileName').textContent = ''; // Vide le texte affiché
-        selectedShareWorkFile = null; // Vide la variable JavaScript
-        
         closeShareWorkModal();
         
         if (window.clientsListRef) {
