@@ -2720,6 +2720,7 @@ function closeTfcCompose() {
     tfcPostMediaFile = null;
 }
 
+// Fonction submitTfcPost corrigée - utilise la MÊME procédure que submitPost (FileReader en base64)
 async function submitTfcPost() {
     const content = document.getElementById('tfcPostContent').value.trim();
     
@@ -2729,14 +2730,7 @@ async function submitTfcPost() {
         return;
     }
     
-    if (currentTfcPostType === 'link' && !content && !tfcPostMediaFile) {
-        const linkUrl = tfcLinkInput ? tfcLinkInput.value.trim() : null;
-        if (!linkUrl || !linkUrl.startsWith('http')) {
-            toast('Veuillez entrer un lien valide');
-            return;
-        }
-    }
-    
+    // Construction des données de base
     const postData = {
         authorId: currentTfcClientId,
         authorName: currentTfcClientData.name,
@@ -2749,83 +2743,61 @@ async function submitTfcPost() {
         commentsCount: 0
     };
     
-    const progressDiv = document.getElementById('tfcPostProgress');
-    const progressFill = document.getElementById('tfcPostProgressFill');
-    
-    try {
-        // Gestion du téléversement de fichier
-        if (currentTfcPostType === 'photo' && tfcPostMediaFile) {
-            if (progressDiv) progressDiv.style.display = 'block';
-            if (progressFill) progressFill.style.width = '0%';
-            
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/photos/${Date.now()}_${tfcPostMediaFile.name}`);
-            
-            const uploadTask = fileRef.put(tfcPostMediaFile);
-            
-            await new Promise((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (progressFill) progressFill.style.width = progress + '%';
-                    },
-                    (error) => reject(error),
-                    async () => {
-                        postData.mediaUrl = await fileRef.getDownloadURL();
-                        postData.mediaType = 'image';
-                        resolve();
-                    }
-                );
-            });
-            
-            if (progressDiv) progressDiv.style.display = 'none';
-        } 
-        else if (currentTfcPostType === 'document' && tfcPostMediaFile) {
-            if (progressDiv) progressDiv.style.display = 'block';
-            if (progressFill) progressFill.style.width = '0%';
-            
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(`tfc_posts/${currentTfcClientId}/documents/${Date.now()}_${tfcPostMediaFile.name}`);
-            
-            const uploadTask = fileRef.put(tfcPostMediaFile);
-            
-            await new Promise((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (progressFill) progressFill.style.width = progress + '%';
-                    },
-                    (error) => reject(error),
-                    async () => {
-                        postData.fileUrl = await fileRef.getDownloadURL();
-                        postData.fileName = tfcPostMediaFile.name;
-                        resolve();
-                    }
-                );
-            });
-            
-            if (progressDiv) progressDiv.style.display = 'none';
-        } 
-        else if (currentTfcPostType === 'link' && tfcLinkInput) {
-            const linkUrl = tfcLinkInput.value.trim();
-            if (!linkUrl || !linkUrl.startsWith('http')) {
-                toast('Lien invalide');
-                return;
-            }
-            postData.linkUrl = linkUrl;
+    // Gestion du fichier (photo ou document) - Utilisation de FileReader comme dans submitPost
+    if ((currentTfcPostType === 'photo' || currentTfcPostType === 'document') && tfcPostMediaFile) {
+        const maxSize = currentTfcPostType === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024;
+        if (tfcPostMediaFile.size > maxSize) {
+            toast(`Fichier trop volumineux (max ${currentTfcPostType === 'photo' ? '5' : '20'}MB)`);
+            return;
         }
         
-        // Sauvegarde dans la base de données
+        // Utilisation de FileReader comme dans submitPost
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                if (currentTfcPostType === 'photo') {
+                    postData.mediaUrl = e.target.result;
+                    postData.mediaType = 'image';
+                } else {
+                    postData.fileUrl = e.target.result;
+                    postData.fileName = tfcPostMediaFile.name;
+                }
+                
+                await db.ref('tfc_posts').push(postData);
+                toast('Publication partagée avec succès !');
+                closeTfcCompose();
+                loadTfcPosts();
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error);
+                toast('Erreur: ' + error.message);
+            }
+        };
+        reader.onerror = function() {
+            toast('Erreur lors de la lecture du fichier');
+        };
+        reader.readAsDataURL(tfcPostMediaFile);
+        return;
+    }
+    
+    // Gestion du lien
+    if (currentTfcPostType === 'link' && tfcLinkInput) {
+        const linkUrl = tfcLinkInput.value.trim();
+        if (!linkUrl || !linkUrl.startsWith('http')) {
+            toast('Lien invalide');
+            return;
+        }
+        postData.linkUrl = linkUrl;
+    }
+    
+    // Publication simple (texte ou lien)
+    try {
         await db.ref('tfc_posts').push(postData);
-        
         toast('Publication partagée avec succès !');
         closeTfcCompose();
         loadTfcPosts();
-        
     } catch (error) {
-        console.error('Erreur détaillée:', error);
+        console.error(error);
         toast('Erreur: ' + error.message);
-        if (progressDiv) progressDiv.style.display = 'none';
     }
 }
 
@@ -3445,6 +3417,7 @@ function closeAdminTfcPost() {
     adminTfcPostMediaFile = null;
 }
 
+// Fonction submitAdminTfcPost corrigée - utilise aussi FileReader
 async function submitAdminTfcPost() {
     const content = document.getElementById('adminTfcPostContent').value.trim();
     if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') {
@@ -3465,68 +3438,56 @@ async function submitAdminTfcPost() {
         commentsCount: 0
     };
     
-    const progressDiv = document.getElementById('adminTfcPostProgress');
-    const progressFill = document.getElementById('adminTfcPostProgressFill');
+    // Gestion du fichier avec FileReader
+    if ((adminTfcPostType === 'photo' || adminTfcPostType === 'document') && adminTfcPostMediaFile) {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                if (adminTfcPostType === 'photo') {
+                    postData.mediaUrl = e.target.result;
+                } else {
+                    postData.fileUrl = e.target.result;
+                    postData.fileName = adminTfcPostMediaFile.name;
+                }
+                
+                await db.ref('tfc_posts').push(postData);
+                
+                const clientsSnapshot = await db.ref('tfc_clients').once('value');
+                clientsSnapshot.forEach(client => {
+                    db.ref(`tfc_clients/${client.key}/notifications`).push({
+                        type: 'admin_announcement',
+                        message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
+                        timestamp: Date.now(),
+                        read: false
+                    });
+                });
+                
+                toast('Annonce publiée pour tous les clients !');
+                closeAdminTfcPost();
+                if (currentTfcClientId) loadTfcPosts();
+            } catch (error) {
+                console.error(error);
+                toast('Erreur: ' + error.message);
+            }
+        };
+        reader.onerror = function() {
+            toast('Erreur lors de la lecture du fichier');
+        };
+        reader.readAsDataURL(adminTfcPostMediaFile);
+        return;
+    }
+    
+    // Gestion du lien
+    if (adminTfcPostType === 'link' && adminLinkInputElem) {
+        const linkUrl = adminLinkInputElem.value.trim();
+        if (!linkUrl || !linkUrl.startsWith('http')) {
+            toast('Lien invalide');
+            return;
+        }
+        postData.linkUrl = linkUrl;
+    }
     
     try {
-        if (adminTfcPostType === 'photo' && adminTfcPostMediaFile) {
-            if (progressDiv) progressDiv.style.display = 'block';
-            if (progressFill) progressFill.style.width = '0%';
-            
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(`tfc_posts/admin/announcements/${Date.now()}_${adminTfcPostMediaFile.name}`);
-            
-            const uploadTask = fileRef.put(adminTfcPostMediaFile);
-            
-            await new Promise((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (progressFill) progressFill.style.width = progress + '%';
-                    },
-                    (error) => reject(error),
-                    async () => {
-                        postData.mediaUrl = await fileRef.getDownloadURL();
-                        resolve();
-                    }
-                );
-            });
-            
-            if (progressDiv) progressDiv.style.display = 'none';
-        } else if (adminTfcPostType === 'document' && adminTfcPostMediaFile) {
-            if (progressDiv) progressDiv.style.display = 'block';
-            if (progressFill) progressFill.style.width = '0%';
-            
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(`tfc_posts/admin/documents/${Date.now()}_${adminTfcPostMediaFile.name}`);
-            
-            const uploadTask = fileRef.put(adminTfcPostMediaFile);
-            
-            await new Promise((resolve, reject) => {
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        if (progressFill) progressFill.style.width = progress + '%';
-                    },
-                    (error) => reject(error),
-                    async () => {
-                        postData.fileUrl = await fileRef.getDownloadURL();
-                        postData.fileName = adminTfcPostMediaFile.name;
-                        resolve();
-                    }
-                );
-            });
-            
-            if (progressDiv) progressDiv.style.display = 'none';
-        } else if (adminTfcPostType === 'link' && adminLinkInputElem) {
-            const linkUrl = adminLinkInputElem.value.trim();
-            if (!linkUrl || !linkUrl.startsWith('http')) {
-                toast('Lien invalide');
-                return;
-            }
-            postData.linkUrl = linkUrl;
-        }
-        
         await db.ref('tfc_posts').push(postData);
         
         const clientsSnapshot = await db.ref('tfc_clients').once('value');
@@ -3542,11 +3503,9 @@ async function submitAdminTfcPost() {
         toast('Annonce publiée pour tous les clients !');
         closeAdminTfcPost();
         if (currentTfcClientId) loadTfcPosts();
-        
     } catch (error) {
         console.error(error);
         toast('Erreur: ' + error.message);
-        if (progressDiv) progressDiv.style.display = 'none';
     }
 }
 
