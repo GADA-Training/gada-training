@@ -342,6 +342,14 @@
             color: var(--green);
         }
         
+        /* ========== CSS CORRIGÉ POUR LES SECTIONS TFC ========== */
+        .tfc-section {
+            display: none;
+        }
+        .tfc-section.active {
+            display: block;
+        }
+        
         .tfc-doc-item {
             display: flex;
             align-items: center;
@@ -795,6 +803,7 @@
         <div class="auth-tabs">
             <button class="auth-tab-btn active" id="loginTabBtn" onclick="switchTab('login')">Se connecter</button>
             <button class="auth-tab-btn" id="registerTabBtn" onclick="switchTab('register')">Créer un compte</button>
+            <button class="auth-tab-btn" id="clientLoginTabBtn" onclick="switchTab('client_login')"><i class="fa-solid fa-users"></i> Espace TFC</button>
         </div>
 
         <div id="loginForm">
@@ -1586,6 +1595,9 @@ let adminTfcGlobalPostTarget = null;
 let currentShareClientId = null;
 let currentShareClientName = null;
 let shareWorkFile = null;
+
+// Listener pour les posts TFC
+let tfcPostsListener = null;
 
 // ==================== FONCTIONS UTILITAIRES ====================
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
@@ -2640,7 +2652,7 @@ function showTfcSection(section) {
     } else if (section === 'feed') {
         document.getElementById('tfcFeedSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[1].classList.add('active');
-        loadTfcPosts();
+        loadTfcPosts(); // Le listener est déjà actif
     } else if (section === 'ressources') {
         document.getElementById('tfcRessourcesSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[2].classList.add('active');
@@ -2720,17 +2732,15 @@ function closeTfcCompose() {
     tfcPostMediaFile = null;
 }
 
-// Fonction submitTfcPost corrigée - utilise la MÊME procédure que submitPost (FileReader en base64)
+// Fonction submitTfcPost corrigée - utilise FileReader comme dans submitPost
 async function submitTfcPost() {
     const content = document.getElementById('tfcPostContent').value.trim();
     
-    // Vérification du contenu
     if (!content && !tfcPostMediaFile && currentTfcPostType !== 'link') {
         toast('Veuillez écrire quelque chose ou joindre un fichier');
         return;
     }
     
-    // Construction des données de base
     const postData = {
         authorId: currentTfcClientId,
         authorName: currentTfcClientData.name,
@@ -2743,7 +2753,7 @@ async function submitTfcPost() {
         commentsCount: 0
     };
     
-    // Gestion du fichier (photo ou document) - Utilisation de FileReader comme dans submitPost
+    // Gestion du fichier avec FileReader
     if ((currentTfcPostType === 'photo' || currentTfcPostType === 'document') && tfcPostMediaFile) {
         const maxSize = currentTfcPostType === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024;
         if (tfcPostMediaFile.size > maxSize) {
@@ -2751,7 +2761,6 @@ async function submitTfcPost() {
             return;
         }
         
-        // Utilisation de FileReader comme dans submitPost
         const reader = new FileReader();
         reader.onload = async function(e) {
             try {
@@ -2766,9 +2775,9 @@ async function submitTfcPost() {
                 await db.ref('tfc_posts').push(postData);
                 toast('Publication partagée avec succès !');
                 closeTfcCompose();
-                loadTfcPosts();
+                showTfcSection('feed');
             } catch (error) {
-                console.error('Erreur lors de la sauvegarde:', error);
+                console.error(error);
                 toast('Erreur: ' + error.message);
             }
         };
@@ -2794,59 +2803,69 @@ async function submitTfcPost() {
         await db.ref('tfc_posts').push(postData);
         toast('Publication partagée avec succès !');
         closeTfcCompose();
-        loadTfcPosts();
+        showTfcSection('feed');
     } catch (error) {
         console.error(error);
         toast('Erreur: ' + error.message);
     }
 }
 
-async function loadTfcPosts() {
-    const snapshot = await db.ref('tfc_posts').orderByChild('timestamp').once('value');
-    const posts = [];
-    snapshot.forEach(child => posts.push({ id: child.key, ...child.val() }));
-    posts.reverse();
-    
+// Fonction loadTfcPosts avec écoute en temps réel
+function loadTfcPosts() {
     const feedDiv = document.getElementById('tfcPostsFeed');
     if (!feedDiv) return;
     
-    if (posts.length === 0) {
-        feedDiv.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>Soyez le premier à publier !</p></div>';
-        return;
+    if (tfcPostsListener) {
+        db.ref('tfc_posts').off('value', tfcPostsListener);
     }
     
-    feedDiv.innerHTML = posts.map(post => `
-        <div class="tfc-feed-post">
-            <div class="tfc-post-header">
-                <div class="tfc-post-avatar">
-                    ${post.authorAvatar ? `<img src="${post.authorAvatar}">` : '<i class="fa-solid fa-user-graduate"></i>'}
+    feedDiv.innerHTML = '<div class="empty-state"><i class="fa-solid fa-spinner fa-pulse"></i><p>Chargement des publications...</p></div>';
+    
+    tfcPostsListener = (snapshot) => {
+        const posts = [];
+        snapshot.forEach(child => posts.push({ id: child.key, ...child.val() }));
+        posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        
+        if (posts.length === 0) {
+            feedDiv.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>Soyez le premier à publier !</p></div>';
+            return;
+        }
+        
+        feedDiv.innerHTML = posts.map(post => `
+            <div class="tfc-feed-post">
+                <div class="tfc-post-header">
+                    <div class="tfc-post-avatar">
+                        ${post.authorAvatar ? `<img src="${post.authorAvatar}">` : '<i class="fa-solid fa-user-graduate"></i>'}
+                    </div>
+                    <div class="tfc-post-author">
+                        <div class="tfc-post-name">${esc(post.authorName)}</div>
+                        <div class="tfc-post-univ">${esc(post.authorUniv || '')}</div>
+                    </div>
+                    <div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}</div>
+                    ${post.authorId === currentTfcClientId ? `
+                    <div class="post-actions-menu" style="display:flex;gap:5px;">
+                        <button class="post-delete-btn" onclick="deleteTfcPost('${post.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                    </div>` : ''}
                 </div>
-                <div class="tfc-post-author">
-                    <div class="tfc-post-name">${esc(post.authorName)}</div>
-                    <div class="tfc-post-univ">${esc(post.authorUniv || '')}</div>
+                <div class="tfc-post-content">
+                    ${post.content ? `<div style="white-space:pre-wrap">${esc(post.content)}</div>` : ''}
+                    ${post.mediaUrl ? `<div class="tfc-post-media"><img src="${post.mediaUrl}" onclick="openLightbox('${post.mediaUrl}')"></div>` : ''}
+                    ${post.fileUrl ? `<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:12px;display:inline-flex;"><i class="fa-solid fa-download"></i> ${esc(post.fileName)}</a>` : ''}
+                    ${post.linkUrl ? `<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:12px;"><i class="fa-solid fa-link"></i> Voir le lien</a>` : ''}
                 </div>
-                <div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}</div>
-                ${post.authorId === currentTfcClientId ? `
-                <div class="post-actions-menu" style="display:flex;gap:5px;">
-                    <button class="post-delete-btn" onclick="deleteTfcPost('${post.id}')" style="background:none;border:none;color:var(--muted);cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
-                </div>` : ''}
+                <div class="tfc-post-footer">
+                    <button onclick="likeTfcPost('${post.id}')" class="tfc-post-action">
+                        <i class="fa-regular fa-heart"></i> ${post.likes || 0}
+                    </button>
+                    <button onclick="commentTfcPost('${post.id}')" class="tfc-post-action">
+                        <i class="fa-regular fa-comment"></i> ${post.commentsCount || 0}
+                    </button>
+                </div>
             </div>
-            <div class="tfc-post-content">
-                ${post.content ? `<div style="white-space:pre-wrap">${esc(post.content)}</div>` : ''}
-                ${post.mediaUrl ? `<div class="tfc-post-media"><img src="${post.mediaUrl}" onclick="openLightbox('${post.mediaUrl}')"></div>` : ''}
-                ${post.fileUrl ? `<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:12px;display:inline-flex;"><i class="fa-solid fa-download"></i> ${esc(post.fileName)}</a>` : ''}
-                ${post.linkUrl ? `<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:12px;"><i class="fa-solid fa-link"></i> Voir le lien</a>` : ''}
-            </div>
-            <div class="tfc-post-footer">
-                <button onclick="likeTfcPost('${post.id}')" class="tfc-post-action">
-                    <i class="fa-regular fa-heart"></i> ${post.likes || 0}
-                </button>
-                <button onclick="commentTfcPost('${post.id}')" class="tfc-post-action">
-                    <i class="fa-regular fa-comment"></i> ${post.commentsCount || 0}
-                </button>
-            </div>
-        </div>
-    `).join('');
+        `).join('');
+    };
+    
+    db.ref('tfc_posts').orderByChild('timestamp').on('value', tfcPostsListener);
 }
 
 function likeTfcPost(postId) {
@@ -2871,7 +2890,6 @@ function commentTfcPost(postId) {
             return post;
         });
         toast('Commentaire ajouté');
-        loadTfcPosts();
     }
 }
 
@@ -2879,7 +2897,6 @@ async function deleteTfcPost(postId) {
     if (confirm('Supprimer cette publication ?')) {
         await db.ref(`tfc_posts/${postId}`).remove();
         toast('Publication supprimée');
-        loadTfcPosts();
     }
 }
 
@@ -3039,11 +3056,13 @@ async function doClientLogin() {
     loadClientDocuments();
     loadClientChat();
     loadTfcIaHistory();
+    loadTfcPosts(); // Démarrer l'écoute des posts
     showTfcSection('documents');
 }
 
 function logoutTfcClient() {
     if (currentTfcClientId) db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
+    if (tfcPostsListener) db.ref('tfc_posts').off('value', tfcPostsListener);
     currentTfcClientId = null;
     currentTfcClientData = null;
     sessionStorage.clear();
@@ -3417,7 +3436,7 @@ function closeAdminTfcPost() {
     adminTfcPostMediaFile = null;
 }
 
-// Fonction submitAdminTfcPost corrigée - utilise aussi FileReader
+// Fonction submitAdminTfcPost corrigée
 async function submitAdminTfcPost() {
     const content = document.getElementById('adminTfcPostContent').value.trim();
     if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') {
@@ -3438,7 +3457,6 @@ async function submitAdminTfcPost() {
         commentsCount: 0
     };
     
-    // Gestion du fichier avec FileReader
     if ((adminTfcPostType === 'photo' || adminTfcPostType === 'document') && adminTfcPostMediaFile) {
         const reader = new FileReader();
         reader.onload = async function(e) {
@@ -3477,7 +3495,6 @@ async function submitAdminTfcPost() {
         return;
     }
     
-    // Gestion du lien
     if (adminTfcPostType === 'link' && adminLinkInputElem) {
         const linkUrl = adminLinkInputElem.value.trim();
         if (!linkUrl || !linkUrl.startsWith('http')) {
@@ -3805,29 +3822,10 @@ function toggleClientTab(clientId, tab) {
     }
 }
 
+// Fonction addClientLoginTab vide - le tab et le formulaire sont déjà dans le HTML
 function addClientLoginTab() {
-    const authTabs = document.querySelector('.auth-tabs');
-    if (authTabs && !document.getElementById('clientLoginTabBtn')) {
-        const clientBtn = document.createElement('button');
-        clientBtn.className = 'auth-tab-btn';
-        clientBtn.id = 'clientLoginTabBtn';
-        clientBtn.onclick = () => switchTab('client_login');
-        clientBtn.innerHTML = '<i class="fa-solid fa-users"></i> Espace TFC';
-        authTabs.appendChild(clientBtn);
-    }
-    const authBox = document.querySelector('.auth-box');
-    if (!document.getElementById('clientLoginForm')) {
-        const clientForm = document.createElement('div');
-        clientForm.id = 'clientLoginForm';
-        clientForm.style.display = 'none';
-        clientForm.innerHTML = `
-            <div class="form-field"><label>Code d'accès</label><input type="text" id="clientAccessCode" placeholder="Ex: G7H3K9"></div>
-            <div class="form-field"><label>Email</label><input type="email" id="clientEmail" placeholder="votre@email.com"></div>
-            <button class="btn-auth" onclick="doClientLogin()">Accéder</button>
-            <div style="text-align:center;margin-top:12px"><a onclick="switchTab('login')" style="font-size:0.78rem;cursor:pointer;">← Retour</a></div>
-        `;
-        authBox.appendChild(clientForm);
-    }
+    // Le tab et le formulaire sont déjà dans le HTML
+    // Cette fonction est conservée pour compatibilité mais ne fait rien
 }
 
 // Initialisation
@@ -3852,6 +3850,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadClientDocuments();
                 loadClientChat();
                 loadTfcIaHistory();
+                loadTfcPosts();
                 showTfcSection('documents');
             }
         });
