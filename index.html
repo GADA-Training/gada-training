@@ -1672,7 +1672,7 @@ Session 14 - Carte thématique décisionnelle et présentation finale
 - Modéliser la distribution de maladies vectorielles (paludisme, etc.)
 - Analyser des indices de végétation (NDVI, NDWI, SAVI) et température (LST)
 
-👨‍🏫 INTERVENANTS :
+👨🏫 INTERVENANTS :
 - Formateur principal : GADA Solution
 - Assistants techniques : Équipe R&D
 
@@ -1706,7 +1706,7 @@ let currentShareClientId = null;
 let currentShareClientName = null;
 let shareWorkFile = null;
 
-// Listeners pour les données TFC en temps réel
+// Listeners pour les posts TFC
 let tfcPostsListener = null;
 let tfcDocumentsListener = null;
 let tfcStudentWorksListener = null;
@@ -2782,15 +2782,18 @@ function showTfcSection(section) {
     } else if (section === 'feed') {
         document.getElementById('tfcFeedSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[1].classList.add('active');
+        loadTfcPosts();
     } else if (section === 'ressources') {
         document.getElementById('tfcRessourcesSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[2].classList.add('active');
     } else if (section === 'mywork') {
         document.getElementById('tfcMyWorkSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[3].classList.add('active');
+        loadStudentWorks();
     } else if (section === 'shared') {
         document.getElementById('tfcSharedSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[4].classList.add('active');
+        loadSharedWorks();
     }
 }
 
@@ -2950,6 +2953,7 @@ async function submitTfcPost() {
             await db.ref('tfc_posts').push(data);
             toast('Publication partagée avec succès !');
             closeTfcCompose();
+            loadTfcPosts();
         } catch (error) {
             console.error(error);
             toast('Erreur: ' + error.message);
@@ -3088,6 +3092,7 @@ async function deleteTfcPost(postId) {
     if (confirm('Supprimer cette publication ?')) {
         await db.ref(`tfc_posts/${postId}`).remove();
         toast('Publication supprimée');
+        loadTfcPosts();
     }
 }
 
@@ -3100,6 +3105,7 @@ function editTfcPost(postId) {
             edited: true
         }).then(() => {
             toast('Publication modifiée avec succès');
+            loadTfcPosts();
         }).catch(error => {
             toast('Erreur: ' + error.message);
         });
@@ -3320,7 +3326,7 @@ async function loadTfcIaHistory() {
     }
 }
 
-// ==================== FONCTIONS POUR LE TRAVAIL DE L'ÉTUDIANT ====================
+// ==================== FONCTIONS POUR LE TRAVAIL DE L'ÉTUDIANT (BASE64) ====================
 
 async function uploadStudentWork(fileInput) {
     if (!currentTfcClientId) {
@@ -3476,6 +3482,85 @@ function loadStudentWorks() {
     db.ref(`tfc_clients/${currentTfcClientId}/student_works`).on('value', tfcStudentWorksListener);
 }
 
+async function loadAdminStudentWorks(clientId) {
+    if (!clientId) return;
+    
+    const container = document.getElementById('adminStudentWorksList');
+    if (!container) return;
+    
+    try {
+        const snapshot = await db.ref(`tfc_clients/${clientId}/student_works`).once('value');
+        const works = [];
+        snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
+        works.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
+        
+        if (works.length === 0) {
+            container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun travail déposé par l\'étudiant</div>';
+            return;
+        }
+        
+        container.innerHTML = works.map(work => `
+            <div class="doc-item" style="border-bottom: 1px solid var(--border); padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700;">${esc(work.name)}</div>
+                        <div style="font-size: 0.7rem; color: var(--muted);">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div>
+                        <span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">
+                            ${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}
+                        </span>
+                        ${work.feedback ? `<div style="margin-top: 8px; padding: 6px; background: var(--blue-pale); border-radius: 6px; font-size: 0.75rem;"><strong>Retour donné:</strong><br>${esc(work.feedback)}</div>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="${work.url}" target="_blank" class="file-dl" style="padding: 4px 8px;"><i class="fa-solid fa-download"></i></a>
+                        <button onclick="openStudentWorkFeedback('${clientId}', '${work.id}', '${esc(work.name)}')" class="file-dl" style="padding: 4px 8px; background: var(--blue-pale);">✏️ Évaluer</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Erreur:', error);
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Erreur de chargement</div>';
+    }
+}
+
+function openStudentWorkFeedback(clientId, workId, workName) {
+    const feedback = prompt(`Évaluation du travail "${workName}" :\n\nChoisissez le statut et laissez un commentaire.\n\nStatuts possibles:\n- VALIDE: Travail accepté\n- REVISION: À corriger\n- (vide): En attente\n\nEntrez votre commentaire (précisez le statut):`);
+    
+    if (feedback && feedback.trim()) {
+        let status = 'pending';
+        let comment = feedback.trim();
+        
+        if (feedback.toLowerCase().includes('valide') || feedback.toLowerCase().includes('accept')) {
+            status = 'approved';
+        } else if (feedback.toLowerCase().includes('revision') || feedback.toLowerCase().includes('corrig')) {
+            status = 'revision';
+        }
+        
+        db.ref(`tfc_clients/${clientId}/student_works/${workId}`).update({
+            status: status,
+            feedback: comment,
+            feedbackDate: Date.now()
+        }).then(() => {
+            toast('Évaluation enregistrée');
+            
+            db.ref(`tfc_clients/${clientId}/notifications`).push({
+                type: 'work_evaluated',
+                message: `Votre travail "${workName}" a été évalué. Statut: ${status === 'approved' ? 'Validé' : status === 'revision' ? 'À corriger' : 'En attente'}`,
+                workId: workId,
+                timestamp: Date.now(),
+                read: false
+            });
+            
+            if (currentAdminClientId === clientId) {
+                loadAdminStudentWorks(clientId);
+            }
+        }).catch(error => {
+            console.error(error);
+            toast('Erreur: ' + error.message);
+        });
+    }
+}
+
 // ==================== FONCTIONS DE PARTAGE DE TRAVAIL À UN ÉTUDIANT SPÉCIFIQUE ====================
 
 function openShareWorkModal(clientId, clientName) {
@@ -3543,7 +3628,6 @@ async function submitSharedWork() {
             reader.onload = async function(e) {
                 workData.fileUrl = e.target.result;
                 workData.fileName = shareWorkFile.name;
-                
                 await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
                 toast(`Travail partagé avec succès à ${currentShareClientName} !`);
                 closeShareWorkModal();
@@ -3601,14 +3685,22 @@ async function doClientLogin() {
 function logoutTfcClient() {
     if (currentTfcClientId) {
         db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
-        db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocumentsListener);
-        db.ref(`tfc_clients/${currentTfcClientId}/student_works`).off('value', tfcStudentWorksListener);
-        db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
-        db.ref('tfc_posts').off('value', tfcPostsListener);
-        tfcDocumentsListener = null;
-        tfcStudentWorksListener = null;
-        tfcSharedWorksListener = null;
-        tfcPostsListener = null;
+        if (tfcDocumentsListener) {
+            db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocumentsListener);
+            tfcDocumentsListener = null;
+        }
+        if (tfcStudentWorksListener) {
+            db.ref(`tfc_clients/${currentTfcClientId}/student_works`).off('value', tfcStudentWorksListener);
+            tfcStudentWorksListener = null;
+        }
+        if (tfcSharedWorksListener) {
+            db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
+            tfcSharedWorksListener = null;
+        }
+        if (tfcPostsListener) {
+            db.ref('tfc_posts').off('value', tfcPostsListener);
+            tfcPostsListener = null;
+        }
     }
     currentTfcClientId = null;
     currentTfcClientData = null;
@@ -3666,8 +3758,6 @@ async function uploadTfcAvatar(input) {
     };
     reader.readAsDataURL(file);
 }
-
-// ==================== FONCTIONS ADMIN TFC (simplifiées pour la réponse) ====================
 
 function loadClientsList() {
     const container = document.getElementById('clientsList');
@@ -3793,6 +3883,14 @@ function openTfcFullManagement() {
 function closeTfcFullManagement() {
     document.getElementById('tfcFullManagement').style.display = 'none';
     document.getElementById('adminTfcPanel').style.display = 'block';
+}
+
+function openAdminGlobalPost(type) {
+    toast('Fonctionnalité à venir');
+}
+
+function submitAdminTfcPost() {
+    toast('Fonctionnalité à venir');
 }
 
 function addClientLoginTab() {}
