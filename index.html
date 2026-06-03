@@ -2802,21 +2802,15 @@ async function loadSharedWorks() {
     const container = document.getElementById('sharedWorksList');
     if (!container) return;
     container.innerHTML = '<div style="padding:32px;text-align:center;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
-    
-    if (tfcSharedWorksListener) {
-        db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
-    }
-    
-    tfcSharedWorksListener = (snapshot) => {
+    try {
+        const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).once('value');
         const works = [];
         snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
         works.sort((a, b) => (b.sharedAt || 0) - (a.sharedAt || 0));
-        
         if (works.length === 0) {
             container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);"><i class="fa-regular fa-envelope"></i><p>Aucun travail partagé pour le moment</p></div>';
             return;
         }
-        
         container.innerHTML = works.map(work => `
             <div class="shared-work-card">
                 <div style="background: var(--blue-pale); padding: 12px 16px;">
@@ -2826,15 +2820,16 @@ async function loadSharedWorks() {
                 <div style="padding: 16px;">
                     ${work.description ? `<p style="font-size: 0.85rem; margin-bottom: 12px;">${esc(work.description)}</p>` : ''}
                     <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                        ${work.fileUrl ? `<a href="${work.fileUrl}" target="_blank" class="file-dl" style="display: inline-flex;"><i class="fa-solid fa-download"></i> ${esc(work.fileName)}</a>` : ''}
-                        ${work.link ? `<a href="${work.link}" target="_blank" class="file-dl" style="display: inline-flex; background: var(--blue-pale); color: var(--blue);"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a>` : ''}
+                        ${work.fileUrl ? `<a href="${work.fileUrl}" target="_blank" class="file-dl"><i class="fa-solid fa-download"></i> ${esc(work.fileName)}</a>` : ''}
+                        ${work.link ? `<a href="${work.link}" target="_blank" class="file-dl" style="background: var(--blue-pale); color: var(--blue);"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a>` : ''}
                     </div>
                 </div>
             </div>
         `).join('');
-    };
-    
-    db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).on('value', tfcSharedWorksListener);
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);">Erreur de chargement</div>';
+    }
 }
 
 // Variables pour stocker les éléments du modal
@@ -3106,23 +3101,16 @@ async function loadClientDocuments() {
     const container = document.getElementById('tfcDocumentsListClient');
     if (!container) return;
     container.innerHTML = '<div style="padding:32px;text-align:center;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
-    
-    if (tfcDocsListener) {
-        db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocsListener);
-    }
-    
-    tfcDocsListener = (snapshot) => {
+    try {
+        const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/documents`).once('value');
         const docs = snapshot.val() || {};
         const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
-        
         if (docsList.length === 0) {
             container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);"><i class="fa-regular fa-folder-open"></i><p>Aucun document déposé</p></div>';
             return;
         }
-        
         container.innerHTML = docsList.map(doc => {
-            let iconClass = 'fa-file';
-            let iconBg = 'file';
+            let iconClass = 'fa-file', iconBg = 'file';
             const ext = doc.name.split('.').pop().toLowerCase();
             if (ext === 'pdf') { iconClass = 'fa-file-pdf'; iconBg = 'pdf'; }
             else if (ext === 'docx' || ext === 'doc') { iconClass = 'fa-file-word'; iconBg = 'word'; }
@@ -3130,20 +3118,16 @@ async function loadClientDocuments() {
             else if (ext === 'pptx' || ext === 'ppt') { iconClass = 'fa-file-powerpoint'; iconBg = 'ppt'; }
             else if (ext === 'zip' || ext === 'rar' || ext === '7z') { iconClass = 'fa-file-archive'; iconBg = 'zip'; }
             else if (doc.type && doc.type.startsWith('image/')) { iconClass = 'fa-file-image'; iconBg = 'image'; }
-            
             const statusClass = doc.status === 'valide' ? 'status-approved' : (doc.status === 'correction' ? 'status-revision' : 'status-pending');
             const statusText = doc.status === 'valide' ? '✓ Validé' : (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
-            
             return `
                 <div class="tfc-doc-item" id="doc-item-${doc.id}">
                     <div class="tfc-doc-info">
-                        <div class="tfc-doc-icon ${iconBg}">
-                            <i class="fa-regular ${iconClass}"></i>
-                        </div>
+                        <div class="tfc-doc-icon ${iconBg}"><i class="fa-regular ${iconClass}"></i></div>
                         <div class="tfc-doc-details">
                             <div class="tfc-doc-name">${esc(doc.name)}</div>
                             <div class="tfc-doc-meta">
-                                <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</span>
+                                <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')} à ${new Date(doc.uploadedAt).toLocaleTimeString()}</span>
                                 <span class="tfc-doc-status ${statusClass}">${statusText}</span>
                             </div>
                             ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;"><strong>📝 Retour :</strong><br>${esc(doc.feedback)}</div>` : ''}
@@ -3157,11 +3141,11 @@ async function loadClientDocuments() {
                 </div>
             `;
         }).join('');
-    };
-    
-    db.ref(`tfc_clients/${currentTfcClientId}/documents`).on('value', tfcDocsListener);
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);">Erreur de chargement</div>';
+    }
 }
-
 async function deleteClientDocument(docId, docName) {
     if (!confirm(`Supprimer définitivement le document "${docName}" ?`)) return;
     
@@ -3838,13 +3822,23 @@ async function doClientLogin() {
     loadStudentWorks();
     loadSharedWorks();
     showTfcSection('documents');
+    // Écouter les notifications pour rafraîchir automatiquement
+db.ref(`tfc_clients/${currentTfcClientId}/notifications`).on('child_added', (snap) => {
+    const notif = snap.val();
+    if (notif.type === 'shared_work' || notif.type === 'new_document' || notif.type === 'admin_announcement') {
+        loadSharedWorks();
+        loadClientDocuments();
+        toast('📢 ' + notif.message);
+    }
+});
 }
 
 function logoutTfcClient() {
-    if (tfcDocsListener) db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocsListener);
-    if (tfcSharedWorksListener) db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
-    if (currentTfcClientId) db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
-    if (tfcPostsListener) db.ref('tfc_posts').off('value', tfcPostsListener);
+    if (currentTfcClientId) {
+        db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
+        db.ref(`tfc_clients/${currentTfcClientId}/notifications`).off();
+        if (tfcPostsListener) db.ref('tfc_posts').off('value', tfcPostsListener);
+    }
     currentTfcClientId = null;
     currentTfcClientData = null;
     sessionStorage.clear();
