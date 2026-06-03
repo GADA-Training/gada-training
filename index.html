@@ -1706,11 +1706,8 @@ let currentShareClientId = null;
 let currentShareClientName = null;
 let shareWorkFile = null;
 
-// Listeners pour les posts TFC
+// Listener pour les posts TFC
 let tfcPostsListener = null;
-let tfcDocumentsListener = null;
-let tfcStudentWorksListener = null;
-let tfcSharedWorksListener = null;
 
 // ==================== FONCTIONS UTILITAIRES ====================
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
@@ -2700,22 +2697,15 @@ async function initIA() {
     appendIAMessage('assistant', msg);
 }
 
-// ==================== SECTION CLIENTS TFC - AVEC ÉCOUTEURS EN TEMPS RÉEL ====================
+// ==================== SECTION CLIENTS TFC - VERSION CORRIGÉE (BASE64) ====================
 
 async function uploadTfcDocumentWithStorage(fileInput) {
-    if (!currentTfcClientId) {
-        toast('Vous devez être connecté');
-        return;
-    }
+    if (!currentTfcClientId) return;
     const file = fileInput.files[0];
-    if (!file) {
-        toast('Veuillez sélectionner un fichier');
-        return;
-    }
+    if (!file) return;
     
     if (file.size > 10 * 1024 * 1024) { 
         toast('Fichier trop volumineux (max 10MB)'); 
-        fileInput.value = '';
         return; 
     }
 
@@ -2745,9 +2735,18 @@ async function uploadTfcDocumentWithStorage(fileInput) {
         
         try {
             await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).set(docData);
+            
+            await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
+                type: 'new_document',
+                message: `${currentTfcClientData.name} a déposé un document : ${file.name}`,
+                timestamp: Date.now(), 
+                read: false
+            });
+            
             toast('Document déposé avec succès');
             if (progressDiv) progressDiv.style.display = 'none';
             fileInput.value = '';
+            loadClientDocuments();
         } catch (error) {
             console.error(error);
             toast('Erreur: ' + error.message);
@@ -2766,7 +2765,6 @@ async function uploadTfcDocumentWithStorage(fileInput) {
     reader.onerror = function() {
         toast('Erreur lors de la lecture du fichier');
         if (progressDiv) progressDiv.style.display = 'none';
-        fileInput.value = '';
     };
     
     reader.readAsDataURL(file);
@@ -2779,6 +2777,7 @@ function showTfcSection(section) {
     if (section === 'documents') {
         document.getElementById('tfcDocumentsSection').classList.add('active');
         document.querySelector('.tfc-tab-btn:first-child').classList.add('active');
+        loadClientDocuments();
     } else if (section === 'feed') {
         document.getElementById('tfcFeedSection').classList.add('active');
         document.querySelectorAll('.tfc-tab-btn')[1].classList.add('active');
@@ -2797,20 +2796,15 @@ function showTfcSection(section) {
     }
 }
 
-// Fonction pour charger les travaux partagés chez le client avec écouteur temps réel
-function loadSharedWorks() {
+// Fonction pour charger les travaux partagés chez le client
+async function loadSharedWorks() {
     if (!currentTfcClientId) return;
     
     const container = document.getElementById('sharedWorksList');
     if (!container) return;
     
-    if (tfcSharedWorksListener) {
-        db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
-    }
-    
-    container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--muted);"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
-    
-    tfcSharedWorksListener = (snapshot) => {
+    try {
+        const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).once('value');
         const works = [];
         snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
         works.sort((a, b) => (b.sharedAt || 0) - (a.sharedAt || 0));
@@ -2835,25 +2829,18 @@ function loadSharedWorks() {
                 </div>
             </div>
         `).join('');
-    };
-    
-    db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).on('value', tfcSharedWorksListener);
+    } catch (error) {
+        console.error('Erreur chargement travaux partagés:', error);
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Erreur de chargement</div>';
+    }
 }
 
 // Variables pour stocker les éléments du modal
 let tfcPhotoInput = null;
 let tfcDocInput = null;
 let tfcLinkInput = null;
-let adminPhotoInput = null;
-let adminDocFileInput = null;
-let adminLinkInputElem = null;
 
 function openTfcCompose(type = 'text') {
-    if (!currentTfcClientId) {
-        toast('Vous devez être connecté');
-        return;
-    }
-    
     currentTfcPostType = type;
     tfcPostMediaFile = null;
     
@@ -2904,16 +2891,14 @@ function previewTfcMedia(input, type) {
     if (input.files && input.files[0]) {
         tfcPostMediaFile = input.files[0];
         const preview = document.getElementById('tfcMediaPreview');
-        if (preview) {
-            if (type === 'photo') {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:200px;border-radius:12px;margin-top:10px;">`;
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.innerHTML = `<div class="file-row" style="margin-top:10px;"><i class="fa-solid fa-file"></i> ${input.files[0].name} (${(input.files[0].size / 1024).toFixed(1)} KB)</div>`;
-            }
+        if (type === 'photo') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:200px;border-radius:12px;margin-top:10px;">`;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.innerHTML = `<div class="file-row" style="margin-top:10px;"><i class="fa-solid fa-file"></i> ${input.files[0].name} (${(input.files[0].size / 1024).toFixed(1)} KB)</div>`;
         }
     }
 }
@@ -2924,11 +2909,6 @@ function closeTfcCompose() {
 }
 
 async function submitTfcPost() {
-    if (!currentTfcClientId) {
-        toast('Vous devez être connecté');
-        return;
-    }
-    
     const content = document.getElementById('tfcPostContent').value.trim();
     
     if (!content && !tfcPostMediaFile && currentTfcPostType !== 'link') {
@@ -2939,25 +2919,13 @@ async function submitTfcPost() {
     const postData = {
         authorId: currentTfcClientId,
         authorName: currentTfcClientData.name,
-        authorUniv: currentTfcClientData.university || '',
+        authorUniv: currentTfcClientData.university,
         authorAvatar: currentTfcClientData.avatar || null,
         content: content,
         type: currentTfcPostType,
         timestamp: Date.now(),
         likes: 0,
         commentsCount: 0
-    };
-    
-    const savePost = async (data) => {
-        try {
-            await db.ref('tfc_posts').push(data);
-            toast('Publication partagée avec succès !');
-            closeTfcCompose();
-            loadTfcPosts();
-        } catch (error) {
-            console.error(error);
-            toast('Erreur: ' + error.message);
-        }
     };
     
     if ((currentTfcPostType === 'photo' || currentTfcPostType === 'document') && tfcPostMediaFile) {
@@ -2969,14 +2937,23 @@ async function submitTfcPost() {
         
         const reader = new FileReader();
         reader.onload = async function(e) {
-            if (currentTfcPostType === 'photo') {
-                postData.mediaUrl = e.target.result;
-                postData.mediaType = 'image';
-            } else {
-                postData.fileUrl = e.target.result;
-                postData.fileName = tfcPostMediaFile.name;
+            try {
+                if (currentTfcPostType === 'photo') {
+                    postData.mediaUrl = e.target.result;
+                    postData.mediaType = 'image';
+                } else {
+                    postData.fileUrl = e.target.result;
+                    postData.fileName = tfcPostMediaFile.name;
+                }
+                
+                await db.ref('tfc_posts').push(postData);
+                toast('Publication partagée avec succès !');
+                closeTfcCompose();
+                showTfcSection('feed');
+            } catch (error) {
+                console.error(error);
+                toast('Erreur: ' + error.message);
             }
-            await savePost(postData);
         };
         reader.onerror = function() {
             toast('Erreur lors de la lecture du fichier');
@@ -2994,10 +2971,17 @@ async function submitTfcPost() {
         postData.linkUrl = linkUrl;
     }
     
-    await savePost(postData);
+    try {
+        await db.ref('tfc_posts').push(postData);
+        toast('Publication partagée avec succès !');
+        closeTfcCompose();
+        showTfcSection('feed');
+    } catch (error) {
+        console.error(error);
+        toast('Erreur: ' + error.message);
+    }
 }
 
-// Fonction loadTfcPosts avec écouteur temps réel
 function loadTfcPosts() {
     const feedDiv = document.getElementById('tfcPostsFeed');
     if (!feedDiv) return;
@@ -3092,7 +3076,6 @@ async function deleteTfcPost(postId) {
     if (confirm('Supprimer cette publication ?')) {
         await db.ref(`tfc_posts/${postId}`).remove();
         toast('Publication supprimée');
-        loadTfcPosts();
     }
 }
 
@@ -3105,103 +3088,88 @@ function editTfcPost(postId) {
             edited: true
         }).then(() => {
             toast('Publication modifiée avec succès');
-            loadTfcPosts();
         }).catch(error => {
             toast('Erreur: ' + error.message);
         });
     }
 }
 
-// Fonction loadClientDocuments avec écouteur temps réel
-function loadClientDocuments() {
+async function loadClientDocuments() {
     if (!currentTfcClientId) return;
-    
+    const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/documents`).once('value');
+    const docs = snapshot.val() || {};
+    const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
     const container = document.getElementById('tfcDocumentsListClient');
     if (!container) return;
-    
-    if (tfcDocumentsListener) {
-        db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocumentsListener);
+    if (docsList.length === 0) {
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun document déposé</div>';
+        return;
     }
-    
-    container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--muted);"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
-    
-    tfcDocumentsListener = (snapshot) => {
-        const docs = snapshot.val() || {};
-        const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
+    container.innerHTML = docsList.map(doc => {
+        let iconClass = 'fa-file';
+        let iconBg = 'file';
+        const ext = doc.name.split('.').pop().toLowerCase();
         
-        if (docsList.length === 0) {
-            container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun document déposé</div>';
-            return;
+        if (ext === 'pdf') {
+            iconClass = 'fa-file-pdf';
+            iconBg = 'pdf';
+        } else if (ext === 'docx' || ext === 'doc') {
+            iconClass = 'fa-file-word';
+            iconBg = 'word';
+        } else if (ext === 'xlsx' || ext === 'xls') {
+            iconClass = 'fa-file-excel';
+            iconBg = 'excel';
+        } else if (ext === 'pptx' || ext === 'ppt') {
+            iconClass = 'fa-file-powerpoint';
+            iconBg = 'ppt';
+        } else if (ext === 'zip' || ext === 'rar' || ext === '7z') {
+            iconClass = 'fa-file-archive';
+            iconBg = 'zip';
+        } else if (doc.type && doc.type.startsWith('image/')) {
+            iconClass = 'fa-file-image';
+            iconBg = 'image';
         }
         
-        container.innerHTML = docsList.map(doc => {
-            let iconClass = 'fa-file';
-            let iconBg = 'file';
-            const ext = doc.name.split('.').pop().toLowerCase();
-            
-            if (ext === 'pdf') {
-                iconClass = 'fa-file-pdf';
-                iconBg = 'pdf';
-            } else if (ext === 'docx' || ext === 'doc') {
-                iconClass = 'fa-file-word';
-                iconBg = 'word';
-            } else if (ext === 'xlsx' || ext === 'xls') {
-                iconClass = 'fa-file-excel';
-                iconBg = 'excel';
-            } else if (ext === 'pptx' || ext === 'ppt') {
-                iconClass = 'fa-file-powerpoint';
-                iconBg = 'ppt';
-            } else if (ext === 'zip' || ext === 'rar' || ext === '7z') {
-                iconClass = 'fa-file-archive';
-                iconBg = 'zip';
-            } else if (doc.type && doc.type.startsWith('image/')) {
-                iconClass = 'fa-file-image';
-                iconBg = 'image';
-            }
-            
-            const statusClass = doc.status === 'valide' ? 'status-approved' : 
-                               (doc.status === 'correction' ? 'status-revision' : 'status-pending');
-            const statusText = doc.status === 'valide' ? '✓ Validé' : 
-                              (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
-            
-            return `
-                <div class="tfc-doc-item" id="doc-item-${doc.id}">
-                    <div class="tfc-doc-info">
-                        <div class="tfc-doc-icon ${iconBg}">
-                            <i class="fa-regular ${iconClass}"></i>
-                        </div>
-                        <div class="tfc-doc-details">
-                            <div class="tfc-doc-name">${esc(doc.name)}</div>
-                            <div class="tfc-doc-meta">
-                                <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</span>
-                                <span class="tfc-doc-status ${statusClass}">
-                                    ${statusText}
-                                </span>
-                            </div>
-                            ${doc.feedback ? `
-                                <div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;">
-                                    <strong>📝 Retour :</strong><br>${esc(doc.feedback)}
-                                </div>
-                            ` : ''}
-                        </div>
+        const statusClass = doc.status === 'valide' ? 'status-approved' : 
+                           (doc.status === 'correction' ? 'status-revision' : 'status-pending');
+        const statusText = doc.status === 'valide' ? '✓ Validé' : 
+                          (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
+        
+        return `
+            <div class="tfc-doc-item" id="doc-item-${doc.id}">
+                <div class="tfc-doc-info">
+                    <div class="tfc-doc-icon ${iconBg}">
+                        <i class="fa-regular ${iconClass}"></i>
                     </div>
-                    <div class="tfc-doc-actions">
-                        <a href="${doc.url}" target="_blank" class="tfc-btn-icon" download="${doc.name}">
-                            <i class="fa-solid fa-download"></i>
-                        </a>
-                        <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon" title="Modifier">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name)}')" class="tfc-btn-icon" title="Supprimer">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                    <div class="tfc-doc-details">
+                        <div class="tfc-doc-name">${esc(doc.name)}</div>
+                        <div class="tfc-doc-meta">
+                            <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</span>
+                            <span class="tfc-doc-status ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </div>
+                        ${doc.feedback ? `
+                            <div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;">
+                                <strong>📝 Retour :</strong><br>${esc(doc.feedback)}
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
-            `;
-        }).join('');
-    };
-    
-    db.ref(`tfc_clients/${currentTfcClientId}/documents`).on('value', tfcDocumentsListener);
+                <div class="tfc-doc-actions">
+                    <a href="${doc.url}" target="_blank" class="tfc-btn-icon" download="${doc.name}">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+                    <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon" title="Modifier">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name)}')" class="tfc-btn-icon" title="Supprimer">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 async function deleteClientDocument(docId, docName) {
@@ -3210,6 +3178,15 @@ async function deleteClientDocument(docId, docName) {
     try {
         await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).remove();
         toast('Document supprimé avec succès');
+        
+        await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
+            type: 'document_deleted',
+            message: `${currentTfcClientData.name} a supprimé un document : ${docName}`,
+            timestamp: Date.now(),
+            read: false
+        });
+        
+        loadClientDocuments();
     } catch (error) {
         console.error(error);
         toast('Erreur lors de la suppression');
@@ -3223,6 +3200,7 @@ function editClientDocument(docId) {
             name: newName.trim()
         }).then(() => {
             toast('Document renommé avec succès');
+            loadClientDocuments();
         }).catch(error => {
             toast('Erreur: ' + error.message);
         });
@@ -3342,7 +3320,6 @@ async function uploadStudentWork(fileInput) {
     
     if (file.size > 15 * 1024 * 1024) { 
         toast('Fichier trop volumineux (max 15MB)'); 
-        fileInput.value = '';
         return; 
     }
 
@@ -3372,9 +3349,21 @@ async function uploadStudentWork(fileInput) {
         
         try {
             await db.ref(`tfc_clients/${currentTfcClientId}/student_works/${workId}`).set(workData);
+            
+            await db.ref('admin_notifications').push({
+                type: 'new_student_work',
+                clientId: currentTfcClientId,
+                clientName: currentTfcClientData.name,
+                workName: file.name,
+                message: `${currentTfcClientData.name} a déposé un nouveau travail : ${file.name}`,
+                timestamp: Date.now(),
+                read: false
+            });
+            
             toast('Travail déposé avec succès !');
             if (progressDiv) progressDiv.style.display = 'none';
             fileInput.value = '';
+            await loadStudentWorks();
         } catch (error) {
             console.error(error);
             toast('Erreur: ' + error.message);
@@ -3385,26 +3374,22 @@ async function uploadStudentWork(fileInput) {
     reader.onerror = function() {
         toast('Erreur lors de la lecture du fichier');
         if (progressDiv) progressDiv.style.display = 'none';
-        fileInput.value = '';
     };
     
     reader.readAsDataURL(file);
 }
 
-// Fonction loadStudentWorks avec écouteur temps réel
-function loadStudentWorks() {
-    if (!currentTfcClientId) return;
+async function loadStudentWorks() {
+    if (!currentTfcClientId) {
+        console.log('Pas de client TFC connecté');
+        return;
+    }
     
     const container = document.getElementById('studentWorksList');
     if (!container) return;
     
-    if (tfcStudentWorksListener) {
-        db.ref(`tfc_clients/${currentTfcClientId}/student_works`).off('value', tfcStudentWorksListener);
-    }
-    
-    container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--muted);"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
-    
-    tfcStudentWorksListener = (snapshot) => {
+    try {
+        const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/student_works`).once('value');
         const works = [];
         snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
         works.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
@@ -3477,9 +3462,10 @@ function loadStudentWorks() {
                 </div>
             `;
         }).join('');
-    };
-    
-    db.ref(`tfc_clients/${currentTfcClientId}/student_works`).on('value', tfcStudentWorksListener);
+    } catch (error) {
+        console.error('Erreur chargement travaux:', error);
+        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Erreur lors du chargement des travaux</div>';
+    }
 }
 
 async function loadAdminStudentWorks(clientId) {
@@ -3628,7 +3614,17 @@ async function submitSharedWork() {
             reader.onload = async function(e) {
                 workData.fileUrl = e.target.result;
                 workData.fileName = shareWorkFile.name;
+                
                 await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
+                
+                await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({
+                    type: 'shared_work',
+                    message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`,
+                    workId: workData.id,
+                    timestamp: Date.now(),
+                    read: false
+                });
+                
                 toast(`Travail partagé avec succès à ${currentShareClientName} !`);
                 closeShareWorkModal();
             };
@@ -3640,6 +3636,15 @@ async function submitSharedWork() {
         }
         
         await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
+        
+        await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({
+            type: 'shared_work',
+            message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`,
+            workId: workData.id,
+            timestamp: Date.now(),
+            read: false
+        });
+        
         toast(`Travail partagé avec succès à ${currentShareClientName} !`);
         closeShareWorkModal();
     } catch (error) {
@@ -3648,7 +3653,172 @@ async function submitSharedWork() {
     }
 }
 
-// ==================== FONCTIONS ADMIN ====================
+// ==================== FONCTIONS ADMIN ANNONCES GLOBALES ====================
+
+function openAdminGlobalPost(type = 'text') {
+    if (currentUser?.email !== ADMIN_EMAIL) {
+        toast('Accès réservé au formateur');
+        return;
+    }
+    adminTfcPostType = type;
+    adminTfcPostMediaFile = null;
+    
+    const titles = { text: 'Publier une annonce pour tous les clients', photo: 'Partager une photo', document: 'Partager un document', link: 'Partager un lien' };
+    document.getElementById('adminTfcPostTitle').textContent = titles[type] || 'Publier une annonce';
+    document.getElementById('adminTfcPostContent').value = '';
+    
+    const mediaArea = document.getElementById('adminTfcPostMediaArea');
+    if (type === 'photo') {
+        mediaArea.innerHTML = `
+            <div class="file-drop-area" onclick="document.getElementById('adminPhotoInputElem').click()">
+                <i class="fa-regular fa-image"></i>
+                <p>Cliquez pour sélectionner une photo</p>
+            </div>
+            <input type="file" id="adminPhotoInputElem" accept="image/*" style="display:none">
+            <div id="adminTfcMediaPreview"></div>
+        `;
+        adminPhotoInput = document.getElementById('adminPhotoInputElem');
+        if (adminPhotoInput) {
+            adminPhotoInput.onchange = function(e) { previewAdminTfcMedia(e.target, 'photo'); };
+        }
+    } else if (type === 'document') {
+        mediaArea.innerHTML = `
+            <div class="file-drop-area" onclick="document.getElementById('adminDocFileInputElem').click()">
+                <i class="fa-regular fa-file"></i>
+                <p>Cliquez pour sélectionner un document</p>
+            </div>
+            <input type="file" id="adminDocFileInputElem" accept=".pdf,.docx,.zip,.xlsx,.pptx" style="display:none">
+            <div id="adminTfcMediaPreview"></div>
+        `;
+        adminDocFileInput = document.getElementById('adminDocFileInputElem');
+        if (adminDocFileInput) {
+            adminDocFileInput.onchange = function(e) { previewAdminTfcMedia(e.target, 'document'); };
+        }
+    } else if (type === 'link') {
+        mediaArea.innerHTML = `<input type="url" id="adminLinkInputElem" placeholder="https://..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:12px;">`;
+        adminLinkInputElem = document.getElementById('adminLinkInputElem');
+    } else {
+        mediaArea.innerHTML = '';
+    }
+    
+    document.getElementById('adminTfcPostOverlay').classList.add('active');
+}
+
+function previewAdminTfcMedia(input, type) {
+    if (input.files && input.files[0]) {
+        adminTfcPostMediaFile = input.files[0];
+        const preview = document.getElementById('adminTfcMediaPreview');
+        if (type === 'photo') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:200px;border-radius:12px;margin-top:10px;">`;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.innerHTML = `<div class="file-row" style="margin-top:10px;"><i class="fa-solid fa-file"></i> ${input.files[0].name}</div>`;
+        }
+    }
+}
+
+function closeAdminTfcPost() {
+    document.getElementById('adminTfcPostOverlay').classList.remove('active');
+    adminTfcPostMediaFile = null;
+}
+
+async function submitAdminTfcPost() {
+    const content = document.getElementById('adminTfcPostContent').value.trim();
+    if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') {
+        toast('Veuillez écrire quelque chose');
+        return;
+    }
+    
+    const postData = {
+        authorId: 'admin',
+        authorName: currentProfile.fullName || 'Formateur',
+        authorUniv: 'GADA Training',
+        authorAvatar: currentProfile.avatar || null,
+        content: content,
+        type: adminTfcPostType,
+        timestamp: Date.now(),
+        isGlobal: true,
+        likes: 0,
+        commentsCount: 0
+    };
+    
+    if ((adminTfcPostType === 'photo' || adminTfcPostType === 'document') && adminTfcPostMediaFile) {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                if (adminTfcPostType === 'photo') {
+                    postData.mediaUrl = e.target.result;
+                } else {
+                    postData.fileUrl = e.target.result;
+                    postData.fileName = adminTfcPostMediaFile.name;
+                }
+                
+                await db.ref('tfc_posts').push(postData);
+                
+                const clientsSnapshot = await db.ref('tfc_clients').once('value');
+                clientsSnapshot.forEach(client => {
+                    db.ref(`tfc_clients/${client.key}/notifications`).push({
+                        type: 'admin_announcement',
+                        message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
+                        timestamp: Date.now(),
+                        read: false
+                    });
+                });
+                
+                toast('Annonce publiée pour tous les clients !');
+                closeAdminTfcPost();
+                if (currentTfcClientId) loadTfcPosts();
+            } catch (error) {
+                console.error(error);
+                toast('Erreur: ' + error.message);
+            }
+        };
+        reader.onerror = function() {
+            toast('Erreur lors de la lecture du fichier');
+        };
+        reader.readAsDataURL(adminTfcPostMediaFile);
+        return;
+    }
+    
+    if (adminTfcPostType === 'link' && adminLinkInputElem) {
+        const linkUrl = adminLinkInputElem.value.trim();
+        if (!linkUrl || !linkUrl.startsWith('http')) {
+            toast('Lien invalide');
+            return;
+        }
+        postData.linkUrl = linkUrl;
+    }
+    
+    try {
+        await db.ref('tfc_posts').push(postData);
+        
+        const clientsSnapshot = await db.ref('tfc_clients').once('value');
+        clientsSnapshot.forEach(client => {
+            db.ref(`tfc_clients/${client.key}/notifications`).push({
+                type: 'admin_announcement',
+                message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
+                timestamp: Date.now(),
+                read: false
+            });
+        });
+        
+        toast('Annonce publiée pour tous les clients !');
+        closeAdminTfcPost();
+        if (currentTfcClientId) loadTfcPosts();
+    } catch (error) {
+        console.error(error);
+        toast('Erreur: ' + error.message);
+    }
+}
+
+function openAdminTfcPost() {
+    openAdminGlobalPost('text');
+}
+
+// ==================== AUTRES FONCTIONS ADMIN ====================
 
 async function doClientLogin() {
     const code = document.getElementById('clientAccessCode').value.trim().toUpperCase();
@@ -3671,8 +3841,6 @@ async function doClientLogin() {
     document.getElementById('tfcClientTopic').innerHTML = `📖 ${esc(client.tfc_topic)}`;
     document.getElementById('tfcClientTopName').textContent = client.name;
     if (client.avatar) document.getElementById('tfcClientAvatar').innerHTML = `<img src="${client.avatar}" style="width:100%;height:100%;object-fit:cover">`;
-    
-    // Initialiser tous les écouteurs
     loadClientDocuments();
     loadClientChat();
     loadTfcIaHistory();
@@ -3683,25 +3851,8 @@ async function doClientLogin() {
 }
 
 function logoutTfcClient() {
-    if (currentTfcClientId) {
-        db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
-        if (tfcDocumentsListener) {
-            db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocumentsListener);
-            tfcDocumentsListener = null;
-        }
-        if (tfcStudentWorksListener) {
-            db.ref(`tfc_clients/${currentTfcClientId}/student_works`).off('value', tfcStudentWorksListener);
-            tfcStudentWorksListener = null;
-        }
-        if (tfcSharedWorksListener) {
-            db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
-            tfcSharedWorksListener = null;
-        }
-        if (tfcPostsListener) {
-            db.ref('tfc_posts').off('value', tfcPostsListener);
-            tfcPostsListener = null;
-        }
-    }
+    if (currentTfcClientId) db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
+    if (tfcPostsListener) db.ref('tfc_posts').off('value', tfcPostsListener);
     currentTfcClientId = null;
     currentTfcClientData = null;
     sessionStorage.clear();
@@ -3762,33 +3913,53 @@ async function uploadTfcAvatar(input) {
 function loadClientsList() {
     const container = document.getElementById('clientsList');
     if (!container) return;
+
     container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Chargement...</div>';
-    
-    db.ref('tfc_clients').once('value', (snapshot) => {
+
+    if (window.clientsListRef) {
+        db.ref('tfc_clients').off('value', window.clientsListRef);
+    }
+
+    const callback = (snapshot) => {
         const clients = [];
         snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
+
         if (clients.length === 0) {
-            container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p></div>';
+            container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p><p style="font-size:0.75rem;margin-top:8px;">Cliquez sur "Nouveau client" pour commencer</p></div>';
             return;
         }
+
         clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
         container.innerHTML = clients.map(client => `
-            <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
+            <div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:all 0.2s;">
                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
                     <div>
-                        <h4>${esc(client.name)}</h4>
+                        <h4 style="margin-bottom:4px;">${esc(client.name)}</h4>
                         <p style="font-size:0.75rem;color:var(--muted);">${esc(client.university || 'Non renseigné')}</p>
-                        <p style="font-size:0.72rem;color:var(--green);margin-top:4px;">Code: ${esc(client.accessCode)}</p>
-                        <p style="font-size:0.7rem;color:var(--muted);">${esc(client.email)}</p>
+                        <p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic || 'Non défini')}</p>
+                        <p style="font-size:0.72rem;color:var(--green);margin-top:4px;">
+                            Code : <strong style="background:var(--green-pale);padding:2px 8px;border-radius:12px;">${esc(client.accessCode)}</strong>
+                        </p>
+                        <p style="font-size:0.7rem;color:var(--muted);margin-top:4px;">
+                            ${esc(client.email)} | ${esc(client.phone || 'Non renseigné')}
+                        </p>
                     </div>
                     <div style="display:flex;gap:8px;">
-                        <button class="btn-auth" style="width:auto;padding:6px 12px;" onclick="openClientWorkspace('${client.id}')">Ouvrir</button>
-                        <button class="btn-auth" style="width:auto;padding:6px 12px;background:#2196F3;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')">Partager</button>
+                        <button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')">
+                            <i class="fa-solid fa-folder-open"></i> Ouvrir
+                        </button>
+                        <button class="btn-auth share-work-btn" style="width:auto;padding:8px 20px;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')">
+                            <i class="fa-solid fa-share-alt"></i> Partager
+                        </button>
                     </div>
                 </div>
             </div>
         `).join('');
-    });
+    };
+    
+    window.clientsListRef = callback;
+    db.ref('tfc_clients').on('value', callback);
 }
 
 function switchToTFC() {
@@ -3796,9 +3967,23 @@ function switchToTFC() {
         toast('Accès réservé au formateur');
         return;
     }
+    
     document.getElementById('adminTfcPanel').style.display = 'block';
     document.querySelector('.layout').style.display = 'none';
     document.getElementById('tfcFullManagement').style.display = 'none';
+    
+    const views = ['view-feed', 'view-profile', 'view-projets', 'view-semaines'];
+    views.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    
+    toast('Mode Gestion des TFC');
+    
+    if (window.clientsListRef) {
+        db.ref('tfc_clients').off('value', window.clientsListRef);
+        window.clientsListRef = null;
+    }
     loadClientsList();
 }
 
@@ -3817,20 +4002,45 @@ async function createTfcClient() {
         return;
     }
     
-    const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const existingClients = await db.ref('tfc_clients').orderByChild('email').equalTo(email).once('value');
+    if (existingClients.exists()) {
+        toast('Cet email est déjà utilisé par un autre client');
+        return;
+    }
+    
     const newClientRef = db.ref('tfc_clients').push();
     const clientId = newClientRef.key;
+    const accessCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     
     await newClientRef.set({
-        id: clientId, name, university, tfc_topic: topic,
-        email, phone: phone || '', accessCode,
-        createdAt: Date.now(), status: 'actif'
+        id: clientId, 
+        name, 
+        university, 
+        tfc_topic: topic,
+        email, 
+        phone: phone || '',
+        accessCode: accessCode,
+        createdAt: Date.now(), 
+        status: 'actif',
+        documents: {}, 
+        messages: {}
     });
-    await db.ref(`tfc_access_codes/${accessCode}`).set({ clientId, createdAt: Date.now(), email, name });
     
-    toast(`Client créé ! Code: ${accessCode}`);
+    await db.ref(`tfc_access_codes/${accessCode}`).set({ 
+        clientId, 
+        createdAt: Date.now(),
+        email: email,
+        name: name
+    });
+    
+    toast(`Client créé ! Code d'accès: ${accessCode}`);
     closeAddClientModal();
-    loadClientsList();
+    
+    document.getElementById('newClientName').value = '';
+    document.getElementById('newClientUniv').value = '';
+    document.getElementById('newClientTopic').value = '';
+    document.getElementById('newClientEmail').value = '';
+    document.getElementById('newClientPhone').value = '';
 }
 
 async function openClientWorkspace(clientId) {
@@ -3842,55 +4052,378 @@ async function openClientWorkspace(clientId) {
     document.getElementById('adminClientTopic').innerHTML = `📖 ${esc(client.tfc_topic)}`;
     document.getElementById('adminClientView').style.display = 'block';
     document.getElementById('adminTfcPanel').style.display = 'none';
-    
-    // Charger les documents
-    db.ref(`tfc_clients/${clientId}/documents`).once('value', (snap) => {
-        const docs = snap.val() || {};
-        const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
-        const container = document.getElementById('adminDocumentsList');
-        if (!container) return;
-        if (docsList.length === 0) { container.innerHTML = '<div style="padding:20px;text-align:center;">Aucun document</div>'; return; }
-        container.innerHTML = docsList.map(doc => `
-            <div style="border-bottom:1px solid var(--border);padding:12px;display:flex;justify-content:space-between;align-items:center;">
-                <div><strong>${esc(doc.name)}</strong><br><small>${new Date(doc.uploadedAt).toLocaleString()}</small></div>
-                <div style="display:flex;gap:8px;">
-                    <a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;">📥</a>
-                    <button onclick="deleteAdminDocument('${clientId}', '${doc.id}')" class="file-dl" style="background:#dc2626;color:white;">🗑️</button>
-                </div>
-            </div>
-        `).join('');
-    });
-}
-
-async function deleteAdminDocument(clientId, docId) {
-    if (confirm('Supprimer ce document ?')) {
-        await db.ref(`tfc_clients/${clientId}/documents/${docId}`).remove();
-        toast('Document supprimé');
-        openClientWorkspace(clientId);
-    }
+    document.getElementById('tfcFullManagement').style.display = 'none';
+    loadAdminDocuments(clientId);
+    loadAdminChat(clientId);
+    loadAdminStudentWorks(clientId);
 }
 
 function closeAdminClientView() {
+    if (currentAdminClientId) db.ref(`tfc_clients/${currentAdminClientId}/messages`).off();
     document.getElementById('adminClientView').style.display = 'none';
     document.getElementById('adminTfcPanel').style.display = 'block';
+    currentAdminClientId = null;
+}
+
+async function loadAdminDocuments(clientId) {
+    const snapshot = await db.ref(`tfc_clients/${clientId}/documents`).once('value');
+    const docs = snapshot.val() || {};
+    const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
+    const container = document.getElementById('adminDocumentsList');
+    if (!container) return;
+    if (docsList.length === 0) { container.innerHTML = '<div style="padding:32px;text-align:center;">Aucun document</div>'; return; }
+    container.innerHTML = docsList.map(doc => `
+        <div class="doc-item" style="border-bottom:1px solid var(--border);padding:12px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="flex:1;">
+                <div class="doc-name"><strong>${esc(doc.name)}</strong></div>
+                <div class="doc-meta" style="font-size:0.7rem;color:var(--muted);">${doc.uploadedBy === 'client' ? 'Client' : 'Vous'} - ${new Date(doc.uploadedAt).toLocaleDateString()}</div>
+                <span class="doc-status ${doc.status === 'valide' ? 'status-approved' : doc.status === 'correction' ? 'status-revision' : 'status-pending'}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;">
+                    ${doc.status === 'valide' ? 'Validé' : doc.status === 'correction' ? 'À corriger' : 'En attente'}
+                </span>
+                ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;font-size:0.75rem;"><strong>Retour:</strong> ${esc(doc.feedback)}</div>` : ''}
+            </div>
+            <div style="display:flex;gap:8px;">
+                <a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a>
+                <button onclick="editAdminDocument('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--blue-pale);"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteAdminDocument('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--green-pale);color:var(--green);"><i class="fa-solid fa-trash"></i></button>
+                <button onclick="openFeedbackModal('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--blue-pale);">✏️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function editAdminDocument(clientId, docId, docName) {
+    const newName = prompt("Modifier le nom du document :", docName);
+    if (newName && newName.trim()) {
+        await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update({ name: newName.trim() });
+        toast('Document renommé');
+        loadAdminDocuments(clientId);
+    }
+}
+
+async function deleteAdminDocument(clientId, docId, docName) {
+    if (!confirm(`Supprimer le document "${docName}" ?`)) return;
+    await db.ref(`tfc_clients/${clientId}/documents/${docId}`).remove();
+    toast('Document supprimé');
+    loadAdminDocuments(clientId);
+}
+
+async function uploadTfcDocumentAdmin(fileInput) {
+    if (!currentAdminClientId) return;
+    const file = fileInput.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { toast('Trop volumineux (max 10MB)'); return; }
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const docData = {
+            id: Date.now().toString(), 
+            name: file.name, 
+            type: file.type, 
+            size: file.size,
+            url: e.target.result,
+            uploadedAt: Date.now(), 
+            uploadedBy: 'admin', 
+            status: 'valide', 
+            feedback: null
+        };
+        await db.ref(`tfc_clients/${currentAdminClientId}/documents/${docData.id}`).set(docData);
+        toast('Document déposé');
+        fileInput.value = '';
+        loadAdminDocuments(currentAdminClientId);
+    };
+    reader.onerror = function() {
+        toast('Erreur lors de la lecture du fichier');
+    };
+    reader.readAsDataURL(file);
+}
+
+function openFeedbackModal(clientId, docId, docName) {
+    const feedback = prompt(`Retour sur "${docName}":\n(Validé / À corriger / Commentaires)`);
+    if (feedback && feedback.trim()) {
+        const status = feedback.toLowerCase().includes('valid') ? 'valide' : feedback.toLowerCase().includes('corrig') ? 'correction' : 'attente';
+        db.ref(`tfc_clients/${clientId}/documents/${docId}`).update({ status, feedback: feedback.trim() }).then(() => {
+            toast('Feedback enregistré');
+            loadAdminDocuments(clientId);
+        });
+    }
+}
+
+async function loadAdminChat(clientId) {
+    const chatMsgs = document.getElementById('adminChatMsgs');
+    if (!chatMsgs) return;
+    db.ref(`tfc_clients/${clientId}/messages`).off();
+    db.ref(`tfc_clients/${clientId}/messages`).on('value', (snap) => {
+        const messages = [];
+        snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
+        messages.sort((a,b) => a.timestamp - b.timestamp);
+        if (messages.length === 0) { chatMsgs.innerHTML = '<div class="empty-state"><p>Aucun message</p></div>'; return; }
+        chatMsgs.innerHTML = messages.map(m => `
+            <div class="chat-msg ${m.from === 'admin' ? 'admin' : 'them'}">
+                <div class="chat-meta">${m.from === 'admin' ? 'Vous' : esc(m.fromName)}</div>
+                <div class="chat-bubble">${esc(m.text)}</div>
+                <div class="chat-time">${new Date(m.timestamp).toLocaleTimeString()}</div>
+            </div>
+        `).join('');
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    });
+}
+
+function sendTfcMessageAdmin() {
+    const input = document.getElementById('adminChatInput');
+    const text = input.value.trim();
+    if (!text || !currentAdminClientId) return;
+    db.ref(`tfc_clients/${currentAdminClientId}/messages`).push({
+        from: 'admin', fromName: 'Encadreur',
+        text: text, timestamp: Date.now()
+    });
+    input.value = '';
 }
 
 function openTfcFullManagement() {
     document.getElementById('adminTfcPanel').style.display = 'none';
     document.getElementById('tfcFullManagement').style.display = 'block';
+    document.querySelector('.layout').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('tfcClientView').style.display = 'none';
+    document.getElementById('adminClientView').style.display = 'none';
+    document.getElementById('adminTfcNameFull').textContent = currentProfile?.fullName || 'Administrateur';
+    loadAllClientsWithWorks();
 }
 
 function closeTfcFullManagement() {
     document.getElementById('tfcFullManagement').style.display = 'none';
     document.getElementById('adminTfcPanel').style.display = 'block';
+    document.querySelector('.layout').style.display = 'grid';
+    document.getElementById('app').style.display = 'block';
 }
 
-function openAdminGlobalPost(type) {
-    toast('Fonctionnalité à venir');
+async function loadAllClientsWithWorks() {
+    const container = document.getElementById('tfcFullClientsList');
+    if (!container) return;
+    
+    container.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
+    
+    try {
+        const clientsSnapshot = await db.ref('tfc_clients').once('value');
+        const clients = [];
+        clientsSnapshot.forEach(child => {
+            clients.push({ id: child.key, ...child.val() });
+        });
+        
+        document.getElementById('totalClientsCount').textContent = clients.length;
+        
+        if (clients.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fa-regular fa-user"></i><p>Aucun client. Cliquez sur "Nouveau client"</p></div>';
+            return;
+        }
+        
+        let totalDocs = 0;
+        let totalPosts = 0;
+        const clientsHtml = [];
+        
+        for (const client of clients) {
+            const docsSnapshot = await db.ref(`tfc_clients/${client.id}/documents`).once('value');
+            const documents = [];
+            docsSnapshot.forEach(child => {
+                documents.push({ id: child.key, ...child.val() });
+                totalDocs++;
+            });
+            documents.sort((a,b) => (b.uploadedAt||0) - (a.uploadedAt||0));
+            
+            const postsSnapshot = await db.ref('tfc_posts').orderByChild('authorId').equalTo(client.id).once('value');
+            const posts = [];
+            postsSnapshot.forEach(child => {
+                posts.push({ id: child.key, ...child.val() });
+                totalPosts++;
+            });
+            posts.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+            
+            const worksSnapshot = await db.ref(`tfc_clients/${client.id}/shared_works`).once('value');
+            const sharedWorks = [];
+            worksSnapshot.forEach(child => {
+                sharedWorks.push({ id: child.key, ...child.val() });
+            });
+            sharedWorks.sort((a,b) => (b.sharedAt||0) - (a.sharedAt||0));
+            
+            const studentWorksSnapshot = await db.ref(`tfc_clients/${client.id}/student_works`).once('value');
+            const studentWorks = [];
+            studentWorksSnapshot.forEach(child => {
+                studentWorks.push({ id: child.key, ...child.val() });
+            });
+            studentWorks.sort((a,b) => (b.uploadedAt||0) - (a.uploadedAt||0));
+            
+            clientsHtml.push(`
+                <div class="client-workspace-card" style="border:2px solid var(--border);border-radius:16px;margin-bottom:24px;background:var(--card);overflow:hidden;">
+                    <div style="background:linear-gradient(135deg,var(--blue),var(--green));padding:20px;color:white;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+                            <div>
+                                <h2 style="margin-bottom:8px;">${esc(client.name)}</h2>
+                                <p>${esc(client.university||'Non renseigné')}</p>
+                                <p style="font-size:0.85rem;margin-top:8px;"><strong>Sujet:</strong> ${esc(client.tfc_topic||'Non défini')}</p>
+                                <div style="display:flex;gap:12px;margin-top:10px;font-size:0.8rem;">
+                                    <span><i class="fa-regular fa-envelope"></i> ${esc(client.email)}</span>
+                                    ${client.phone?`<span><i class="fa-solid fa-phone"></i> ${esc(client.phone)}</span>`:''}
+                                    <span><i class="fa-solid fa-key"></i> Code: ${esc(client.accessCode)}</span>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:8px;">
+                                <button class="btn-auth" style="background:white;color:var(--blue);width:auto;" onclick="openClientWorkspace('${client.id}')">
+                                    <i class="fa-solid fa-folder-open"></i> Gérer
+                                </button>
+                                <button class="btn-auth share-work-btn" style="background:white;color:#2196F3;width:auto;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')">
+                                    <i class="fa-solid fa-share-alt"></i> Partager
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:16px;">
+                        <div style="display:flex;gap:8px;border-bottom:2px solid var(--border);margin-bottom:16px;">
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','docs')" id="tab-docs-${client.id}" style="border-radius:8px 8px 0 0;">Documents (${documents.length})</button>
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','posts')" id="tab-posts-${client.id}" style="border-radius:8px 8px 0 0;">Publications (${posts.length})</button>
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','works')" id="tab-works-${client.id}" style="border-radius:8px 8px 0 0;">Travaux partagés (${sharedWorks.length})</button>
+                            <button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','studentworks')" id="tab-studentworks-${client.id}" style="border-radius:8px 8px 0 0;">Travaux étudiant (${studentWorks.length})</button>
+                        </div>
+                        <div id="client-docs-${client.id}" class="client-tab-content" style="display:block;">
+                            ${documents.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun document déposé</div>':`
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    ${documents.map(doc => `
+                                        <div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;">
+                                            <div style="flex:1;">
+                                                <div class="doc-name"><i class="fa-solid fa-file"></i> ${esc(doc.name)}</div>
+                                                <div class="doc-meta">Déposé le ${new Date(doc.uploadedAt).toLocaleString()}</div>
+                                                <span class="doc-status ${doc.status==='valide'?'status-approved':doc.status==='correction'?'status-revision':'status-pending'}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;">
+                                                    ${doc.status==='valide'?'Validé':doc.status==='correction'?'À corriger':'En attente'}
+                                                </span>
+                                                ${doc.feedback?`<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(doc.feedback)}</div>`:''}
+                                            </div>
+                                            <div><a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a></div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                        <div id="client-posts-${client.id}" class="client-tab-content" style="display:none;">
+                            ${posts.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucune publication</div>':`
+                                <div style="display:flex;flex-direction:column;gap:16px;">
+                                    ${posts.map(post => `
+                                        <div class="post-card" style="margin:0;">
+                                            <div class="post-header">
+                                                <div class="user-av">${client.avatar?`<img src="${client.avatar}">`:'<i class="fa-solid fa-user-graduate"></i>'}</div>
+                                                <div><div style="font-weight:700">${esc(post.authorName)}</div><div style="font-size:0.7rem;">${new Date(post.timestamp).toLocaleString()}</div></div>
+                                            </div>
+                                            <div class="post-content">
+                                                <div>${esc(post.content)}</div>
+                                                ${post.mediaUrl?`<img src="${post.mediaUrl}" style="max-width:100%;margin-top:10px;border-radius:12px;cursor:pointer;" onclick="openLightbox('${post.mediaUrl}')">`:''}
+                                                ${post.fileUrl?`<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:10px">📥 ${post.fileName}</a>`:''}
+                                                ${post.linkUrl?`<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:10px">🔗 Voir le lien</a>`:''}
+                                            </div>
+                                            <div class="post-footer">
+                                                <span class="post-action"><i class="fa-regular fa-heart"></i> ${post.likes||0}</span>
+                                                <span class="post-action"><i class="fa-regular fa-comment"></i> ${post.commentsCount||0}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                        <div id="client-works-${client.id}" class="client-tab-content" style="display:none;">
+                            ${sharedWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail partagé</div>':`
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    ${sharedWorks.map(work => `
+                                        <div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--blue-pale);">
+                                            <div style="flex:1;">
+                                                <div class="doc-name"><i class="fa-solid fa-share-alt"></i> ${esc(work.title)}</div>
+                                                <div class="doc-meta">Partagé par ${esc(work.sharedBy)} le ${new Date(work.sharedAt).toLocaleString()}</div>
+                                                ${work.description?`<p style="margin-top:8px;font-size:0.8rem;">${esc(work.description)}</p>`:''}
+                                                ${work.link?`<div style="margin-top:8px;"><a href="${work.link}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a></div>`:''}
+                                            </div>
+                                            ${work.fileUrl?`<div><a href="${work.fileUrl}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i> ${work.fileName}</a></div>`:''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                        <div id="client-studentworks-${client.id}" class="client-tab-content" style="display:none;">
+                            ${studentWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail déposé par l\'étudiant</div>':`
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    ${studentWorks.map(work => `
+                                        <div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;">
+                                            <div style="flex:1;">
+                                                <div class="doc-name"><i class="fa-solid fa-briefcase"></i> ${esc(work.name)}</div>
+                                                <div class="doc-meta">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div>
+                                                <span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">
+                                                    ${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}
+                                                </span>
+                                                ${work.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(work.feedback)}</div>` : ''}
+                                            </div>
+                                            <div><a href="${work.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a></div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        document.getElementById('totalDocsCount').textContent = totalDocs;
+        document.getElementById('totalPostsCount').textContent = totalPosts;
+        container.innerHTML = clientsHtml.join('');
+    } catch(error) {
+        console.error(error);
+        container.innerHTML = `<div class="empty-state">Erreur: ${error.message}</div>`;
+    }
 }
 
-function submitAdminTfcPost() {
-    toast('Fonctionnalité à venir');
+function toggleClientTab(clientId, tab) {
+    const docsDiv = document.getElementById(`client-docs-${clientId}`);
+    const postsDiv = document.getElementById(`client-posts-${clientId}`);
+    const worksDiv = document.getElementById(`client-works-${clientId}`);
+    const studentWorksDiv = document.getElementById(`client-studentworks-${clientId}`);
+    const docsBtn = document.getElementById(`tab-docs-${clientId}`);
+    const postsBtn = document.getElementById(`tab-posts-${clientId}`);
+    const worksBtn = document.getElementById(`tab-works-${clientId}`);
+    const studentWorksBtn = document.getElementById(`tab-studentworks-${clientId}`);
+    
+    if (tab === 'docs') {
+        if(docsDiv) docsDiv.style.display = 'block';
+        if(postsDiv) postsDiv.style.display = 'none';
+        if(worksDiv) worksDiv.style.display = 'none';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'none';
+        if(docsBtn) docsBtn.classList.add('active');
+        if(postsBtn) postsBtn.classList.remove('active');
+        if(worksBtn) worksBtn.classList.remove('active');
+        if(studentWorksBtn) studentWorksBtn.classList.remove('active');
+    } else if (tab === 'posts') {
+        if(docsDiv) docsDiv.style.display = 'none';
+        if(postsDiv) postsDiv.style.display = 'block';
+        if(worksDiv) worksDiv.style.display = 'none';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'none';
+        if(docsBtn) docsBtn.classList.remove('active');
+        if(postsBtn) postsBtn.classList.add('active');
+        if(worksBtn) worksBtn.classList.remove('active');
+        if(studentWorksBtn) studentWorksBtn.classList.remove('active');
+    } else if (tab === 'works') {
+        if(docsDiv) docsDiv.style.display = 'none';
+        if(postsDiv) postsDiv.style.display = 'none';
+        if(worksDiv) worksDiv.style.display = 'block';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'none';
+        if(docsBtn) docsBtn.classList.remove('active');
+        if(postsBtn) postsBtn.classList.remove('active');
+        if(worksBtn) worksBtn.classList.add('active');
+        if(studentWorksBtn) studentWorksBtn.classList.remove('active');
+    } else if (tab === 'studentworks') {
+        if(docsDiv) docsDiv.style.display = 'none';
+        if(postsDiv) postsDiv.style.display = 'none';
+        if(worksDiv) worksDiv.style.display = 'none';
+        if(studentWorksDiv) studentWorksDiv.style.display = 'block';
+        if(docsBtn) docsBtn.classList.remove('active');
+        if(postsBtn) postsBtn.classList.remove('active');
+        if(worksBtn) worksBtn.classList.remove('active');
+        if(studentWorksBtn) studentWorksBtn.classList.add('active');
+    }
 }
 
 function addClientLoginTab() {}
