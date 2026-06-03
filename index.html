@@ -2799,18 +2799,21 @@ function showTfcSection(section) {
 // Fonction pour charger les travaux partagés chez le client
 async function loadSharedWorks() {
     if (!currentTfcClientId) return;
-    
     const container = document.getElementById('sharedWorksList');
     if (!container) return;
+    container.innerHTML = '<div style="padding:32px;text-align:center;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
     
-    try {
-        const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).once('value');
+    if (tfcSharedWorksListener) {
+        db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
+    }
+    
+    tfcSharedWorksListener = (snapshot) => {
         const works = [];
         snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
         works.sort((a, b) => (b.sharedAt || 0) - (a.sharedAt || 0));
         
         if (works.length === 0) {
-            container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun travail partagé pour le moment</div>';
+            container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);"><i class="fa-regular fa-envelope"></i><p>Aucun travail partagé pour le moment</p></div>';
             return;
         }
         
@@ -2829,10 +2832,9 @@ async function loadSharedWorks() {
                 </div>
             </div>
         `).join('');
-    } catch (error) {
-        console.error('Erreur chargement travaux partagés:', error);
-        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Erreur de chargement</div>';
-    }
+    };
+    
+    db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).on('value', tfcSharedWorksListener);
 }
 
 // Variables pour stocker les éléments du modal
@@ -3076,6 +3078,7 @@ async function deleteTfcPost(postId) {
     if (confirm('Supprimer cette publication ?')) {
         await db.ref(`tfc_posts/${postId}`).remove();
         toast('Publication supprimée');
+        loadTfcPosts(); // ← Ajoutez cette ligne pour rafraîchir la liste
     }
 }
 
@@ -3088,88 +3091,75 @@ function editTfcPost(postId) {
             edited: true
         }).then(() => {
             toast('Publication modifiée avec succès');
+            loadTfcPosts(); // ← Ajoutez cette ligne pour rafraîchir la liste
         }).catch(error => {
             toast('Erreur: ' + error.message);
         });
     }
 }
 
+let tfcDocsListener = null;
+let tfcSharedWorksListener = null;
+
 async function loadClientDocuments() {
     if (!currentTfcClientId) return;
-    const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/documents`).once('value');
-    const docs = snapshot.val() || {};
-    const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
     const container = document.getElementById('tfcDocumentsListClient');
     if (!container) return;
-    if (docsList.length === 0) {
-        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun document déposé</div>';
-        return;
+    container.innerHTML = '<div style="padding:32px;text-align:center;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
+    
+    if (tfcDocsListener) {
+        db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocsListener);
     }
-    container.innerHTML = docsList.map(doc => {
-        let iconClass = 'fa-file';
-        let iconBg = 'file';
-        const ext = doc.name.split('.').pop().toLowerCase();
+    
+    tfcDocsListener = (snapshot) => {
+        const docs = snapshot.val() || {};
+        const docsList = Object.values(docs).sort((a,b) => b.uploadedAt - a.uploadedAt);
         
-        if (ext === 'pdf') {
-            iconClass = 'fa-file-pdf';
-            iconBg = 'pdf';
-        } else if (ext === 'docx' || ext === 'doc') {
-            iconClass = 'fa-file-word';
-            iconBg = 'word';
-        } else if (ext === 'xlsx' || ext === 'xls') {
-            iconClass = 'fa-file-excel';
-            iconBg = 'excel';
-        } else if (ext === 'pptx' || ext === 'ppt') {
-            iconClass = 'fa-file-powerpoint';
-            iconBg = 'ppt';
-        } else if (ext === 'zip' || ext === 'rar' || ext === '7z') {
-            iconClass = 'fa-file-archive';
-            iconBg = 'zip';
-        } else if (doc.type && doc.type.startsWith('image/')) {
-            iconClass = 'fa-file-image';
-            iconBg = 'image';
+        if (docsList.length === 0) {
+            container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);"><i class="fa-regular fa-folder-open"></i><p>Aucun document déposé</p></div>';
+            return;
         }
         
-        const statusClass = doc.status === 'valide' ? 'status-approved' : 
-                           (doc.status === 'correction' ? 'status-revision' : 'status-pending');
-        const statusText = doc.status === 'valide' ? '✓ Validé' : 
-                          (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
-        
-        return `
-            <div class="tfc-doc-item" id="doc-item-${doc.id}">
-                <div class="tfc-doc-info">
-                    <div class="tfc-doc-icon ${iconBg}">
-                        <i class="fa-regular ${iconClass}"></i>
-                    </div>
-                    <div class="tfc-doc-details">
-                        <div class="tfc-doc-name">${esc(doc.name)}</div>
-                        <div class="tfc-doc-meta">
-                            <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</span>
-                            <span class="tfc-doc-status ${statusClass}">
-                                ${statusText}
-                            </span>
+        container.innerHTML = docsList.map(doc => {
+            let iconClass = 'fa-file';
+            let iconBg = 'file';
+            const ext = doc.name.split('.').pop().toLowerCase();
+            if (ext === 'pdf') { iconClass = 'fa-file-pdf'; iconBg = 'pdf'; }
+            else if (ext === 'docx' || ext === 'doc') { iconClass = 'fa-file-word'; iconBg = 'word'; }
+            else if (ext === 'xlsx' || ext === 'xls') { iconClass = 'fa-file-excel'; iconBg = 'excel'; }
+            else if (ext === 'pptx' || ext === 'ppt') { iconClass = 'fa-file-powerpoint'; iconBg = 'ppt'; }
+            else if (ext === 'zip' || ext === 'rar' || ext === '7z') { iconClass = 'fa-file-archive'; iconBg = 'zip'; }
+            else if (doc.type && doc.type.startsWith('image/')) { iconClass = 'fa-file-image'; iconBg = 'image'; }
+            
+            const statusClass = doc.status === 'valide' ? 'status-approved' : (doc.status === 'correction' ? 'status-revision' : 'status-pending');
+            const statusText = doc.status === 'valide' ? '✓ Validé' : (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
+            
+            return `
+                <div class="tfc-doc-item" id="doc-item-${doc.id}">
+                    <div class="tfc-doc-info">
+                        <div class="tfc-doc-icon ${iconBg}">
+                            <i class="fa-regular ${iconClass}"></i>
                         </div>
-                        ${doc.feedback ? `
-                            <div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;">
-                                <strong>📝 Retour :</strong><br>${esc(doc.feedback)}
+                        <div class="tfc-doc-details">
+                            <div class="tfc-doc-name">${esc(doc.name)}</div>
+                            <div class="tfc-doc-meta">
+                                <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}</span>
+                                <span class="tfc-doc-status ${statusClass}">${statusText}</span>
                             </div>
-                        ` : ''}
+                            ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;"><strong>📝 Retour :</strong><br>${esc(doc.feedback)}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="tfc-doc-actions">
+                        <a href="${doc.url}" target="_blank" class="tfc-btn-icon" download="${doc.name}"><i class="fa-solid fa-download"></i></a>
+                        <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name)}')" class="tfc-btn-icon"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
-                <div class="tfc-doc-actions">
-                    <a href="${doc.url}" target="_blank" class="tfc-btn-icon" download="${doc.name}">
-                        <i class="fa-solid fa-download"></i>
-                    </a>
-                    <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon" title="Modifier">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-                    <button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name)}')" class="tfc-btn-icon" title="Supprimer">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
+            `;
+        }).join('');
+    };
+    
+    db.ref(`tfc_clients/${currentTfcClientId}/documents`).on('value', tfcDocsListener);
 }
 
 async function deleteClientDocument(docId, docName) {
@@ -3851,6 +3841,8 @@ async function doClientLogin() {
 }
 
 function logoutTfcClient() {
+    if (tfcDocsListener) db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value', tfcDocsListener);
+    if (tfcSharedWorksListener) db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value', tfcSharedWorksListener);
     if (currentTfcClientId) db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
     if (tfcPostsListener) db.ref('tfc_posts').off('value', tfcPostsListener);
     currentTfcClientId = null;
