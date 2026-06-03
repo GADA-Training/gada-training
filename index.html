@@ -2812,12 +2812,12 @@ async function loadSharedWorks() {
             return;
         }
         container.innerHTML = works.map(work => `
-            <div class="shared-work-card">
-                <div style="background: var(--blue-pale); padding: 12px 16px;">
+            <div class="shared-work-card" style="border-bottom:1px solid var(--border);padding:12px;margin-bottom:12px;">
+                <div style="background: var(--blue-pale); padding: 8px 12px; border-radius: 8px;">
                     <div style="font-weight: 700; color: var(--blue);">📎 ${esc(work.title)}</div>
                     <div style="font-size: 0.7rem; color: var(--muted);">Partagé par ${esc(work.sharedBy)} le ${new Date(work.sharedAt).toLocaleString()}</div>
                 </div>
-                <div style="padding: 16px;">
+                <div style="padding: 12px 0;">
                     ${work.description ? `<p style="font-size: 0.85rem; margin-bottom: 12px;">${esc(work.description)}</p>` : ''}
                     <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                         ${work.fileUrl ? `<a href="${work.fileUrl}" target="_blank" class="file-dl"><i class="fa-solid fa-download"></i> ${esc(work.fileName)}</a>` : ''}
@@ -3093,9 +3093,6 @@ function editTfcPost(postId) {
     }
 }
 
-let tfcDocsListener = null;
-let tfcSharedWorksListener = null;
-
 async function loadClientDocuments() {
     if (!currentTfcClientId) return;
     const container = document.getElementById('tfcDocumentsListClient');
@@ -3121,22 +3118,17 @@ async function loadClientDocuments() {
             const statusClass = doc.status === 'valide' ? 'status-approved' : (doc.status === 'correction' ? 'status-revision' : 'status-pending');
             const statusText = doc.status === 'valide' ? '✓ Validé' : (doc.status === 'correction' ? '⚠ À corriger' : '⏳ En attente');
             return `
-                <div class="tfc-doc-item" id="doc-item-${doc.id}">
-                    <div class="tfc-doc-info">
-                        <div class="tfc-doc-icon ${iconBg}"><i class="fa-regular ${iconClass}"></i></div>
-                        <div class="tfc-doc-details">
-                            <div class="tfc-doc-name">${esc(doc.name)}</div>
-                            <div class="tfc-doc-meta">
-                                <span>Déposé le ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')} à ${new Date(doc.uploadedAt).toLocaleTimeString()}</span>
-                                <span class="tfc-doc-status ${statusClass}">${statusText}</span>
-                            </div>
-                            ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:8px;background:var(--green-pale);border-radius:8px;"><strong>📝 Retour :</strong><br>${esc(doc.feedback)}</div>` : ''}
-                        </div>
+                <div class="tfc-doc-item" style="border-bottom:1px solid var(--border);padding:12px;display:flex;justify-content:space-between;align-items:center;">
+                    <div style="flex:1;">
+                        <div class="doc-name"><strong>${esc(doc.name)}</strong></div>
+                        <div class="doc-meta" style="font-size:0.7rem;color:var(--muted);">Déposé le ${new Date(doc.uploadedAt).toLocaleDateString()} à ${new Date(doc.uploadedAt).toLocaleTimeString()}</div>
+                        <span class="tfc-doc-status ${statusClass}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;display:inline-block;margin-top:6px;">${statusText}</span>
+                        ${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;font-size:0.75rem;"><strong>📝 Retour de l'encadreur :</strong><br>${esc(doc.feedback)}</div>` : ''}
                     </div>
-                    <div class="tfc-doc-actions">
+                    <div class="tfc-doc-actions" style="display:flex;gap:8px;">
                         <a href="${doc.url}" target="_blank" class="tfc-btn-icon" download="${doc.name}"><i class="fa-solid fa-download"></i></a>
-                        <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name)}')" class="tfc-btn-icon"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon" title="Modifier le nom"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name)}')" class="tfc-btn-icon" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
             `;
@@ -3146,6 +3138,7 @@ async function loadClientDocuments() {
         container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);">Erreur de chargement</div>';
     }
 }
+
 async function deleteClientDocument(docId, docName) {
     if (!confirm(`Supprimer définitivement le document "${docName}" ?`)) return;
     
@@ -3354,91 +3347,48 @@ async function uploadStudentWork(fileInput) {
 }
 
 async function loadStudentWorks() {
-    if (!currentTfcClientId) {
-        console.log('Pas de client TFC connecté');
-        return;
-    }
-    
+    if (!currentTfcClientId) return;
     const container = document.getElementById('studentWorksList');
     if (!container) return;
-    
+    container.innerHTML = '<div style="padding:32px;text-align:center;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
     try {
         const snapshot = await db.ref(`tfc_clients/${currentTfcClientId}/student_works`).once('value');
         const works = [];
         snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
         works.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
-        
         if (works.length === 0) {
-            container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun travail déposé pour le moment</div>';
+            container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);"><i class="fa-regular fa-clock"></i><p>Aucun travail déposé pour le moment</p></div>';
             return;
         }
-        
         container.innerHTML = works.map(work => {
-            let fileIcon = 'fa-file';
-            let iconBgClass = 'file';
-            
-            if (work.name) {
-                const ext = work.name.split('.').pop().toLowerCase();
-                if (ext === 'pdf') {
-                    fileIcon = 'fa-file-pdf';
-                    iconBgClass = 'pdf';
-                } else if (ext === 'docx' || ext === 'doc') {
-                    fileIcon = 'fa-file-word';
-                    iconBgClass = 'word';
-                } else if (ext === 'pptx' || ext === 'ppt') {
-                    fileIcon = 'fa-file-powerpoint';
-                    iconBgClass = 'ppt';
-                } else if (ext === 'zip' || ext === 'rar' || ext === '7z') {
-                    fileIcon = 'fa-file-archive';
-                    iconBgClass = 'zip';
-                } else {
-                    fileIcon = 'fa-file';
-                    iconBgClass = 'file';
-                }
-            }
-            
-            const statusClass = work.status === 'approved' ? 'work-status-approved' : 
-                               (work.status === 'revision' ? 'work-status-revision' : 'work-status-pending');
-            const statusText = work.status === 'approved' ? '✅ Validé' : 
-                              (work.status === 'revision' ? '🔄 À corriger' : '⏳ En attente');
-            
+            let fileIcon = 'fa-file', iconBgClass = 'file';
+            const ext = work.name.split('.').pop().toLowerCase();
+            if (ext === 'pdf') { fileIcon = 'fa-file-pdf'; iconBgClass = 'pdf'; }
+            else if (ext === 'docx' || ext === 'doc') { fileIcon = 'fa-file-word'; iconBgClass = 'word'; }
+            else if (ext === 'pptx' || ext === 'ppt') { fileIcon = 'fa-file-powerpoint'; iconBgClass = 'ppt'; }
+            else if (ext === 'zip' || ext === 'rar' || ext === '7z') { fileIcon = 'fa-file-archive'; iconBgClass = 'zip'; }
+            const statusClass = work.status === 'approved' ? 'work-status-approved' : (work.status === 'revision' ? 'work-status-revision' : 'work-status-pending');
+            const statusText = work.status === 'approved' ? '✅ Validé' : (work.status === 'revision' ? '🔄 À corriger' : '⏳ En attente');
             return `
-                <div class="student-work-card">
-                    <div class="student-work-header">
-                        <div class="tfc-doc-icon ${iconBgClass}">
-                            <i class="fa-regular ${fileIcon}"></i>
+                <div class="student-work-card" style="border-bottom:1px solid var(--border);padding:12px;margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div class="tfc-doc-icon ${iconBgClass}" style="width:40px;height:40px;"><i class="fa-regular ${fileIcon}"></i></div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700;">${esc(work.name)}</div>
+                            <div style="font-size:0.7rem;color:var(--muted);">Déposé le ${new Date(work.uploadedAt).toLocaleDateString()} à ${new Date(work.uploadedAt).toLocaleTimeString()}</div>
+                            <span class="student-work-status ${statusClass}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;display:inline-block;margin-top:6px;">${statusText}</span>
+                            ${work.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--blue-pale);border-radius:6px;font-size:0.75rem;"><strong>📝 Retour de l'encadreur :</strong><br>${esc(work.feedback)}</div>` : ''}
                         </div>
-                        <div style="flex: 1;">
-                            <div style="font-weight: 700;">${esc(work.name)}</div>
-                            <div style="font-size: 0.7rem; color: var(--muted);">Déposé le ${new Date(work.uploadedAt).toLocaleDateString('fr-FR')} à ${new Date(work.uploadedAt).toLocaleTimeString()}</div>
+                        <div>
+                            <a href="${work.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a>
                         </div>
-                        <span class="student-work-status ${statusClass}">
-                            ${statusText}
-                        </span>
-                    </div>
-                    <div style="padding: 16px;">
-                        <a href="${work.url}" target="_blank" class="file-dl" style="display: inline-flex; margin-bottom: 12px;">
-                            <i class="fa-solid fa-download"></i> Télécharger mon travail
-                        </a>
-                        ${work.feedback ? `
-                            <div class="student-work-feedback">
-                                <strong><i class="fa-solid fa-comment-dots"></i> Retour de l'encadreur :</strong><br>
-                                ${esc(work.feedback)}
-                                ${work.feedbackDate ? `<div style="font-size: 0.65rem; margin-top: 6px; color: var(--muted);">${new Date(work.feedbackDate).toLocaleString()}</div>` : ''}
-                            </div>
-                        ` : ''}
-                        ${work.status === 'revision' ? `
-                            <button class="btn-auth" style="margin-top: 12px; width: auto; padding: 6px 16px;" onclick="document.getElementById('studentWorkFile').click(); toast('Veuillez déposer une version corrigée')">
-                                <i class="fa-solid fa-upload"></i> Déposer une version corrigée
-                            </button>
-                        ` : ''}
                     </div>
                 </div>
             `;
         }).join('');
     } catch (error) {
-        console.error('Erreur chargement travaux:', error);
-        container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Erreur lors du chargement des travaux</div>';
+        console.error(error);
+        container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);">Erreur de chargement</div>';
     }
 }
 
