@@ -365,6 +365,101 @@
         .student-work-feedback { background: var(--blue-pale); padding: 12px 16px; border-radius: 12px; margin-top: 12px; font-size: 0.8rem; }
         .shared-work-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; transition: all 0.3s ease; }
         .shared-work-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        /* ==================== STYLES POUR LA GESTION DES FACTURES ==================== */
+.invoice-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.invoice-stat-card {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+}
+.invoice-stat-num {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--blue);
+}
+.invoice-stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+.invoice-filter-row {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+}
+.invoice-filter-row input, .invoice-filter-row select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+}
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.invoice-table th {
+    background: var(--blue);
+    color: white;
+    padding: 10px 12px;
+    font-size: 11px;
+    text-align: left;
+}
+.invoice-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+}
+.invoice-status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+}
+.status-sold { background: #dcfce7; color: #166534; }
+.status-partial { background: #fef3c7; color: #92400e; }
+.status-unpaid { background: #fee2e2; color: #991b1b; }
+.invoice-actions { display: flex; gap: 6px; }
+.invoice-preview-box {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+.invoice-preview-header {
+    background: var(--blue);
+    color: white;
+    padding: 12px 16px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.whatsapp-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: #25d366;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: transform 0.3s;
+    pointer-events: none;
+    z-index: 9999;
+}
+.whatsapp-toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
@@ -876,8 +971,44 @@
             <div class="card-header"><h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4><div style="display: flex; gap: 8px;"><button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()"><i class="fa-solid fa-plus"></i> Nouveau client</button><button class="btn-auth full-mgmt-btn" style="width: auto; padding: 6px 16px;" onclick="openTfcFullManagement()"><i class="fa-solid fa-table-list"></i> Vue complète</button></div></div>
             <div id="clientsList" style="padding: 16px;"></div>
         </div>
+
+        <!-- SECTION GESTION DES FACTURES -->
+        <div id="adminFacturesSection" style="display: none;">
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-header" style="background: var(--blue);">
+                    <h4><i class="fa-solid fa-file-invoice-dollar"></i> Gestion des Factures</h4>
+                    <button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openNewInvoiceForm()">
+                        <i class="fa-solid fa-plus"></i> Nouvelle facture
+                    </button>
+                </div>
+                <div class="invoice-stats-row" style="padding: 16px;">
+                    <div class="invoice-stat-card"><div class="invoice-stat-num" id="factureTotalClients">0</div><div class="invoice-stat-label">Clients facturés</div></div>
+                    <div class="invoice-stat-card"><div class="invoice-stat-num" id="factureTotalCollected" style="color: var(--green);">$0</div><div class="invoice-stat-label">Total encaissé</div></div>
+                    <div class="invoice-stat-card"><div class="invoice-stat-num" id="factureTotalPending" style="color: var(--red);">$0</div><div class="invoice-stat-label">Reste à percevoir</div></div>
+                </div>
+                <div class="invoice-filter-row">
+                    <input type="text" id="factureSearch" placeholder="Rechercher un client..." oninput="renderFacturesList()">
+                    <select id="factureStatusFilter" onchange="renderFacturesList()">
+                        <option value="">Tous les statuts</option>
+                        <option value="Soldé">Soldé</option>
+                        <option value="Partiel">Partiel</option>
+                        <option value="Impayé">Impayé</option>
+                    </select>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="invoice-table">
+                        <thead>
+                            <tr><th>N°</th><th>Client</th><th>Institution</th><th>Montant</th><th>Payé</th><th>Reste</th><th>Statut</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="facturesListBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
+
 
 <!-- ==================== VUE COMPLÈTE GESTION TFC ==================== -->
 <div id="tfcFullManagement" style="display: none;">
@@ -949,6 +1080,46 @@
         <button class="btn-submit-post" onclick="submitAdminTfcPost()">Publier</button>
     </div>
 </div>
+
+<!-- ==================== MODAL FORMULAIRE FACTURE ==================== -->
+<div class="modal-overlay" id="invoiceFormModal" onclick="if(event.target===this)closeInvoiceFormModal()">
+    <div class="modal-box" style="max-width: 700px;">
+        <div class="modal-top"><h3><i class="fa-solid fa-file-invoice"></i> Nouvelle facture</h3><button class="modal-close" onclick="closeInvoiceFormModal()">×</button></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-field"><label>Nom complet *</label><input type="text" id="invNom" placeholder="Ex: Jean Dupont"></div>
+            <div class="form-field"><label>Téléphone</label><input type="text" id="invTel" placeholder="+243 ..."></div>
+            <div class="form-field"><label>Institution *</label><input type="text" id="invInst" placeholder="Université / Institut"></div>
+            <div class="form-field"><label>Faculté</label><input type="text" id="invFac" placeholder="Faculté"></div>
+            <div class="form-field"><label>Filière</label><input type="text" id="invFil" placeholder="Filière"></div>
+            <div class="form-field"><label>Email</label><input type="email" id="invEmail" placeholder="email@exemple.com"></div>
+            <div class="form-field full"><label>Thématique du mémoire</label><textarea id="invTheme" rows="2" placeholder="Sujet du mémoire..."></textarea></div>
+            <div class="form-field"><label>Montant total ($)</label><input type="number" id="invMontant" placeholder="0" oninput="calcInvoiceReste()"></div>
+            <div class="form-field"><label>Montant payé ($)</label><input type="number" id="invPaye" placeholder="0" oninput="calcInvoiceReste()"></div>
+            <div class="form-field"><label>Reste à payer ($)</label><input type="text" id="invReste" readonly style="background:var(--bg);font-weight:700"></div>
+            <div class="form-field"><label>N° Facture</label><input type="text" id="invNum" placeholder="Auto"></div>
+            <div class="form-field"><label>Date facture</label><input type="date" id="invDate"></div>
+            <div class="form-field full"><label>Notes</label><input type="text" id="invNotes" placeholder="Remarques..."></div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button class="btn-submit-post" onclick="saveInvoice()">Enregistrer</button>
+            <button class="btn-quit" onclick="previewInvoiceModal()">Aperçu</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL APERÇU FACTURE ==================== -->
+<div class="modal-overlay" id="invoicePreviewModal" onclick="if(event.target===this)closeInvoicePreviewModal()">
+    <div class="modal-box" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-top"><h3><i class="fa-solid fa-eye"></i> Aperçu facture</h3><button class="modal-close" onclick="closeInvoicePreviewModal()">×</button></div>
+        <div id="invoicePreviewContent"></div>
+        <div style="display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end;">
+            <button class="btn-auth" onclick="printInvoiceFromPreview()" style="width: auto;"><i class="fa-solid fa-print"></i> Imprimer</button>
+            <button class="btn-auth" onclick="copyWhatsAppMsgFromPreview()" style="width: auto; background: #25d366;"><i class="fa-brands fa-whatsapp"></i> Copier WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<div class="whatsapp-toast" id="whatsappToast">Message copié !</div>
 
 <!-- ==================== SCRIPTS FIREBASE ==================== -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -2590,6 +2761,7 @@ async function openClientWorkspace(clientId) {
     loadAdminStudentWorks(clientId);
 }
 
+
 function closeAdminClientView() {
     if (currentAdminClientId) db.ref(`tfc_clients/${currentAdminClientId}/messages`).off();
     document.getElementById('adminClientView').style.display = 'none';
@@ -2968,6 +3140,148 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==================== GESTION DES FACTURES TFC ====================
+let invoicesList = JSON.parse(localStorage.getItem('gada_invoices') || '[]');
+let currentInvoicePreview = null;
+
+function initInvoiceForm() {
+    const today = new Date().toISOString().split('T')[0];
+    if(document.getElementById('invDate')) document.getElementById('invDate').value = today;
+    if(document.getElementById('invNum')) {
+        document.getElementById('invNum').value = 'FAC-' + String(invoicesList.length + 1).padStart(3, '0');
+    }
+}
+
+function calcInvoiceReste() {
+    const montant = parseFloat(document.getElementById('invMontant').value) || 0;
+    const paye = parseFloat(document.getElementById('invPaye').value) || 0;
+    document.getElementById('invReste').value = (montant - paye) >= 0 ? (montant - paye) : 0;
+}
+
+function openNewInvoiceForm() { initInvoiceForm(); document.getElementById('invoiceFormModal').classList.add('active'); }
+function closeInvoiceFormModal() { document.getElementById('invoiceFormModal').classList.remove('active'); }
+function closeInvoicePreviewModal() { document.getElementById('invoicePreviewModal').classList.remove('active'); }
+
+function saveInvoice() {
+    const nom = document.getElementById('invNom').value.trim();
+    if(!nom) { toast('Le nom est obligatoire'); return; }
+    const montant = parseFloat(document.getElementById('invMontant').value) || 0;
+    const paye = parseFloat(document.getElementById('invPaye').value) || 0;
+    const reste = montant - paye;
+    let statut = 'Impayé';
+    if(reste <= 0 && montant > 0) statut = 'Soldé';
+    else if(paye > 0 && reste > 0) statut = 'Partiel';
+    
+    const invoice = {
+        id: Date.now(), nom: nom, tel: document.getElementById('invTel').value.trim(),
+        inst: document.getElementById('invInst').value.trim(), fac: document.getElementById('invFac').value.trim(),
+        fil: document.getElementById('invFil').value.trim(), email: document.getElementById('invEmail').value.trim(),
+        theme: document.getElementById('invTheme').value.trim(), montant: montant, paye: paye, reste: reste >= 0 ? reste : 0,
+        num: document.getElementById('invNum').value.trim() || ('FAC-' + String(invoicesList.length + 1).padStart(3, '0')),
+        date: document.getElementById('invDate').value, notes: document.getElementById('invNotes').value.trim(), statut: statut
+    };
+    invoicesList.push(invoice);
+    localStorage.setItem('gada_invoices', JSON.stringify(invoicesList));
+    toast('Facture enregistrée !');
+    closeInvoiceFormModal();
+    renderFacturesList();
+    updateInvoiceStats();
+    document.getElementById('invNom').value = '';
+    document.getElementById('invMontant').value = '';
+    document.getElementById('invPaye').value = '';
+    initInvoiceForm();
+}
+
+function renderFacturesList() {
+    const search = document.getElementById('factureSearch')?.value.toLowerCase() || '';
+    const filter = document.getElementById('factureStatusFilter')?.value || '';
+    const filtered = invoicesList.filter(inv => (inv.nom.toLowerCase().includes(search) || (inv.inst || '').toLowerCase().includes(search)) && (!filter || inv.statut === filter));
+    const tbody = document.getElementById('facturesListBody');
+    if(!tbody) return;
+    if(filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;">Aucune facture</td></tr>'; return; }
+    tbody.innerHTML = filtered.map(inv => {
+        const sClass = inv.statut === 'Soldé' ? 'status-sold' : (inv.statut === 'Partiel' ? 'status-partial' : 'status-unpaid');
+        return `<tr><td style="font-weight:700;">${inv.num}</td><td><strong>${escapeHtml(inv.nom)}</strong></td><td>${escapeHtml(inv.inst || '-')}</td><td>$${inv.montant}</td><td style="color:var(--green);">$${inv.paye}</td><td style="color:var(--red);">$${inv.reste}</td><td><span class="invoice-status ${sClass}">${inv.statut}</span></td><td class="invoice-actions"><button class="tfc-btn-icon" onclick="viewInvoiceDetails(${inv.id})"><i class="fa-solid fa-eye"></i></button><button class="tfc-btn-icon" onclick="deleteInvoice(${inv.id})"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+    }).join('');
+}
+
+function updateInvoiceStats() {
+    const total = invoicesList.length;
+    const collected = invoicesList.reduce((s,inv) => s + (inv.paye || 0), 0);
+    const pending = invoicesList.reduce((s,inv) => s + (inv.reste || 0), 0);
+    if(document.getElementById('factureTotalClients')) document.getElementById('factureTotalClients').textContent = total;
+    if(document.getElementById('factureTotalCollected')) document.getElementById('factureTotalCollected').textContent = '$' + collected;
+    if(document.getElementById('factureTotalPending')) document.getElementById('factureTotalPending').textContent = '$' + pending;
+}
+
+function buildInvoiceHTML(inv) {
+    const dateStr = inv.date ? new Date(inv.date).toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR');
+    const statusColor = inv.statut === 'Soldé' ? '#166534' : (inv.statut === 'Partiel' ? '#92400e' : '#991b1b');
+    return `<div id="printable-invoice"><div style="height:6px;background:linear-gradient(90deg,var(--blue) 60%,#e8a020 100%)"></div><div style="background:var(--blue);padding:20px;display:flex;justify-content:space-between;"><div><h1 style="color:#e8a020;">GADA TRAINING</h1><p style="color:rgba(255,255,255,0.7);font-size:11px;">Formons les meilleurs du futur</p></div><div style="text-align:right;"><h2 style="color:white;">FACTURE</h2><p style="color:rgba(255,255,255,0.7);">N° ${inv.num}</p><p style="color:rgba(255,255,255,0.7);">${dateStr}</p></div></div><div style="padding:20px;"><div style="display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:2px dashed var(--border);"><div><h3 style="color:var(--red);">${escapeHtml(inv.nom).toUpperCase()}</h3>${inv.tel ? `<p>📞 ${inv.tel}</p>` : ''}${inv.inst ? `<p>🏫 ${inv.inst}</p>` : ''}</div><div><p><strong>Statut :</strong> <span style="color:${statusColor};">${inv.statut}</span></p>${inv.theme ? `<p style="margin-top:10px;"><strong>Sujet:</strong><br>${escapeHtml(inv.theme)}</p>` : ''}</div></div><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--blue);"><th style="padding:10px;color:white;">Description</th><th style="padding:10px;color:white;">Montant</th><th style="padding:10px;color:white;">Payé</th><th style="padding:10px;color:white;">Reste</th></tr></thead><tbody><tr><td style="padding:12px;">Accompagnement Mémoire</td><td style="padding:12px;">$${inv.montant}</td><td style="padding:12px;color:var(--green);">$${inv.paye}</td><td style="padding:12px;color:var(--red);">$${inv.reste}</td></tr><tr style="background:var(--blue);"><td style="padding:10px;color:white;text-align:right;">TOTAL</td><td style="padding:10px;color:white;">$${inv.montant}</td><td style="padding:10px;color:white;">$${inv.paye}</td><td style="padding:10px;color:white;">$${inv.reste}</td></tr></tbody></table>${inv.notes ? `<div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;"><strong>Notes :</strong><br>${escapeHtml(inv.notes)}</div>` : ''}</div><div style="background:var(--blue);padding:16px;display:flex;justify-content:space-between;"><div><p style="color:#e8a020;">GADA TRAINING</p><p style="color:rgba(255,255,255,0.7);">gadasolution.rdc@gmail.com | +243898383148</p></div><div style="color:#e8a020;">gadatraining.org</div></div><div style="height:6px;background:linear-gradient(90deg,#e8a020 0%,var(--blue) 100%)"></div></div>`;
+}
+
+function viewInvoiceDetails(id) {
+    currentInvoicePreview = invoicesList.find(i => i.id === id);
+    if(currentInvoicePreview) {
+        document.getElementById('invoicePreviewContent').innerHTML = buildInvoiceHTML(currentInvoicePreview);
+        document.getElementById('invoicePreviewModal').classList.add('active');
+    }
+}
+
+function previewInvoiceModal() {
+    const inv = { nom: document.getElementById('invNom').value.trim(), tel: document.getElementById('invTel').value.trim(), inst: document.getElementById('invInst').value.trim(), fac: document.getElementById('invFac').value.trim(), fil: document.getElementById('invFil').value.trim(), email: document.getElementById('invEmail').value.trim(), theme: document.getElementById('invTheme').value.trim(), montant: parseFloat(document.getElementById('invMontant').value)||0, paye: parseFloat(document.getElementById('invPaye').value)||0, reste: parseFloat(document.getElementById('invReste').value)||0, num: document.getElementById('invNum').value.trim(), date: document.getElementById('invDate').value, notes: document.getElementById('invNotes').value.trim() };
+    const reste = inv.montant - inv.paye;
+    inv.statut = reste <= 0 && inv.montant > 0 ? 'Soldé' : (inv.paye > 0 && reste > 0 ? 'Partiel' : 'Impayé');
+    inv.reste = reste >= 0 ? reste : 0;
+    currentInvoicePreview = inv;
+    document.getElementById('invoicePreviewContent').innerHTML = buildInvoiceHTML(inv);
+    document.getElementById('invoicePreviewModal').classList.add('active');
+}
+
+function printInvoiceFromPreview() {
+    const content = document.getElementById('printable-invoice');
+    if(!content) { toast('Générez une facture'); return; }
+    const w = window.open('', '_blank', 'width=900,height=700');
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Facture GADA</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;background:#fff}@media print{@page{margin:0;size:A4}}</style></head><body>${content.outerHTML}<script>window.onload=()=>{window.print();}<\/script></body></html>`);
+    w.document.close();
+}
+
+function copyWhatsAppMsgFromPreview() {
+    if(!currentInvoicePreview) { toast('Générez une facture'); return; }
+    const inv = currentInvoicePreview;
+    const msg = `Bonjour ${inv.nom},\n\nFacture GADA TRAINING\nN° ${inv.num}\nDate : ${inv.date ? new Date(inv.date).toLocaleDateString('fr-FR') : ''}\n\nTotal: $${inv.montant}\nPayé: $${inv.paye}\nReste: $${inv.reste}\nStatut: ${inv.statut}\n\nMerci.`;
+    navigator.clipboard.writeText(msg).then(() => { const t = document.getElementById('whatsappToast'); t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); });
+}
+
+function deleteInvoice(id) {
+    if(confirm('Supprimer cette facture ?')) {
+        invoicesList = invoicesList.filter(i => i.id !== id);
+        localStorage.setItem('gada_invoices', JSON.stringify(invoicesList));
+        renderFacturesList();
+        updateInvoiceStats();
+        toast('Facture supprimée');
+    }
+}
+
+function showFacturesTab() {
+    document.getElementById('adminFacturesSection').style.display = 'block';
+    renderFacturesList();
+    updateInvoiceStats();
+}
+
+function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { return m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'); }); }
+
+// Ajouter l'onglet Factures dans le menu admin
+setTimeout(() => {
+    const navDiv = document.querySelector('#adminTfcPanel .card .nav-links');
+    if(navDiv && !document.getElementById('facturesNavBtn')) {
+        navDiv.insertAdjacentHTML('beforeend', `<button class="nav-link" id="facturesNavBtn" onclick="showFacturesTab()"><i class="fa-solid fa-file-invoice-dollar"></i> Factures</button>`);
+    }
+    renderFacturesList();
+    updateInvoiceStats();
+}, 500);
+
 </script>
 </body>
 </html>
