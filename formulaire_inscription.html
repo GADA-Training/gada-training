@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formulaire d'Inscription — Plateforme GADA Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --forest:   #1a3a2a;
+      --canopy:   #2d5e3f;
+      --moss:     #4a7c59;
+      --leaf:     #6db88a;
+      --lime:     #a8d98f;
+      --cream:    #faf7f0;
+      --sand:     #f0e8d8;
+      --bark:     #6b4f32;
+      --gold:     #c9a84c;
+      --text:     #1c2b20;
+      --muted:    #5a6e5f;
+      --border:   rgba(74,124,89,0.22);
+      --shadow:   0 4px 32px rgba(26,58,42,0.09);
+      --radius:   12px;
+      --tr:       all 0.26s cubic-bezier(0.4,0,0.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 15% 10%, rgba(107,184,138,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 40% at 85% 85%, rgba(45,94,63,0.07) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, var(--forest) 0%, var(--canopy) 55%, #3a7a52 100%);
+      padding: 56px 24px 72px;
+      text-align: center;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -1px; left: 0; right: 0; height: 40px;
+      background: var(--cream);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(168,217,143,0.28);
+      padding: 5px 16px; border-radius: 100px;
+      font-size: 11px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--lime); margin-bottom: 22px;
+      position: relative;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--lime);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(30px, 5vw, 54px);
+      font-weight: 700; color: #fff; line-height: 1.15;
+      margin-bottom: 14px; position: relative;
+    }
+    .hero h1 em { color: var(--lime); font-style: normal; display: block; }
+    .hero p {
+      font-size: 14.5px; color: rgba(255,255,255,0.72);
+      max-width: 560px; margin: 0 auto 28px; line-height: 1.72; position: relative;
+    }
+    .hero-tags {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; position: relative;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 100px; padding: 5px 13px;
+      font-size: 12px; color: rgba(255,255,255,0.78); letter-spacing: .2px;
+    }
+    .hero-tag svg { flex-shrink: 0; }
+
+    /* ===== PROGRESS ===== */
+    .progress-wrap {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,247,240,0.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+    }
+    .progress-inner {
+      max-width: 780px; margin: 0 auto;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .progress-label { font-size: 11.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    .progress-bar {
+      flex: 1; height: 4px; background: rgba(74,124,89,0.13);
+      border-radius: 100px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--canopy), var(--leaf));
+      border-radius: 100px; transition: width .5s ease;
+    }
+    .progress-pct {
+      font-size: 11.5px; font-weight: 700; color: var(--canopy);
+      min-width: 34px; text-align: right;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 780px; margin: 0 auto;
+      padding: 36px 20px 80px; position: relative; z-index: 1;
+    }
+
+    /* ===== SECTION CARD ===== */
+    .section-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 34px 36px;
+      margin-bottom: 26px;
+      box-shadow: var(--shadow);
+      opacity: 0; transform: translateY(20px);
+      animation: rise .5s forwards;
+    }
+    @keyframes rise { to { opacity:1; transform:translateY(0); } }
+    .section-card:nth-child(1){animation-delay:.06s}
+    .section-card:nth-child(2){animation-delay:.13s}
+    .section-card:nth-child(3){animation-delay:.20s}
+    .section-card:nth-child(4){animation-delay:.27s}
+    .section-card:nth-child(5){animation-delay:.34s}
+
+    .section-header {
+      display: flex; align-items: flex-start; gap: 16px;
+      margin-bottom: 28px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sec-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--canopy) 0%, var(--leaf) 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(45,94,63,0.22);
+    }
+    .sec-icon svg { color: #fff; }
+    .sec-meta { flex: 1; }
+    .sec-num {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--leaf); margin-bottom: 3px;
+    }
+    .sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 21px; font-weight: 700; color: var(--forest); line-height: 1.2;
+    }
+    .sec-desc { font-size: 13px; color: var(--muted); line-height: 1.55; margin-top: 3px; }
+
+    /* ===== GRID ===== */
+    .fg { display: grid; gap: 18px; }
+    .fg.two { grid-template-columns: 1fr 1fr; }
+    @media(max-width:560px){ .fg.two{grid-template-columns:1fr} .section-card{padding:22px 16px} }
+    .full { grid-column: 1/-1; }
+
+    /* ===== FIELD ===== */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label.lbl {
+      font-size: 13px; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .req { color: #d94f4f; font-size: 11px; }
+    .hint { font-weight: 400; color: var(--muted); font-size: 11px; margin-left: auto; }
+
+    input[type=text], input[type=email], input[type=tel], select, textarea {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; color: var(--text);
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 11px 15px; width: 100%;
+      transition: var(--tr); outline: none;
+      -webkit-appearance: none; appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--moss); background: #fff;
+      box-shadow: 0 0 0 3px rgba(74,124,89,0.11);
+    }
+    input::placeholder, textarea::placeholder { color: #b5bcb9; }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a7c59' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      padding-right: 38px; cursor: pointer;
+    }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+    /* ===== RANGE ===== */
+    .range-row { display: flex; align-items: center; gap: 12px; }
+    input[type=range] {
+      -webkit-appearance: none; appearance: none;
+      flex: 1; height: 5px; border-radius: 100px;
+      background: linear-gradient(90deg, var(--canopy) 0%, var(--lime) 100%);
+      outline: none; border: none; padding: 0; cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #fff; border: 2.5px solid var(--canopy);
+      box-shadow: 0 2px 8px rgba(45,94,63,0.28); cursor: pointer;
+      transition: var(--tr);
+    }
+    input[type=range]::-webkit-slider-thumb:hover { border-color: var(--leaf); transform: scale(1.12); }
+    .range-val {
+      min-width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--canopy), var(--leaf));
+      color: #fff; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .range-labels {
+      display: flex; justify-content: space-between;
+      font-size: 10.5px; color: var(--muted); margin-top: 5px;
+    }
+
+    /* ===== CHECKBOXES / RADIOS ===== */
+    .cg { display: flex; flex-direction: column; gap: 9px; }
+    .cg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    @media(max-width:520px){ .cg2{grid-template-columns:1fr} }
+    .ci {
+      display: flex; align-items: flex-start; gap: 11px;
+      padding: 11px 15px; border-radius: 10px;
+      border: 1.5px solid transparent; background: var(--cream);
+      cursor: pointer; transition: var(--tr); user-select: none;
+    }
+    .ci:hover { border-color: var(--border); background: #fff; }
+    .ci:has(input:checked) { border-color: var(--leaf); background: rgba(107,184,138,0.07); }
+    .ci input {
+      width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px;
+      accent-color: var(--canopy); -webkit-appearance: auto; appearance: auto;
+      cursor: pointer; background: #fff; border: none; padding: 0;
+    }
+    .ci input[type=radio] { border-radius: 50%; }
+    .ci-body { display: flex; flex-direction: column; gap: 2px; }
+    .ci-text { font-size: 13.5px; color: var(--text); line-height: 1.4; display: flex; align-items: center; gap: 8px; }
+    .ci-text svg { flex-shrink: 0; color: var(--moss); }
+    .ci-sub { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+    /* ===== PILLS ===== */
+    .pill-grp { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { position: relative; cursor: pointer; }
+    .pill input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .pill-lbl {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 15px; border-radius: 100px;
+      border: 1.5px solid var(--border);
+      font-size: 12.5px; font-weight: 500; color: var(--muted);
+      transition: var(--tr); cursor: pointer;
+    }
+    .pill-lbl svg { flex-shrink: 0; }
+    .pill input:checked + .pill-lbl {
+      background: var(--canopy); border-color: var(--canopy); color: #fff;
+      box-shadow: 0 2px 8px rgba(45,94,63,0.28);
+    }
+    .pill-lbl:hover { border-color: var(--moss); color: var(--canopy); }
+
+    /* ===== INFO BOX ===== */
+    .info-box {
+      display: flex; gap: 12px;
+      background: rgba(201,168,76,0.07);
+      border: 1px solid rgba(201,168,76,0.28);
+      border-radius: 10px; padding: 13px 15px;
+    }
+    .info-box svg { flex-shrink: 0; color: var(--gold); margin-top: 1px; }
+    .info-box p { font-size: 12.5px; color: var(--bark); line-height: 1.58; }
+
+    /* ===== SUBMIT SECTION ===== */
+    .submit-sec {
+      background: linear-gradient(135deg, var(--forest), var(--canopy));
+      border-radius: 20px; padding: 40px;
+      text-align: center; position: relative; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(26,58,42,0.22);
+    }
+    .submit-sec::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(168,217,143,0.13) 0%, transparent 70%);
+    }
+    .submit-sec h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; color: #fff; margin-bottom: 7px; position: relative;
+    }
+    .submit-sec > p { font-size: 13px; color: rgba(255,255,255,0.62); margin-bottom: 26px; position: relative; }
+    .gdpr-wrap {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 10px; padding: 13px 15px;
+      margin-bottom: 22px; text-align: left; position: relative;
+    }
+    .gdpr-wrap input { accent-color: var(--lime); flex-shrink: 0; margin-top: 3px; cursor: pointer; -webkit-appearance: auto; appearance: auto; width:16px; height:16px; border:none; padding:0; background:transparent; }
+    .gdpr-wrap p { font-size: 12px; color: rgba(255,255,255,0.68); line-height: 1.6; }
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--lime), var(--leaf));
+      color: var(--forest);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 700;
+      border: none; border-radius: 100px;
+      padding: 15px 38px; cursor: pointer;
+      transition: var(--tr); position: relative;
+      box-shadow: 0 4px 20px rgba(168,217,143,0.38);
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168,217,143,0.48); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit svg { transition: transform .2s; }
+    .btn-submit:hover svg { transform: translateX(3px); }
+
+    /* ===== ERRORS ===== */
+    .ferr { font-size: 11.5px; color: #d94f4f; display: none; margin-top: 2px; }
+    .err { border-color: #d94f4f !important; background: #fff9f9 !important; }
+    .char-ctr { font-size: 11px; color: var(--muted); text-align: right; margin-top: 3px; }
+
+    /* ===== SUCCESS ===== */
+    #success-msg {
+      display: none; background: #fff;
+      border: 2px solid var(--leaf);
+      border-radius: 20px; padding: 52px 32px;
+      text-align: center; box-shadow: var(--shadow); margin-top: 28px;
+    }
+    .success-icon { margin-bottom: 18px; }
+    #success-msg h2 { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--forest); margin-bottom: 10px; }
+    #success-msg p { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 420px; margin: 0 auto; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center; padding: 22px;
+      font-size: 12px; color: var(--muted);
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    footer strong { color: var(--canopy); }
+  </style>
+</head>
+<body>
+
+<!-- SVG SPRITE — icônes vectorielles sobres -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+  </symbol>
+  <symbol id="ic-satellite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.5 20.5l4-4M9 3l3 3-5 5-3-3z"/><path d="M15 9l3 3-5 5-3-3z"/><path d="M7.5 16.5l-1 1"/><circle cx="18" cy="6" r="3"/><path d="M15 6h.01M18 9v.01"/>
+  </symbol>
+  <symbol id="ic-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2C6.5 2 3 7 3 12c0 4.4 2.8 7 9 7s9-3 9-7C21 7.5 17.5 2 12 2z"/><path d="M3 12c3-3 9-2 9 7"/>
+  </symbol>
+  <symbol id="ic-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2c0 6-6 8-6 13a6 6 0 0012 0c0-5-6-7-6-13z"/><path d="M12 12c0 3-2 4-2 6a2 2 0 004 0c0-2-2-3-2-6z"/>
+  </symbol>
+  <symbol id="ic-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 21h8M12 17v4M5 4H3a2 2 0 000 4c0 2 1.5 3.5 3 4"/><path d="M19 4h2a2 2 0 010 4c0 2-1.5 3.5-3 4"/><rect x="6" y="2" width="12" height="12" rx="2"/>
+  </symbol>
+  <symbol id="ic-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+  </symbol>
+  <symbol id="ic-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
+  </symbol>
+  <symbol id="ic-bar-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+  </symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+  </symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </symbol>
+  <symbol id="ic-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+  </symbol>
+  <symbol id="ic-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+  </symbol>
+  <symbol id="ic-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+  </symbol>
+  <symbol id="ic-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+  </symbol>
+  <symbol id="ic-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+  </symbol>
+  <symbol id="ic-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+  </symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+  </symbol>
+  <symbol id="ic-wifi-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0119 12.55"/><path d="M5 12.55a10.94 10.94 0 015.17-2.39"/><path d="M10.71 5.05A16 16 0 0122.56 9"/><path d="M1.42 9a15.91 15.91 0 014.7-2.88"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>
+  </symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </symbol>
+  <symbol id="ic-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+  </symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+  </symbol>
+  <symbol id="ic-tree" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 14l-5-9-5 9h3l-3 7h10l-3-7z"/>
+  </symbol>
+  <symbol id="ic-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.7A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.51-1.52a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+  </symbol>
+  <symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+  </symbol>
+</svg>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge"><span class="dot"></span> Inscriptions Ouvertes 2026–2027</div>
+  <h1>
+  Rejoignez la Plateforme
+  <em>
+    <img src="images/Logos 2.png" alt="GADA Training" style="height: 1.2em; vertical-align: middle; display: inline-block;">
+  </em>
+</h1>
+  <p>Écosystème d'excellence en SIG, Télédétection, R, Python et Google Earth Engine — Formations, analyses de données et solutions géospatiales pour les professionnels et chercheurs.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">
+      <svg width="13" height="13"><use href="#ic-leaf"/></svg>Agriculture Numérique
+    </span>
+    <span class="hero-tag">
+      <svg width="13" height="13"><use href="#ic-satellite"/></svg>Télédétection
+    </span>
+    <span class="hero-tag">
+      <svg width="13" height="13"><use href="#ic-map"/></svg>SIG &amp; Cartographie
+    </span>
+    <span class="hero-tag">
+      <svg width="13" height="13"><use href="#ic-code"/></svg>R / Python / GEE
+    </span>
+    <span class="hero-tag">
+      <svg width="13" height="13"><use href="#ic-shield"/></svg>One Health
+    </span>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <span class="progress-label">Complétion</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-pct" id="progressPct">0%</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+<form id="mainForm" action="https://formsubmit.co/gadasolution.rdc@gmail.com" method="POST" novalidate>
+  <input type="hidden" name="_subject" value="Nouvelle Inscription — GADA-Training"/>
+  <input type="hidden" name="_captcha" value="false"/>
+  <input type="hidden" name="_template" value="table"/>
+
+  <!-- ===== SECTION 1 ===== -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="sec-icon"><svg width="22" height="22"><use href="#ic-user"/></svg></div>
+      <div class="sec-meta">
+        <div class="sec-num">Section 01</div>
+        <div class="sec-title">Informations Personnelles &amp; Professionnelles</div>
+        <div class="sec-desc">Renseignez vos coordonnées afin que notre équipe puisse vous identifier et vous contacter.</div>
+      </div>
+    </div>
+
+    <div class="fg two">
+      <div class="field">
+        <label class="lbl">Prénom <span class="req">*</span></label>
+        <input type="text" name="prenom" placeholder="ex. Jean-Claude" required/>
+        <span class="ferr">Ce champ est obligatoire.</span>
+      </div>
+      <div class="field">
+        <label class="lbl">Nom de famille <span class="req">*</span></label>
+        <input type="text" name="nom" placeholder="ex. Mbandza" required/>
+        <span class="ferr">Ce champ est obligatoire.</span>
+      </div>
+      <div class="field">
+        <label class="lbl">
+          <svg width="14" height="14"><use href="#ic-mail"/></svg>
+          Adresse e-mail <span class="req">*</span>
+          <span class="hint">Pour l'envoi de vos accès</span>
+        </label>
+        <input type="email" name="email" placeholder="votre@email.com" required/>
+        <span class="ferr">Veuillez entrer un e-mail valide.</span>
+      </div>
+      <div class="field">
+        <label class="lbl">
+          <svg width="14" height="14"><use href="#ic-phone"/></svg>
+          WhatsApp / Téléphone <span class="req">*</span>
+          <span class="hint">Avec indicatif pays</span>
+        </label>
+        <input type="tel" name="telephone" placeholder="+242 06 XXX XX XX" required/>
+        <span class="ferr">Ce champ est obligatoire.</span>
+      </div>
+
+      <div class="field">
+        <label class="lbl">
+          <svg width="14" height="14"><use href="#ic-globe"/></svg>
+          Pays de résidence <span class="req">*</span>
+        </label>
+        <select name="pays" id="paysSelect" required>
+          <option value="">— Sélectionner votre pays —</option>
+          <optgroup label="── Afrique Centrale ──">
+            <option>Burundi</option><option>Cameroun</option><option>Centrafrique</option>
+            <option>Congo-Brazzaville</option><option>Gabon</option><option>Guinée Équatoriale</option>
+            <option>RD Congo (Kinshasa)</option><option>Rwanda</option><option>Sao Tomé-et-Príncipe</option><option>Tchad</option>
+          </optgroup>
+          <optgroup label="── Afrique de l'Ouest ──">
+            <option>Bénin</option><option>Burkina Faso</option><option>Cap-Vert</option>
+            <option>Côte d'Ivoire</option><option>Gambie</option><option>Ghana</option>
+            <option>Guinée</option><option>Guinée-Bissau</option><option>Liberia</option>
+            <option>Mali</option><option>Mauritanie</option><option>Niger</option>
+            <option>Nigeria</option><option>Sénégal</option><option>Sierra Leone</option><option>Togo</option>
+          </optgroup>
+          <optgroup label="── Afrique de l'Est ──">
+            <option>Comores</option><option>Djibouti</option><option>Érythrée</option>
+            <option>Éthiopie</option><option>Kenya</option><option>Madagascar</option>
+            <option>Malawi</option><option>Maurice</option><option>Mozambique</option>
+            <option>Ouganda</option><option>Seychelles</option><option>Somalie</option>
+            <option>Soudan du Sud</option><option>Tanzanie</option><option>Zambie</option><option>Zimbabwe</option>
+          </optgroup>
+          <optgroup label="── Afrique du Nord ──">
+            <option>Algérie</option><option>Égypte</option><option>Libye</option>
+            <option>Maroc</option><option>Soudan</option><option>Tunisie</option>
+          </optgroup>
+          <optgroup label="── Afrique Australe ──">
+            <option>Afrique du Sud</option><option>Angola</option><option>Botswana</option>
+            <option>Eswatini</option><option>Lesotho</option><option>Namibie</option>
+          </optgroup>
+          <optgroup label="── Europe ──">
+            <option>Albanie</option><option>Allemagne</option><option>Andorre</option>
+            <option>Autriche</option><option>Belgique</option><option>Biélorussie</option>
+            <option>Bosnie-Herzégovine</option><option>Bulgarie</option><option>Chypre</option>
+            <option>Croatie</option><option>Danemark</option><option>Espagne</option>
+            <option>Estonie</option><option>Finlande</option><option>France</option>
+            <option>Grèce</option><option>Hongrie</option><option>Irlande</option>
+            <option>Islande</option><option>Italie</option><option>Kosovo</option>
+            <option>Lettonie</option><option>Liechtenstein</option><option>Lituanie</option>
+            <option>Luxembourg</option><option>Macédoine du Nord</option><option>Malte</option>
+            <option>Moldavie</option><option>Monaco</option><option>Monténégro</option>
+            <option>Norvège</option><option>Pays-Bas</option><option>Pologne</option>
+            <option>Portugal</option><option>République Tchèque</option><option>Roumanie</option>
+            <option>Royaume-Uni</option><option>Russie</option><option>Saint-Marin</option>
+            <option>Serbie</option><option>Slovaquie</option><option>Slovénie</option>
+            <option>Suède</option><option>Suisse</option><option>Ukraine</option>
+          </optgroup>
+          <optgroup label="── Amérique du Nord ──">
+            <option>Canada</option><option>États-Unis</option><option>Mexique</option>
+          </optgroup>
+          <optgroup label="── Amérique Centrale &amp; Caraïbes ──">
+            <option>Antigua-et-Barbuda</option><option>Bahamas</option><option>Barbade</option>
+            <option>Belize</option><option>Costa Rica</option><option>Cuba</option>
+            <option>Dominique</option><option>El Salvador</option><option>Grenade</option>
+            <option>Guatemala</option><option>Haïti</option><option>Honduras</option>
+            <option>Jamaïque</option><option>Nicaragua</option><option>Panama</option>
+            <option>République Dominicaine</option><option>Saint-Kitts-et-Nevis</option>
+            <option>Sainte-Lucie</option><option>Saint-Vincent-et-les-Grenadines</option>
+            <option>Trinité-et-Tobago</option>
+          </optgroup>
+          <optgroup label="── Amérique du Sud ──">
+            <option>Argentine</option><option>Bolivie</option><option>Brésil</option>
+            <option>Chili</option><option>Colombie</option><option>Équateur</option>
+            <option>Guyana</option><option>Paraguay</option><option>Pérou</option>
+            <option>Suriname</option><option>Uruguay</option><option>Venezuela</option>
+          </optgroup>
+          <optgroup label="── Asie de l'Ouest / Moyen-Orient ──">
+            <option>Arabie Saoudite</option><option>Arménie</option><option>Azerbaïdjan</option>
+            <option>Bahreïn</option><option>Émirats Arabes Unis</option><option>Géorgie</option>
+            <option>Irak</option><option>Iran</option><option>Israël</option>
+            <option>Jordanie</option><option>Koweït</option><option>Liban</option>
+            <option>Oman</option><option>Palestine</option><option>Qatar</option>
+            <option>Syrie</option><option>Turquie</option><option>Yémen</option>
+          </optgroup>
+          <optgroup label="── Asie Centrale ──">
+            <option>Afghanistan</option><option>Kazakhstan</option><option>Kirghizistan</option>
+            <option>Ouzbékistan</option><option>Tadjikistan</option><option>Turkménistan</option>
+          </optgroup>
+          <optgroup label="── Asie du Sud ──">
+            <option>Bangladesh</option><option>Bhoutan</option><option>Inde</option>
+            <option>Maldives</option><option>Népal</option><option>Pakistan</option><option>Sri Lanka</option>
+          </optgroup>
+          <optgroup label="── Asie du Sud-Est ──">
+            <option>Birmanie (Myanmar)</option><option>Brunei</option><option>Cambodge</option>
+            <option>Indonésie</option><option>Laos</option><option>Malaisie</option>
+            <option>Philippines</option><option>Singapour</option><option>Thaïlande</option>
+            <option>Timor Oriental</option><option>Vietnam</option>
+          </optgroup>
+          <optgroup label="── Asie de l'Est ──">
+            <option>Chine</option><option>Corée du Nord</option><option>Corée du Sud</option>
+            <option>Japon</option><option>Mongolie</option><option>Taïwan</option>
+          </optgroup>
+          <optgroup label="── Océanie ──">
+            <option>Australie</option><option>Fidji</option><option>Kiribati</option>
+            <option>Îles Marshall</option><option>Micronésie</option><option>Nauru</option>
+            <option>Nouvelle-Zélande</option><option>Palaos</option><option>Papouasie-Nouvelle-Guinée</option>
+            <option>Samoa</option><option>Salomon</option><option>Tonga</option>
+            <option>Tuvalu</option><option>Vanuatu</option>
+          </optgroup>
+          <optgroup label="── Autre ──">
+            <option>Autre / Non listé</option>
+          </optgroup>
+        </select>
+        <span class="ferr">Veuillez sélectionner votre pays.</span>
+      </div>
+
+      <div class="field">
+        <label class="lbl">
+          <svg width="14" height="14"><use href="#ic-map"/></svg>
+          Ville de résidence <span class="req">*</span>
+        </label>
+        <input type="text" name="ville" placeholder="ex. Brazzaville, Paris, Dakar…" required/>
+        <span class="ferr">Ce champ est obligatoire.</span>
+      </div>
+
+      <div class="field full">
+        <label class="lbl">Institution / Organisation / Université</label>
+        <input type="text" name="institution" placeholder="ex. Université Marien Ngouabi, FAO, CIFOR, CGIAR…"/>
+      </div>
+
+      <div class="field full">
+        <label class="lbl">Statut actuel <span class="req">*</span></label>
+        <div class="cg2">
+          <label class="ci"><input type="radio" name="statut" value="Étudiant Licence" required/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-book"/></svg>Étudiant·e — Licence</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="statut" value="Étudiant Master / Doctorat"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-book"/></svg>Étudiant·e — Master / Doctorat</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="statut" value="Chercheur / Enseignant"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-star"/></svg>Chercheur·euse / Enseignant·e</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="statut" value="Professionnel Agronome / Environnementaliste"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-leaf"/></svg>Agronome / Environnementaliste</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="statut" value="Analyste SIG / Géomaticien"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-layers"/></svg>Analyste SIG / Géomaticien·ne</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="statut" value="ONG / Secteur humanitaire"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-users"/></svg>ONG / Secteur humanitaire</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="statut" value="Agent de l'État / Administration"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-shield"/></svg>Agent de l'État / Administration</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="statut" value="Autre statut"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-tag"/></svg>Autre statut</span></div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2 ===== -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="sec-icon"><svg width="22" height="22"><use href="#ic-satellite"/></svg></div>
+      <div class="sec-meta">
+        <div class="sec-num">Section 02</div>
+        <div class="sec-title">Profil Technique &amp; Prérequis</div>
+        <div class="sec-desc">Évaluez vos compétences actuelles pour que nos formateurs adaptent le contenu à votre niveau de départ.</div>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="field">
+        <label class="lbl">Niveau actuel en Cartographie &amp; SIG <span class="req">*</span></label>
+        <div style="margin-top:6px">
+          <div class="range-row">
+            <input type="range" min="1" max="5" value="1" name="niveau_sig" id="rangeSIG" oninput="updateRange('rangeSIG','valSIG')"/>
+            <div class="range-val" id="valSIG">1</div>
+          </div>
+          <div class="range-labels"><span>1 — Aucune expérience</span><span>3 — Intermédiaire</span><span>5 — Expert</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Logiciels géospatiaux utilisés <span class="hint">Cochez tout ce qui s'applique</span></label>
+        <div class="cg">
+          <label class="ci"><input type="checkbox" name="logiciel_sig[]" value="ArcGIS Pro / Desktop"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-layers"/></svg>ArcGIS Pro / ArcGIS Desktop</span><span class="ci-sub">ESRI — Solution professionnelle complète</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="logiciel_sig[]" value="QGIS"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-map"/></svg>QGIS</span><span class="ci-sub">SIG libre et open-source</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="logiciel_sig[]" value="Google Earth Engine"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-globe"/></svg>Google Earth Engine (GEE)</span><span class="ci-sub">Plateforme cloud d'analyse satellitaire</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="logiciel_sig[]" value="SNAP / Sentinel Toolbox"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-satellite"/></svg>SNAP / Sentinel Toolbox</span><span class="ci-sub">Traitement d'images radar SAR et optiques</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="logiciel_sig[]" value="Google Earth Pro"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-globe"/></svg>Google Earth Pro</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="logiciel_sig[]" value="Aucun logiciel SIG"/>
+            <div class="ci-body"><span class="ci-text">Aucun logiciel pour l'instant</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Niveau en Programmation &amp; Analyse de données <span class="req">*</span></label>
+        <div style="margin-top:6px">
+          <div class="range-row">
+            <input type="range" min="1" max="5" value="1" name="niveau_prog" id="rangeProg" oninput="updateRange('rangeProg','valProg')"/>
+            <div class="range-val" id="valProg">1</div>
+          </div>
+          <div class="range-labels"><span>1 — Débutant complet</span><span>3 — Intermédiaire</span><span>5 — Avancé</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Langages &amp; outils statistiques <span class="hint">Cochez tout ce qui s'applique</span></label>
+        <div class="cg2">
+          <label class="ci"><input type="checkbox" name="outils[]" value="R / RStudio"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-bar-chart"/></svg>R / RStudio</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="outils[]" value="Python"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-code"/></svg>Python</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="outils[]" value="JavaScript / GEE Script"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-code"/></svg>JavaScript / GEE Script</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="outils[]" value="KoboToolbox / ODK"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-phone"/></svg>KoboToolbox / ODK</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="outils[]" value="SPSS / Stata"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-bar-chart"/></svg>SPSS / Stata</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="outils[]" value="Aucun outil de programmation"/>
+            <div class="ci-body"><span class="ci-text">Aucun pour l'instant</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="fg two">
+        <div class="field">
+          <label class="lbl">Niveau de diplôme le plus élevé</label>
+          <select name="diplome">
+            <option value="">— Sélectionner —</option>
+            <option>Baccalauréat</option>
+            <option>Licence / Bachelor (Bac+3)</option>
+            <option>Master 1 / Maîtrise (Bac+4)</option>
+            <option>Master 2 / DEA / DESS (Bac+5)</option>
+            <option>Doctorat / PhD</option>
+            <option>BTS / DUT / Diplôme professionnel</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl">Domaine d'études principal</label>
+          <input type="text" name="domaine_etude" placeholder="ex. Agronomie, Géographie, Biologie…"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3 ===== -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="sec-icon"><svg width="22" height="22"><use href="#ic-leaf"/></svg></div>
+      <div class="sec-meta">
+        <div class="sec-num">Section 03</div>
+        <div class="sec-title">Intérêts Thématiques &amp; Objectifs de Formation</div>
+        <div class="sec-desc">Aidez-nous à comprendre vos priorités pour mieux orienter votre parcours.</div>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="field">
+        <label class="lbl">Thématiques prioritaires <span class="req">*</span> <span class="hint">Au moins une</span></label>
+        <div class="cg">
+          <label class="ci"><input type="checkbox" name="themes[]" value="Télédétection agricole"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-satellite"/></svg>Télédétection appliquée à l'agriculture</span><span class="ci-sub">NDVI, EVI, suivi des cultures, stress hydrique</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="themes[]" value="Fertilité et biologie des sols"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-layers"/></svg>Fertilité et biologie des sols tropicaux</span><span class="ci-sub">Cartographie pédologique, matière organique, microbiome</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="themes[]" value="Changements climatiques et hydrologie"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-globe"/></svg>Changements climatiques &amp; modélisation hydro-climatique</span><span class="ci-sub">Scénarios RCP, bilan hydrique, risques d'inondation</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="themes[]" value="One Health"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-shield"/></svg>Approche One Health — Santé Unique</span><span class="ci-sub">Liens environnement, santé animale et humaine</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="themes[]" value="Analyse statistique agronomique"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-bar-chart"/></svg>Analyse statistique agronomique et environnementale</span><span class="ci-sub">Tests statistiques, modèles linéaires, R, visualisation</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="themes[]" value="Agroforesterie et forêts"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-tree"/></svg>Agroforesterie &amp; gestion durable des forêts</span><span class="ci-sub">REDD+, biomasse, déforestation, occupation du sol</span></div>
+          </label>
+          <label class="ci"><input type="checkbox" name="themes[]" value="Collecte terrain KoboToolbox / ODK"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-phone"/></svg>Collecte de données terrain (KoboToolbox / ODK)</span><span class="ci-sub">Conception de formulaires, GPS, analyse des données collectées</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Objectif principal <span class="req">*</span></label>
+        <div class="cg">
+          <label class="ci"><input type="radio" name="objectif" value="Renforcer compétences professionnelles" required/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-star"/></svg>Renforcer mes compétences pour mon travail ou mes recherches</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="objectif" value="Obtenir une certification reconnue"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-trophy"/></svg>Obtenir des certifications reconnues à l'international</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="objectif" value="Rejoindre un réseau d'experts"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-users"/></svg>Rejoindre un réseau d'experts et collaborer sur des projets</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="objectif" value="Apprendre les bases du numérique agricole"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-book"/></svg>Apprendre les bases du numérique appliqué à l'agriculture</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="objectif" value="Réorientation professionnelle SIG / Télédétection"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-layers"/></svg>Réorientation vers les métiers du SIG et de la télédétection</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Format de formation préféré</label>
+        <div class="pill-grp">
+          <label class="pill"><input type="checkbox" name="format[]" value="Vidéos e-learning"/>
+            <span class="pill-lbl"><svg width="13" height="13"><use href="#ic-monitor"/></svg>Vidéos e-learning</span>
+          </label>
+          <label class="pill"><input type="checkbox" name="format[]" value="Sessions live / webinaires"/>
+            <span class="pill-lbl"><svg width="13" height="13"><use href="#ic-users"/></svg>Sessions live</span>
+          </label>
+          <label class="pill"><input type="checkbox" name="format[]" value="Travaux pratiques sur données réelles"/>
+            <span class="pill-lbl"><svg width="13" height="13"><use href="#ic-layers"/></svg>Travaux pratiques</span>
+          </label>
+          <label class="pill"><input type="checkbox" name="format[]" value="Projets collaboratifs"/>
+            <span class="pill-lbl"><svg width="13" height="13"><use href="#ic-users"/></svg>Projets collaboratifs</span>
+          </label>
+          <label class="pill"><input type="checkbox" name="format[]" value="Mentorat individuel"/>
+            <span class="pill-lbl"><svg width="13" height="13"><use href="#ic-star"/></svg>Mentorat</span>
+          </label>
+          <label class="pill"><input type="checkbox" name="format[]" value="PDF et supports téléchargeables"/>
+            <span class="pill-lbl"><svg width="13" height="13"><use href="#ic-book"/></svg>Supports PDF</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4 ===== -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="sec-icon"><svg width="22" height="22"><use href="#ic-fire"/></svg></div>
+      <div class="sec-meta">
+        <div class="sec-num">Section 04</div>
+        <div class="sec-title">Motivation &amp; Engagement</div>
+        <div class="sec-desc">Cette section nous permet de sélectionner les candidats les plus motivés et de vérifier leur capacité à suivre les formations.</div>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="field full">
+        <label class="lbl">Pourquoi souhaitez-vous rejoindre notre plateforme ? <span class="req">*</span></label>
+        <textarea name="motivation" id="motivText" placeholder="Décrivez vos motivations, votre projet professionnel ou de recherche, et ce que vous espérez accomplir grâce à cette formation…" maxlength="600" required oninput="updateChar(this,'motivCtr',600)"></textarea>
+        <div class="char-ctr"><span id="motivCtr">0</span> / 600 caractères</div>
+        <span class="ferr">Veuillez renseigner vos motivations (minimum 50 caractères).</span>
+      </div>
+
+      <div class="field full">
+        <label class="lbl">Problème concret que vous souhaitez résoudre</label>
+        <textarea name="probleme_cible" placeholder="ex. Je dois cartographier les zones de déforestation dans ma province mais je ne maîtrise pas encore Google Earth Engine…" rows="3"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="lbl">
+          <svg width="14" height="14"><use href="#ic-monitor"/></svg>
+          Accès à l'équipement informatique <span class="req">*</span>
+        </label>
+        <div class="cg">
+          <label class="ci"><input type="radio" name="acces_materiel" value="Ordinateur et internet stable" required/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-check-circle"/></svg>Oui — ordinateur et connexion internet stable</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="acces_materiel" value="Ordinateur, internet limité"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-wifi-off"/></svg>Ordinateur disponible, mais connexion instable</span><span class="ci-sub">Préférence pour les contenus téléchargeables</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="acces_materiel" value="Accès via smartphone / cybercafé"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-phone"/></svg>Accès via smartphone ou cybercafé</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="acces_materiel" value="Pas encore équipé"/>
+            <div class="ci-body"><span class="ci-text">Non équipé pour le moment</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">
+          <svg width="14" height="14"><use href="#ic-clock"/></svg>
+          Disponibilité hebdomadaire <span class="req">*</span>
+        </label>
+        <div class="cg">
+          <label class="ci"><input type="radio" name="heures_semaine" value="Moins de 2h" required/>
+            <div class="ci-body"><span class="ci-text">Moins de 2h par semaine</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="heures_semaine" value="2h à 5h"/>
+            <div class="ci-body"><span class="ci-text">Entre 2h et 5h par semaine</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="heures_semaine" value="5h à 10h"/>
+            <div class="ci-body"><span class="ci-text">Entre 5h et 10h par semaine</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="heures_semaine" value="Plus de 10h"/>
+            <div class="ci-body"><span class="ci-text">Plus de 10h par semaine — formation intensive</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="fg two">
+        <div class="field">
+          <label class="lbl">Langue préférée pour la formation</label>
+          <div class="pill-grp">
+            <label class="pill"><input type="radio" name="langue" value="Français"/>
+              <span class="pill-lbl">Français</span>
+            </label>
+            <label class="pill"><input type="radio" name="langue" value="Anglais"/>
+              <span class="pill-lbl">English</span>
+            </label>
+            <label class="pill"><input type="radio" name="langue" value="Bilingue FR / EN"/>
+              <span class="pill-lbl">FR + EN</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Comment avez-vous connu la plateforme ?</label>
+          <select name="source">
+            <option value="">— Sélectionner —</option>
+            <option>Réseaux sociaux (Facebook, LinkedIn, X…)</option>
+            <option>Recommandation d'un collègue / ami</option>
+            <option>Groupe WhatsApp / Telegram</option>
+            <option>Site web ou blog spécialisé</option>
+            <option>Conférence / séminaire académique</option>
+            <option>Université / institution de formation</option>
+            <option>Autre</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5 ===== -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="sec-icon"><svg width="22" height="22"><use href="#ic-trophy"/></svg></div>
+      <div class="sec-meta">
+        <div class="sec-num">Section 05</div>
+        <div class="sec-title">Expériences &amp; Projets Réalisés</div>
+        <div class="sec-desc">Optionnel mais valorisé. Partagez vos expériences pour enrichir la communauté et faciliter les collaborations futures.</div>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="field">
+        <label class="lbl">Avez-vous déjà réalisé un projet SIG ou télédétection ? <span class="req">*</span></label>
+        <div class="cg">
+          <label class="ci"><input type="radio" name="projet_sig" value="Oui, plusieurs projets aboutis" required/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-check-circle"/></svg>Oui, j'ai réalisé plusieurs projets</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="projet_sig" value="Un projet en cours ou partiel"/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-layers"/></svg>Un projet en cours ou partiel</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="projet_sig" value="Non, première expérience"/>
+            <div class="ci-body"><span class="ci-text">Non, c'est ma première expérience dans ce domaine</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label class="lbl">Décrivez brièvement un projet ou travail pertinent <span class="hint">Optionnel</span></label>
+        <textarea name="projet_description" rows="3" placeholder="Titre, contexte, outils utilisés, résultat… ex. : Cartographie de l'occupation du sol dans la commune de X (2023) avec QGIS et images Sentinel-2."></textarea>
+      </div>
+
+      <div class="field">
+        <label class="lbl">Expérience en formation en ligne (MOOC, e-learning) <span class="req">*</span></label>
+        <div class="cg">
+          <label class="ci"><input type="radio" name="exp_elearning" value="Oui, régulièrement" required/>
+            <div class="ci-body"><span class="ci-text"><svg width="14" height="14"><use href="#ic-monitor"/></svg>Oui, régulièrement (Coursera, edX, YouTube…)</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="exp_elearning" value="Quelques fois"/>
+            <div class="ci-body"><span class="ci-text">Quelques fois</span></div>
+          </label>
+          <label class="ci"><input type="radio" name="exp_elearning" value="Non, première fois"/>
+            <div class="ci-body"><span class="ci-text">Non, c'est une première pour moi</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label class="lbl">Commentaires ou informations complémentaires</label>
+        <textarea name="commentaires" rows="3" placeholder="Toute information utile à partager avec notre équipe…"></textarea>
+      </div>
+
+      <div class="field full">
+        <div class="info-box">
+          <svg width="18" height="18"><use href="#ic-info"/></svg>
+          <p>Notre équipe examine chaque dossier individuellement. Après soumission, vous recevrez un e-mail de confirmation sous <strong>24 à 48 heures</strong> avec les prochaines étapes de votre inscription.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SUBMIT ===== -->
+  <div class="submit-sec">
+    <h3>Prêt·e à rejoindre la communauté ?</h3>
+    <p>Vérifiez vos informations avant de soumettre votre candidature.</p>
+    <div class="gdpr-wrap">
+      <input type="checkbox" id="gdprCheck" name="gdpr" value="Accepté" required/>
+      <p>En soumettant ce formulaire, j'accepte que mes données personnelles soient utilisées uniquement dans le cadre du traitement de mon inscription sur la plateforme GADA Training. Ces informations restent strictement confidentielles et ne seront ni partagées ni vendues à des tiers.</p>
+    </div>
+    <button type="submit" class="btn-submit" id="submitBtn">
+      <svg width="16" height="16"><use href="#ic-send"/></svg>
+      Soumettre ma candidature
+      <svg width="16" height="16"><use href="#ic-arrow-r"/></svg>
+    </button>
+  </div>
+
+</form>
+
+<div id="success-msg">
+  <div class="success-icon">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="31" stroke="#6db88a" stroke-width="2"/>
+      <path d="M18 33l10 10 18-20" stroke="#2d5e3f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h2>Candidature envoyée avec succès !</h2>
+  <p>Merci pour votre intérêt. Notre équipe analyse votre profil et vous recontactera par e-mail sous <strong>24 à 48h</strong> avec les informations d'accès et les prochaines étapes.</p>
+</div>
+</div>
+
+<footer>
+  <strong>
+    <img src="images/Logos 2.png" alt="GADA Training" style="height: 1.2em; vertical-align: middle;">
+    GADA Training
+  </strong> — Formation spécialisée SIG · Télédétection · Agriculture Numérique &nbsp;|&nbsp; Données strictement confidentielles
+</footer>
+
+<script>
+  function updateRange(rid, vid) {
+    document.getElementById(vid).textContent = document.getElementById(rid).value;
+  }
+  function updateChar(el, cid, max) {
+    const n = el.value.length;
+    const el2 = document.getElementById(cid);
+    el2.textContent = n;
+    el2.style.color = n > max * 0.9 ? '#d94f4f' : '';
+  }
+
+  // Progress
+  function calcProgress() {
+    const radioNames = ['statut','objectif','acces_materiel','heures_semaine','projet_sig','exp_elearning'];
+    const textReqs = document.querySelectorAll('input[type=text][required], input[type=email][required], input[type=tel][required], select[required], textarea[required]');
+    let total = textReqs.length + radioNames.length + 1; // +1 gdpr
+    let filled = 0;
+    textReqs.forEach(f => { if (f.value.trim()) filled++; });
+    radioNames.forEach(n => { if (document.querySelector(`[name="${n}"]:checked`)) filled++; });
+    if (document.getElementById('gdprCheck')?.checked) filled++;
+    const pct = Math.round((filled / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+  }
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('input', calcProgress);
+    el.addEventListener('change', calcProgress);
+  });
+
+  // Submit
+  document.getElementById('mainForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let ok = true;
+    this.querySelectorAll('[required]').forEach(f => {
+      if (f.type === 'radio' || f.type === 'checkbox') return;
+      const err = f.parentElement.querySelector('.ferr');
+      if (!f.value.trim()) { f.classList.add('err'); if(err) err.style.display='block'; ok=false; }
+      else { f.classList.remove('err'); if(err) err.style.display='none'; }
+    });
+    const m = document.querySelector('[name="motivation"]');
+    if (m && m.value.trim().length < 50) { m.classList.add('err'); m.parentElement.querySelector('.ferr').style.display='block'; ok=false; }
+    if (!document.getElementById('gdprCheck').checked) { alert('Veuillez accepter la politique de confidentialité.'); return; }
+    if (!ok) { document.querySelector('.err')?.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<svg width="16" height="16"><use href="#ic-clock"/></svg> Envoi en cours…';
+    btn.disabled = true;
+    this.submit();
+  });
+
+  if (window.location.search.includes('success=1')) {
+    document.getElementById('mainForm').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
+  }
+</script>
+</body>
+</html>
