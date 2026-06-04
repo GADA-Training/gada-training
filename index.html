@@ -1578,6 +1578,7 @@ function buildPostHtml(post){
             ${mediaHtml}
             ${docHtml}
             ${linkHtml}
+            ${post.postLink ? `<a href="${post.postLink}" target="_blank" rel="noopener" class="post-link"><i class="fa-solid fa-link"></i><div><div class="post-link-name">Lien externe</div><div class="post-link-sub">${esc(post.postLink)}</div></div></a>` : ''}
         </div>
         <div class="post-footer">
             <button class="post-action" onclick="toggleLike('${post._key}')">
