@@ -365,6 +365,77 @@
         .student-work-feedback { background: var(--blue-pale); padding: 12px 16px; border-radius: 12px; margin-top: 12px; font-size: 0.8rem; }
         .shared-work-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; transition: all 0.3s ease; }
         .shared-work-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        /* ==================== COULEURS FACTURE ==================== */
+        :root { --inv-navy: #0d2b4e; --inv-gold: #e8a020; --inv-red: #c0392b; }
+        .inv-tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+        .inv-tab { padding:9px 18px; border:none; border-radius:40px; font-weight:600; font-size:0.82rem; cursor:pointer; transition:all .2s; font-family:'Plus Jakarta Sans',sans-serif; }
+        .inv-tab.active { background:#0d2b4e; color:#fff; }
+        .inv-tab:not(.active) { background:var(--bg); color:var(--muted); border:1.5px solid var(--border); }
+        .inv-tab:not(.active):hover { border-color:#0d2b4e; color:#0d2b4e; }
+        .inv-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+        .inv-stat { background:#fff; border-radius:12px; padding:16px; border:1px solid var(--border); text-align:center; }
+        .inv-stat-num { font-size:22px; font-weight:800; color:#0d2b4e; }
+        .inv-stat-label { font-size:11px; color:var(--muted); margin-top:3px; }
+        .inv-clients-table { width:100%; border-collapse:collapse; }
+        .inv-clients-table th { background:#0d2b4e; color:#fff; padding:10px 14px; font-size:12px; text-align:left; }
+        .inv-clients-table td { padding:10px 14px; font-size:13px; border-bottom:1px solid var(--border); }
+        .inv-clients-table tr:hover td { background:var(--bg); }
+        .inv-status { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; display:inline-block; }
+        .inv-sold { background:#dcfce7; color:#166534; }
+        .inv-partial { background:#fef3c7; color:#92400e; }
+        .inv-unpaid { background:#fee2e2; color:#991b1b; }
+        .inv-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:20px; }
+        .inv-form-group { display:flex; flex-direction:column; gap:5px; }
+        .inv-form-group.full { grid-column:1/-1; }
+        .inv-label { font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:.5px; }
+        .inv-input { padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-family:inherit; background:var(--card); color:var(--text); transition:border-color .2s; width:100%; }
+        .inv-input:focus { outline:none; border-color:#0d2b4e; }
+        .inv-btn { padding:10px 20px; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px; transition:all .2s; display:inline-flex; align-items:center; gap:7px; font-family:'Plus Jakarta Sans',sans-serif; }
+        .inv-btn-navy { background:#0d2b4e; color:#fff; }
+        .inv-btn-navy:hover { background:#1a3a5e; }
+        .inv-btn-gold { background:#e8a020; color:#000; }
+        .inv-btn-gold:hover { opacity:.9; }
+        .inv-btn-green { background:var(--green); color:#fff; }
+        .inv-btn-red { background:#c0392b; color:#fff; }
+        .inv-btn-sm { padding:6px 14px; font-size:12px; }
+        .inv-actions-row { display:flex; gap:6px; flex-wrap:wrap; }
+        .invoice-doc { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; }
+        .inv-deco-top { height:8px; background:#0d2b4e; }
+        .inv-deco-bottom { height:8px; background:linear-gradient(90deg,#e8a020 0%,#0d2b4e 100%); }
+        .inv-header-band { background:#0d2b4e; padding:28px 36px; display:flex; justify-content:space-between; align-items:center; border-left:10px solid #e8a020; }
+        .inv-logo-area h1 { font-size:26px; font-weight:800; color:#e8a020; letter-spacing:1px; }
+        .inv-logo-area p { font-size:11px; color:rgba(255,255,255,.65); margin-top:3px; }
+        .inv-header-right h2 { font-size:30px; font-weight:800; color:#fff; letter-spacing:3px; text-align:right; }
+        .inv-header-right p { font-size:12px; color:rgba(255,255,255,.65); text-align:right; margin-top:5px; }
+        .inv-body-area { padding:28px 36px; }
+        .inv-client-row { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; padding-bottom:20px; border-bottom:2px dashed #ddd; }
+        .inv-client-name { font-size:20px; font-weight:800; color:#c0392b; margin-bottom:8px; }
+        .inv-client-info p { font-size:13px; color:#555; margin-bottom:4px; }
+        .inv-meta-block { text-align:right; }
+        .inv-meta-block p { font-size:13px; margin-bottom:5px; }
+        .inv-meta-block strong { color:#0d2b4e; }
+        .inv-status-pill { display:inline-block; padding:5px 16px; border-radius:20px; font-size:12px; font-weight:700; margin-top:8px; }
+        .inv-theme-block { border-left:5px solid #e8a020; padding-left:16px; margin-bottom:24px; }
+        .inv-theme-block h4 { font-size:11px; font-weight:700; color:#c0392b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+        .inv-theme-block p { font-size:13px; color:#444; font-style:italic; }
+        .inv-table-zone { margin-bottom:24px; }
+        .inv-table-zone table { width:100%; border-collapse:collapse; }
+        .inv-table-zone th { background:#0d2b4e; color:#fff; padding:12px 16px; font-size:12px; font-weight:700; text-align:left; }
+        .inv-table-zone th:not(:first-child) { text-align:center; }
+        .inv-table-zone td { padding:14px 16px; font-size:13px; border-bottom:1px solid #eee; }
+        .inv-table-zone td:not(:first-child) { text-align:center; }
+        .inv-table-zone tr:nth-child(even) td { background:#f8f9f8; }
+        .inv-total-row td { background:#0d2b4e!important; color:#fff!important; font-weight:700; font-size:14px; }
+        .inv-status-row td { font-style:italic; font-size:13px; color:#666; }
+        .inv-desc-zone { margin-bottom:24px; }
+        .inv-desc-zone h4 { font-size:12px; font-weight:700; color:#c0392b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+        .inv-desc-zone p { font-size:13px; color:#444; }
+        .inv-footer-band { background:#0d2b4e; padding:20px 36px; display:flex; justify-content:space-between; align-items:center; }
+        .inv-footer-left p { font-size:12px; color:rgba(255,255,255,.8); margin-bottom:4px; }
+        .inv-footer-left p:first-child { font-weight:700; color:#e8a020; font-size:13px; }
+        .inv-footer-right { font-weight:700; font-size:13px; color:#e8a020; text-align:right; }
+        @media print { body * { visibility:hidden; } #printable-invoice, #printable-invoice * { visibility:visible; } #printable-invoice { position:absolute; left:0; top:0; width:100%; } }
     </style>
 </head>
 <body>
@@ -872,6 +943,87 @@
                 <button class="admin-publish-btn" onclick="openAdminGlobalPost('link')"><i class="fa-solid fa-link"></i> Lien</button>
             </div>
         </div>
+        <!-- MODULE FACTURES TFC -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:20px 24px;background:var(--card);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow)">
+            <div style="display:flex;align-items:center;gap:16px">
+                <div style="width:50px;height:50px;background:#0d2b4e;border-radius:12px;display:flex;align-items:center;justify-content:center;border-left:4px solid #e8a020"><i class="fa-solid fa-file-invoice-dollar" style="color:#e8a020;font-size:20px"></i></div>
+                <div><h2 style="font-size:1.1rem;font-weight:800;color:#0d2b4e">Gestion des Factures TFC</h2><p style="font-size:0.78rem;color:var(--muted)">Créez, gérez et envoyez les factures professionnelles</p></div>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button class="inv-btn inv-btn-navy" onclick="showInvTab('new-client')"><i class="fa-solid fa-user-plus"></i> Nouveau client facture</button>
+                <button class="inv-btn inv-btn-gold" onclick="showInvTab('list')"><i class="fa-solid fa-list"></i> Voir toutes les factures</button>
+            </div>
+        </div>
+        <div class="inv-stats">
+            <div class="inv-stat"><div class="inv-stat-num" id="inv-total-clients">0</div><div class="inv-stat-label">Clients facturés</div></div>
+            <div class="inv-stat"><div class="inv-stat-num" id="inv-total-collected" style="color:var(--green)">$0</div><div class="inv-stat-label">Total encaissé</div></div>
+            <div class="inv-stat"><div class="inv-stat-num" id="inv-total-pending" style="color:#c0392b">$0</div><div class="inv-stat-label">Reste à percevoir</div></div>
+        </div>
+        <div class="inv-tabs">
+            <button class="inv-tab active" id="inv-tab-list" onclick="showInvTab('list')"><i class="fa-solid fa-table-list"></i> Clients &amp; Factures</button>
+            <button class="inv-tab" id="inv-tab-new-client" onclick="showInvTab('new-client')"><i class="fa-solid fa-user-plus"></i> Créer / Modifier</button>
+            <button class="inv-tab" id="inv-tab-preview" onclick="showInvTab('preview')"><i class="fa-solid fa-eye"></i> Aperçu &amp; Envoi</button>
+        </div>
+        <div id="inv-section-list" style="display:block">
+            <div class="card">
+                <div class="card-header" style="background:#0d2b4e"><h4 style="color:#fff;text-transform:none;font-size:0.9rem"><i class="fa-solid fa-users" style="color:#e8a020"></i> Liste des clients TFC facturés</h4><span id="inv-count-badge" style="background:#e8a020;color:#000;font-size:11px;padding:2px 10px;border-radius:20px;font-weight:700">0 clients</span></div>
+                <div style="display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;flex-wrap:wrap">
+                    <input type="text" id="inv-search" placeholder="🔍 Rechercher un client..." oninput="renderInvClients()" style="flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--card);color:var(--text)">
+                    <select id="inv-filter-status" onchange="renderInvClients()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--card);color:var(--text)"><option value="">Tous les statuts</option><option value="Soldé">✅ Soldé</option><option value="Partiel">🟡 Partiel</option><option value="Impayé">🔴 Impayé</option></select>
+                </div>
+                <div style="overflow-x:auto"><table class="inv-clients-table"><thead><tr><th>N° Facture</th><th>Nom complet</th><th>Institution</th><th>Filière</th><th>Montant</th><th>Payé</th><th>Reste</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="inv-tbody"><tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Aucun client facturé pour le moment.</td></tr></tbody></table></div>
+            </div>
+        </div>
+        <div id="inv-section-new-client" style="display:none">
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-header" style="background:#0d2b4e"><h4 style="color:#fff;text-transform:none;font-size:0.9rem"><i class="fa-solid fa-user-circle" style="color:#e8a020"></i> <span id="inv-form-title-label">Nouveau client — Informations</span></h4></div>
+                <div class="inv-form-grid">
+                    <div class="inv-form-group"><label class="inv-label">Nom complet *</label><input class="inv-input" id="inv-f-nom" placeholder="Ex: ABIGAEL BALIBUNO"></div>
+                    <div class="inv-form-group"><label class="inv-label">Téléphone *</label><input class="inv-input" id="inv-f-tel" placeholder="+243 979 349 25"></div>
+                    <div class="inv-form-group"><label class="inv-label">Institution *</label><input class="inv-input" id="inv-f-inst" placeholder="Ex: UEA | Bukavu"></div>
+                    <div class="inv-form-group"><label class="inv-label">Faculté</label><input class="inv-input" id="inv-f-fac" placeholder="Ex: Agronomie"></div>
+                    <div class="inv-form-group"><label class="inv-label">Filière / Spécialité</label><input class="inv-input" id="inv-f-fil" placeholder="Ex: Production végétale"></div>
+                    <div class="inv-form-group"><label class="inv-label">Email du client</label><input class="inv-input" id="inv-f-email" type="email" placeholder="client@email.com"></div>
+                    <div class="inv-form-group full"><label class="inv-label">Thématique du mémoire</label><textarea class="inv-input" id="inv-f-theme" rows="2" placeholder="Titre ou sujet du mémoire..."></textarea></div>
+                </div>
+            </div>
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-header" style="background:#0d2b4e"><h4 style="color:#fff;text-transform:none;font-size:0.9rem"><i class="fa-solid fa-dollar-sign" style="color:#e8a020"></i> Facturation</h4></div>
+                <div class="inv-form-grid">
+                    <div class="inv-form-group"><label class="inv-label">Montant total ($) *</label><input class="inv-input" id="inv-f-montant" type="number" min="0" placeholder="60" oninput="invCalcReste()"></div>
+                    <div class="inv-form-group"><label class="inv-label">Montant payé ($) *</label><input class="inv-input" id="inv-f-paye" type="number" min="0" placeholder="30" oninput="invCalcReste()"></div>
+                    <div class="inv-form-group"><label class="inv-label">Reste à payer ($) — auto</label><input class="inv-input" id="inv-f-reste" readonly style="background:var(--bg);font-weight:700;color:#c0392b"></div>
+                    <div class="inv-form-group"><label class="inv-label">Statut paiement</label><select class="inv-input" id="inv-f-statut"><option>Soldé</option><option selected>Partiel</option><option>Impayé</option></select></div>
+                    <div class="inv-form-group"><label class="inv-label">N° Facture</label><input class="inv-input" id="inv-f-num" placeholder="FAC-001"></div>
+                    <div class="inv-form-group"><label class="inv-label">Date de la facture</label><input class="inv-input" id="inv-f-date" type="date"></div>
+                    <div class="inv-form-group full"><label class="inv-label">Notes / Remarques</label><input class="inv-input" id="inv-f-notes" placeholder="Conditions particulières..."></div>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;padding-bottom:24px;flex-wrap:wrap">
+                <button class="inv-btn inv-btn-navy" onclick="invSaveClient()"><i class="fa-solid fa-save"></i> Enregistrer le client</button>
+                <button class="inv-btn inv-btn-gold" onclick="invPreview()"><i class="fa-solid fa-eye"></i> Aperçu de la facture</button>
+                <button class="inv-btn" style="background:var(--bg);color:var(--muted);border:1.5px solid var(--border)" onclick="invResetForm()"><i class="fa-solid fa-rotate-left"></i> Réinitialiser</button>
+            </div>
+        </div>
+        <div id="inv-section-preview" style="display:none">
+            <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+                <button class="inv-btn inv-btn-navy" onclick="invPrint()"><i class="fa-solid fa-print"></i> Imprimer / Exporter PDF</button>
+                <button class="inv-btn inv-btn-gold" onclick="invCopyWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Message WhatsApp</button>
+                <button class="inv-btn inv-btn-green" onclick="invCopyEmail()"><i class="fa-solid fa-envelope"></i> Message Email</button>
+                <button class="inv-btn" style="background:var(--bg);color:var(--muted);border:1.5px solid var(--border)" onclick="showInvTab('new-client')"><i class="fa-solid fa-pen"></i> Modifier</button>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-md)"><div id="printable-invoice"><div style="text-align:center;padding:60px 20px;color:var(--muted)"><i class="fa-regular fa-file-invoice" style="font-size:3rem;opacity:.3;display:block;margin-bottom:12px"></i>Aucune facture générée.<br><small>Remplissez le formulaire et cliquez "Aperçu".</small></div></div></div>
+            <div id="inv-msg-zone" style="display:none;margin-top:20px">
+                <div class="card"><div class="card-header"><h4><i class="fa-solid fa-message"></i> Message prêt à copier / envoyer</h4></div>
+                <div style="padding:16px"><textarea id="inv-msg-text" rows="9" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:13px;resize:none;background:var(--bg);color:var(--text)"></textarea>
+                <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+                    <button class="inv-btn inv-btn-navy inv-btn-sm" onclick="invCopyMsgToClipboard()"><i class="fa-solid fa-copy"></i> Copier le message</button>
+                    <button class="inv-btn inv-btn-sm" id="inv-wa-btn" style="background:#25d366;color:#fff"><i class="fa-brands fa-whatsapp"></i> Ouvrir WhatsApp</button>
+                </div></div></div>
+            </div>
+        </div>
+        <!-- FIN MODULE FACTURES TFC -->
+
         <div class="card" style="margin-bottom: 16px;">
             <div class="card-header"><h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4><div style="display: flex; gap: 8px;"><button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()"><i class="fa-solid fa-plus"></i> Nouveau client</button><button class="btn-auth full-mgmt-btn" style="width: auto; padding: 6px 16px;" onclick="openTfcFullManagement()"><i class="fa-solid fa-table-list"></i> Vue complète</button></div></div>
             <div id="clientsList" style="padding: 16px;"></div>
@@ -1085,6 +1237,32 @@ Session 14 - Carte thématique décisionnelle et présentation finale
 🏆 CERTIFICATION :
 À l'issue de la formation, les apprenants reçoivent une attestation de participation.
 `;
+
+// =================================================================
+// MODULE FACTURES TFC
+// =================================================================
+let invClients = JSON.parse(localStorage.getItem('gada_inv_clients') || '[]');
+let currentInvData = null;
+let editingInvIdx = null;
+function invSave(){localStorage.setItem('gada_inv_clients',JSON.stringify(invClients));}
+function invInitForm(){const t=new Date();const df=document.getElementById('inv-f-date');const nf=document.getElementById('inv-f-num');if(df)df.value=t.toISOString().split('T')[0];if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');}
+function invCalcReste(){const m=parseFloat(document.getElementById('inv-f-montant').value)||0;const p=parseFloat(document.getElementById('inv-f-paye').value)||0;const r=Math.max(0,m-p);const rf=document.getElementById('inv-f-reste');const sf=document.getElementById('inv-f-statut');if(rf)rf.value=r;if(sf){if(r<=0&&m>0)sf.value='Soldé';else if(p>0&&r>0)sf.value='Partiel';else if(p===0&&m>0)sf.value='Impayé';}}
+function showInvTab(tab){['list','new-client','preview'].forEach(t=>{const s=document.getElementById('inv-section-'+t);const b=document.getElementById('inv-tab-'+t);if(s)s.style.display=t===tab?'block':'none';if(b)b.classList.toggle('active',t===tab);});if(tab==='list')renderInvClients();}
+function invSaveClient(){const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Le nom est obligatoire');return;}const data={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim()||('FAC-'+String(invClients.length+1).padStart(3,'0')),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim(),savedAt:Date.now()};if(editingInvIdx!==null){invClients[editingInvIdx]=data;editingInvIdx=null;toast('✅ Client modifié !');}else{invClients.push(data);toast('✅ Client enregistré !');}invSave();invUpdateStats();const nf=document.getElementById('inv-f-num');if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');showInvTab('list');}
+function invResetForm(){['inv-f-nom','inv-f-tel','inv-f-inst','inv-f-fac','inv-f-fil','inv-f-email','inv-f-theme','inv-f-montant','inv-f-paye','inv-f-reste','inv-f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const sel=document.getElementById('inv-f-statut');if(sel)sel.value='Partiel';editingInvIdx=null;invInitForm();toast('Formulaire réinitialisé');}
+function renderInvClients(){const search=(document.getElementById('inv-search')?.value||'').toLowerCase();const fs=(document.getElementById('inv-filter-status')?.value||'');const filtered=invClients.filter(c=>((c.nom||'').toLowerCase().includes(search)||(c.inst||'').toLowerCase().includes(search))&&(!fs||c.statut===fs));const badge=document.getElementById('inv-count-badge');if(badge)badge.textContent=invClients.length+' client'+(invClients.length>1?'s':'');const tbody=document.getElementById('inv-tbody');if(!tbody)return;if(!filtered.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Aucun client trouvé.</td></tr>';return;}tbody.innerHTML=filtered.map(c=>{const idx=invClients.indexOf(c);const sc=c.statut==='Soldé'?'inv-sold':c.statut==='Partiel'?'inv-partial':'inv-unpaid';return`<tr><td style="font-weight:700;color:#0d2b4e">${esc(c.num||'—')}</td><td><strong>${esc(c.nom)}</strong>${c.email?`<br><small style="color:var(--muted)">${esc(c.email)}</small>`:''}</td><td style="font-size:12px">${esc(c.inst||'—')}</td><td style="font-size:12px">${esc(c.fil||'—')}</td><td style="font-weight:700">$${c.montant}</td><td style="color:var(--green);font-weight:700">$${c.paye}</td><td style="color:#c0392b;font-weight:700">$${c.reste}</td><td><span class="inv-status ${sc}">${esc(c.statut)}</span></td><td><div class="inv-actions-row"><button class="inv-btn inv-btn-navy inv-btn-sm" onclick="invViewClient(${idx})" title="Voir"><i class="fa-solid fa-eye"></i></button><button class="inv-btn inv-btn-sm" style="background:#e8a020;color:#000" onclick="invEditClient(${idx})" title="Modifier"><i class="fa-solid fa-pen"></i></button><button class="inv-btn inv-btn-red inv-btn-sm" onclick="invDeleteClient(${idx})" title="Supprimer"><i class="fa-solid fa-trash"></i></button></div></td></tr>`;}).join('');invUpdateStats();}
+function invUpdateStats(){const t=document.getElementById('inv-total-clients');const c=document.getElementById('inv-total-collected');const p=document.getElementById('inv-total-pending');if(t)t.textContent=invClients.length;if(c)c.textContent='$'+invClients.reduce((a,x)=>a+(parseFloat(x.paye)||0),0);if(p)p.textContent='$'+invClients.reduce((a,x)=>a+(parseFloat(x.reste)||0),0);}
+function invEditClient(idx){const c=invClients[idx];if(!c)return;editingInvIdx=idx;const tl=document.getElementById('inv-form-title-label');if(tl)tl.textContent='Modifier la facture de '+c.nom;const fields={'inv-f-nom':c.nom,'inv-f-tel':c.tel,'inv-f-inst':c.inst,'inv-f-fac':c.fac,'inv-f-fil':c.fil,'inv-f-email':c.email,'inv-f-theme':c.theme,'inv-f-montant':c.montant,'inv-f-paye':c.paye,'inv-f-reste':c.reste,'inv-f-num':c.num,'inv-f-date':c.date,'inv-f-notes':c.notes};Object.entries(fields).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val||'';});const sel=document.getElementById('inv-f-statut');if(sel)sel.value=c.statut;showInvTab('new-client');document.getElementById('inv-section-new-client')?.scrollIntoView({behavior:'smooth'});}
+function invDeleteClient(idx){const c=invClients[idx];if(!c)return;if(confirm(`Supprimer la facture de "${c.nom}" ?`)){invClients.splice(idx,1);invSave();renderInvClients();toast('Client supprimé');}}
+function invViewClient(idx){currentInvData=invClients[idx];invRenderInvoice(currentInvData);showInvTab('preview');document.getElementById('inv-msg-zone').style.display='none';}
+function invPreview(){const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Remplissez au moins le nom');return;}currentInvData={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim(),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim()};invRenderInvoice(currentInvData);showInvTab('preview');document.getElementById('inv-msg-zone').style.display='none';}
+function invPrefillFromClientId(id,name,tel,inst,theme,email){editingInvIdx=null;const tl=document.getElementById('inv-form-title-label');if(tl)tl.textContent='Nouveau client — Informations';const mp={'inv-f-nom':name,'inv-f-tel':tel,'inv-f-inst':inst,'inv-f-email':email,'inv-f-theme':theme};Object.entries(mp).forEach(([fid,val])=>{const el=document.getElementById(fid);if(el)el.value=val||'';});showInvTab('new-client');document.getElementById('inv-section-new-client')?.scrollIntoView({behavior:'smooth'});toast('Données de '+name+' chargées — complétez la facturation');}
+function invRenderInvoice(c){const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});const ss=c.statut==='Soldé'?'background:#dcfce7;color:#166534':c.statut==='Partiel'?'background:#fef3c7;color:#92400e':'background:#fee2e2;color:#991b1b';const sc=c.statut==='Soldé'?'#166534':c.statut==='Partiel'?'#92400e':'#991b1b';const html=`<div class="invoice-doc" id="invoice-inner"><div class="inv-deco-top"></div><div class="inv-header-band"><div class="inv-logo-area"><h1>GADA TRAINING</h1><p>Formons les meilleurs du futur</p></div><div class="inv-header-right"><h2>FACTURE</h2><p>Facture n°${esc(c.num||'—')}</p><p>${ds}</p></div></div><div class="inv-body-area"><div class="inv-client-row"><div class="inv-client-info"><div class="inv-client-name">${esc(c.nom.toUpperCase())}</div>${c.tel?`<p><strong>Téléphone du client :</strong> ${esc(c.tel)}</p>`:''} ${c.inst?`<p><strong>Institution :</strong> ${esc(c.inst)}</p>`:''} ${c.fac?`<p><strong>Faculté :</strong> ${esc(c.fac)}</p>`:''} ${c.email?`<p><strong>Email :</strong> ${esc(c.email)}</p>`:''}</div><div class="inv-meta-block"><p><strong>Facture n°</strong> ${esc(c.num||'—')}</p><p><strong>Date :</strong> ${ds}</p><div class="inv-status-pill" style="${ss}">${esc(c.statut)}</div></div></div>${c.theme?`<div class="inv-theme-block"><h4>Thématique du Mémoire</h4><p>${esc(c.theme)}</p></div>`:''}<div class="inv-table-zone"><table><thead><tr><th style="width:28%">DESCRIPTION</th><th style="width:24%">DÉTAILS</th><th>MONTANT ($)</th><th>PAYÉ ($)</th><th>RESTE ($)</th></tr></thead><tbody><tr><td>Accompagnement Mémoire</td><td>${esc(c.fil||'')}${c.fil&&c.fac?' — ':''}${esc(c.fac||'')}</td><td style="font-weight:700">$${c.montant}</td><td style="font-weight:700;color:#166534">$${c.paye}</td><td style="font-weight:700;color:#c0392b">$${c.reste}</td></tr><tr class="inv-total-row"><td colspan="2" style="text-align:right">TOTAL GÉNÉRAL</td><td>$${c.montant}</td><td>$${c.paye}</td><td>$${c.reste}</td></tr><tr class="inv-status-row"><td colspan="3"></td><td style="text-align:right;font-weight:600">Statut actuel :</td><td style="font-weight:700;color:${sc}">${esc(c.statut)}</td></tr></tbody></table></div><div class="inv-desc-zone"><h4>Description</h4><p><strong>Accompagnement Mémoire</strong></p>${c.notes?`<p style="margin-top:8px;color:#666;font-style:italic">${esc(c.notes)}</p>`:''}</div></div><div class="inv-footer-band"><div class="inv-footer-left"><p>Coordonnées GADA TRAINING</p><p>gadasolution.rdc@gmail.com</p><p>1RDC | Nord-Kivu | Goma</p><p>+243898383148</p></div><div class="inv-footer-right">https://www.gadatraining.org</div></div><div class="inv-deco-bottom"></div></div>`;const cont=document.getElementById('printable-invoice');if(cont)cont.innerHTML=html;}
+function invPrint(){const content=document.getElementById('invoice-inner');if(!content){toast('Générez d\'abord une facture');return;}const w=window.open('','_blank','width=900,height=750');w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Facture GADA Training${currentInvData?' — '+currentInvData.nom:''}</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff}.invoice-doc{max-width:800px;margin:0 auto;background:#fff}.inv-deco-top{height:8px;background:#0d2b4e;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-deco-bottom{height:8px;background:linear-gradient(90deg,#e8a020 0%,#0d2b4e 100%);print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-header-band{background:#0d2b4e;padding:28px 36px;display:flex;justify-content:space-between;align-items:center;border-left:10px solid #e8a020;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-logo-area h1{font-size:26px;font-weight:800;color:#e8a020;letter-spacing:1px}.inv-logo-area p{font-size:11px;color:rgba(255,255,255,.65);margin-top:3px}.inv-header-right{text-align:right}.inv-header-right h2{font-size:30px;font-weight:800;color:#fff;letter-spacing:3px}.inv-header-right p{font-size:12px;color:rgba(255,255,255,.65);margin-top:5px}.inv-body-area{padding:28px 36px}.inv-client-row{display:flex;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:2px dashed #ddd}.inv-client-name{font-size:20px;font-weight:800;color:#c0392b;margin-bottom:8px}.inv-client-info p{font-size:13px;color:#555;margin-bottom:4px}.inv-meta-block{text-align:right}.inv-meta-block p{font-size:13px;margin-bottom:5px}.inv-meta-block strong{color:#0d2b4e}.inv-status-pill{display:inline-block;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}.inv-theme-block{border-left:5px solid #e8a020;padding-left:16px;margin-bottom:24px}.inv-theme-block h4{font-size:11px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}.inv-theme-block p{font-size:13px;color:#444;font-style:italic}.inv-table-zone{margin-bottom:24px}.inv-table-zone table{width:100%;border-collapse:collapse}.inv-table-zone th{background:#0d2b4e;color:#fff;padding:12px 16px;font-size:12px;font-weight:700;text-align:left;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-table-zone th:not(:first-child){text-align:center}.inv-table-zone td{padding:14px 16px;font-size:13px;border-bottom:1px solid #eee}.inv-table-zone td:not(:first-child){text-align:center}.inv-table-zone tr:nth-child(even) td{background:#f8f9f8}.inv-total-row td{background:#0d2b4e!important;color:#fff!important;font-weight:700;font-size:14px;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-status-row td{font-style:italic;font-size:13px;color:#666}.inv-desc-zone{margin-bottom:24px}.inv-desc-zone h4{font-size:12px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}.inv-desc-zone p{font-size:13px;color:#444}.inv-footer-band{background:#0d2b4e;padding:20px 36px;display:flex;justify-content:space-between;align-items:center;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-footer-left p{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:4px}.inv-footer-left p:first-child{font-weight:700;color:#e8a020;font-size:13px}.inv-footer-right{font-weight:700;font-size:13px;color:#e8a020;text-align:right}@media print{@page{margin:0;size:A4}body{padding:0}}</style></head><body>${content.outerHTML}<script>window.onload=function(){setTimeout(function(){window.print();},600)}<\/script></body></html>`);w.document.close();}
+function invCopyWhatsApp(){if(!currentInvData){toast('Générez d\'abord une facture');return;}const c=currentInvData;const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR'):'';const msg=`Bonjour ${c.nom},\n\nVoici votre facture GADA TRAINING.\n\n🧾 *Facture n° ${c.num}*\n📅 Date : ${ds}\n\n━━━━━━━━━━━━━━━━━━\n💰 Montant total : *$${c.montant}*\n✅ Montant payé  : *$${c.paye}*\n⏳ Reste à payer : *$${c.reste}*\n📊 Statut        : *${c.statut}*\n━━━━━━━━━━━━━━━━━━\n\nMerci pour votre confiance !\n\n🎓 *GADA TRAINING*\n_Formons les meilleurs du futur_\n📞 +243898383148\n🌐 www.gadatraining.org`;const mz=document.getElementById('inv-msg-zone');const mt=document.getElementById('inv-msg-text');const wb=document.getElementById('inv-wa-btn');if(mt)mt.value=msg;if(mz)mz.style.display='block';if(wb){wb.innerHTML='<i class="fa-brands fa-whatsapp"></i> Ouvrir WhatsApp';wb.style.background='#25d366';wb.style.color='#fff';const tel=(c.tel||'').replace(/\D/g,'');wb.onclick=()=>window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');}mz?.scrollIntoView({behavior:'smooth'});toast('Message WhatsApp prêt !');}
+function invCopyEmail(){if(!currentInvData){toast('Générez d\'abord une facture');return;}const c=currentInvData;const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR'):'';const msg=`Objet : Votre facture GADA TRAINING — N° ${c.num}\n\nBonjour ${c.nom},\n\nVeuillez trouver ci-joint votre facture pour l'accompagnement de votre mémoire.\n\nDétails :\n  • Facture n° : ${c.num}\n  • Date       : ${ds}\n  • Service    : Accompagnement Mémoire${c.fil?' — '+c.fil:''}\n  • Montant total : $${c.montant}\n  • Montant payé  : $${c.paye}\n  • Reste à payer : $${c.reste}\n  • Statut        : ${c.statut}\n${c.notes?'\nNote : '+c.notes:''}\n\nCordialement,\nL'équipe GADA TRAINING\ngadasolution.rdc@gmail.com | +243898383148\nwww.gadatraining.org`;const mz=document.getElementById('inv-msg-zone');const mt=document.getElementById('inv-msg-text');const wb=document.getElementById('inv-wa-btn');if(mt)mt.value=msg;if(mz)mz.style.display='block';if(wb){wb.innerHTML='<i class="fa-solid fa-envelope"></i> Ouvrir messagerie';wb.style.background='#1a4c6e';wb.style.color='#fff';const sub=encodeURIComponent('Votre facture GADA TRAINING — N° '+c.num);const body=encodeURIComponent(msg);wb.onclick=()=>window.open('mailto:'+c.email+'?subject='+sub+'&body='+body,'_blank');}mz?.scrollIntoView({behavior:'smooth'});toast('Message email prêt !');}
+function invCopyMsgToClipboard(){const t=document.getElementById('inv-msg-text')?.value;if(!t)return;navigator.clipboard.writeText(t).then(()=>toast('✅ Message copié !')).catch(()=>toast('Erreur lors de la copie'));}
+// FIN MODULE FACTURES
 
 // =================================================================
 // SECTION 5: VARIABLES GLOBALES
@@ -2556,6 +2734,7 @@ function switchToTFC() {
     const views = ['view-feed', 'view-profile', 'view-projets', 'view-semaines'];
     views.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     toast('Mode Gestion des TFC');
+    invInitForm(); invUpdateStats(); renderInvClients(); showInvTab('list');
     if (window.clientsListRef) { db.ref('tfc_clients').off('value', window.clientsListRef); window.clientsListRef = null; }
     loadClientsList();
 }
@@ -2570,7 +2749,14 @@ function loadClientsList() {
         snapshot.forEach(child => clients.push({ id: child.key, ...child.val() }));
         if (clients.length === 0) { container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p><p style="font-size:0.75rem;margin-top:8px;">Cliquez sur "Nouveau client" pour commencer</p></div>'; return; }
         clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        container.innerHTML = clients.map(client => `<div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:all 0.2s;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><h4 style="margin-bottom:4px;">${esc(client.name)}</h4><p style="font-size:0.75rem;color:var(--muted);">${esc(client.university || 'Non renseigné')}</p><p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic || 'Non défini')}</p><p style="font-size:0.72rem;color:var(--green);margin-top:4px;">Code : <strong style="background:var(--green-pale);padding:2px 8px;border-radius:12px;">${esc(client.accessCode)}</strong></p><p style="font-size:0.7rem;color:var(--muted);margin-top:4px;">${esc(client.email)} | ${esc(client.phone || 'Non renseigné')}</p></div><div style="display:flex;gap:8px;"><button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')"><i class="fa-solid fa-folder-open"></i> Ouvrir</button><button class="btn-auth share-work-btn" style="width:auto;padding:8px 20px;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')"><i class="fa-solid fa-share-alt"></i> Partager</button></div></div></div>`).join('');
+        container.innerHTML = clients.map(client => `<div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:all 0.2s;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><h4 style="margin-bottom:4px;">${esc(client.name)}</h4><p style="font-size:0.75rem;color:var(--muted);">${esc(client.university || 'Non renseigné')}</p><p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic || 'Non défini')}</p><p style="font-size:0.72rem;color:var(--green);margin-top:4px;">Code : <strong style="background:var(--green-pale);padding:2px 8px;border-radius:12px;">${esc(client.accessCode)}</strong></p><p style="font-size:0.7rem;color:var(--muted);margin-top:4px;">${esc(client.email)} | ${esc(client.phone || 'Non renseigné')}</p></div><div style="display:flex;gap:8px;"><button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')"><i class="fa-solid fa-folder-open"></i> Ouvrir</button><button class="btn-auth share-work-btn" style="width:auto;padding:8px 20px;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')"><i class="fa-solid fa-share-alt"></i> Partager</button>
+                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
+                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
+                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
+                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
+                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
+                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
+                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button></div></div></div>`).join('');
     };
     window.clientsListRef = callback;
     db.ref('tfc_clients').on('value', callback);
