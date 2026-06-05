@@ -11,17 +11,17 @@
         /* ==================== VARIABLES CSS (THÈMES CLAIR/SOMBRE) ==================== */
         /* MODIFICATION POSSIBLE : Ajuster les couleurs dans :root et [data-theme="dark"] */
         :root {
-            --green: #2b6e3c; --green-l: #3f9e55; --green-pale: #edf7e9;
-            --blue: #1a4c6e; --blue-l: #2d6f9c; --blue-pale: #eef3fc;
-            --earth: #7a5a4b; --bg: #f0f2ef; --card: #ffffff;
-            --border: #e0dcd6; --text: #1e2b20; --muted: #6b7c6f;
+            --green: #0d2b4e; --green-l: #e8a020; --green-pale: #fff8ee;
+            --blue: #0d2b4e; --blue-l: #1a3a5e; --blue-pale: #e8f0fe;
+            --earth: #7a5a4b; --bg: #f0f4f8; --card: #ffffff;
+            --border: #e0dcd6; --text: #1a2a3a; --muted: #6b7c6f;
             --radius: 16px; --shadow: 0 2px 12px rgba(0,0,0,0.07);
             --shadow-md: 0 8px 24px rgba(0,0,0,0.1);
         }
 
         [data-theme="dark"] {
-            --green: #4c9f5e; --green-l: #6bb87b; --green-pale: #1a3a1a;
-            --blue: #3a7ca8; --blue-l: #5a9cc8; --blue-pale: #1a2a3a;
+            --green: #1a3a5e; --green-l: #e8a020; --green-pale: #0a1a2e;
+            --blue: #1a3a5e; --blue-l: #2a4a6e; --blue-pale: #0a1a2e;
             --earth: #8a6a5b; --bg: #1a1a1a; --card: #2d2d2d;
             --border: #404040; --text: #e0e0e0; --muted: #a0a0a0;
             --shadow: 0 2px 12px rgba(0,0,0,0.3);
@@ -34,10 +34,10 @@
         body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
         /* ==================== ÉCRAN D'AUTHENTIFICATION ==================== */
-        #authOverlay { position:fixed; inset:0; background:linear-gradient(135deg,#0d1f10 0%,#1a3040 100%); z-index:9999; display:flex; align-items:center; justify-content:center; }
+        #authOverlay { position:fixed; inset:0; background:linear-gradient(135deg,#0d2b4e 0%,#1a3a5e 100%); z-index:9999; display:flex; align-items:center; justify-content:center; }
         .auth-box { background:white; border-radius:24px; padding:40px; width:100%; max-width:440px; box-shadow:var(--shadow-md); }
         .auth-logo { text-align:center; margin-bottom:28px; }
-        .auth-logo h1 { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:700; background:linear-gradient(130deg,var(--blue),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .auth-logo h1 { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:700; background:linear-gradient(130deg,#0d2b4e,#e8a020); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
         .auth-logo p { color:var(--muted); font-size:0.85rem; margin-top:4px; }
         .auth-tabs { display:flex; gap:4px; background:var(--bg); border-radius:40px; padding:4px; margin-bottom:24px; }
         .auth-tab-btn { flex:1; padding:9px; border:none; background:transparent; border-radius:40px; font-weight:600; font-size:0.85rem; cursor:pointer; color:var(--muted); transition:all 0.2s; font-family:'Plus Jakarta Sans',sans-serif; }
@@ -56,11 +56,11 @@
         .forgot-link a:hover { color:var(--green); }
 
         .topbar { height:60px; background:var(--card); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; gap:16px; position:sticky; top:0; z-index:100; }
-        .topbar-logo { font-family:'Sora',sans-serif; font-weight:700; font-size:1.25rem; background:linear-gradient(130deg,var(--blue),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; white-space:nowrap; }
+        .topbar-logo { font-family:'Sora',sans-serif; font-weight:700; font-size:1.25rem; background:linear-gradient(130deg,#0d2b4e,#e8a020); -webkit-background-clip:text; -webkit-text-fill-color:transparent; white-space:nowrap; }
         .topbar-logo img { height:40px; object-fit:contain; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.1)); }
         .topbar-spacer { flex:1; }
         .topbar-user { display:flex; align-items:center; gap:10px; background:var(--bg); padding:6px 14px; border-radius:40px; font-size:0.82rem; font-weight:600; }
-        .user-av { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--blue)); display:flex; align-items:center; justify-content:center; color:white; font-size:13px; overflow:hidden; flex-shrink:0; }
+        .user-av { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#0d2b4e,#e8a020); display:flex; align-items:center; justify-content:center; color:white; font-size:13px; overflow:hidden; flex-shrink:0; }
         .user-av img { width:100%; height:100%; object-fit:cover; }
         .btn-quit { display:flex; align-items:center; gap:6px; background:none; border:1.5px solid var(--border); padding:6px 14px; border-radius:40px; font-size:0.78rem; font-weight:600; cursor:pointer; color:var(--muted); transition:all 0.2s; font-family:'Plus Jakarta Sans',sans-serif; }
         .btn-quit:hover { border-color:var(--green); color:var(--green); }
@@ -88,11 +88,11 @@
         .message-btn { background:var(--green); border:none; border-radius:20px; padding:5px 10px; color:white; cursor:pointer; font-size:0.7rem; transition:transform 0.2s; }
         .message-btn:hover { transform:scale(1.05); }
 
-        .ia-panel { background: linear-gradient(150deg,#0f2617 0%,#1a3a4e 100%); border-radius: var(--radius); overflow: hidden; border: none; display: flex; flex-direction: column; height: 400px; }
+        .ia-panel { background: linear-gradient(150deg,#0d2b4e 0%,#1a3a5e 100%); border-radius: var(--radius); overflow: hidden; border: none; display: flex; flex-direction: column; height: 400px; }
         .ia-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
         .ia-header h4 { color:white; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; }
         .ia-header p { color:rgba(255,255,255,0.5); font-size:0.7rem; margin-top:3px; }
-        .ia-dot { width:8px; height:8px; border-radius:50%; background:#7dff9a; animation:pulse 2s infinite; }
+        .ia-dot { width:8px; height:8px; border-radius:50%; background:#e8a020; animation:pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
         .ia-messages { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; overflow-x: hidden; }
         .ia-msg { font-size: 0.75rem; line-height: 1.5; max-width: 100%; }
@@ -103,7 +103,7 @@
         .ia-input-row { display: flex; gap: 6px; padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; background: rgba(0,0,0,0.2); }
         .ia-input-row input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:white; padding:8px 12px; font-size:0.75rem; font-family:'Plus Jakarta Sans',sans-serif; }
         .ia-input-row input::placeholder { color:rgba(255,255,255,0.3); }
-        .ia-input-row input:focus { outline:none; border-color:var(--green-l); }
+        .ia-input-row input:focus { outline:none; border-color:#e8a020; }
         .ia-input-row button { background:var(--green); border:none; border-radius:20px; color:white; padding:7px 12px; cursor:pointer; font-size:12px; }
 
         .nav-links { padding:8px; display:flex; flex-direction:column; gap:2px; }
@@ -133,7 +133,7 @@
         .file-drop-area:hover { border-color:var(--green); background:var(--green-pale); }
         .file-drop-area i { font-size:2rem; color:var(--green); margin-bottom:8px; }
         .file-drop-area p { font-size:0.82rem; color:var(--muted); }
-        .btn-submit-post { width:100%; padding:12px; background:linear-gradient(95deg,var(--green),var(--blue)); color:white; border:none; border-radius:40px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; }
+        .btn-submit-post { width:100%; padding:12px; background:linear-gradient(95deg,#0d2b4e,#e8a020); color:white; border:none; border-radius:40px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; }
 
         .post-card { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow); animation:fadeUp 0.3s ease; margin-bottom:16px; }
         @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
@@ -177,7 +177,7 @@
         .semaine-card.locked { opacity:0.6; }
         .semaine-header { display:flex; align-items:center; gap:14px; padding:16px; cursor:pointer; }
         .semaine-icon { width:44px; height:44px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
-        .s-open { background:linear-gradient(135deg,#e8f5e9,#e3f2fd); color:var(--green); }
+        .s-open { background:linear-gradient(135deg,#fff8ee,#e8f0fe); color:var(--green); }
         .s-locked { background:var(--bg); color:var(--muted); }
         .semaine-meta { flex:1; }
         .semaine-title { font-size:0.9rem; font-weight:700; color:var(--text); }
@@ -207,14 +207,14 @@
         .chat-panel-header { background:linear-gradient(135deg,var(--blue),var(--green)); padding:14px 16px; }
         .chat-panel-header h4 { color:white; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:8px; }
         .chat-panel-header p { color:rgba(255,255,255,0.6); font-size:0.7rem; margin-top:3px; }
-        .chat-msgs { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; background:#f8f9f8; }
+        .chat-msgs { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; background:#f4f6f9; }
         .chat-msg { max-width:88%; }
         .chat-msg.them { align-self:flex-start; }
         .chat-msg.me { align-self:flex-end; }
         .chat-msg.admin { align-self:flex-end; }
         .chat-bubble { padding:8px 12px; border-radius:14px; font-size:0.78rem; line-height:1.5; word-break:break-word; }
         .chat-msg.them .chat-bubble { background:white; border:1px solid var(--border); border-bottom-left-radius:4px; color:var(--text); }
-        .chat-msg.me .chat-bubble,.chat-msg.admin .chat-bubble { background:linear-gradient(135deg,var(--green),var(--blue)); color:white; border-bottom-right-radius:4px; }
+        .chat-msg.me .chat-bubble,.chat-msg.admin .chat-bubble { background:linear-gradient(135deg,#0d2b4e,#e8a020); color:white; border-bottom-right-radius:4px; }
         .chat-meta { font-size:0.62rem; color:var(--muted); margin-bottom:3px; font-weight:600; }
         .chat-msg.me .chat-meta,.chat-msg.admin .chat-meta { text-align:right; }
         .chat-time { font-size:0.6rem; color:var(--muted); margin-top:3px; }
@@ -222,13 +222,13 @@
         .chat-input-row { display:flex; gap:8px; padding:12px; border-top:1px solid var(--border); background:white; }
         .chat-input-row input { flex:1; padding:9px 14px; border:1.5px solid var(--border); border-radius:20px; font-size:0.82rem; font-family:'Plus Jakarta Sans',sans-serif; }
         .chat-input-row input:focus { outline:none; border-color:var(--green); }
-        .chat-send-btn { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--blue)); border:none; color:white; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 0.15s; }
+        .chat-send-btn { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#0d2b4e,#e8a020); border:none; color:white; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 0.15s; }
         .chat-send-btn:hover { transform:scale(1.08); }
 
         .profile-card-big { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); padding:28px; box-shadow:var(--shadow); }
         .profile-top { display:flex; gap:24px; align-items:flex-start; margin-bottom:24px; }
         .profile-av-wrap { position:relative; }
-        .profile-av-big { width:100px; height:100px; border-radius:50%; overflow:hidden; background:linear-gradient(135deg,var(--green),var(--blue)); display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:white; border:3px solid var(--green); }
+        .profile-av-big { width:100px; height:100px; border-radius:50%; overflow:hidden; background:linear-gradient(135deg,#0d2b4e,#e8a020); display:flex; align-items:center; justify-content:center; font-size:2.5rem; color:white; border:3px solid var(--green); }
         .profile-av-big img { width:100%; height:100%; object-fit:cover; }
         .cam-btn { position:absolute; bottom:4px; right:4px; width:28px; height:28px; border-radius:50%; background:var(--green); color:white; border:2px solid white; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
         .profile-info-main h2 { font-size:1.2rem; font-weight:700; color:var(--blue); }
@@ -240,7 +240,7 @@
         .detail-item { background:var(--bg); padding:12px 14px; border-radius:12px; }
         .detail-item label { font-size:0.65rem; text-transform:uppercase; color:var(--muted); letter-spacing:0.8px; font-weight:700; display:block; margin-bottom:4px; }
         .detail-item p { font-size:0.85rem; font-weight:600; color:var(--text); word-break:break-word; }
-        .edit-btn { background:linear-gradient(135deg,var(--green),var(--blue)); color:white; border:none; padding:10px 22px; border-radius:40px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; }
+        .edit-btn { background:linear-gradient(135deg,#0d2b4e,#e8a020); color:white; border:none; padding:10px 22px; border-radius:40px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.85rem; }
 
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:500; display:none; align-items:center; justify-content:center; }
         .modal-overlay.active { display:flex; }
@@ -257,7 +257,7 @@
         .share-btn.whatsapp { background:#25d366; color:white; }
         .share-btn.copy { background:var(--green); color:white; }
 
-        .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(60px); background:#1e2b20; color:white; padding:10px 20px; border-radius:40px; font-size:0.82rem; font-weight:600; z-index:9000; transition:transform 0.3s; pointer-events:none; }
+        .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(60px); background:#0d2b4e; color:white; padding:10px 20px; border-radius:40px; font-size:0.82rem; font-weight:600; z-index:9000; transition:transform 0.3s; pointer-events:none; }
         .toast.show { transform:translateX(-50%) translateY(0); }
 
         @media(max-width:1100px) { .layout { grid-template-columns:240px 1fr 280px; gap:12px; } }
@@ -272,7 +272,7 @@
         .tfc-nav-tabs { display: flex; gap: 8px; background: var(--card); border-radius: 60px; padding: 6px; border: 1px solid var(--border); margin-bottom: 28px; }
         .tfc-tab-btn { flex: 1; padding: 12px 20px; border: none; background: transparent; border-radius: 40px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 8px; }
         .tfc-tab-btn i { font-size: 1rem; }
-        .tfc-tab-btn.active { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; box-shadow: 0 4px 12px rgba(43,110,60,0.3); }
+        .tfc-tab-btn.active { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; box-shadow: 0 4px 12px rgba(13,43,78,0.3); }
         .tfc-tab-btn:hover:not(.active) { background: var(--green-pale); color: var(--green); }
         .tfc-section { display: none; }
         .tfc-section.active { display: block; }
@@ -319,7 +319,7 @@
         .tfc-chat-input input:focus { outline: none; border-color: var(--green); }
         .tfc-chat-input button { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--green), var(--blue)); border: none; color: white; cursor: pointer; transition: transform 0.2s; }
         .tfc-chat-input button:hover { transform: scale(1.05); }
-        .tfc-ia-widget { background: linear-gradient(150deg, #0f2617 0%, #1a3a4e 100%); border-radius: 20px; overflow: hidden; margin-top: 20px; }
+        .tfc-ia-widget { background: linear-gradient(150deg, #0d2b4e 0%, #1a3a5e 100%); border-radius: 20px; overflow: hidden; margin-top: 20px; }
         .tfc-ia-header { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .tfc-ia-header h4 { color: white; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .tfc-ia-messages { height: 280px; overflow-y: auto; padding: 16px; }
@@ -341,7 +341,7 @@
         [data-theme="dark"] .tfc-dropzone { background: var(--bg); }
         [data-theme="dark"] .tfc-chat-messages { background: var(--bg); }
         [data-theme="dark"] .tfc-chat-message.supervisor .tfc-chat-bubble { background: var(--card); }
-        [data-theme="dark"] .tfc-ia-widget { background: linear-gradient(150deg, #1a2a1a 0%, #1a2a3a 100%); }
+        [data-theme="dark"] .tfc-ia-widget { background: linear-gradient(150deg, #0a1a2e 0%, #1a2a3a 100%); }
         .theme-toggle-btn { background: var(--bg) !important; color: var(--text) !important; border: 1.5px solid var(--border) !important; }
         .theme-toggle-btn:hover { border-color: var(--green) !important; color: var(--green) !important; background: var(--green-pale) !important; }
         [data-theme="dark"] .theme-toggle-btn { background: var(--bg) !important; }
@@ -403,7 +403,7 @@
         .invoice-doc { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; }
         .inv-deco-top { height:8px; background:#0d2b4e; }
         .inv-deco-bottom { height:8px; background:linear-gradient(90deg,#e8a020 0%,#0d2b4e 100%); }
-        .inv-header-band { background:#0d2b4e; padding:28px 36px; display:flex; justify-content:space-between; align-items:center; border-left:10px solid #e8a020; }
+        .inv-header-band { background:#0d2b4e; padding:28px 36px; display:flex; justify-content:space-between; align-items:center; border-left:6px solid #e8a020; }
         .inv-logo-area h1 { font-size:26px; font-weight:800; color:#e8a020; letter-spacing:1px; }
         .inv-logo-area p { font-size:11px; color:rgba(255,255,255,.65); margin-top:3px; }
         .inv-header-right h2 { font-size:30px; font-weight:800; color:#fff; letter-spacing:3px; text-align:right; }
@@ -425,7 +425,7 @@
         .inv-table-zone th:not(:first-child) { text-align:center; }
         .inv-table-zone td { padding:14px 16px; font-size:13px; border-bottom:1px solid #eee; }
         .inv-table-zone td:not(:first-child) { text-align:center; }
-        .inv-table-zone tr:nth-child(even) td { background:#f8f9f8; }
+        .inv-table-zone tr:nth-child(even) td { background:#f4f6f9; }
         .inv-total-row td { background:#0d2b4e!important; color:#fff!important; font-weight:700; font-size:14px; }
         .inv-status-row td { font-style:italic; font-size:13px; color:#666; }
         .inv-desc-zone { margin-bottom:24px; }
@@ -516,7 +516,7 @@
                 style="display:none;background:linear-gradient(135deg,var(--blue),var(--green));color:white;margin-right:10px;">
             <i class="fa-solid fa-users"></i> Mon espace TFC
         </button>
-        <button class="btn-quit" onclick="switchToTFC()" style="background:linear-gradient(135deg,var(--green),var(--blue));color:white;margin-right:10px;">
+        <button class="btn-quit" onclick="switchToTFC()" style="background:linear-gradient(135deg,#0d2b4e,#e8a020);color:white;margin-right:10px;">
             <i class="fa-solid fa-users"></i> Clients TFC
         </button>
         <button class="btn-quit" onclick="doLogout()">
@@ -704,7 +704,7 @@
             <i class="fa-solid fa-user-pen"></i> Profil
         </button>
         <!-- BOUTON RETOUR ESPACE FORMATION - Bascule vers l'app principale -->
-        <button class="btn-quit" onclick="switchToFormation()" style="margin-right:10px;background:linear-gradient(135deg,var(--green),var(--blue));color:white;">
+        <button class="btn-quit" onclick="switchToFormation()" style="margin-right:10px;background:linear-gradient(135deg,#0d2b4e,#e8a020);color:white;">
             <i class="fa-solid fa-graduation-cap"></i> Espace Formation
         </button>
         <button class="btn-quit" onclick="logoutTfcClient()">
@@ -1044,7 +1044,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
             <div class="card stat-card" style="padding: 20px; text-align: center;"><i class="fa-solid fa-users" style="font-size: 2rem; color: var(--green);"></i><h3 id="totalClientsCount">0</h3><p style="color: var(--muted);">Clients inscrits</p></div>
             <div class="card stat-card" style="padding: 20px; text-align: center;"><i class="fa-regular fa-file" style="font-size: 2rem; color: var(--blue);"></i><h3 id="totalDocsCount">0</h3><p style="color: var(--muted);">Documents déposés</p></div>
-            <div class="card stat-card" style="padding: 20px; text-align: center;"><i class="fa-regular fa-newspaper" style="font-size: 2rem; color: #e67e22;"></i><h3 id="totalPostsCount">0</h3><p style="color: var(--muted);">Publications</p></div>
+            <div class="card stat-card" style="padding: 20px; text-align: center;"><i class="fa-regular fa-newspaper" style="font-size: 2rem; color: #e8a020;"></i><h3 id="totalPostsCount">0</h3><p style="color: var(--muted);">Publications</p></div>
         </div>
         <div class="card"><div class="card-header"><h4><i class="fa-solid fa-list"></i> Tous les clients et leurs travaux</h4><button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()"><i class="fa-solid fa-plus"></i> Nouveau client</button></div><div id="tfcFullClientsList" style="padding: 16px;"></div></div>
     </div>
@@ -1260,7 +1260,7 @@ function invViewClient(idx){currentInvData=invClients[idx];invRenderInvoice(curr
 function invPreview(){const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Remplissez au moins le nom');return;}currentInvData={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim(),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim()};invRenderInvoice(currentInvData);showInvTab('preview');document.getElementById('inv-msg-zone').style.display='none';}
 function invPrefillFromClientId(id,name,tel,inst,theme,email){editingInvIdx=null;const tl=document.getElementById('inv-form-title-label');if(tl)tl.textContent='Nouveau client — Informations';const mp={'inv-f-nom':name,'inv-f-tel':tel,'inv-f-inst':inst,'inv-f-email':email,'inv-f-theme':theme};Object.entries(mp).forEach(([fid,val])=>{const el=document.getElementById(fid);if(el)el.value=val||'';});showInvTab('new-client');document.getElementById('inv-section-new-client')?.scrollIntoView({behavior:'smooth'});toast('Données de '+name+' chargées — complétez la facturation');}
 function invRenderInvoice(c){const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});const ss=c.statut==='Soldé'?'background:#dcfce7;color:#166534':c.statut==='Partiel'?'background:#fef3c7;color:#92400e':'background:#fee2e2;color:#991b1b';const sc=c.statut==='Soldé'?'#166534':c.statut==='Partiel'?'#92400e':'#991b1b';const html=`<div class="invoice-doc" id="invoice-inner"><div class="inv-deco-top"></div><div class="inv-header-band"><div class="inv-logo-area"><h1>GADA TRAINING</h1><p>Formons les meilleurs du futur</p></div><div class="inv-header-right"><h2>FACTURE</h2><p>Facture n°${esc(c.num||'—')}</p><p>${ds}</p></div></div><div class="inv-body-area"><div class="inv-client-row"><div class="inv-client-info"><div class="inv-client-name">${esc(c.nom.toUpperCase())}</div>${c.tel?`<p><strong>Téléphone du client :</strong> ${esc(c.tel)}</p>`:''} ${c.inst?`<p><strong>Institution :</strong> ${esc(c.inst)}</p>`:''} ${c.fac?`<p><strong>Faculté :</strong> ${esc(c.fac)}</p>`:''} ${c.email?`<p><strong>Email :</strong> ${esc(c.email)}</p>`:''}</div><div class="inv-meta-block"><p><strong>Facture n°</strong> ${esc(c.num||'—')}</p><p><strong>Date :</strong> ${ds}</p><div class="inv-status-pill" style="${ss}">${esc(c.statut)}</div></div></div>${c.theme?`<div class="inv-theme-block"><h4>Thématique du Mémoire</h4><p>${esc(c.theme)}</p></div>`:''}<div class="inv-table-zone"><table><thead><tr><th style="width:28%">DESCRIPTION</th><th style="width:24%">DÉTAILS</th><th>MONTANT ($)</th><th>PAYÉ ($)</th><th>RESTE ($)</th></tr></thead><tbody><tr><td>Accompagnement Mémoire</td><td>${esc(c.fil||'')}${c.fil&&c.fac?' — ':''}${esc(c.fac||'')}</td><td style="font-weight:700">$${c.montant}</td><td style="font-weight:700;color:#166534">$${c.paye}</td><td style="font-weight:700;color:#c0392b">$${c.reste}</td></tr><tr class="inv-total-row"><td colspan="2" style="text-align:right">TOTAL GÉNÉRAL</td><td>$${c.montant}</td><td>$${c.paye}</td><td>$${c.reste}</td></tr><tr class="inv-status-row"><td colspan="3"></td><td style="text-align:right;font-weight:600">Statut actuel :</td><td style="font-weight:700;color:${sc}">${esc(c.statut)}</td></tr></tbody></table></div><div class="inv-desc-zone"><h4>Description</h4><p><strong>Accompagnement Mémoire</strong></p>${c.notes?`<p style="margin-top:8px;color:#666;font-style:italic">${esc(c.notes)}</p>`:''}</div></div><div class="inv-footer-band"><div class="inv-footer-left"><p>Coordonnées GADA TRAINING</p><p>gadasolution.rdc@gmail.com</p><p>1RDC | Nord-Kivu | Goma</p><p>+243898383148</p></div><div class="inv-footer-right">https://www.gadatraining.org</div></div><div class="inv-deco-bottom"></div></div>`;const cont=document.getElementById('printable-invoice');if(cont)cont.innerHTML=html;}
-function invPrint(){const content=document.getElementById('invoice-inner');if(!content){toast('Générez d\'abord une facture');return;}const w=window.open('','_blank','width=900,height=750');w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Facture GADA Training${currentInvData?' — '+currentInvData.nom:''}</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff}.invoice-doc{max-width:800px;margin:0 auto;background:#fff}.inv-deco-top{height:8px;background:#0d2b4e;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-deco-bottom{height:8px;background:linear-gradient(90deg,#e8a020 0%,#0d2b4e 100%);print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-header-band{background:#0d2b4e;padding:28px 36px;display:flex;justify-content:space-between;align-items:center;border-left:10px solid #e8a020;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-logo-area h1{font-size:26px;font-weight:800;color:#e8a020;letter-spacing:1px}.inv-logo-area p{font-size:11px;color:rgba(255,255,255,.65);margin-top:3px}.inv-header-right{text-align:right}.inv-header-right h2{font-size:30px;font-weight:800;color:#fff;letter-spacing:3px}.inv-header-right p{font-size:12px;color:rgba(255,255,255,.65);margin-top:5px}.inv-body-area{padding:28px 36px}.inv-client-row{display:flex;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:2px dashed #ddd}.inv-client-name{font-size:20px;font-weight:800;color:#c0392b;margin-bottom:8px}.inv-client-info p{font-size:13px;color:#555;margin-bottom:4px}.inv-meta-block{text-align:right}.inv-meta-block p{font-size:13px;margin-bottom:5px}.inv-meta-block strong{color:#0d2b4e}.inv-status-pill{display:inline-block;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}.inv-theme-block{border-left:5px solid #e8a020;padding-left:16px;margin-bottom:24px}.inv-theme-block h4{font-size:11px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}.inv-theme-block p{font-size:13px;color:#444;font-style:italic}.inv-table-zone{margin-bottom:24px}.inv-table-zone table{width:100%;border-collapse:collapse}.inv-table-zone th{background:#0d2b4e;color:#fff;padding:12px 16px;font-size:12px;font-weight:700;text-align:left;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-table-zone th:not(:first-child){text-align:center}.inv-table-zone td{padding:14px 16px;font-size:13px;border-bottom:1px solid #eee}.inv-table-zone td:not(:first-child){text-align:center}.inv-table-zone tr:nth-child(even) td{background:#f8f9f8}.inv-total-row td{background:#0d2b4e!important;color:#fff!important;font-weight:700;font-size:14px;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-status-row td{font-style:italic;font-size:13px;color:#666}.inv-desc-zone{margin-bottom:24px}.inv-desc-zone h4{font-size:12px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}.inv-desc-zone p{font-size:13px;color:#444}.inv-footer-band{background:#0d2b4e;padding:20px 36px;display:flex;justify-content:space-between;align-items:center;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-footer-left p{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:4px}.inv-footer-left p:first-child{font-weight:700;color:#e8a020;font-size:13px}.inv-footer-right{font-weight:700;font-size:13px;color:#e8a020;text-align:right}@media print{@page{margin:0;size:A4}body{padding:0}}</style></head><body>${content.outerHTML}<script>window.onload=function(){setTimeout(function(){window.print();},600)}<\/script></body></html>`);w.document.close();}
+function invPrint(){const content=document.getElementById('invoice-inner');if(!content){toast('Générez d\'abord une facture');return;}const w=window.open('','_blank','width=900,height=750');w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Facture GADA Training${currentInvData?' — '+currentInvData.nom:''}</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff}.invoice-doc{max-width:800px;margin:0 auto;background:#fff}.inv-deco-top{height:8px;background:#0d2b4e;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-deco-bottom{height:8px;background:linear-gradient(90deg,#e8a020 0%,#0d2b4e 100%);print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-header-band{background:#0d2b4e;padding:28px 36px;display:flex;justify-content:space-between;align-items:center;border-left:6px solid #e8a020;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-logo-area h1{font-size:26px;font-weight:800;color:#e8a020;letter-spacing:1px}.inv-logo-area p{font-size:11px;color:rgba(255,255,255,.65);margin-top:3px}.inv-header-right{text-align:right}.inv-header-right h2{font-size:30px;font-weight:800;color:#fff;letter-spacing:3px}.inv-header-right p{font-size:12px;color:rgba(255,255,255,.65);margin-top:5px}.inv-body-area{padding:28px 36px}.inv-client-row{display:flex;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:2px dashed #ddd}.inv-client-name{font-size:20px;font-weight:800;color:#c0392b;margin-bottom:8px}.inv-client-info p{font-size:13px;color:#555;margin-bottom:4px}.inv-meta-block{text-align:right}.inv-meta-block p{font-size:13px;margin-bottom:5px}.inv-meta-block strong{color:#0d2b4e}.inv-status-pill{display:inline-block;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}.inv-theme-block{border-left:5px solid #e8a020;padding-left:16px;margin-bottom:24px}.inv-theme-block h4{font-size:11px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}.inv-theme-block p{font-size:13px;color:#444;font-style:italic}.inv-table-zone{margin-bottom:24px}.inv-table-zone table{width:100%;border-collapse:collapse}.inv-table-zone th{background:#0d2b4e;color:#fff;padding:12px 16px;font-size:12px;font-weight:700;text-align:left;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-table-zone th:not(:first-child){text-align:center}.inv-table-zone td{padding:14px 16px;font-size:13px;border-bottom:1px solid #eee}.inv-table-zone td:not(:first-child){text-align:center}.inv-table-zone tr:nth-child(even) td{background:#f4f6f9}.inv-total-row td{background:#0d2b4e!important;color:#fff!important;font-weight:700;font-size:14px;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-status-row td{font-style:italic;font-size:13px;color:#666}.inv-desc-zone{margin-bottom:24px}.inv-desc-zone h4{font-size:12px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}.inv-desc-zone p{font-size:13px;color:#444}.inv-footer-band{background:#0d2b4e;padding:20px 36px;display:flex;justify-content:space-between;align-items:center;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-footer-left p{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:4px}.inv-footer-left p:first-child{font-weight:700;color:#e8a020;font-size:13px}.inv-footer-right{font-weight:700;font-size:13px;color:#e8a020;text-align:right}@media print{@page{margin:0;size:A4}body{padding:0}}</style></head><body>${content.outerHTML}<script>window.onload=function(){setTimeout(function(){window.print();},600)}<\/script></body></html>`);w.document.close();}
 function invCopyWhatsApp(){if(!currentInvData){toast('Générez d\'abord une facture');return;}const c=currentInvData;const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR'):'';const msg=`Bonjour ${c.nom},\n\nVoici votre facture GADA TRAINING.\n\n🧾 *Facture n° ${c.num}*\n📅 Date : ${ds}\n\n━━━━━━━━━━━━━━━━━━\n💰 Montant total : *$${c.montant}*\n✅ Montant payé  : *$${c.paye}*\n⏳ Reste à payer : *$${c.reste}*\n📊 Statut        : *${c.statut}*\n━━━━━━━━━━━━━━━━━━\n\nMerci pour votre confiance !\n\n🎓 *GADA TRAINING*\n_Formons les meilleurs du futur_\n📞 +243898383148\n🌐 www.gadatraining.org`;const mz=document.getElementById('inv-msg-zone');const mt=document.getElementById('inv-msg-text');const wb=document.getElementById('inv-wa-btn');if(mt)mt.value=msg;if(mz)mz.style.display='block';if(wb){wb.innerHTML='<i class="fa-brands fa-whatsapp"></i> Ouvrir WhatsApp';wb.style.background='#25d366';wb.style.color='#fff';const tel=(c.tel||'').replace(/\D/g,'');wb.onclick=()=>window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');}mz?.scrollIntoView({behavior:'smooth'});toast('Message WhatsApp prêt !');}
 function invCopyEmail(){if(!currentInvData){toast('Générez d\'abord une facture');return;}const c=currentInvData;const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR'):'';const msg=`Objet : Votre facture GADA TRAINING — N° ${c.num}\n\nBonjour ${c.nom},\n\nVeuillez trouver ci-joint votre facture pour l'accompagnement de votre mémoire.\n\nDétails :\n  • Facture n° : ${c.num}\n  • Date       : ${ds}\n  • Service    : Accompagnement Mémoire${c.fil?' — '+c.fil:''}\n  • Montant total : $${c.montant}\n  • Montant payé  : $${c.paye}\n  • Reste à payer : $${c.reste}\n  • Statut        : ${c.statut}\n${c.notes?'\nNote : '+c.notes:''}\n\nCordialement,\nL'équipe GADA TRAINING\ngadasolution.rdc@gmail.com | +243898383148\nwww.gadatraining.org`;const mz=document.getElementById('inv-msg-zone');const mt=document.getElementById('inv-msg-text');const wb=document.getElementById('inv-wa-btn');if(mt)mt.value=msg;if(mz)mz.style.display='block';if(wb){wb.innerHTML='<i class="fa-solid fa-envelope"></i> Ouvrir messagerie';wb.style.background='#1a4c6e';wb.style.color='#fff';const sub=encodeURIComponent('Votre facture GADA TRAINING — N° '+c.num);const body=encodeURIComponent(msg);wb.onclick=()=>window.open('mailto:'+c.email+'?subject='+sub+'&body='+body,'_blank');}mz?.scrollIntoView({behavior:'smooth'});toast('Message email prêt !');}
 function invCopyMsgToClipboard(){const t=document.getElementById('inv-msg-text')?.value;if(!t)return;navigator.clipboard.writeText(t).then(()=>toast('✅ Message copié !')).catch(()=>toast('Erreur lors de la copie'));}
