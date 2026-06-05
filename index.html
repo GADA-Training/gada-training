@@ -944,8 +944,7 @@
                 <button class="admin-publish-btn" onclick="openAdminGlobalPost('link')"><i class="fa-solid fa-link"></i> Lien</button>
             </div>
         </div>
-        <!-- MODULE FACTURES TFC - ADMIN ONLY -->
-        <div id="invoiceModuleWrapper" style="display:none">
+        <!-- MODULE FACTURES TFC -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:20px 24px;background:var(--card);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow)">
             <div style="display:flex;align-items:center;gap:16px">
                 <div style="width:50px;height:50px;background:#0d2b4e;border-radius:12px;display:flex;align-items:center;justify-content:center;border-left:4px solid #e8a020"><i class="fa-solid fa-file-invoice-dollar" style="color:#e8a020;font-size:20px"></i></div>
@@ -1070,7 +1069,6 @@
         </div>
         <!-- FIN MODULE FACTURES TFC -->
 
-        </div><!-- fin invoiceModuleWrapper -->
         <div class="card" style="margin-bottom: 16px;">
             <div class="card-header"><h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4><div style="display: flex; gap: 8px;"><button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()"><i class="fa-solid fa-plus"></i> Nouveau client</button><button class="btn-auth full-mgmt-btn" style="width: auto; padding: 6px 16px;" onclick="openTfcFullManagement()"><i class="fa-solid fa-table-list"></i> Vue complète</button></div></div>
             <div id="clientsList" style="padding: 16px;"></div>
@@ -1292,19 +1290,10 @@ Session 14 - Carte thématique décisionnelle et présentation finale
 // =================================================================
 // MODULE FACTURES TFC
 // =================================================================
-let invClients = [];
-function loadInvClients() {
-    try {
-        const raw = localStorage.getItem('gada_inv_clients');
-        invClients = raw ? JSON.parse(raw) : [];
-    } catch(e) { invClients = []; }
-}
+let invClients = JSON.parse(localStorage.getItem('gada_inv_clients') || '[]');
 let currentInvData = null;
 let editingInvIdx = null;
-function invSave(){
-    if(currentUser?.email !== ADMIN_EMAIL) return;
-    localStorage.setItem('gada_inv_clients',JSON.stringify(invClients));
-}
+function invSave(){localStorage.setItem('gada_inv_clients',JSON.stringify(invClients));}
 function invInitForm(){const t=new Date();const df=document.getElementById('inv-f-date');const nf=document.getElementById('inv-f-num');if(df)df.value=t.toISOString().split('T')[0];if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');}
 function invCalcReste(){const m=parseFloat(document.getElementById('inv-f-montant').value)||0;const p=parseFloat(document.getElementById('inv-f-paye').value)||0;const r=Math.max(0,m-p);const rf=document.getElementById('inv-f-reste');const sf=document.getElementById('inv-f-statut');if(rf)rf.value=r;if(sf){if(r<=0&&m>0)sf.value='Soldé';else if(p>0&&r>0)sf.value='Partiel';else if(p===0&&m>0)sf.value='Impayé';}}
 function showInvTab(tab){['list','new-client','preview'].forEach(t=>{const s=document.getElementById('inv-section-'+t);const b=document.getElementById('inv-tab-'+t);if(s)s.style.display=t===tab?'block':'none';if(b)b.classList.toggle('active',t===tab);});if(tab==='list')renderInvClients();}
@@ -2961,11 +2950,7 @@ function switchToTFC() {
     const views = ['view-feed', 'view-profile', 'view-projets', 'view-semaines'];
     views.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     toast('Mode Gestion des TFC');
-    if (currentUser?.email === ADMIN_EMAIL) {
-        const wrapper = document.getElementById('invoiceModuleWrapper');
-        if (wrapper) wrapper.style.display = 'block';
-        invInitForm(); invUpdateStats(); renderInvClients(); showInvTab('list');
-    }
+    invInitForm(); invUpdateStats(); renderInvClients(); showInvTab('list');
     if (window.clientsListRef) { db.ref('tfc_clients').off('value', window.clientsListRef); window.clientsListRef = null; }
     loadClientsList();
 }
