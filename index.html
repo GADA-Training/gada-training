@@ -444,7 +444,8 @@
 <div id="authOverlay">
     <div class="auth-box">
         <div class="auth-logo">
-            <h1>GADA Training</h1>
+            <img src="images/logo-gada.png" alt="GADA Training" style="height:70px;object-fit:contain;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;" onerror="this.style.display='none';document.getElementById('authLogoFallback').style.display='block'">
+            <h1 id="authLogoFallback" style="display:none">GADA Training</h1>
             <p>Espace privé des apprenants · Modélisation Spatiale & One Health</p>
         </div>
         <div id="authMsg" class="auth-msg"></div>
@@ -956,8 +957,52 @@
         </div>
         <div class="inv-stats">
             <div class="inv-stat"><div class="inv-stat-num" id="inv-total-clients">0</div><div class="inv-stat-label">Clients facturés</div></div>
+            <div class="inv-stat"><div class="inv-stat-num" id="inv-total-amount" style="color:#0d2b4e">$0</div><div class="inv-stat-label">Total général facturé</div></div>
             <div class="inv-stat"><div class="inv-stat-num" id="inv-total-collected" style="color:var(--green)">$0</div><div class="inv-stat-label">Total encaissé</div></div>
             <div class="inv-stat"><div class="inv-stat-num" id="inv-total-pending" style="color:#c0392b">$0</div><div class="inv-stat-label">Reste à percevoir</div></div>
+        </div>
+        <!-- GRAPHIQUE DE PROGRESSION FACTURES -->
+        <div style="background:var(--card);border-radius:16px;border:1px solid var(--border);padding:24px;margin-bottom:20px;box-shadow:var(--shadow);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+                <h3 style="font-size:1rem;font-weight:800;color:#0d2b4e;display:flex;align-items:center;gap:8px;"><i class="fa-solid fa-chart-bar" style="color:#e8a020;"></i> Tableau de bord financier</h3>
+                <div style="display:flex;gap:12px;font-size:0.75rem;flex-wrap:wrap;">
+                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#0d2b4e;border-radius:3px;display:inline-block;"></span> Total facturé</span>
+                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#27ae60;border-radius:3px;display:inline-block;"></span> Encaissé</span>
+                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#c0392b;border-radius:3px;display:inline-block;"></span> Reste</span>
+                </div>
+            </div>
+            <!-- Barre progression globale -->
+            <div style="margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:6px;">
+                    <span>Taux de recouvrement global</span>
+                    <span id="inv-recovery-rate" style="font-weight:700;color:#27ae60;">0%</span>
+                </div>
+                <div style="background:#e8f0fa;border-radius:20px;height:14px;overflow:hidden;position:relative;">
+                    <div id="inv-progress-global" style="height:100%;background:linear-gradient(90deg,#27ae60,#2ecc71);border-radius:20px;width:0%;transition:width 0.6s ease;position:relative;">
+                        <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,0.1)0%,rgba(255,255,255,0.3)50%,rgba(255,255,255,0.1)100%);border-radius:20px;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Graphique barres par client -->
+            <div style="overflow-x:auto;">
+                <canvas id="invChart" style="width:100%;min-height:220px;max-height:280px;display:block;"></canvas>
+            </div>
+            <div id="inv-chart-empty" style="text-align:center;padding:40px;color:var(--muted);display:none;"><i class="fa-solid fa-chart-bar" style="font-size:2.5rem;opacity:0.3;display:block;margin-bottom:12px;"></i>Aucune donnée à afficher</div>
+            <!-- Répartition par statut -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;" id="inv-status-breakdown">
+                <div style="background:#dcfce7;border-radius:12px;padding:12px;text-align:center;border-left:4px solid #27ae60;">
+                    <div style="font-size:1.3rem;font-weight:800;color:#166534;" id="inv-count-solde">0</div>
+                    <div style="font-size:0.72rem;color:#166534;font-weight:600;">✅ Soldés</div>
+                </div>
+                <div style="background:#fef3c7;border-radius:12px;padding:12px;text-align:center;border-left:4px solid #e8a020;">
+                    <div style="font-size:1.3rem;font-weight:800;color:#92400e;" id="inv-count-partial">0</div>
+                    <div style="font-size:0.72rem;color:#92400e;font-weight:600;">🟡 Partiels</div>
+                </div>
+                <div style="background:#fee2e2;border-radius:12px;padding:12px;text-align:center;border-left:4px solid #c0392b;">
+                    <div style="font-size:1.3rem;font-weight:800;color:#991b1b;" id="inv-count-unpaid">0</div>
+                    <div style="font-size:0.72rem;color:#991b1b;font-weight:600;">🔴 Impayés</div>
+                </div>
+            </div>
         </div>
         <div class="inv-tabs">
             <button class="inv-tab active" id="inv-tab-list" onclick="showInvTab('list')"><i class="fa-solid fa-table-list"></i> Clients &amp; Factures</button>
@@ -1067,7 +1112,9 @@
 <div class="compose-modal-overlay" id="tfcComposeOverlay" onclick="if(event.target===this)closeTfcCompose()">
     <div class="compose-modal">
         <div class="compose-modal-header"><h3 id="tfcComposeTitle">Partager une publication</h3><button onclick="closeTfcCompose()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;">×</button></div>
-        <textarea id="tfcPostContent" rows="4" placeholder="Partagez votre avancement, posez une question, ou partagez une ressource..." style="width:100%;margin-bottom:12px;padding:12px;border-radius:12px;border:2px solid var(--border);"></textarea>
+        <input id="tfcPostTitleInput" type="text" placeholder="Titre de la publication (obligatoire)" style="width:100%;margin-bottom:8px;padding:10px 14px;border:2px solid var(--border);border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.92rem;font-weight:700;">
+        <input id="tfcPostSubtitleInput" type="text" placeholder="Sous-titre (optionnel)" style="width:100%;margin-bottom:8px;padding:9px 14px;border:2px solid var(--border);border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.82rem;font-style:italic;color:var(--muted);">
+        <textarea id="tfcPostContent" rows="4" placeholder="Description / contenu de votre publication..." style="width:100%;margin-bottom:12px;padding:12px;border-radius:12px;border:2px solid var(--border);"></textarea>
         <div id="tfcPostMediaArea"></div>
         <div id="tfcPostProgress" style="display: none;"><div class="progress-bar"><div class="progress-fill" id="tfcPostProgressFill"></div></div></div>
         <button class="btn-submit-post" onclick="submitTfcPost()">Publier</button>
@@ -1253,13 +1300,115 @@ function showInvTab(tab){['list','new-client','preview'].forEach(t=>{const s=doc
 function invSaveClient(){const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Le nom est obligatoire');return;}const data={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim()||('FAC-'+String(invClients.length+1).padStart(3,'0')),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim(),savedAt:Date.now()};if(editingInvIdx!==null){invClients[editingInvIdx]=data;editingInvIdx=null;toast('✅ Client modifié !');}else{invClients.push(data);toast('✅ Client enregistré !');}invSave();invUpdateStats();const nf=document.getElementById('inv-f-num');if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');showInvTab('list');}
 function invResetForm(){['inv-f-nom','inv-f-tel','inv-f-inst','inv-f-fac','inv-f-fil','inv-f-email','inv-f-theme','inv-f-montant','inv-f-paye','inv-f-reste','inv-f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const sel=document.getElementById('inv-f-statut');if(sel)sel.value='Partiel';editingInvIdx=null;invInitForm();toast('Formulaire réinitialisé');}
 function renderInvClients(){const search=(document.getElementById('inv-search')?.value||'').toLowerCase();const fs=(document.getElementById('inv-filter-status')?.value||'');const filtered=invClients.filter(c=>((c.nom||'').toLowerCase().includes(search)||(c.inst||'').toLowerCase().includes(search))&&(!fs||c.statut===fs));const badge=document.getElementById('inv-count-badge');if(badge)badge.textContent=invClients.length+' client'+(invClients.length>1?'s':'');const tbody=document.getElementById('inv-tbody');if(!tbody)return;if(!filtered.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Aucun client trouvé.</td></tr>';return;}tbody.innerHTML=filtered.map(c=>{const idx=invClients.indexOf(c);const sc=c.statut==='Soldé'?'inv-sold':c.statut==='Partiel'?'inv-partial':'inv-unpaid';return`<tr><td style="font-weight:700;color:#0d2b4e">${esc(c.num||'—')}</td><td><strong>${esc(c.nom)}</strong>${c.email?`<br><small style="color:var(--muted)">${esc(c.email)}</small>`:''}</td><td style="font-size:12px">${esc(c.inst||'—')}</td><td style="font-size:12px">${esc(c.fil||'—')}</td><td style="font-weight:700">$${c.montant}</td><td style="color:var(--green);font-weight:700">$${c.paye}</td><td style="color:#c0392b;font-weight:700">$${c.reste}</td><td><span class="inv-status ${sc}">${esc(c.statut)}</span></td><td><div class="inv-actions-row"><button class="inv-btn inv-btn-navy inv-btn-sm" onclick="invViewClient(${idx})" title="Voir"><i class="fa-solid fa-eye"></i></button><button class="inv-btn inv-btn-sm" style="background:#e8a020;color:#000" onclick="invEditClient(${idx})" title="Modifier"><i class="fa-solid fa-pen"></i></button><button class="inv-btn inv-btn-red inv-btn-sm" onclick="invDeleteClient(${idx})" title="Supprimer"><i class="fa-solid fa-trash"></i></button></div></td></tr>`;}).join('');invUpdateStats();}
-function invUpdateStats(){const t=document.getElementById('inv-total-clients');const c=document.getElementById('inv-total-collected');const p=document.getElementById('inv-total-pending');if(t)t.textContent=invClients.length;if(c)c.textContent='$'+invClients.reduce((a,x)=>a+(parseFloat(x.paye)||0),0);if(p)p.textContent='$'+invClients.reduce((a,x)=>a+(parseFloat(x.reste)||0),0);}
+let invChartInstance = null;
+function invUpdateStats(){
+    const totalAmount = invClients.reduce((a,x)=>a+(parseFloat(x.montant)||0),0);
+    const totalPaye = invClients.reduce((a,x)=>a+(parseFloat(x.paye)||0),0);
+    const totalReste = invClients.reduce((a,x)=>a+(parseFloat(x.reste)||0),0);
+    const t=document.getElementById('inv-total-clients');
+    const ta=document.getElementById('inv-total-amount');
+    const c=document.getElementById('inv-total-collected');
+    const p=document.getElementById('inv-total-pending');
+    if(t)t.textContent=invClients.length;
+    if(ta)ta.textContent='$'+totalAmount;
+    if(c)c.textContent='$'+totalPaye;
+    if(p)p.textContent='$'+totalReste;
+    const rate = totalAmount > 0 ? Math.round((totalPaye/totalAmount)*100) : 0;
+    const rateEl = document.getElementById('inv-recovery-rate');
+    const progEl = document.getElementById('inv-progress-global');
+    if(rateEl) rateEl.textContent = rate+'%';
+    if(progEl) { progEl.style.width = rate+'%'; progEl.style.background = rate>=100?'linear-gradient(90deg,#27ae60,#2ecc71)':rate>=50?'linear-gradient(90deg,#e8a020,#f39c12)':'linear-gradient(90deg,#c0392b,#e74c3c)'; }
+    const solde = invClients.filter(x=>x.statut==='Soldé').length;
+    const partial = invClients.filter(x=>x.statut==='Partiel').length;
+    const unpaid = invClients.filter(x=>x.statut==='Impayé').length;
+    const cs=document.getElementById('inv-count-solde'); const cp=document.getElementById('inv-count-partial'); const cu=document.getElementById('inv-count-unpaid');
+    if(cs)cs.textContent=solde; if(cp)cp.textContent=partial; if(cu)cu.textContent=unpaid;
+    invRenderChart();
+}
+
+function invRenderChart(){
+    const canvas = document.getElementById('invChart');
+    const emptyDiv = document.getElementById('inv-chart-empty');
+    if(!canvas) return;
+    if(invClients.length === 0){ canvas.style.display='none'; if(emptyDiv)emptyDiv.style.display='block'; return; }
+    canvas.style.display='block'; if(emptyDiv)emptyDiv.style.display='none';
+    const ctx = canvas.getContext('2d');
+    const W = canvas.offsetWidth || 600;
+    const H = 240;
+    canvas.width = W * window.devicePixelRatio;
+    canvas.height = H * window.devicePixelRatio;
+    canvas.style.width = W+'px';
+    canvas.style.height = H+'px';
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    ctx.clearRect(0,0,W,H);
+    const clients = invClients.slice(0,10);
+    const n = clients.length;
+    const paddingLeft=60, paddingRight=20, paddingTop=20, paddingBottom=60;
+    const chartW = W - paddingLeft - paddingRight;
+    const chartH = H - paddingTop - paddingBottom;
+    const maxVal = Math.max(...clients.map(c=>parseFloat(c.montant)||0), 1);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+    const textColor = isDark ? '#7a92a8' : '#6b7a8d';
+    const bgCard = isDark ? '#162032' : '#ffffff';
+    // Grille
+    ctx.strokeStyle = gridColor; ctx.lineWidth = 1;
+    for(let i=0;i<=4;i++){
+        const y = paddingTop + (chartH/4)*i;
+        ctx.beginPath(); ctx.moveTo(paddingLeft,y); ctx.lineTo(W-paddingRight,y); ctx.stroke();
+        const val = Math.round(maxVal - (maxVal/4)*i);
+        ctx.fillStyle=textColor; ctx.font='bold 10px Plus Jakarta Sans,sans-serif'; ctx.textAlign='right';
+        ctx.fillText('$'+val, paddingLeft-6, y+4);
+    }
+    // Barres
+    const barGroupW = chartW / n;
+    const barW = Math.min(barGroupW * 0.25, 22);
+    const gap = barW * 0.4;
+    clients.forEach((c,i)=>{
+        const x = paddingLeft + i*barGroupW + barGroupW/2;
+        const m = parseFloat(c.montant)||0;
+        const p = parseFloat(c.paye)||0;
+        const r = parseFloat(c.reste)||0;
+        const hM = (m/maxVal)*chartH;
+        const hP = (p/maxVal)*chartH;
+        const hR = (r/maxVal)*chartH;
+        // Barre total
+        const grad1 = ctx.createLinearGradient(0,paddingTop+chartH-hM,0,paddingTop+chartH);
+        grad1.addColorStop(0,'#1a3a5e'); grad1.addColorStop(1,'#0d2b4e');
+        ctx.fillStyle=grad1;
+        ctx.beginPath(); ctx.roundRect(x-barW-gap, paddingTop+chartH-hM, barW, hM, [4,4,0,0]); ctx.fill();
+        // Barre payé
+        const grad2 = ctx.createLinearGradient(0,paddingTop+chartH-hP,0,paddingTop+chartH);
+        grad2.addColorStop(0,'#2ecc71'); grad2.addColorStop(1,'#27ae60');
+        ctx.fillStyle=grad2;
+        ctx.beginPath(); ctx.roundRect(x, paddingTop+chartH-hP, barW, hP, [4,4,0,0]); ctx.fill();
+        // Barre reste
+        if(hR > 0){
+            const grad3 = ctx.createLinearGradient(0,paddingTop+chartH-hR,0,paddingTop+chartH);
+            grad3.addColorStop(0,'#e74c3c'); grad3.addColorStop(1,'#c0392b');
+            ctx.fillStyle=grad3;
+            ctx.beginPath(); ctx.roundRect(x+barW+gap, paddingTop+chartH-hR, barW, hR, [4,4,0,0]); ctx.fill();
+        }
+        // Nom client
+        const nom = (c.nom||'').split(' ')[0].substring(0,8);
+        ctx.fillStyle=textColor; ctx.font='10px Plus Jakarta Sans,sans-serif'; ctx.textAlign='center';
+        ctx.fillText(nom, x+barW/2, H-paddingBottom+16);
+        // Statut point
+        const dotColor = c.statut==='Soldé'?'#27ae60':c.statut==='Partiel'?'#e8a020':'#c0392b';
+        ctx.beginPath(); ctx.arc(x+barW/2, H-paddingBottom+28, 4, 0, 2*Math.PI);
+        ctx.fillStyle=dotColor; ctx.fill();
+    });
+    // Ligne de référence max
+    ctx.strokeStyle='rgba(232,160,32,0.3)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(paddingLeft,paddingTop); ctx.lineTo(W-paddingRight,paddingTop); ctx.stroke();
+    ctx.setLineDash([]);
+}
 function invEditClient(idx){const c=invClients[idx];if(!c)return;editingInvIdx=idx;const tl=document.getElementById('inv-form-title-label');if(tl)tl.textContent='Modifier la facture de '+c.nom;const fields={'inv-f-nom':c.nom,'inv-f-tel':c.tel,'inv-f-inst':c.inst,'inv-f-fac':c.fac,'inv-f-fil':c.fil,'inv-f-email':c.email,'inv-f-theme':c.theme,'inv-f-montant':c.montant,'inv-f-paye':c.paye,'inv-f-reste':c.reste,'inv-f-num':c.num,'inv-f-date':c.date,'inv-f-notes':c.notes};Object.entries(fields).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val||'';});const sel=document.getElementById('inv-f-statut');if(sel)sel.value=c.statut;showInvTab('new-client');document.getElementById('inv-section-new-client')?.scrollIntoView({behavior:'smooth'});}
 function invDeleteClient(idx){const c=invClients[idx];if(!c)return;if(confirm(`Supprimer la facture de "${c.nom}" ?`)){invClients.splice(idx,1);invSave();renderInvClients();toast('Client supprimé');}}
 function invViewClient(idx){currentInvData=invClients[idx];invRenderInvoice(currentInvData);showInvTab('preview');document.getElementById('inv-msg-zone').style.display='none';}
 function invPreview(){const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Remplissez au moins le nom');return;}currentInvData={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim(),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim()};invRenderInvoice(currentInvData);showInvTab('preview');document.getElementById('inv-msg-zone').style.display='none';}
 function invPrefillFromClientId(id,name,tel,inst,theme,email){editingInvIdx=null;const tl=document.getElementById('inv-form-title-label');if(tl)tl.textContent='Nouveau client — Informations';const mp={'inv-f-nom':name,'inv-f-tel':tel,'inv-f-inst':inst,'inv-f-email':email,'inv-f-theme':theme};Object.entries(mp).forEach(([fid,val])=>{const el=document.getElementById(fid);if(el)el.value=val||'';});showInvTab('new-client');document.getElementById('inv-section-new-client')?.scrollIntoView({behavior:'smooth'});toast('Données de '+name+' chargées — complétez la facturation');}
-function invRenderInvoice(c){const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});const ss=c.statut==='Soldé'?'background:#dcfce7;color:#166534':c.statut==='Partiel'?'background:#fef3c7;color:#92400e':'background:#fee2e2;color:#991b1b';const sc=c.statut==='Soldé'?'#166534':c.statut==='Partiel'?'#92400e':'#991b1b';const html=`<div class="invoice-doc" id="invoice-inner"><div class="inv-deco-top"></div><div class="inv-header-band"><div class="inv-logo-area"><h1>GADA TRAINING</h1><p>Formons les meilleurs du futur</p></div><div class="inv-header-right"><h2>FACTURE</h2><p>Facture n°${esc(c.num||'—')}</p><p>${ds}</p></div></div><div class="inv-body-area"><div class="inv-client-row"><div class="inv-client-info"><div class="inv-client-name">${esc(c.nom.toUpperCase())}</div>${c.tel?`<p><strong>Téléphone du client :</strong> ${esc(c.tel)}</p>`:''} ${c.inst?`<p><strong>Institution :</strong> ${esc(c.inst)}</p>`:''} ${c.fac?`<p><strong>Faculté :</strong> ${esc(c.fac)}</p>`:''} ${c.email?`<p><strong>Email :</strong> ${esc(c.email)}</p>`:''}</div><div class="inv-meta-block"><p><strong>Facture n°</strong> ${esc(c.num||'—')}</p><p><strong>Date :</strong> ${ds}</p><div class="inv-status-pill" style="${ss}">${esc(c.statut)}</div></div></div>${c.theme?`<div class="inv-theme-block"><h4>Thématique du Mémoire</h4><p>${esc(c.theme)}</p></div>`:''}<div class="inv-table-zone"><table><thead><tr><th style="width:28%">DESCRIPTION</th><th style="width:24%">DÉTAILS</th><th>MONTANT ($)</th><th>PAYÉ ($)</th><th>RESTE ($)</th></tr></thead><tbody><tr><td>Accompagnement Mémoire</td><td>${esc(c.fil||'')}${c.fil&&c.fac?' — ':''}${esc(c.fac||'')}</td><td style="font-weight:700">$${c.montant}</td><td style="font-weight:700;color:#166534">$${c.paye}</td><td style="font-weight:700;color:#c0392b">$${c.reste}</td></tr><tr class="inv-total-row"><td colspan="2" style="text-align:right">TOTAL GÉNÉRAL</td><td>$${c.montant}</td><td>$${c.paye}</td><td>$${c.reste}</td></tr><tr class="inv-status-row"><td colspan="3"></td><td style="text-align:right;font-weight:600">Statut actuel :</td><td style="font-weight:700;color:${sc}">${esc(c.statut)}</td></tr></tbody></table></div><div class="inv-desc-zone"><h4>Description</h4><p><strong>Accompagnement Mémoire</strong></p>${c.notes?`<p style="margin-top:8px;color:#666;font-style:italic">${esc(c.notes)}</p>`:''}</div></div><div class="inv-footer-band"><div class="inv-footer-left"><p>Coordonnées GADA TRAINING</p><p>gadasolution.rdc@gmail.com</p><p>1RDC | Nord-Kivu | Goma</p><p>+243898383148</p></div><div class="inv-footer-right">https://www.gadatraining.org</div></div><div class="inv-deco-bottom"></div></div>`;const cont=document.getElementById('printable-invoice');if(cont)cont.innerHTML=html;}
+function invRenderInvoice(c){const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});const ss=c.statut==='Soldé'?'background:#dcfce7;color:#166534':c.statut==='Partiel'?'background:#fef3c7;color:#92400e':'background:#fee2e2;color:#991b1b';const sc=c.statut==='Soldé'?'#166534':c.statut==='Partiel'?'#92400e':'#991b1b';const html=`<div class="invoice-doc" id="invoice-inner"><div class="inv-deco-top"></div><div class="inv-header-band"><div class="inv-logo-area"><img src="images/logo-gada.png" alt="GADA TRAINING" style="height:55px;object-fit:contain;filter:brightness(0)invert(1);margin-bottom:4px;display:block;" onerror="this.style.display='none';this.nextSibling.style.display='block'"><h1 style="display:none">GADA TRAINING</h1><p>Formons les meilleurs du futur</p></div><div class="inv-header-right"><h2>FACTURE</h2><p>Facture n°${esc(c.num||'—')}</p><p>${ds}</p></div></div><div class="inv-body-area"><div class="inv-client-row"><div class="inv-client-info"><div class="inv-client-name">${esc(c.nom.toUpperCase())}</div>${c.tel?`<p><strong>Téléphone du client :</strong> ${esc(c.tel)}</p>`:''} ${c.inst?`<p><strong>Institution :</strong> ${esc(c.inst)}</p>`:''} ${c.fac?`<p><strong>Faculté :</strong> ${esc(c.fac)}</p>`:''} ${c.email?`<p><strong>Email :</strong> ${esc(c.email)}</p>`:''}</div><div class="inv-meta-block"><p><strong>Facture n°</strong> ${esc(c.num||'—')}</p><p><strong>Date :</strong> ${ds}</p><div class="inv-status-pill" style="${ss}">${esc(c.statut)}</div></div></div>${c.theme?`<div class="inv-theme-block"><h4>Thématique du Mémoire</h4><p>${esc(c.theme)}</p></div>`:''}<div class="inv-table-zone"><table><thead><tr><th style="width:28%">DESCRIPTION</th><th style="width:24%">DÉTAILS</th><th>MONTANT ($)</th><th>PAYÉ ($)</th><th>RESTE ($)</th></tr></thead><tbody><tr><td>Accompagnement Mémoire</td><td>${esc(c.fil||'')}${c.fil&&c.fac?' — ':''}${esc(c.fac||'')}</td><td style="font-weight:700">$${c.montant}</td><td style="font-weight:700;color:#166534">$${c.paye}</td><td style="font-weight:700;color:#c0392b">$${c.reste}</td></tr><tr class="inv-total-row"><td colspan="2" style="text-align:right">TOTAL GÉNÉRAL</td><td>$${c.montant}</td><td>$${c.paye}</td><td>$${c.reste}</td></tr><tr class="inv-status-row"><td colspan="3"></td><td style="text-align:right;font-weight:600">Statut actuel :</td><td style="font-weight:700;color:${sc}">${esc(c.statut)}</td></tr></tbody></table></div><div class="inv-desc-zone"><h4>Description</h4><p><strong>Accompagnement Mémoire</strong></p>${c.notes?`<p style="margin-top:8px;color:#666;font-style:italic">${esc(c.notes)}</p>`:''}</div></div><div class="inv-footer-band"><div class="inv-footer-left"><p>Coordonnées GADA TRAINING</p><p>gadasolution.rdc@gmail.com</p><p>1RDC | Nord-Kivu | Goma</p><p>+243898383148</p></div><div class="inv-footer-right">https://www.gadatraining.org</div></div><div class="inv-deco-bottom"></div></div>`;const cont=document.getElementById('printable-invoice');if(cont)cont.innerHTML=html;}
 function invPrint(){const content=document.getElementById('invoice-inner');if(!content){toast('Générez d\'abord une facture');return;}const w=window.open('','_blank','width=900,height=750');w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Facture GADA Training${currentInvData?' — '+currentInvData.nom:''}</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Plus Jakarta Sans',sans-serif;background:#fff}.invoice-doc{max-width:800px;margin:0 auto;background:#fff}.inv-deco-top{height:8px;background:#0d2b4e;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-deco-bottom{height:8px;background:linear-gradient(90deg,#e8a020 0%,#0d2b4e 100%);print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-header-band{background:#0d2b4e;padding:28px 36px;display:flex;justify-content:space-between;align-items:center;border-left:6px solid #e8a020;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-logo-area h1{font-size:26px;font-weight:800;color:#e8a020;letter-spacing:1px}.inv-logo-area p{font-size:11px;color:rgba(255,255,255,.65);margin-top:3px}.inv-header-right{text-align:right}.inv-header-right h2{font-size:30px;font-weight:800;color:#fff;letter-spacing:3px}.inv-header-right p{font-size:12px;color:rgba(255,255,255,.65);margin-top:5px}.inv-body-area{padding:28px 36px}.inv-client-row{display:flex;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:2px dashed #ddd}.inv-client-name{font-size:20px;font-weight:800;color:#c0392b;margin-bottom:8px}.inv-client-info p{font-size:13px;color:#555;margin-bottom:4px}.inv-meta-block{text-align:right}.inv-meta-block p{font-size:13px;margin-bottom:5px}.inv-meta-block strong{color:#0d2b4e}.inv-status-pill{display:inline-block;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}.inv-theme-block{border-left:5px solid #e8a020;padding-left:16px;margin-bottom:24px}.inv-theme-block h4{font-size:11px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}.inv-theme-block p{font-size:13px;color:#444;font-style:italic}.inv-table-zone{margin-bottom:24px}.inv-table-zone table{width:100%;border-collapse:collapse}.inv-table-zone th{background:#0d2b4e;color:#fff;padding:12px 16px;font-size:12px;font-weight:700;text-align:left;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-table-zone th:not(:first-child){text-align:center}.inv-table-zone td{padding:14px 16px;font-size:13px;border-bottom:1px solid #eee}.inv-table-zone td:not(:first-child){text-align:center}.inv-table-zone tr:nth-child(even) td{background:#f4f6f9}.inv-total-row td{background:#0d2b4e!important;color:#fff!important;font-weight:700;font-size:14px;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-status-row td{font-style:italic;font-size:13px;color:#666}.inv-desc-zone{margin-bottom:24px}.inv-desc-zone h4{font-size:12px;font-weight:700;color:#c0392b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}.inv-desc-zone p{font-size:13px;color:#444}.inv-footer-band{background:#0d2b4e;padding:20px 36px;display:flex;justify-content:space-between;align-items:center;print-color-adjust:exact;-webkit-print-color-adjust:exact}.inv-footer-left p{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:4px}.inv-footer-left p:first-child{font-weight:700;color:#e8a020;font-size:13px}.inv-footer-right{font-weight:700;font-size:13px;color:#e8a020;text-align:right}@media print{@page{margin:0;size:A4}body{padding:0}}</style></head><body>${content.outerHTML}<script>window.onload=function(){setTimeout(function(){window.print();},600)}<\/script></body></html>`);w.document.close();}
 function invCopyWhatsApp(){if(!currentInvData){toast('Générez d\'abord une facture');return;}const c=currentInvData;const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR'):'';const msg=`Bonjour ${c.nom},\n\nVoici votre facture GADA TRAINING.\n\n🧾 *Facture n° ${c.num}*\n📅 Date : ${ds}\n\n━━━━━━━━━━━━━━━━━━\n💰 Montant total : *$${c.montant}*\n✅ Montant payé  : *$${c.paye}*\n⏳ Reste à payer : *$${c.reste}*\n📊 Statut        : *${c.statut}*\n━━━━━━━━━━━━━━━━━━\n\nMerci pour votre confiance !\n\n🎓 *GADA TRAINING*\n_Formons les meilleurs du futur_\n📞 +243898383148\n🌐 www.gadatraining.org`;const mz=document.getElementById('inv-msg-zone');const mt=document.getElementById('inv-msg-text');const wb=document.getElementById('inv-wa-btn');if(mt)mt.value=msg;if(mz)mz.style.display='block';if(wb){wb.innerHTML='<i class="fa-brands fa-whatsapp"></i> Ouvrir WhatsApp';wb.style.background='#25d366';wb.style.color='#fff';const tel=(c.tel||'').replace(/\D/g,'');wb.onclick=()=>window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');}mz?.scrollIntoView({behavior:'smooth'});toast('Message WhatsApp prêt !');}
 function invCopyEmail(){if(!currentInvData){toast('Générez d\'abord une facture');return;}const c=currentInvData;const ds=c.date?new Date(c.date).toLocaleDateString('fr-FR'):'';const msg=`Objet : Votre facture GADA TRAINING — N° ${c.num}\n\nBonjour ${c.nom},\n\nVeuillez trouver ci-joint votre facture pour l'accompagnement de votre mémoire.\n\nDétails :\n  • Facture n° : ${c.num}\n  • Date       : ${ds}\n  • Service    : Accompagnement Mémoire${c.fil?' — '+c.fil:''}\n  • Montant total : $${c.montant}\n  • Montant payé  : $${c.paye}\n  • Reste à payer : $${c.reste}\n  • Statut        : ${c.statut}\n${c.notes?'\nNote : '+c.notes:''}\n\nCordialement,\nL'équipe GADA TRAINING\ngadasolution.rdc@gmail.com | +243898383148\nwww.gadatraining.org`;const mz=document.getElementById('inv-msg-zone');const mt=document.getElementById('inv-msg-text');const wb=document.getElementById('inv-wa-btn');if(mt)mt.value=msg;if(mz)mz.style.display='block';if(wb){wb.innerHTML='<i class="fa-solid fa-envelope"></i> Ouvrir messagerie';wb.style.background='#1a4c6e';wb.style.color='#fff';const sub=encodeURIComponent('Votre facture GADA TRAINING — N° '+c.num);const body=encodeURIComponent(msg);wb.onclick=()=>window.open('mailto:'+c.email+'?subject='+sub+'&body='+body,'_blank');}mz?.scrollIntoView({behavior:'smooth'});toast('Message email prêt !');}
@@ -2639,12 +2788,22 @@ function previewTfcMedia(input, type) {
     }
 }
 
-function closeTfcCompose() { document.getElementById('tfcComposeOverlay').classList.remove('active'); tfcPostMediaFile = null; }
+function closeTfcCompose() { 
+    document.getElementById('tfcComposeOverlay').classList.remove('active'); 
+    tfcPostMediaFile = null;
+    const t = document.getElementById('tfcPostTitleInput');
+    const s = document.getElementById('tfcPostSubtitleInput');
+    if(t) t.value = '';
+    if(s) s.value = '';
+}
 
 async function submitTfcPost() {
     const content = document.getElementById('tfcPostContent').value.trim();
     if (!content && !tfcPostMediaFile && currentTfcPostType !== 'link') { toast('Veuillez écrire quelque chose ou joindre un fichier'); return; }
-    const postData = { authorId: currentTfcClientId, authorName: currentTfcClientData.name, authorUniv: currentTfcClientData.university, authorAvatar: currentTfcClientData.avatar || null, content: content, type: currentTfcPostType, timestamp: Date.now(), likes: 0, commentsCount: 0 };
+    const postTitle = document.getElementById('tfcPostTitleInput')?.value.trim() || '';
+    const postSubtitle = document.getElementById('tfcPostSubtitleInput')?.value.trim() || '';
+    if (!postTitle) { toast('Le titre est obligatoire'); return; }
+    const postData = { authorId: currentTfcClientId, authorName: currentTfcClientData.name, authorUniv: currentTfcClientData.university, authorAvatar: currentTfcClientData.avatar || null, postTitle: postTitle, postSubtitle: postSubtitle, content: content, type: currentTfcPostType, timestamp: Date.now(), likes: 0, commentsCount: 0 };
     
     if ((currentTfcPostType === 'photo' || currentTfcPostType === 'document') && tfcPostMediaFile) {
         const maxSize = currentTfcPostType === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024;
@@ -2691,7 +2850,33 @@ function loadTfcPosts() {
         posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
         if (posts.length === 0) { feedDiv.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>Soyez le premier à publier !</p></div>'; return; }
         const isAdmin = currentUser?.email === ADMIN_EMAIL;
-        feedDiv.innerHTML = posts.map(post => `<div class="tfc-feed-post" id="tfc-post-${post.id}"><div class="tfc-post-header"><div class="tfc-post-avatar">${post.authorAvatar ? `<img src="${post.authorAvatar}">` : '<i class="fa-solid fa-user-graduate"></i>'}</div><div class="tfc-post-author"><div class="tfc-post-name">${esc(post.authorName)}</div><div class="tfc-post-univ">${esc(post.authorUniv || '')}</div></div><div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}</div><div class="post-actions-menu" style="display:flex;gap:5px;">${(post.authorId === currentTfcClientId || isAdmin) ? `<button onclick="editTfcPost('${post.id}')" class="tfc-btn-icon" title="Modifier" style="width:32px;height:32px;"><i class="fa-solid fa-pen"></i></button><button onclick="deleteTfcPost('${post.id}')" class="tfc-btn-icon" title="Supprimer" style="width:32px;height:32px;"><i class="fa-solid fa-trash"></i></button>` : ''}</div></div><div class="tfc-post-content">${post.content ? `<div style="white-space:pre-wrap">${esc(post.content)}</div>` : ''}${post.mediaUrl ? `<div class="tfc-post-media"><img src="${post.mediaUrl}" onclick="openLightbox('${post.mediaUrl}')"></div>` : ''}${post.fileUrl ? `<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:12px;display:inline-flex;"><i class="fa-solid fa-download"></i> ${esc(post.fileName)}</a>` : ''}${post.linkUrl ? `<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:12px;"><i class="fa-solid fa-link"></i> Voir le lien</a>` : ''}</div><div class="tfc-post-footer"><button onclick="likeTfcPost('${post.id}')" class="tfc-post-action"><i class="fa-regular fa-heart"></i> ${post.likes || 0}</button><button onclick="commentTfcPost('${post.id}')" class="tfc-post-action"><i class="fa-regular fa-comment"></i> ${post.commentsCount || 0}</button></div></div>`).join('');
+        feedDiv.innerHTML = posts.map(post => `<div class="tfc-feed-post" id="tfc-post-${post.id}">
+            <div class="tfc-post-header">
+                <div class="tfc-post-avatar">${post.authorAvatar ? `<img src="${post.authorAvatar}">` : '<i class="fa-solid fa-user-graduate"></i>'}</div>
+                <div class="tfc-post-author">
+                    <div class="tfc-post-name">${esc(post.authorName)}</div>
+                    <div class="tfc-post-univ">${esc(post.authorUniv || '')}</div>
+                </div>
+                <div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}${post.edited ? ' <span style="font-size:0.6rem;color:var(--muted);font-style:italic;">(modifié)</span>' : ''}</div>
+                <div class="post-actions-menu" style="display:flex;gap:5px;">
+                    ${(post.authorId === currentTfcClientId || isAdmin) ? `
+                    <button onclick="editTfcPost('${post.id}')" class="tfc-btn-icon" title="Modifier" style="width:32px;height:32px;background:#e8f0fa;border-color:#0d2b4e;color:#0d2b4e;"><i class="fa-solid fa-pen"></i></button>
+                    <button onclick="deleteTfcPost('${post.id}')" class="tfc-btn-icon" title="Supprimer" style="width:32px;height:32px;background:#fee2e2;border-color:#dc2626;color:#dc2626;"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+            </div>
+            <div class="tfc-post-content">
+                ${post.postTitle ? `<div style="font-size:1.05rem;font-weight:800;color:var(--blue);margin-bottom:4px;">${esc(post.postTitle)}</div>` : ''}
+                ${post.postSubtitle ? `<div style="font-size:0.82rem;font-style:italic;color:var(--muted);margin-bottom:10px;border-left:3px solid #e8a020;padding-left:8px;">${esc(post.postSubtitle)}</div>` : ''}
+                ${post.content ? `<div style="white-space:pre-wrap;margin-top:8px;">${esc(post.content)}</div>` : ''}
+                ${post.mediaUrl ? `<div class="tfc-post-media"><img src="${post.mediaUrl}" onclick="openLightbox('${post.mediaUrl}')"></div>` : ''}
+                ${post.fileUrl ? `<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:12px;display:inline-flex;"><i class="fa-solid fa-download"></i> ${esc(post.fileName)}</a>` : ''}
+                ${post.linkUrl ? `<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:12px;"><i class="fa-solid fa-link"></i> Voir le lien</a>` : ''}
+            </div>
+            <div class="tfc-post-footer">
+                <button onclick="likeTfcPost('${post.id}')" class="tfc-post-action"><i class="fa-regular fa-heart"></i> ${post.likes || 0}</button>
+                <button onclick="commentTfcPost('${post.id}')" class="tfc-post-action"><i class="fa-regular fa-comment"></i> ${post.commentsCount || 0}</button>
+            </div>
+        </div>`).join('');
     };
     db.ref('tfc_posts').orderByChild('timestamp').on('value', tfcPostsListener);
 }
@@ -2719,11 +2904,38 @@ async function deleteTfcPost(postId) {
     }
 }
 
-function editTfcPost(postId) {
-    const newContent = prompt("Modifier votre publication :");
-    if (newContent && newContent.trim()) {
-        db.ref(`tfc_posts/${postId}`).update({ content: newContent.trim(), editedAt: Date.now(), edited: true }).then(() => { toast('Publication modifiée avec succès'); loadTfcPosts(); }).catch(error => { toast('Erreur: ' + error.message); });
-    }
+async function editTfcPost(postId) {
+    const snap = await db.ref(`tfc_posts/${postId}`).once('value');
+    const post = snap.val();
+    if (!post) { toast('Publication introuvable'); return; }
+    const oldModal = document.getElementById('tfcEditPostModal');
+    if (oldModal) oldModal.remove();
+    const modal = document.createElement('div');
+    modal.id = 'tfcEditPostModal';
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `<div class="modal-box" style="max-width:560px;">
+        <div class="modal-top"><h3><i class="fa-solid fa-pen"></i> Modifier la publication</h3><button class="modal-close" onclick="document.getElementById('tfcEditPostModal').remove()">×</button></div>
+        <div class="form-field"><label>Titre *</label><input type="text" id="editTfcTitle" value="${esc(post.postTitle||'')}" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-left:3px solid #0d2b4e;font-family:inherit;font-size:0.92rem;font-weight:700;"></div>
+        <div class="form-field"><label>Sous-titre</label><input type="text" id="editTfcSubtitle" value="${esc(post.postSubtitle||'')}" style="width:100%;padding:9px 14px;border:1.5px solid var(--border);border-left:3px solid #e8a020;font-family:inherit;font-size:0.82rem;font-style:italic;"></div>
+        <div class="form-field"><label>Description</label><textarea id="editTfcContent" rows="5" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.88rem;resize:vertical;">${esc(post.content||'')}</textarea></div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+            <button class="btn-submit-post" onclick="saveEditTfcPost('${postId}')"><i class="fa-solid fa-save"></i> Enregistrer</button>
+            <button style="flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;" onclick="document.getElementById('tfcEditPostModal').remove()">Annuler</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+}
+
+async function saveEditTfcPost(postId) {
+    const title = document.getElementById('editTfcTitle')?.value.trim();
+    const subtitle = document.getElementById('editTfcSubtitle')?.value.trim();
+    const content = document.getElementById('editTfcContent')?.value.trim();
+    if (!title) { toast('Le titre est obligatoire'); return; }
+    await db.ref(`tfc_posts/${postId}`).update({ postTitle: title, postSubtitle: subtitle || '', content: content || '', editedAt: Date.now(), edited: true });
+    toast('Publication modifiée avec succès !');
+    document.getElementById('tfcEditPostModal')?.remove();
+    loadTfcPosts();
 }
 
 // =================================================================
