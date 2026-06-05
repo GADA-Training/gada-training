@@ -944,7 +944,8 @@
                 <button class="admin-publish-btn" onclick="openAdminGlobalPost('link')"><i class="fa-solid fa-link"></i> Lien</button>
             </div>
         </div>
-        <!-- MODULE FACTURES TFC -->
+        <!-- MODULE FACTURES TFC - ADMIN ONLY -->
+        <div id="invoiceModuleWrapper" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:20px 24px;background:var(--card);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow)">
             <div style="display:flex;align-items:center;gap:16px">
                 <div style="width:50px;height:50px;background:#0d2b4e;border-radius:12px;display:flex;align-items:center;justify-content:center;border-left:4px solid #e8a020"><i class="fa-solid fa-file-invoice-dollar" style="color:#e8a020;font-size:20px"></i></div>
@@ -961,49 +962,94 @@
             <div class="inv-stat"><div class="inv-stat-num" id="inv-total-collected" style="color:var(--green)">$0</div><div class="inv-stat-label">Total encaissé</div></div>
             <div class="inv-stat"><div class="inv-stat-num" id="inv-total-pending" style="color:#c0392b">$0</div><div class="inv-stat-label">Reste à percevoir</div></div>
         </div>
-        <!-- GRAPHIQUE DE PROGRESSION FACTURES -->
-        <div style="background:var(--card);border-radius:16px;border:1px solid var(--border);padding:24px;margin-bottom:20px;box-shadow:var(--shadow);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
-                <h3 style="font-size:1rem;font-weight:800;color:#0d2b4e;display:flex;align-items:center;gap:8px;"><i class="fa-solid fa-chart-bar" style="color:#e8a020;"></i> Tableau de bord financier</h3>
-                <div style="display:flex;gap:12px;font-size:0.75rem;flex-wrap:wrap;">
-                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#0d2b4e;border-radius:3px;display:inline-block;"></span> Total facturé</span>
-                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#27ae60;border-radius:3px;display:inline-block;"></span> Encaissé</span>
-                    <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#c0392b;border-radius:3px;display:inline-block;"></span> Reste</span>
+        function showInvStatsTab(tab){
+    const statsPanel = document.getElementById('inv-stats-panel-stats');
+    const kpiPanel = document.getElementById('inv-stats-panel-kpi');
+    const statsBtn = document.getElementById('inv-tab-stats-btn');
+    const kpiBtn = document.getElementById('inv-tab-kpi-btn');
+    if(!statsPanel || !kpiPanel) return;
+    if(tab === 'stats'){
+        statsPanel.style.display = 'flex'; kpiPanel.style.display = 'none';
+        if(statsBtn){ statsBtn.style.background='#0d2b4e'; statsBtn.style.color='#e8a020'; }
+        if(kpiBtn){ kpiBtn.style.background='var(--bg)'; kpiBtn.style.color='var(--muted)'; }
+        invRenderPieChart();
+    } else {
+        statsPanel.style.display = 'none'; kpiPanel.style.display = 'block';
+        if(statsBtn){ statsBtn.style.background='var(--bg)'; statsBtn.style.color='var(--muted)'; }
+        if(kpiBtn){ kpiBtn.style.background='#0d2b4e'; kpiBtn.style.color='#e8a020'; }
+    }
+}
+function invRenderPieChart(){
+    const canvas = document.getElementById('invPieChart');
+    const legend = document.getElementById('inv-pie-legend');
+    const empty = document.getElementById('inv-pie-empty');
+    if(!canvas) return;
+    const totalAmount = invClients.reduce((a,x)=>a+(parseFloat(x.montant)||0),0);
+    const totalPaye = invClients.reduce((a,x)=>a+(parseFloat(x.paye)||0),0);
+    const totalReste = totalAmount - totalPaye;
+    if(totalAmount === 0){
+        canvas.style.display='none'; if(legend) legend.style.display='none'; if(empty) empty.style.display='block'; return;
+    }
+    canvas.style.display='block'; if(legend) legend.style.display='flex'; if(empty) empty.style.display='none';
+    const ctx = canvas.getContext('2d');
+    const size = 200;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr; canvas.height = size * dpr;
+    canvas.style.width = size+'px'; canvas.style.height = size+'px';
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, size, size);
+    const cx = size/2, cy = size/2, r = 80, innerR = 48;
+    const slices = [
+        { label: 'Encaissé', value: totalPaye, color: '#27ae60' },
+        { label: 'Reste à percevoir', value: totalReste > 0 ? totalReste : 0, color: '#c0392b' }
+    ].filter(s => s.value > 0);
+    let startAngle = -Math.PI / 2;
+    slices.forEach(slice => {
+        const angle = (slice.value / totalAmount) * 2 * Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, startAngle, startAngle + angle);
+        ctx.closePath();
+        ctx.fillStyle = slice.color;
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        startAngle += angle;
+    });
+    // Trou central (donut)
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, 2 * Math.PI);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    ctx.fillStyle = isDark ? '#162032' : '#ffffff';
+    ctx.fill();
+    // Texte central
+    const pct = Math.round((totalPaye / totalAmount) * 100);
+    ctx.fillStyle = '#27ae60';
+    ctx.font = 'bold 18px Plus Jakarta Sans,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(pct + '%', cx, cy - 8);
+    ctx.fillStyle = isDark ? '#7a92a8' : '#6b7a8d';
+    ctx.font = '10px Plus Jakarta Sans,sans-serif';
+    ctx.fillText('encaissé', cx, cy + 10);
+    // Légende
+    if(legend){
+        legend.innerHTML = slices.map(s => {
+            const pctSlice = Math.round((s.value / totalAmount) * 100);
+            return `<div style="display:flex;align-items:center;gap:10px;">
+                <span style="width:14px;height:14px;border-radius:50%;background:${s.color};flex-shrink:0;display:inline-block;"></span>
+                <div>
+                    <div style="font-size:0.82rem;font-weight:700;">${s.label}</div>
+                    <div style="font-size:0.75rem;color:var(--muted);">$${s.value.toFixed(0)} · ${pctSlice}%</div>
                 </div>
-            </div>
-            <!-- Barre progression globale -->
-            <div style="margin-bottom:20px;">
-                <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:6px;">
-                    <span>Taux de recouvrement global</span>
-                    <span id="inv-recovery-rate" style="font-weight:700;color:#27ae60;">0%</span>
-                </div>
-                <div style="background:#e8f0fa;border-radius:20px;height:14px;overflow:hidden;position:relative;">
-                    <div id="inv-progress-global" style="height:100%;background:linear-gradient(90deg,#27ae60,#2ecc71);border-radius:20px;width:0%;transition:width 0.6s ease;position:relative;">
-                        <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,0.1)0%,rgba(255,255,255,0.3)50%,rgba(255,255,255,0.1)100%);border-radius:20px;"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Graphique barres par client -->
-            <div style="overflow-x:auto;">
-                <canvas id="invChart" style="width:100%;min-height:220px;max-height:280px;display:block;"></canvas>
-            </div>
-            <div id="inv-chart-empty" style="text-align:center;padding:40px;color:var(--muted);display:none;"><i class="fa-solid fa-chart-bar" style="font-size:2.5rem;opacity:0.3;display:block;margin-bottom:12px;"></i>Aucune donnée à afficher</div>
-            <!-- Répartition par statut -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;" id="inv-status-breakdown">
-                <div style="background:#dcfce7;border-radius:12px;padding:12px;text-align:center;border-left:4px solid #27ae60;">
-                    <div style="font-size:1.3rem;font-weight:800;color:#166534;" id="inv-count-solde">0</div>
-                    <div style="font-size:0.72rem;color:#166534;font-weight:600;">✅ Soldés</div>
-                </div>
-                <div style="background:#fef3c7;border-radius:12px;padding:12px;text-align:center;border-left:4px solid #e8a020;">
-                    <div style="font-size:1.3rem;font-weight:800;color:#92400e;" id="inv-count-partial">0</div>
-                    <div style="font-size:0.72rem;color:#92400e;font-weight:600;">🟡 Partiels</div>
-                </div>
-                <div style="background:#fee2e2;border-radius:12px;padding:12px;text-align:center;border-left:4px solid #c0392b;">
-                    <div style="font-size:1.3rem;font-weight:800;color:#991b1b;" id="inv-count-unpaid">0</div>
-                    <div style="font-size:0.72rem;color:#991b1b;font-weight:600;">🔴 Impayés</div>
-                </div>
-            </div>
-        </div>
+            </div>`;
+        }).join('') + `<div style="display:flex;align-items:center;gap:10px;border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+            <span style="width:14px;height:14px;border-radius:50%;background:#0d2b4e;flex-shrink:0;display:inline-block;"></span>
+            <div><div style="font-size:0.82rem;font-weight:700;">Total facturé</div><div style="font-size:0.75rem;color:var(--muted);">$${totalAmount.toFixed(0)} · ${invClients.length} client(s)</div></div>
+        </div>`;
+    }
+}
         <div class="inv-tabs">
             <button class="inv-tab active" id="inv-tab-list" onclick="showInvTab('list')"><i class="fa-solid fa-table-list"></i> Clients &amp; Factures</button>
             <button class="inv-tab" id="inv-tab-new-client" onclick="showInvTab('new-client')"><i class="fa-solid fa-user-plus"></i> Créer / Modifier</button>
@@ -1069,6 +1115,7 @@
         </div>
         <!-- FIN MODULE FACTURES TFC -->
 
+        </div><!-- fin invoiceModuleWrapper -->
         <div class="card" style="margin-bottom: 16px;">
             <div class="card-header"><h4><i class="fa-solid fa-users"></i> Mes clients TFC</h4><div style="display: flex; gap: 8px;"><button class="btn-auth" style="width: auto; padding: 6px 16px;" onclick="openAddClientModal()"><i class="fa-solid fa-plus"></i> Nouveau client</button><button class="btn-auth full-mgmt-btn" style="width: auto; padding: 6px 16px;" onclick="openTfcFullManagement()"><i class="fa-solid fa-table-list"></i> Vue complète</button></div></div>
             <div id="clientsList" style="padding: 16px;"></div>
@@ -1290,10 +1337,19 @@ Session 14 - Carte thématique décisionnelle et présentation finale
 // =================================================================
 // MODULE FACTURES TFC
 // =================================================================
-let invClients = JSON.parse(localStorage.getItem('gada_inv_clients') || '[]');
+let invClients = [];
+function loadInvClients() {
+    try {
+        const raw = localStorage.getItem('gada_inv_clients');
+        invClients = raw ? JSON.parse(raw) : [];
+    } catch(e) { invClients = []; }
+}
 let currentInvData = null;
 let editingInvIdx = null;
-function invSave(){localStorage.setItem('gada_inv_clients',JSON.stringify(invClients));}
+function invSave(){
+    if(currentUser?.email !== ADMIN_EMAIL) return;
+    localStorage.setItem('gada_inv_clients',JSON.stringify(invClients));
+}
 function invInitForm(){const t=new Date();const df=document.getElementById('inv-f-date');const nf=document.getElementById('inv-f-num');if(df)df.value=t.toISOString().split('T')[0];if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');}
 function invCalcReste(){const m=parseFloat(document.getElementById('inv-f-montant').value)||0;const p=parseFloat(document.getElementById('inv-f-paye').value)||0;const r=Math.max(0,m-p);const rf=document.getElementById('inv-f-reste');const sf=document.getElementById('inv-f-statut');if(rf)rf.value=r;if(sf){if(r<=0&&m>0)sf.value='Soldé';else if(p>0&&r>0)sf.value='Partiel';else if(p===0&&m>0)sf.value='Impayé';}}
 function showInvTab(tab){['list','new-client','preview'].forEach(t=>{const s=document.getElementById('inv-section-'+t);const b=document.getElementById('inv-tab-'+t);if(s)s.style.display=t===tab?'block':'none';if(b)b.classList.toggle('active',t===tab);});if(tab==='list')renderInvClients();}
@@ -1323,7 +1379,7 @@ function invUpdateStats(){
     const unpaid = invClients.filter(x=>x.statut==='Impayé').length;
     const cs=document.getElementById('inv-count-solde'); const cp=document.getElementById('inv-count-partial'); const cu=document.getElementById('inv-count-unpaid');
     if(cs)cs.textContent=solde; if(cp)cp.textContent=partial; if(cu)cu.textContent=unpaid;
-    invRenderChart();
+    invRenderPieChart();
 }
 
 function invRenderChart(){
@@ -2950,7 +3006,11 @@ function switchToTFC() {
     const views = ['view-feed', 'view-profile', 'view-projets', 'view-semaines'];
     views.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     toast('Mode Gestion des TFC');
-    invInitForm(); invUpdateStats(); renderInvClients(); showInvTab('list');
+    if (currentUser?.email === ADMIN_EMAIL) {
+        const wrapper = document.getElementById('invoiceModuleWrapper');
+        if (wrapper) wrapper.style.display = 'block';
+        invInitForm(); invUpdateStats(); renderInvClients(); showInvTab('list');
+    }
     if (window.clientsListRef) { db.ref('tfc_clients').off('value', window.clientsListRef); window.clientsListRef = null; }
     loadClientsList();
 }
@@ -2966,12 +3026,6 @@ function loadClientsList() {
         if (clients.length === 0) { container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p><p style="font-size:0.75rem;margin-top:8px;">Cliquez sur "Nouveau client" pour commencer</p></div>'; return; }
         clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         container.innerHTML = clients.map(client => `<div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:all 0.2s;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><h4 style="margin-bottom:4px;">${esc(client.name)}</h4><p style="font-size:0.75rem;color:var(--muted);">${esc(client.university || 'Non renseigné')}</p><p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic || 'Non défini')}</p><p style="font-size:0.72rem;color:var(--green);margin-top:4px;">Code : <strong style="background:var(--green-pale);padding:2px 8px;border-radius:12px;">${esc(client.accessCode)}</strong></p><p style="font-size:0.7rem;color:var(--muted);margin-top:4px;">${esc(client.email)} | ${esc(client.phone || 'Non renseigné')}</p></div><div style="display:flex;gap:8px;"><button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')"><i class="fa-solid fa-folder-open"></i> Ouvrir</button><button class="btn-auth share-work-btn" style="width:auto;padding:8px 20px;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')"><i class="fa-solid fa-share-alt"></i> Partager</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
                     <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button></div></div></div>`).join('');
     };
     window.clientsListRef = callback;
