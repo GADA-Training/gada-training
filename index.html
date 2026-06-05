@@ -2915,7 +2915,7 @@ function loadTfcPosts() {
                 </div>
                 <div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}${post.edited ? ' <span style="font-size:0.6rem;color:var(--muted);font-style:italic;">(modifié)</span>' : ''}</div>
                 <div class="post-actions-menu" style="display:flex;gap:5px;">
-                    ${(post.authorId === currentTfcClientId || isAdmin) ? `
+                    ${(post.authorId === currentTfcClientId || isAdmin || currentUser?.email === ADMIN_EMAIL) ? `
                     <button onclick="editTfcPost('${post.id}')" class="tfc-btn-icon" title="Modifier" style="width:32px;height:32px;background:#e8f0fa;border-color:#0d2b4e;color:#0d2b4e;"><i class="fa-solid fa-pen"></i></button>
                     <button onclick="deleteTfcPost('${post.id}')" class="tfc-btn-icon" title="Supprimer" style="width:32px;height:32px;background:#fee2e2;border-color:#dc2626;color:#dc2626;"><i class="fa-solid fa-trash"></i></button>` : ''}
                 </div>
@@ -2953,10 +2953,35 @@ function commentTfcPost(postId) {
 }
 
 async function deleteTfcPost(postId) {
-    if (confirm('Supprimer cette publication ?')) {
+    // Confirmation visuelle stylée
+    const oldModal = document.getElementById('confirmDeleteTfcModal');
+    if (oldModal) oldModal.remove();
+    const modal = document.createElement('div');
+    modal.id = 'confirmDeleteTfcModal';
+    modal.className = 'modal-overlay active';
+    modal.style.zIndex = '9999';
+    modal.innerHTML = `<div class="modal-box" style="max-width:400px;text-align:center;">
+        <div style="width:60px;height:60px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><i class="fa-solid fa-trash" style="font-size:1.5rem;color:#dc2626;"></i></div>
+        <h3 style="color:#0d2b4e;margin-bottom:8px;">Supprimer la publication ?</h3>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:24px;">Cette action est irréversible. La publication sera définitivement effacée.</p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <button onclick="document.getElementById('confirmDeleteTfcModal').remove()" style="flex:1;padding:11px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;">Annuler</button>
+            <button onclick="confirmDeleteTfcPost('${postId}')" style="flex:1;padding:11px;background:#dc2626;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;"><i class="fa-solid fa-trash"></i> Supprimer</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+}
+
+async function confirmDeleteTfcPost(postId) {
+    document.getElementById('confirmDeleteTfcModal')?.remove();
+    try {
         await db.ref(`tfc_posts/${postId}`).remove();
-        toast('Publication supprimée');
+        toast('Publication supprimée avec succès');
         loadTfcPosts();
+    } catch(error) {
+        console.error(error);
+        toast('Erreur lors de la suppression');
     }
 }
 
