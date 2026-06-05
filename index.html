@@ -516,7 +516,7 @@
                 style="display:none;background:linear-gradient(135deg,var(--blue),var(--green));color:white;margin-right:10px;">
             <i class="fa-solid fa-users"></i> Mon espace TFC
         </button>
-        <button class="btn-quit" onclick="switchToTFC()" style="background:linear-gradient(135deg,#0d2b4e,#e8a020);color:white;margin-right:10px;">
+        <button class="btn-quit" id="btnAdminTfc" onclick="switchToTFC()" style="background:linear-gradient(135deg,#0d2b4e,#e8a020);color:white;margin-right:10px;display:none;">
             <i class="fa-solid fa-users"></i> Clients TFC
         </button>
         <button class="btn-quit" onclick="doLogout()">
@@ -1497,6 +1497,8 @@ function updateProfileUI(){
     const avatarUrl = currentProfile.avatar;
     
     document.getElementById('topName').textContent = name + (isAdmin ? ' (Formateur)' : '');
+        const btnAdmin = document.getElementById('btnAdminTfc');
+        if (btnAdmin) btnAdmin.style.display = isAdmin ? 'flex' : 'none';
     
     // Mise à jour des avatars
     ['topAvatar', 'composeAv'].forEach(id => { 
