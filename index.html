@@ -2797,7 +2797,14 @@ async function saveEditTfcPost(postId) {
 // =================================================================
 
 function switchToTFC() {
-    if (currentUser?.email !== ADMIN_EMAIL) { toast('Accès réservé au formateur'); return; }
+    // Vérification administrateur RENFORCÉE
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+        toast('Accès réservé au formateur');
+        // Masquer explicitement le panneau admin au cas où
+        document.getElementById('adminTfcPanel').style.display = 'none';
+        document.getElementById('tfcFullManagement').style.display = 'none';
+        return;
+    }
     document.getElementById('adminTfcPanel').style.display = 'block';
     document.querySelector('.layout').style.display = 'none';
     document.getElementById('tfcFullManagement').style.display = 'none';
@@ -3127,7 +3134,12 @@ function openTfcFullManagement() {
 
 function closeTfcFullManagement() {
     document.getElementById('tfcFullManagement').style.display = 'none';
-    document.getElementById('adminTfcPanel').style.display = 'block';
+    // Ne remet le panneau admin que si l'utilisateur est toujours admin
+    if (currentUser && currentUser.email === ADMIN_EMAIL) {
+        document.getElementById('adminTfcPanel').style.display = 'block';
+    } else {
+        document.getElementById('adminTfcPanel').style.display = 'none';
+    }
     document.querySelector('.layout').style.display = 'grid';
     document.getElementById('app').style.display = 'block';
 }
