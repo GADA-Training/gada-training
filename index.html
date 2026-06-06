@@ -1311,14 +1311,41 @@ function showAuthMsg(msg,isErr=true){const el=document.getElementById('authMsg')
 
 // Télécharger un document (utilisé pour les ressources)
 function downloadDoc(url, fileName) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName || 'document';
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (!url) { toast('Fichier non disponible'); return; }
+    try {
+        if (url.startsWith('data:')) {
+            // Base64 : conversion en blob pour forcer le téléchargement
+            const arr = url.split(',');
+            const mimeMatch = arr[0].match(/:(.*?);/);
+            const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+            const blob = new Blob([u8arr], { type: mime });
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = fileName || 'document';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
+        } else {
+            // URL normale
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName || 'document';
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    } catch(e) {
+        console.error('Erreur téléchargement:', e);
+        window.open(url, '_blank');
+    }
 }
 
 // =================================================================
@@ -2246,7 +2273,7 @@ function loadClientDocuments() {
     db.ref(`tfc_clients/${currentTfcClientId}/documents`).off('value');
     container.innerHTML = '<div style="padding:32px;text-align:center;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
 
-    db.ref(`tfc_clients/${currentTfcClientId}/documents`).on('value', (snapshot) => {
+    db.ref(`tfc_clients/${currentTfcClientId}/documents`).orderByChild('uploadedAt').limitToLast(20).on('value', (snapshot) => {
         const docsList = [];
         snapshot.forEach(child => { const doc = child.val(); if (doc && doc.name) docsList.push({ id: child.key, ...doc }); });
         docsList.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
@@ -2275,7 +2302,7 @@ function loadClientDocuments() {
                     ${doc.feedback ? `<div style="margin-top:8px;padding:8px 12px;background:var(--green-pale);border-radius:8px;font-size:0.78rem;border-left:3px solid var(--green);"><strong>📝 Retour de l'encadreur :</strong><br>${esc(doc.feedback)}</div>` : ''}
                 </div>
                 <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
-                    <a href="${doc.url}" target="_blank" download="${doc.name}" class="tfc-btn-icon" title="Télécharger"><i class="fa-solid fa-download"></i></a>
+                    <button onclick="downloadDoc('${doc.url}', '${esc(doc.name).replace(/'/g,"\\'")}'); event.stopPropagation();" class="tfc-btn-icon" title="Télécharger"><i class="fa-solid fa-download"></i></button>
                     <button onclick="editClientDocument('${doc.id}')" class="tfc-btn-icon" title="Renommer"><i class="fa-solid fa-pen"></i></button>
                     ${doc.uploadedBy !== 'admin' ? `<button onclick="deleteClientDocument('${doc.id}', '${esc(doc.name).replace(/'/g, "\\'")}')" class="tfc-btn-icon" title="Supprimer" style="color:#e11d48;"><i class="fa-solid fa-trash"></i></button>` : ''}
                 </div>
@@ -2306,16 +2333,31 @@ async function loadClientChat() {
     if (!currentTfcClientId) return;
     const chatMsgs = document.getElementById('tfcChatMsgs');
     if (!chatMsgs) return;
-    chatMsgs.innerHTML = '<div class="empty-state"><p>Chargement...</p></div>';
+    chatMsgs.innerHTML = '';
     db.ref(`tfc_clients/${currentTfcClientId}/messages`).off();
-    db.ref(`tfc_clients/${currentTfcClientId}/messages`).on('value', (snap) => {
-        const messages = [];
-        snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
-        messages.sort((a,b) => a.timestamp - b.timestamp);
-        if (messages.length === 0) { chatMsgs.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>Démarrez la conversation</p></div>'; return; }
-        chatMsgs.innerHTML = messages.map(m => `<div class="tfc-chat-message ${m.from === 'client' ? 'client' : 'supervisor'}"><div class="tfc-chat-meta">${m.from === 'client' ? 'Moi' : 'Encadreur'}</div><div class="tfc-chat-bubble">${esc(m.text)}</div><div class="chat-time" style="font-size:0.6rem;color:var(--muted);margin-top:3px;">${new Date(m.timestamp).toLocaleTimeString()}</div></div>`).join('');
+    let firstLoad = true;
+    db.ref(`tfc_clients/${currentTfcClientId}/messages`).orderByChild('timestamp').on('child_added', (snap) => {
+        const m = snap.val();
+        if (!m) return;
+        const empty = chatMsgs.querySelector('.empty-state');
+        if (empty) empty.remove();
+        const isClient = m.from === 'client';
+        const div = document.createElement('div');
+        div.className = `tfc-chat-message ${isClient ? 'client' : 'supervisor'}`;
+        div.innerHTML = `<div class="tfc-chat-meta">${isClient ? 'Moi' : esc(m.fromName || 'Encadreur')}</div><div class="tfc-chat-bubble">${esc(m.text)}</div><div class="chat-time" style="font-size:0.6rem;color:var(--muted);margin-top:3px;">${new Date(m.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>`;
+        chatMsgs.appendChild(div);
         chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        if (!firstLoad && m.from !== 'client') {
+            toast('💬 Nouveau message de l\'encadreur', 3000);
+        }
     });
+    // Afficher vide si aucun message après 1s
+    setTimeout(() => {
+        if (chatMsgs.children.length === 0) {
+            chatMsgs.innerHTML = '<div class="empty-state"><i class="fa-regular fa-comments"></i><p>Démarrez la conversation avec votre encadreur</p></div>';
+        }
+        firstLoad = false;
+    }, 1000);
 }
 
 function sendTfcMessageClient() {
@@ -2441,7 +2483,7 @@ function loadStudentWorks() {
                     <span class="student-work-status ${s.cls}" style="margin-top:6px;display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">${s.txt}</span>
                     ${work.feedback ? `<div style="margin-top:8px;padding:8px 12px;background:var(--blue-pale);border-radius:8px;font-size:0.78rem;border-left:3px solid var(--blue);"><strong>📝 Retour de l'encadreur :</strong><br>${esc(work.feedback)}${work.feedbackDate ? `<div style="font-size:0.65rem;color:var(--muted);margin-top:4px;">${new Date(work.feedbackDate).toLocaleString('fr-FR')}</div>` : ''}</div>` : ''}
                 </div>
-                <div style="flex-shrink:0;"><a href="${work.url}" target="_blank" download="${work.name}" class="tfc-btn-icon" title="Télécharger"><i class="fa-solid fa-download"></i></a></div>
+                <div style="flex-shrink:0;"><button onclick="downloadDoc('${work.url}', '${esc(work.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Télécharger"><i class="fa-solid fa-download"></i></button></div>
             </div>`;
         }).join('');
     });
@@ -2456,22 +2498,31 @@ function loadSharedWorks() {
     db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).off('value');
     container.innerHTML = '<div style="padding:32px;text-align:center;"><i class="fa-solid fa-spinner fa-pulse"></i> Chargement...</div>';
 
-    db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).on('value', (snapshot) => {
+    db.ref(`tfc_clients/${currentTfcClientId}/shared_works`).orderByChild('sharedAt').limitToLast(15).on('value', (snapshot) => {
         const works = [];
         snapshot.forEach(child => { const w = child.val(); if (w) works.push({ id: child.key, ...w }); });
         works.sort((a, b) => (b.sharedAt || 0) - (a.sharedAt || 0));
 
         if (works.length === 0) { container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--muted);"><i class="fa-regular fa-envelope-open" style="font-size:2rem;opacity:0.4;"></i><p style="margin-top:12px;">Aucun travail partagé pour le moment.</p><p style="font-size:0.75rem;margin-top:6px;">L'encadreur partagera ici des documents, corrections et ressources.</p></div>`; return; }
 
-        container.innerHTML = works.map(work => `<div style="border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;background:var(--card);transition:box-shadow 0.2s;" onmouseenter="this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.boxShadow='none'">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        const isAdmin = currentUser?.email === ADMIN_EMAIL;
+        container.innerHTML = works.map(work => `<div style="border:1px solid var(--border);border-left:4px solid #0d2b4e;border-radius:0;padding:16px;margin-bottom:14px;background:var(--card);transition:box-shadow 0.2s;animation:fadeUp 0.3s ease;" onmouseenter="this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.boxShadow='none'" id="shared-work-${work.id}">
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
                 <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));display:flex;align-items:center;justify-content:center;color:white;font-size:14px;flex-shrink:0;"><i class="fa-solid fa-share-from-square"></i></div>
-                <div style="flex:1;"><div style="font-weight:700;font-size:0.92rem;color:var(--blue);">${esc(work.title || 'Travail partagé')}</div><div style="font-size:0.68rem;color:var(--muted);">Partagé par <strong>${esc(work.sharedBy || 'Encadreur')}</strong> · ${new Date(work.sharedAt).toLocaleDateString('fr-FR')} à ${new Date(work.sharedAt).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}</div></div>
-                <span style="background:var(--green-pale);color:var(--green);font-size:0.65rem;font-weight:700;padding:3px 10px;border-radius:20px;">Nouveau</span>
+                <div style="flex:1;">
+                    <div style="font-weight:700;font-size:0.92rem;color:var(--blue);">${esc(work.title || 'Travail partagé')}</div>
+                    <div style="font-size:0.68rem;color:var(--muted);">Partagé par <strong>${esc(work.sharedBy || 'Encadreur')}</strong> · ${new Date(work.sharedAt).toLocaleDateString('fr-FR')} à ${new Date(work.sharedAt).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}</div>
+                </div>
+                <div style="display:flex;gap:5px;flex-shrink:0;">
+                    ${isAdmin ? `
+                    <button onclick="editSharedWork('${currentTfcClientId || work.clientId}','${work.id}')" title="Modifier" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:6px;transition:all 0.2s;" onmouseenter="this.style.background='var(--blue-pale)';this.style.color='var(--blue)'" onmouseleave="this.style.background='none';this.style.color='var(--muted)'"><i class="fa-solid fa-pen"></i></button>
+                    <button onclick="deleteSharedWork('${currentTfcClientId || work.clientId}','${work.id}','${esc(work.title||'').replace(/'/g,"\\'")}')" title="Supprimer" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:6px;transition:all 0.2s;" onmouseenter="this.style.background='#fee2e2';this.style.color='#dc2626'" onmouseleave="this.style.background='none';this.style.color='var(--muted)'"><i class="fa-solid fa-trash"></i></button>
+                    ` : ''}
+                </div>
             </div>
-            ${work.description ? `<p style="font-size:0.83rem;line-height:1.6;color:var(--text);margin-bottom:12px;padding:10px;background:var(--bg);border-radius:10px;">${esc(work.description)}</p>` : ''}
+            ${work.description ? `<p style="font-size:0.83rem;line-height:1.6;color:var(--text);margin-bottom:12px;padding:10px;background:var(--bg);border-radius:10px;border-left:3px solid #e8a020;">${esc(work.description)}</p>` : ''}
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                ${work.fileUrl ? `<a href="${work.fileUrl}" target="_blank" download="${work.fileName || 'fichier'}" class="file-dl" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;"><i class="fa-solid fa-download"></i> ${esc(work.fileName || 'Télécharger le fichier')}</a>` : ''}
+                ${work.fileUrl ? `<button onclick="downloadDoc('${work.fileUrl}', '${(work.fileName||'fichier').replace(/'/g,"\\'")}')" class="file-dl" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border:none;cursor:pointer;"><i class="fa-solid fa-download"></i> ${esc(work.fileName || 'Télécharger le fichier')}</button>` : ''}
                 ${work.link ? `<a href="${work.link}" target="_blank" rel="noopener" class="file-dl" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--blue-pale);color:var(--blue);"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a>` : ''}
             </div>
         </div>`).join('');
@@ -2875,7 +2926,20 @@ async function loadAdminDocuments(clientId) {
     const container = document.getElementById('adminDocumentsList');
     if (!container) return;
     if (docsList.length === 0) { container.innerHTML = '<div style="padding:32px;text-align:center;">Aucun document</div>'; return; }
-    container.innerHTML = docsList.map(doc => `<div class="doc-item" style="border-bottom:1px solid var(--border);padding:12px;display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;"><div class="doc-name"><strong>${esc(doc.name)}</strong></div><div class="doc-meta" style="font-size:0.7rem;color:var(--muted);">${doc.uploadedBy === 'client' ? 'Client' : 'Vous'} - ${new Date(doc.uploadedAt).toLocaleDateString()}</div><span class="doc-status ${doc.status === 'valide' ? 'status-approved' : doc.status === 'correction' ? 'status-revision' : 'status-pending'}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;">${doc.status === 'valide' ? 'Validé' : doc.status === 'correction' ? 'À corriger' : 'En attente'}</span>${doc.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;font-size:0.75rem;"><strong>Retour:</strong> ${esc(doc.feedback)}</div>` : ''}</div><div style="display:flex;gap:8px;"><a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a><button onclick="editAdminDocument('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--blue-pale);"><i class="fa-solid fa-pen"></i></button><button onclick="deleteAdminDocument('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--green-pale);color:var(--green);"><i class="fa-solid fa-trash"></i></button><button onclick="openFeedbackModal('${clientId}', '${doc.id}', '${esc(doc.name)}')" class="file-dl" style="padding:4px 8px;background:var(--blue-pale);">✏️</button></div></div>`).join('');
+    container.innerHTML = docsList.map(doc => `<div class="doc-item" id="admin-doc-${doc.id}" style="border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:flex-start;gap:14px;transition:background 0.15s;" onmouseenter="this.style.background='var(--bg)'" onmouseleave="this.style.background='transparent'">
+    <div style="flex:1;">
+        <div style="font-weight:700;font-size:0.88rem;word-break:break-word;">${esc(doc.name)}</div>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:3px;">${doc.uploadedBy === 'client' ? '📁 Déposé par le client' : '📤 Envoyé par vous'} · ${new Date(doc.uploadedAt).toLocaleDateString('fr-FR')} à ${new Date(doc.uploadedAt).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
+        <span style="font-size:0.7rem;padding:3px 10px;border-radius:20px;display:inline-block;margin-top:6px;${doc.status === 'valide' ? 'background:#dcfce7;color:#166534;' : doc.status === 'correction' ? 'background:#fee2e2;color:#dc2626;' : 'background:#fef3c7;color:#92400e;'}">${doc.status === 'valide' ? '✅ Validé' : doc.status === 'correction' ? '⚠️ À corriger' : '⏳ En attente'}</span>
+        ${doc.feedback ? `<div style="margin-top:8px;padding:8px 12px;background:var(--green-pale);border-radius:8px;font-size:0.78rem;border-left:3px solid var(--green);"><strong>📝 Retour :</strong> ${esc(doc.feedback)}</div>` : ''}
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
+        <button onclick="downloadDoc('${doc.url}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Télécharger"><i class="fa-solid fa-download"></i></button>
+        <button onclick="editAdminDocumentModal('${clientId}','${doc.id}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Modifier" style="color:var(--blue);"><i class="fa-solid fa-pen"></i></button>
+        <button onclick="openFeedbackModal('${clientId}','${doc.id}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Donner un retour" style="color:#e8a020;"><i class="fa-solid fa-comment-dots"></i></button>
+        <button onclick="deleteAdminDocumentAnimated('${clientId}','${doc.id}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Supprimer" style="color:#dc2626;"><i class="fa-solid fa-trash"></i></button>
+    </div>
+</div>`).join('');
 }
 
 async function editAdminDocument(clientId, docId, docName) {
@@ -2887,11 +2951,116 @@ async function editAdminDocument(clientId, docId, docName) {
     }
 }
 
+function editAdminDocumentModal(clientId, docId, docName) {
+    const oldModal = document.getElementById('editAdminDocModal');
+    if (oldModal) oldModal.remove();
+    const modal = document.createElement('div');
+    modal.id = 'editAdminDocModal';
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="modal-box" style="max-width:480px;">
+            <div class="modal-top">
+                <h3><i class="fa-solid fa-pen"></i> Modifier le document</h3>
+                <button class="modal-close" onclick="document.getElementById('editAdminDocModal').remove()">×</button>
+            </div>
+            <div class="form-field">
+                <label>Nom du document *</label>
+                <input type="text" id="editAdminDocName" value="${esc(docName)}"
+                    style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-left:3px solid #0d2b4e;font-family:inherit;font-size:0.92rem;font-weight:700;">
+            </div>
+            <div class="form-field">
+                <label>Remplacer le fichier (optionnel)</label>
+                <label for="editAdminDocFile" class="file-drop-area" style="cursor:pointer;display:block;">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <p>Cliquez pour sélectionner un nouveau fichier</p>
+                    <p style="font-size:0.7rem;margin-top:4px;">PDF, DOCX, ZIP, XLSX, PPTX, images (max 10MB)</p>
+                </label>
+                <input type="file" id="editAdminDocFile" style="display:none"
+                    accept=".pdf,.docx,.zip,.xlsx,.pptx,.jpg,.jpeg,.png,.r,.R">
+                <div id="editAdminDocFileName" style="font-size:0.75rem;color:var(--green);margin-top:5px;"></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+                <button class="btn-submit-post" onclick="saveAdminDocEdit('${clientId}','${docId}')" style="flex:2;">
+                    <i class="fa-solid fa-save"></i> Enregistrer
+                </button>
+                <button onclick="document.getElementById('editAdminDocModal').remove()"
+                    style="flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;">
+                    Annuler
+                </button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('editAdminDocFile').addEventListener('change', function(e) {
+        if (e.target.files[0]) {
+            document.getElementById('editAdminDocFileName').innerHTML =
+                `<i class="fa-solid fa-paperclip"></i> <strong>${e.target.files[0].name}</strong> (${(e.target.files[0].size/1024).toFixed(1)} KB)`;
+        }
+    });
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function saveAdminDocEdit(clientId, docId) {
+    const newName = document.getElementById('editAdminDocName')?.value.trim();
+    const newFile = document.getElementById('editAdminDocFile')?.files[0];
+    if (!newName) { toast('Le nom est obligatoire'); return; }
+    const updates = { name: newName, editedAt: Date.now() };
+    try {
+        if (newFile) {
+            if (newFile.size > 10 * 1024 * 1024) { toast('Fichier trop volumineux (max 10MB)'); return; }
+            toast('Traitement...', 1500);
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                updates.url = e.target.result;
+                updates.type = newFile.type;
+                await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update(updates);
+                toast('✅ Document modifié avec succès !');
+                document.getElementById('editAdminDocModal')?.remove();
+                loadAdminDocuments(clientId);
+            };
+            reader.onerror = () => toast('Erreur lecture fichier');
+            reader.readAsDataURL(newFile);
+        } else {
+            await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update(updates);
+            toast('✅ Document modifié avec succès !');
+            document.getElementById('editAdminDocModal')?.remove();
+            loadAdminDocuments(clientId);
+        }
+    } catch(e) { console.error(e); toast('Erreur : ' + e.message); }
+}
+
 async function deleteAdminDocument(clientId, docId, docName) {
     if (!confirm(`Supprimer le document "${docName}" ?`)) return;
     await db.ref(`tfc_clients/${clientId}/documents/${docId}`).remove();
     toast('Document supprimé');
     loadAdminDocuments(clientId);
+}
+
+async function deleteAdminDocumentAnimated(clientId, docId, docName) {
+    if (!confirm(`Supprimer définitivement le document "${docName}" ?\n\nCette action est irréversible.`)) return;
+    try {
+        const el = document.getElementById(`admin-doc-${docId}`);
+        if (el) {
+            el.style.transition = 'opacity 0.3s, transform 0.3s';
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(-20px)';
+            setTimeout(async () => {
+                el.remove();
+                await db.ref(`tfc_clients/${clientId}/documents/${docId}`).remove();
+                // Notifier le client
+                await db.ref(`tfc_clients/${clientId}/notifications`).push({
+                    type: 'document_deleted_by_admin',
+                    message: `Le document "${docName}" a été supprimé par l'encadreur`,
+                    timestamp: Date.now(),
+                    read: false
+                });
+                toast('✅ Document supprimé');
+            }, 300);
+        } else {
+            await db.ref(`tfc_clients/${clientId}/documents/${docId}`).remove();
+            toast('✅ Document supprimé');
+            loadAdminDocuments(clientId);
+        }
+    } catch(e) { console.error(e); toast('Erreur : ' + e.message); }
 }
 
 async function uploadTfcDocumentAdmin(fileInput) {
@@ -2922,15 +3091,30 @@ function openFeedbackModal(clientId, docId, docName) {
 async function loadAdminChat(clientId) {
     const chatMsgs = document.getElementById('adminChatMsgs');
     if (!chatMsgs) return;
+    chatMsgs.innerHTML = '';
     db.ref(`tfc_clients/${clientId}/messages`).off();
-    db.ref(`tfc_clients/${clientId}/messages`).on('value', (snap) => {
-        const messages = [];
-        snap.forEach(child => messages.push({ id: child.key, ...child.val() }));
-        messages.sort((a,b) => a.timestamp - b.timestamp);
-        if (messages.length === 0) { chatMsgs.innerHTML = '<div class="empty-state"><p>Aucun message</p></div>'; return; }
-        chatMsgs.innerHTML = messages.map(m => `<div class="chat-msg ${m.from === 'admin' ? 'admin' : 'them'}"><div class="chat-meta">${m.from === 'admin' ? 'Vous' : esc(m.fromName)}</div><div class="chat-bubble">${esc(m.text)}</div><div class="chat-time">${new Date(m.timestamp).toLocaleTimeString()}</div></div>`).join('');
+    let firstLoad = true;
+    db.ref(`tfc_clients/${clientId}/messages`).orderByChild('timestamp').on('child_added', (snap) => {
+        const m = snap.val();
+        if (!m) return;
+        const empty = chatMsgs.querySelector('.empty-state');
+        if (empty) empty.remove();
+        const isAdmin = m.from === 'admin';
+        const div = document.createElement('div');
+        div.className = `chat-msg ${isAdmin ? 'admin' : 'them'}`;
+        div.innerHTML = `<div class="chat-meta">${isAdmin ? 'Vous' : esc(m.fromName || 'Client')}</div><div class="chat-bubble">${esc(m.text)}</div><div class="chat-time">${new Date(m.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>`;
+        chatMsgs.appendChild(div);
         chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        if (!firstLoad && m.from !== 'admin') {
+            toast(`💬 Nouveau message de ${m.fromName || 'Client'}`, 3000);
+        }
     });
+    setTimeout(() => {
+        if (chatMsgs.children.length === 0) {
+            chatMsgs.innerHTML = '<div class="empty-state"><p>Aucun message pour le moment</p></div>';
+        }
+        firstLoad = false;
+    }, 1000);
 }
 
 function sendTfcMessageAdmin() {
@@ -3096,6 +3280,168 @@ document.getElementById('shareWorkFile')?.addEventListener('change', function(e)
     } else { shareWorkFile = null; document.getElementById('shareWorkFileName').innerHTML = ''; }
 });
 
+async function deleteSharedWork(clientId, workId, workTitle) {
+    if (!confirm(`Supprimer le travail partagé "${workTitle}" ?\n\nCette action est irréversible.`)) return;
+    try {
+        await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).remove();
+        // Supprimer l'élément visuellement sans recharger
+        const el = document.getElementById(`shared-work-${workId}`);
+        if (el) {
+            el.style.transition = 'opacity 0.3s, transform 0.3s';
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(-20px)';
+            setTimeout(() => el.remove(), 300);
+        }
+        toast('Travail supprimé avec succès');
+        // Notifier le client
+        await db.ref(`tfc_clients/${clientId}/notifications`).push({
+            type: 'shared_work_deleted',
+            message: `Le travail partagé "${workTitle}" a été retiré`,
+            timestamp: Date.now(),
+            read: false
+        });
+    } catch (error) {
+        console.error(error);
+        toast('Erreur lors de la suppression : ' + error.message);
+    }
+}
+
+async function editSharedWork(clientId, workId) {
+    // Charger les données actuelles
+    const snap = await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).once('value');
+    const work = snap.val();
+    if (!work) { toast('Travail introuvable'); return; }
+
+    // Supprimer l'ancien modal s'il existe
+    const oldModal = document.getElementById('editSharedWorkModal');
+    if (oldModal) oldModal.remove();
+
+    // Créer le modal d'édition (même style que editTfcPost)
+    const modal = document.createElement('div');
+    modal.id = 'editSharedWorkModal';
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="modal-box" style="max-width:560px;">
+            <div class="modal-top">
+                <h3><i class="fa-solid fa-pen"></i> Modifier le travail partagé</h3>
+                <button class="modal-close" onclick="document.getElementById('editSharedWorkModal').remove()">×</button>
+            </div>
+            <div class="form-field">
+                <label>Titre *</label>
+                <input type="text" id="editSWTitle" value="${esc(work.title||'')}"
+                    style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-left:3px solid #0d2b4e;font-family:inherit;font-size:0.92rem;font-weight:700;">
+            </div>
+            <div class="form-field">
+                <label>Description</label>
+                <textarea id="editSWDesc" rows="4"
+                    style="width:100%;padding:12px;border:1.5px solid var(--border);border-left:3px solid #e8a020;border-radius:8px;font-family:inherit;font-size:0.88rem;resize:vertical;">${esc(work.description||'')}</textarea>
+            </div>
+            <div class="form-field">
+                <label>Lien externe (optionnel)</label>
+                <input type="url" id="editSWLink" value="${esc(work.link||'')}" placeholder="https://..."
+                    style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.88rem;">
+            </div>
+            ${work.fileUrl ? `
+            <div class="form-field">
+                <label>Fichier actuel</label>
+                <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-radius:8px;border:1.5px solid var(--border);">
+                    <i class="fa-solid fa-file" style="color:var(--blue);"></i>
+                    <span style="font-size:0.82rem;font-weight:600;">${esc(work.fileName||'Fichier joint')}</span>
+                    <button onclick="document.getElementById('editSWFile').click()" style="margin-left:auto;background:#e8a020;border:none;border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;color:#000;"><i class="fa-solid fa-arrows-rotate"></i> Remplacer</button>
+                </div>
+            </div>` : `
+            <div class="form-field">
+                <label>Joindre un fichier (optionnel)</label>
+                <label for="editSWFile" class="file-drop-area" style="cursor:pointer;display:block;">
+                    <i class="fa-solid fa-cloud-upload-alt"></i>
+                    <p>Cliquez pour joindre un fichier</p>
+                </label>
+            </div>`}
+            <input type="file" id="editSWFile" style="display:none" accept=".pdf,.docx,.zip,.jpg,.jpeg,.png,.xlsx,.pptx">
+            <div id="editSWFileName" style="font-size:0.75rem;color:var(--green);margin-top:5px;padding-left:4px;"></div>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+                <button class="btn-submit-post" onclick="saveEditSharedWork('${clientId}','${workId}','${esc(work.fileName||'')}','${work.fileUrl ? 'has_file' : 'no_file'}')" style="flex:2;">
+                    <i class="fa-solid fa-save"></i> Enregistrer les modifications
+                </button>
+                <button onclick="document.getElementById('editSharedWorkModal').remove()"
+                    style="flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;">
+                    Annuler
+                </button>
+            </div>
+        </div>`;
+
+    document.body.appendChild(modal);
+
+    // Aperçu du nouveau fichier sélectionné
+    document.getElementById('editSWFile').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            document.getElementById('editSWFileName').innerHTML =
+                `<i class="fa-solid fa-paperclip"></i> Nouveau fichier : <strong>${e.target.files[0].name}</strong> (${(e.target.files[0].size/1024).toFixed(1)} KB)`;
+        }
+    });
+
+    // Fermer en cliquant l'arrière-plan
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function saveEditSharedWork(clientId, workId, oldFileName, hasFile) {
+    const title = document.getElementById('editSWTitle')?.value.trim();
+    const description = document.getElementById('editSWDesc')?.value.trim();
+    const link = document.getElementById('editSWLink')?.value.trim();
+    const newFile = document.getElementById('editSWFile')?.files[0];
+
+    if (!title) { toast('Le titre est obligatoire'); return; }
+
+    const updates = {
+        title: title,
+        description: description || '',
+        link: link || null,
+        editedAt: Date.now(),
+        edited: true
+    };
+
+    try {
+        if (newFile) {
+            // Nouveau fichier sélectionné
+            if (newFile.size > 20 * 1024 * 1024) { toast('Fichier trop volumineux (max 20MB)'); return; }
+            toast('Traitement du fichier...', 2000);
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                updates.fileUrl = e.target.result;
+                updates.fileName = newFile.name;
+                await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).update(updates);
+                toast('✅ Travail modifié avec succès !');
+                document.getElementById('editSharedWorkModal')?.remove();
+                // Notifier le client
+                await db.ref(`tfc_clients/${clientId}/notifications`).push({
+                    type: 'shared_work_updated',
+                    message: `Le travail partagé "${title}" a été mis à jour`,
+                    timestamp: Date.now(),
+                    read: false
+                });
+                loadSharedWorks();
+            };
+            reader.onerror = () => toast('Erreur lecture fichier');
+            reader.readAsDataURL(newFile);
+        } else {
+            // Pas de nouveau fichier
+            await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).update(updates);
+            toast('✅ Travail modifié avec succès !');
+            document.getElementById('editSharedWorkModal')?.remove();
+            await db.ref(`tfc_clients/${clientId}/notifications`).push({
+                type: 'shared_work_updated',
+                message: `Le travail partagé "${title}" a été mis à jour`,
+                timestamp: Date.now(),
+                read: false
+            });
+            loadSharedWorks();
+        }
+    } catch (error) {
+        console.error(error);
+        toast('Erreur : ' + error.message);
+    }
+}
+
 async function submitSharedWork() {
     const title = document.getElementById('shareWorkTitle').value.trim();
     const description = document.getElementById('shareWorkDescription').value.trim();
@@ -3180,7 +3526,7 @@ async function loadAllClientsWithWorks() {
             const studentWorks = [];
             studentWorksSnapshot.forEach(child => { studentWorks.push({ id: child.key, ...child.val() }); });
             studentWorks.sort((a,b) => (b.uploadedAt||0) - (a.uploadedAt||0));
-            clientsHtml.push(`<div class="client-workspace-card" style="border:2px solid var(--border);border-radius:16px;margin-bottom:24px;background:var(--card);overflow:hidden;"><div style="background:linear-gradient(135deg,var(--blue),var(--green));padding:20px;color:white;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;"><div><h2 style="margin-bottom:8px;">${esc(client.name)}</h2><p>${esc(client.university||'Non renseigné')}</p><p style="font-size:0.85rem;margin-top:8px;"><strong>Sujet:</strong> ${esc(client.tfc_topic||'Non défini')}</p><div style="display:flex;gap:12px;margin-top:10px;font-size:0.8rem;"><span><i class="fa-regular fa-envelope"></i> ${esc(client.email)}</span>${client.phone?`<span><i class="fa-solid fa-phone"></i> ${esc(client.phone)}</span>`:''}<span><i class="fa-solid fa-key"></i> Code: ${esc(client.accessCode)}</span></div></div><div style="display:flex;gap:8px;"><button class="btn-auth" style="background:white;color:var(--blue);width:auto;" onclick="openClientWorkspace('${client.id}')"><i class="fa-solid fa-folder-open"></i> Gérer</button><button class="btn-auth share-work-btn" style="background:white;color:#2196F3;width:auto;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')"><i class="fa-solid fa-share-alt"></i> Partager</button></div></div></div><div style="padding:16px;"><div style="display:flex;gap:8px;border-bottom:2px solid var(--border);margin-bottom:16px;"><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','docs')" id="tab-docs-${client.id}" style="border-radius:8px 8px 0 0;">Documents (${documents.length})</button><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','posts')" id="tab-posts-${client.id}" style="border-radius:8px 8px 0 0;">Publications (${posts.length})</button><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','works')" id="tab-works-${client.id}" style="border-radius:8px 8px 0 0;">Travaux partagés (${sharedWorks.length})</button><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','studentworks')" id="tab-studentworks-${client.id}" style="border-radius:8px 8px 0 0;">Travaux étudiant (${studentWorks.length})</button></div><div id="client-docs-${client.id}" class="client-tab-content" style="display:block;">${documents.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun document déposé</div>':`<div style="display:flex;flex-direction:column;gap:12px;">${documents.map(doc => `<div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;"><div style="flex:1;"><div class="doc-name"><i class="fa-solid fa-file"></i> ${esc(doc.name)}</div><div class="doc-meta">Déposé le ${new Date(doc.uploadedAt).toLocaleString()}</div><span class="doc-status ${doc.status==='valide'?'status-approved':doc.status==='correction'?'status-revision':'status-pending'}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;">${doc.status==='valide'?'Validé':doc.status==='correction'?'À corriger':'En attente'}</span>${doc.feedback?`<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(doc.feedback)}</div>`:''}</div><div><a href="${doc.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a></div></div>`).join('')}</div>`}</div><div id="client-posts-${client.id}" class="client-tab-content" style="display:none;">${posts.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucune publication</div>':`<div style="display:flex;flex-direction:column;gap:16px;">${posts.map(post => `<div class="post-card" style="margin:0;"><div class="post-header"><div class="user-av">${client.avatar?`<img src="${client.avatar}">`:'<i class="fa-solid fa-user-graduate"></i>'}</div><div><div style="font-weight:700">${esc(post.authorName)}</div><div style="font-size:0.7rem;">${new Date(post.timestamp).toLocaleString()}</div></div></div><div class="post-content"><div>${esc(post.content)}</div>${post.mediaUrl?`<img src="${post.mediaUrl}" style="max-width:100%;margin-top:10px;border-radius:12px;cursor:pointer;" onclick="openLightbox('${post.mediaUrl}')">`:''}${post.fileUrl?`<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:10px">📥 ${post.fileName}</a>`:''}${post.linkUrl?`<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:10px">🔗 Voir le lien</a>`:''}</div><div class="post-footer"><span class="post-action"><i class="fa-regular fa-heart"></i> ${post.likes||0}</span><span class="post-action"><i class="fa-regular fa-comment"></i> ${post.commentsCount||0}</span></div></div>`).join('')}</div>`}</div><div id="client-works-${client.id}" class="client-tab-content" style="display:none;">${sharedWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail partagé</div>':`<div style="display:flex;flex-direction:column;gap:12px;">${sharedWorks.map(work => `<div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--blue-pale);"><div style="flex:1;"><div class="doc-name"><i class="fa-solid fa-share-alt"></i> ${esc(work.title)}</div><div class="doc-meta">Partagé par ${esc(work.sharedBy)} le ${new Date(work.sharedAt).toLocaleString()}</div>${work.description?`<p style="margin-top:8px;font-size:0.8rem;">${esc(work.description)}</p>`:''}${work.link?`<div style="margin-top:8px;"><a href="${work.link}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a></div>`:''}</div>${work.fileUrl?`<div><a href="${work.fileUrl}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i> ${work.fileName}</a></div>`:''}</div>`).join('')}</div>`}</div><div id="client-studentworks-${client.id}" class="client-tab-content" style="display:none;">${studentWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail déposé par l\'étudiant</div>':`<div style="display:flex;flex-direction:column;gap:12px;">${studentWorks.map(work => `<div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;"><div style="flex:1;"><div class="doc-name"><i class="fa-solid fa-briefcase"></i> ${esc(work.name)}</div><div class="doc-meta">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div><span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}</span>${work.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(work.feedback)}</div>` : ''}</div><div><a href="${work.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a></div></div>`).join('')}</div>`}</div></div></div>`);
+            clientsHtml.push(`<div class="client-workspace-card" style="border:2px solid var(--border);border-radius:16px;margin-bottom:24px;background:var(--card);overflow:hidden;"><div style="background:linear-gradient(135deg,var(--blue),var(--green));padding:20px;color:white;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;"><div><h2 style="margin-bottom:8px;">${esc(client.name)}</h2><p>${esc(client.university||'Non renseigné')}</p><p style="font-size:0.85rem;margin-top:8px;"><strong>Sujet:</strong> ${esc(client.tfc_topic||'Non défini')}</p><div style="display:flex;gap:12px;margin-top:10px;font-size:0.8rem;"><span><i class="fa-regular fa-envelope"></i> ${esc(client.email)}</span>${client.phone?`<span><i class="fa-solid fa-phone"></i> ${esc(client.phone)}</span>`:''}<span><i class="fa-solid fa-key"></i> Code: ${esc(client.accessCode)}</span></div></div><div style="display:flex;gap:8px;"><button class="btn-auth" style="background:white;color:var(--blue);width:auto;" onclick="openClientWorkspace('${client.id}')"><i class="fa-solid fa-folder-open"></i> Gérer</button><button class="btn-auth share-work-btn" style="background:white;color:#2196F3;width:auto;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')"><i class="fa-solid fa-share-alt"></i> Partager</button></div></div></div><div style="padding:16px;"><div style="display:flex;gap:8px;border-bottom:2px solid var(--border);margin-bottom:16px;"><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','docs')" id="tab-docs-${client.id}" style="border-radius:8px 8px 0 0;">Documents (${documents.length})</button><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','posts')" id="tab-posts-${client.id}" style="border-radius:8px 8px 0 0;">Publications (${posts.length})</button><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','works')" id="tab-works-${client.id}" style="border-radius:8px 8px 0 0;">Travaux partagés (${sharedWorks.length})</button><button class="tfc-tab-btn" onclick="toggleClientTab('${client.id}','studentworks')" id="tab-studentworks-${client.id}" style="border-radius:8px 8px 0 0;">Travaux étudiant (${studentWorks.length})</button></div><div id="client-docs-${client.id}" class="client-tab-content" style="display:block;">${documents.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun document déposé</div>':`<div style="display:flex;flex-direction:column;gap:12px;">${documents.map(doc => `<div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;"><div style="flex:1;"><div class="doc-name"><i class="fa-solid fa-file"></i> ${esc(doc.name)}</div><div class="doc-meta">Déposé le ${new Date(doc.uploadedAt).toLocaleString()}</div><span class="doc-status ${doc.status==='valide'?'status-approved':doc.status==='correction'?'status-revision':'status-pending'}" style="font-size:0.7rem;padding:2px 8px;border-radius:12px;">${doc.status==='valide'?'Validé':doc.status==='correction'?'À corriger':'En attente'}</span>${doc.feedback?`<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(doc.feedback)}</div>`:''}</div><div><button onclick="downloadDoc('${doc.url}','${esc(doc.name).replace(/'/g,"\\'")}')" class="file-dl" style="padding:4px 8px;border:none;cursor:pointer;"><i class="fa-solid fa-download"></i></button></div></div>`).join('')}</div>`}</div><div id="client-posts-${client.id}" class="client-tab-content" style="display:none;">${posts.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucune publication</div>':`<div style="display:flex;flex-direction:column;gap:16px;">${posts.map(post => `<div class="post-card" style="margin:0;"><div class="post-header"><div class="user-av">${client.avatar?`<img src="${client.avatar}">`:'<i class="fa-solid fa-user-graduate"></i>'}</div><div><div style="font-weight:700">${esc(post.authorName)}</div><div style="font-size:0.7rem;">${new Date(post.timestamp).toLocaleString()}</div></div></div><div class="post-content"><div>${esc(post.content)}</div>${post.mediaUrl?`<img src="${post.mediaUrl}" style="max-width:100%;margin-top:10px;border-radius:12px;cursor:pointer;" onclick="openLightbox('${post.mediaUrl}')">`:''}${post.fileUrl?`<a href="${post.fileUrl}" target="_blank" class="file-dl" style="margin-top:10px">📥 ${post.fileName}</a>`:''}${post.linkUrl?`<a href="${post.linkUrl}" target="_blank" class="post-link" style="margin-top:10px">🔗 Voir le lien</a>`:''}</div><div class="post-footer"><span class="post-action"><i class="fa-regular fa-heart"></i> ${post.likes||0}</span><span class="post-action"><i class="fa-regular fa-comment"></i> ${post.commentsCount||0}</span></div></div>`).join('')}</div>`}</div><div id="client-works-${client.id}" class="client-tab-content" style="display:none;">${sharedWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail partagé</div>':`<div style="display:flex;flex-direction:column;gap:12px;">${sharedWorks.map(work => `<div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--blue-pale);"><div style="flex:1;"><div class="doc-name"><i class="fa-solid fa-share-alt"></i> ${esc(work.title)}</div><div class="doc-meta">Partagé par ${esc(work.sharedBy)} le ${new Date(work.sharedAt).toLocaleString()}</div>${work.description?`<p style="margin-top:8px;font-size:0.8rem;">${esc(work.description)}</p>`:''}${work.link?`<div style="margin-top:8px;"><a href="${work.link}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-external-link-alt"></i> Voir le lien</a></div>`:''}</div>${work.fileUrl?`<div><a href="${work.fileUrl}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i> ${work.fileName}</a></div>`:''}</div>`).join('')}</div>`}</div><div id="client-studentworks-${client.id}" class="client-tab-content" style="display:none;">${studentWorks.length===0?'<div style="text-align:center;padding:40px;color:var(--muted);">Aucun travail déposé par l\'étudiant</div>':`<div style="display:flex;flex-direction:column;gap:12px;">${studentWorks.map(work => `<div class="doc-item" style="border:1px solid var(--border);border-radius:12px;padding:12px;"><div style="flex:1;"><div class="doc-name"><i class="fa-solid fa-briefcase"></i> ${esc(work.name)}</div><div class="doc-meta">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div><span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}</span>${work.feedback ? `<div class="feedback-box" style="margin-top:8px;padding:6px;background:var(--green-pale);border-radius:6px;"><strong>Retour:</strong><br>${esc(work.feedback)}</div>` : ''}</div><div><a href="${work.url}" target="_blank" class="file-dl" style="padding:4px 8px;"><i class="fa-solid fa-download"></i></a></div></div>`).join('')}</div>`}</div></div></div>`);
         }
         document.getElementById('totalDocsCount').textContent = totalDocs;
         document.getElementById('totalPostsCount').textContent = totalPosts;
