@@ -2320,10 +2320,14 @@ async function loadClientChat() {
 
 function sendTfcMessageClient() {
     const input = document.getElementById('tfcChatInput');
+    if (!input) return;
     const text = input.value.trim();
-    if (!text || !currentTfcClientId) return;
-    db.ref(`tfc_clients/${currentTfcClientId}/messages`).push({ from: 'client', fromName: currentTfcClientData.name, text: text, timestamp: Date.now() });
-    input.value = '';
+    if (!text) { toast('Écrivez un message'); return; }
+    if (!currentTfcClientId || !currentTfcClientData) { toast('Session expirée, reconnectez-vous'); return; }
+    const msgData = { from: 'client', fromName: currentTfcClientData.name || 'Client', text: text, timestamp: Date.now() };
+    db.ref(`tfc_clients/${currentTfcClientId}/messages`).push(msgData)
+        .then(() => { input.value = ''; })
+        .catch(err => { console.error(err); toast('Erreur envoi: ' + err.message); });
 }
 
 // IA TFC pour les clients
@@ -2642,21 +2646,29 @@ function previewTfcMedia(input, type) {
     }
 }
 
-function closeTfcCompose() { 
-    document.getElementById('tfcComposeOverlay').classList.remove('active'); 
+function closeTfcCompose() {
+    const overlay = document.getElementById('tfcComposeOverlay');
+    if (overlay) overlay.classList.remove('active');
     tfcPostMediaFile = null;
-    const t = document.getElementById('tfcPostTitleInput');
-    const s = document.getElementById('tfcPostSubtitleInput');
-    if(t) t.value = '';
-    if(s) s.value = '';
+    currentTfcPostType = 'text';
+    ['tfcPostTitleInput','tfcPostSubtitleInput','tfcPostContent'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    const mediaArea = document.getElementById('tfcPostMediaArea');
+    if (mediaArea) mediaArea.innerHTML = '';
+    const progressDiv = document.getElementById('tfcPostProgress');
+    if (progressDiv) progressDiv.style.display = 'none';
 }
 
 async function submitTfcPost() {
     const content = document.getElementById('tfcPostContent').value.trim();
     if (!content && !tfcPostMediaFile && currentTfcPostType !== 'link') { toast('Veuillez écrire quelque chose ou joindre un fichier'); return; }
-    const postTitle = document.getElementById('tfcPostTitleInput')?.value.trim() || '';
-    const postSubtitle = document.getElementById('tfcPostSubtitleInput')?.value.trim() || '';
-    if (!postTitle) { toast('Le titre est obligatoire'); return; }
+    const postTitleEl = document.getElementById('tfcPostTitleInput');
+    const postSubtitleEl = document.getElementById('tfcPostSubtitleInput');
+    const postTitle = postTitleEl ? postTitleEl.value.trim() : '';
+    const postSubtitle = postSubtitleEl ? postSubtitleEl.value.trim() : '';
+    if (!postTitle && !content) { toast('Écrivez un titre ou un contenu'); return; }
     const postData = { authorId: currentTfcClientId, authorName: currentTfcClientData.name, authorUniv: currentTfcClientData.university, authorAvatar: currentTfcClientData.avatar || null, postTitle: postTitle, postSubtitle: postSubtitle, content: content, type: currentTfcPostType, timestamp: Date.now(), likes: 0, commentsCount: 0 };
     
     if ((currentTfcPostType === 'photo' || currentTfcPostType === 'document') && tfcPostMediaFile) {
@@ -2713,7 +2725,7 @@ function loadTfcPosts() {
                 </div>
                 <div class="tfc-post-date">${new Date(post.timestamp).toLocaleString()}${post.edited ? ' <span style="font-size:0.6rem;color:var(--muted);font-style:italic;">(modifié)</span>' : ''}</div>
                 <div class="post-actions-menu" style="display:flex;gap:5px;">
-                    ${(post.authorId === currentTfcClientId || isAdmin) ? `
+                    ${(post.authorId === currentTfcClientId || post.authorId === currentUser?.uid || isAdmin) ? `
                     <button onclick="editTfcPost('${post.id}')" class="tfc-btn-icon" title="Modifier" style="width:32px;height:32px;background:#e8f0fa;border-color:#0d2b4e;color:#0d2b4e;"><i class="fa-solid fa-pen"></i></button>
                     <button onclick="deleteTfcPost('${post.id}')" class="tfc-btn-icon" title="Supprimer" style="width:32px;height:32px;background:#fee2e2;border-color:#dc2626;color:#dc2626;"><i class="fa-solid fa-trash"></i></button>` : ''}
                 </div>
@@ -2827,12 +2839,6 @@ function loadClientsList() {
         if (clients.length === 0) { container.innerHTML = '<div class="empty-state"><p>Aucun client pour le moment.</p><p style="font-size:0.75rem;margin-top:8px;">Cliquez sur "Nouveau client" pour commencer</p></div>'; return; }
         clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         container.innerHTML = clients.map(client => `<div class="client-card" style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:all 0.2s;"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><h4 style="margin-bottom:4px;">${esc(client.name)}</h4><p style="font-size:0.75rem;color:var(--muted);">${esc(client.university || 'Non renseigné')}</p><p style="font-size:0.75rem;margin-top:4px;"><strong>Sujet :</strong> ${esc(client.tfc_topic || 'Non défini')}</p><p style="font-size:0.72rem;color:var(--green);margin-top:4px;">Code : <strong style="background:var(--green-pale);padding:2px 8px;border-radius:12px;">${esc(client.accessCode)}</strong></p><p style="font-size:0.7rem;color:var(--muted);margin-top:4px;">${esc(client.email)} | ${esc(client.phone || 'Non renseigné')}</p></div><div style="display:flex;gap:8px;"><button class="btn-auth" style="width:auto;padding:8px 20px;" onclick="openClientWorkspace('${client.id}')"><i class="fa-solid fa-folder-open"></i> Ouvrir</button><button class="btn-auth share-work-btn" style="width:auto;padding:8px 20px;" onclick="openShareWorkModal('${client.id}', '${esc(client.name)}')"><i class="fa-solid fa-share-alt"></i> Partager</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
-                    <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button>
                     <button class="inv-btn inv-btn-gold" style="padding:8px 20px" onclick="invPrefillFromClientId('${client.id}','${esc(client.name)}','${esc(client.phone||'')}','${esc(client.university||'')}','${esc(client.tfc_topic||'')}','${esc(client.email||'')}')"><i class="fa-solid fa-file-invoice-dollar"></i> Facture</button></div></div></div>`).join('');
     };
     window.clientsListRef = callback;
