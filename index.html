@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GADA Training — Espace Privé Apprenants + TFC</title>
     <link rel="icon" type="image/png" href="images/logo-gada.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d2b4e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GADA Training">
+    <link rel="apple-touch-icon" href="images/logo-gada.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -519,6 +526,9 @@
         </button>
         <button class="btn-quit" id="btnAdminTfc" onclick="switchToTFC()" style="background:linear-gradient(135deg,#0d2b4e,#e8a020);color:white;margin-right:10px;display:none;">
             <i class="fa-solid fa-users"></i> Clients TFC
+        </button>
+        <button class="btn-quit" id="btnInstallApp" onclick="installApp()" style="display:none;background:linear-gradient(135deg,#e8a020,#c87000);color:#000;font-weight:700;border:none;">
+            <i class="fa-solid fa-mobile-screen"></i> Installer l'app
         </button>
         <button class="btn-quit" onclick="doLogout()">
             <i class="fa-solid fa-right-from-bracket"></i> Quitter
@@ -3588,6 +3598,55 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btnRetour) btnRetour.style.display = 'flex';
         });
     }
+});
+
+// =================================================================
+// SECTION 18: PWA - APPLICATION MOBILE
+// =================================================================
+let deferredInstallPrompt = null;
+
+// Intercepter l'événement d'installation
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    // Afficher le bouton installer dans toutes les topbars
+    ['btnInstallApp','btnInstallApp2','btnInstallApp3'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.style.display = 'flex';
+    });
+});
+
+// Lancer l'installation
+async function installApp() {
+    if (!deferredInstallPrompt) {
+        toast('Utilisez "Ajouter à l\'écran d\'accueil" dans le menu de votre navigateur');
+        return;
+    }
+    deferredInstallPrompt.prompt();
+    const result = await deferredInstallPrompt.userChoice;
+    if (result.outcome === 'accepted') {
+        toast('✅ GADA Training installé avec succès !');
+        ['btnInstallApp','btnInstallApp2','btnInstallApp3'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.style.display = 'none';
+        });
+    }
+    deferredInstallPrompt = null;
+}
+
+// Enregistrer le Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker enregistré'))
+            .catch(err => console.log('SW erreur:', err));
+    });
+}
+
+// Détecter si déjà installé
+window.addEventListener('appinstalled', () => {
+    toast('🎉 Application installée !');
+    deferredInstallPrompt = null;
 });
 </script>
 </body>

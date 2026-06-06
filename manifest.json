@@ -1,0 +1,34 @@
+{
+  "name": "GADA Training",
+  "short_name": "GADA",
+  "description": "Espace privé des apprenants - Modélisation Spatiale & One Health",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d2b4e",
+  "theme_color": "#0d2b4e",
+  "orientation": "portrait-primary",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "images/logo-gada.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/logo-gada.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": [
+    {
+      "src": "images/logo-gada.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
