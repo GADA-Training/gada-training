@@ -1146,6 +1146,60 @@ const AI_CONFIG = {
     ENDPOINT: 'https://groq-proxy.gadasolution-rdc.workers.dev'
 };
 
+// Lecture du contenu des fichiers GitHub
+async function fetchFileContent(fileName) {
+    try {
+        const url = GITHUB_BASE + encodeURIComponent(fileName);
+        const resp = await fetch(url);
+        if (!resp.ok) return null;
+        const text = await resp.text();
+        return text.substring(0, 3000); // Limiter à 3000 chars par fichier
+    } catch(e) { return null; }
+}
+
+async function fetchRelevantFileContents(question) {
+    const q = question.toLowerCase();
+    let contents = '';
+    let checked = 0;
+
+    for (const [semaineKey, sData] of Object.entries(SEMAINES_DATA)) {
+        if (sData.locked || !sData.fichiers) continue;
+        for (const f of sData.fichiers) {
+            const nomLower = f.nom.toLowerCase();
+            const isRelevant =
+                q.includes('fichier') || q.includes('document') || q.includes('script') ||
+                q.includes(nomLower.replace(/\.[^.]+$/, '').toLowerCase()) ||
+                (q.includes('r') && (f.type === 'r')) ||
+                (q.includes('pdf') && f.type === 'pdf') ||
+                (q.includes('semaine 1') && semaineKey === 'semaine1') ||
+                (q.includes('semaine 2') && semaineKey === 'semaine2') ||
+                (q.includes('semaine 3') && semaineKey === 'semaine3') ||
+                (q.includes('paludisme') && nomLower.includes('paludisme')) ||
+                (q.includes('sorgho') && nomLower.includes('sorgho')) ||
+                (q.includes('agronomie') && nomLower.includes('agronomie')) ||
+                (q.includes('tha') && nomLower.includes('tha')) ||
+                (q.includes('maxent') && nomLower.includes('maxent')) ||
+                (q.includes('biostat') && nomLower.includes('biostat')) ||
+                (q.includes('one health') && (nomLower.includes('one') || nomLower.includes('health'))) ||
+                (q.includes('jour 1') && nomLower.includes('jour1')) ||
+                (q.includes('jour 2') && nomLower.includes('jour2')) ||
+                (q.includes('jour 3') && nomLower.includes('jour3')) ||
+                checked < 2; // Toujours lire au moins 2 fichiers
+
+            if (isRelevant && checked < 5) {
+                if (f.type === 'r' || f.type === 'pdf') {
+                    const content = await fetchFileContent(f.nom);
+                    if (content) {
+                        contents += `\n--- CONTENU DE "${f.nom}" (${sData.titre}) ---\n${content}\n`;
+                        checked++;
+                    }
+                }
+            }
+        }
+    }
+    return contents;
+}
+
 // =================================================================
 // SECTION 3: LISTES ÉLIGIBLES ET ADMIN
 // =================================================================
@@ -2218,10 +2272,18 @@ async function sendToLLM() {
     contexte += `2. Structure tes réponses avec des puces ou des paragraphes courts.\n`;
     contexte += `Question de l'utilisateur : ${question}\n\nRÉPONSE :`;
     
+    // Lecture des fichiers pertinents
+    toast("Lecture des fichiers de formation...", 2000);
+    const fileContents = await fetchRelevantFileContents(question);
+    if (fileContents) {
+        contexte += `\n5. CONTENU RÉEL DES FICHIERS DE FORMATION :\n${fileContents}\n`;
+        contexte += `\nINSTRUCTION SPÉCIALE : Tu as accès au contenu réel des fichiers. Explique-les en détail, cite des exemples du code R ou des concepts du PDF si pertinent.\n`;
+    }
+
     const messages = [{ role: "system", content: contexte }, { role: "user", content: question }];
     
     try {
-        const resp = await fetch(AI_CONFIG.ENDPOINT, { method: 'POST', headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.3, max_tokens: 1500 }) });
+        const resp = await fetch(AI_CONFIG.ENDPOINT, { method: 'POST', headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.3, max_tokens: 2000 }) });
         const data = await resp.json();
         if(data.error) throw new Error(data.error);
         const reply = data.choices[0].message.content;
@@ -2403,10 +2465,25 @@ async function sendToTfcLLM() {
     appendTfcIAMessage('user', question);
     input.value = '';
     toast("Consultation...", 1500);
-    let contexte = `Tu es un assistant académique pour TFC. L'étudiant: ${currentTfcClientData?.name}, sujet: ${currentTfcClientData?.tfc_topic || 'Non spécifié'}. Donne des conseils structurés et bienveillants.`;
+    const fileContents = await fetchRelevantFileContents(question);
+    let contexte = `Tu es un expert académique pour TFC et mémoires universitaires.
+Étudiant : ${currentTfcClientData?.name}
+Université : ${currentTfcClientData?.university || 'Non renseignée'}
+Sujet du TFC : ${currentTfcClientData?.tfc_topic || 'Non spécifié'}
+
+Tu peux :
+- Expliquer en détail les concepts méthodologiques (statistiques, SIG, R, ArcGIS)
+- Aider à structurer le mémoire (introduction, revue de littérature, méthodologie, résultats, discussion)
+- Donner des conseils sur l'analyse des données
+- Expliquer des concepts One Health, modélisation spatiale, télédétection
+- Chercher des informations académiques pertinentes
+${fileContents ? `\nRessources de formation disponibles :\n${fileContents}` : ''}
+
+Sois précis, bienveillant et pédagogique.`;
+
     const messages = [{ role: "system", content: contexte }, { role: "user", content: question }];
     try {
-        const resp = await fetch(AI_CONFIG.ENDPOINT, { method: 'POST', headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.6, max_tokens: 1000 }) });
+        const resp = await fetch(AI_CONFIG.ENDPOINT, { method: 'POST', headers: { 'Authorization': `Bearer ${AI_CONFIG.API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: AI_CONFIG.MODEL, messages: messages, temperature: 0.5, max_tokens: 2000 }) });
         const data = await resp.json();
         const reply = data.choices[0].message.content;
         appendTfcIAMessage('assistant', reply);
