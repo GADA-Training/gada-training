@@ -1140,11 +1140,8 @@ const db = firebase.database();
 const storage = firebase.storage();
 
 // =================================================================
-// SECTION 2: CONFIGURATION API IA (GROQ / LLAMA)
-// =================================================================
-// À MODIFIER SI VOUS CHANGEZ DE PROVIDER IA
 const AI_CONFIG = {
-    API_KEY: '',
+    API_KEY: 'secret-via-cloudflare', 
     MODEL: 'llama-3.3-70b-versatile',
     ENDPOINT: 'https://groq-proxy.gadasolution-rdc.workers.dev'
 };
