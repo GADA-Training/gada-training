@@ -7,18 +7,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --forest:   #1a3a2a;
-      --canopy:   #2d5e3f;
-      --moss:     #4a7c59;
-      --leaf:     #6db88a;
-      --lime:     #a8d98f;
-      --cream:    #faf7f0;
-      --sand:     #f0e8d8;
+      --forest:   #0d1b2a;
+      --canopy:   #132236;
+      --moss:     #1e3a5f;
+      --leaf:     #e8a020;
+      --lime:     #f0b840;
+      --cream:    #0d1b2a;
+      --sand:     #1a2a3a;
       --bark:     #6b4f32;
-      --gold:     #c9a84c;
-      --text:     #1c2b20;
-      --muted:    #5a6e5f;
-      --border:   rgba(74,124,89,0.22);
+      --gold:     #e8a020;
+      --text:     #e8edf2;
+      --muted:    #8a9bb0;
+      --border:   rgba(232,160,32,0.20);
       --shadow:   0 4px 32px rgba(26,58,42,0.09);
       --radius:   12px;
       --tr:       all 0.26s cubic-bezier(0.4,0,0.2,1);
@@ -36,8 +36,8 @@
       content: '';
       position: fixed; inset: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 15% 10%, rgba(107,184,138,0.09) 0%, transparent 60%),
-        radial-gradient(ellipse 55% 40% at 85% 85%, rgba(45,94,63,0.07) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,160,32,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 40% at 85% 85%, rgba(19,34,54,0.95) 0%, transparent 60%);
       pointer-events: none; z-index: 0;
     }
 
@@ -96,7 +96,7 @@
     /* ===== PROGRESS ===== */
     .progress-wrap {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(250,247,240,0.96);
+      background: rgba(13,27,42,0.97);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
       padding: 12px 24px;
@@ -112,7 +112,7 @@
     }
     .progress-fill {
       height: 100%; width: 0%;
-      background: linear-gradient(90deg, var(--canopy), var(--leaf));
+      background: linear-gradient(90deg, var(--leaf), var(--lime));
       border-radius: 100px; transition: width .5s ease;
     }
     .progress-pct {
@@ -128,7 +128,7 @@
 
     /* ===== SECTION CARD ===== */
     .section-card {
-      background: #fff;
+      background: #132236;
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 34px 36px;
@@ -186,7 +186,7 @@
     input[type=text], input[type=email], input[type=tel], select, textarea {
       font-family: 'DM Sans', sans-serif;
       font-size: 14px; color: var(--text);
-      background: var(--cream);
+      background: #0d1b2a;
       border: 1.5px solid var(--border);
       border-radius: var(--radius);
       padding: 11px 15px; width: 100%;
@@ -240,10 +240,10 @@
     .ci {
       display: flex; align-items: flex-start; gap: 11px;
       padding: 11px 15px; border-radius: 10px;
-      border: 1.5px solid transparent; background: var(--cream);
+      border: 1.5px solid transparent; background: #0d1b2a;
       cursor: pointer; transition: var(--tr); user-select: none;
     }
-    .ci:hover { border-color: var(--border); background: #fff; }
+    .ci:hover { border-color: var(--border); background: #1a2a3a; }
     .ci:has(input:checked) { border-color: var(--leaf); background: rgba(107,184,138,0.07); }
     .ci input {
       width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px;
@@ -333,7 +333,7 @@
 
     /* ===== SUCCESS ===== */
     #success-msg {
-      display: none; background: #fff;
+      display: none; background: #132236;
       border: 2px solid var(--leaf);
       border-radius: 20px; padding: 52px 32px;
       text-align: center; box-shadow: var(--shadow); margin-top: 28px;
@@ -439,7 +439,7 @@
   <h1>
   Rejoignez la Plateforme
   <em>
-    <img src="images/Logos 2.png" alt="GADA Training" style="height: 1.2em; vertical-align: middle; display: inline-block;">
+    <img src="images/logo-gada.png" alt="GADA Training" style="height: 1.2em; vertical-align: middle; display: inline-block;">
   </em>
 </h1>
   <p>Écosystème d'excellence en SIG, Télédétection, R, Python et Google Earth Engine — Formations, analyses de données et solutions géospatiales pour les professionnels et chercheurs.</p>
@@ -1052,7 +1052,7 @@
 
 <footer>
   <strong>
-    <img src="images/Logos 2.png" alt="GADA Training" style="height: 1.2em; vertical-align: middle;">
+    <img src="images/logo-gada.png" alt="GADA Training" style="height: 1.2em; vertical-align: middle;">
     GADA Training
   </strong> — Formation spécialisée SIG · Télédétection · Agriculture Numérique &nbsp;|&nbsp; Données strictement confidentielles
 </footer>
