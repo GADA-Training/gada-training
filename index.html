@@ -2289,7 +2289,7 @@ async function sendToLLM() {
         if(data.error) throw new Error(data.error);
         const reply = data.choices[0].message.content;
         appendIAMessage('assistant', reply);
-    } catch(err) { console.error(err); appendIAMessage('assistant', "Service IA temporairement indisponible."); }
+    } catch(err) { console.error("ERREUR IA:", err); appendIAMessage('assistant', "Erreur: " + err.message); }
 }
 
 async function initIA() {
