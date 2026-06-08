@@ -1188,7 +1188,7 @@ async function fetchRelevantFileContents(question) {
                 checked < 2; // Toujours lire au moins 2 fichiers
 
             if (isRelevant && checked < 5) {
-                if (f.type === 'r' || f.type === 'pdf') {
+                if (f.type === 'r') {
                     const content = await fetchFileContent(f.nom);
                     if (content) {
                         contents += `\n--- CONTENU DE "${f.nom}" (${sData.titre}) ---\n${content}\n`;
