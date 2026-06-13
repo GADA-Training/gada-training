@@ -7,19 +7,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --forest:   #0d1b2a;
-      --canopy:   #132236;
-      --moss:     #1e3a5f;
-      --leaf:     #e8a020;
-      --lime:     #f0b840;
-      --cream:    #0d1b2a;
-      --sand:     #1a2a3a;
-      --bark:     #6b4f32;
-      --gold:     #e8a020;
+      --forest:   #0a0f2c;
+      --canopy:   #0d1547;
+      --moss:     #1a2a7a;
+      --leaf:     #f5a623;
+      --lime:     #f7c05a;
+      --cream:    #080d24;
+      --sand:     #111a55;
+      --bark:     #1e2d8a;
+      --gold:     #f5a623;
       --text:     #e8edf2;
-      --muted:    #8a9bb0;
-      --border:   rgba(232,160,32,0.20);
-      --shadow:   0 4px 32px rgba(26,58,42,0.09);
+      --muted:    #8a9fc0;
+      --border:   rgba(245,166,35,0.22);
+      --shadow:   0 4px 32px rgba(8,13,36,0.45);
       --radius:   12px;
       --tr:       all 0.26s cubic-bezier(0.4,0,0.2,1);
     }
@@ -36,24 +36,131 @@
       content: '';
       position: fixed; inset: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 15% 10%, rgba(232,160,32,0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 55% 40% at 85% 85%, rgba(19,34,54,0.95) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 50% at 15% 10%, rgba(30,60,200,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 85% 85%, rgba(20,40,160,0.22) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(245,166,35,0.04) 0%, transparent 70%);
       pointer-events: none; z-index: 0;
+    }
+
+    /* ===== ANNEAUX LUMINEUX STYLE BYL AI ===== */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none !important;
+      z-index: 0;
+      border: 1px solid rgba(100,140,255,0.18);
+      background: transparent;
+      animation: ringPulse 8s ease-in-out infinite alternate;
+    }
+
+    /* Groupe d'anneaux concentriques — coin haut gauche */
+    .orb-1 {
+      width: 700px; height: 700px;
+      border-color: rgba(80,120,255,0.14);
+      top: -250px; left: -250px;
+      animation-delay: 0s; animation-duration: 12s;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      border-color: rgba(100,150,255,0.18);
+      top: -150px; left: -150px;
+      animation-delay: 0.4s; animation-duration: 12s;
+    }
+    .orb-3 {
+      width: 320px; height: 320px;
+      border-color: rgba(130,170,255,0.22);
+      top: -60px; left: -60px;
+      animation-delay: 0.8s; animation-duration: 12s;
+    }
+    .orb-4 {
+      width: 160px; height: 160px;
+      border-color: rgba(160,200,255,0.28);
+      top: 20px; left: 20px;
+      animation-delay: 1.2s; animation-duration: 12s;
+    }
+
+    @keyframes ringPulse {
+      0%   { opacity: 0.6; transform: scale(1); }
+      50%  { opacity: 1;   transform: scale(1.04); }
+      100% { opacity: 0.6; transform: scale(1); }
+    }
+
+    /* Deuxième groupe d'anneaux — côté droit milieu */
+    .ring-r {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none !important;
+      z-index: 0;
+      background: transparent;
+      animation: ringPulse 10s ease-in-out infinite alternate;
+    }
+    .ring-r1 {
+      width: 500px; height: 500px;
+      border: 1px solid rgba(80,120,255,0.12);
+      top: 30%; right: -200px;
+      animation-delay: 2s;
+    }
+    .ring-r2 {
+      width: 340px; height: 340px;
+      border: 1px solid rgba(100,150,255,0.16);
+      top: calc(30% + 80px); right: -120px;
+      animation-delay: 2.4s;
+    }
+    .ring-r3 {
+      width: 200px; height: 200px;
+      border: 1px solid rgba(130,170,255,0.20);
+      top: calc(30% + 150px); right: -50px;
+      animation-delay: 2.8s;
+    }
+
+    /* Lueur centrale douce derrière les sections */
+    .glow-center {
+      position: fixed;
+      width: 800px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(30,60,200,0.10) 0%, transparent 70%);
+      top: 40%; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none !important;
+      z-index: 0;
+      filter: blur(30px);
+    }
+
+    /* ===== GRID DOTS PATTERN ===== */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none; z-index: 0;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
     }
 
     /* ===== HERO ===== */
     .hero {
       position: relative;
-      background: linear-gradient(135deg, rgba(13,27,42,0.82) 0%, rgba(19,34,54,0.75) 55%, rgba(58,122,82,0.70) 100%), url('images/Image.png') center/cover no-repeat;
+      background: linear-gradient(135deg, rgba(8,13,36,0.72) 0%, rgba(13,21,71,0.68) 55%, rgba(26,42,122,0.62) 100%), url('images/Image.png') center/cover no-repeat;
       padding: 56px 24px 72px;
       text-align: center;
-      overflow: hidden;
-      z-index: 1;
+      overflow: visible;
+      z-index: 3;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(30,60,200,0.08) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      pointer-events: none;
+      z-index: 0;
     }
     .hero::after {
       content: '';
       position: absolute; bottom: -1px; left: 0; right: 0; height: 40px;
-      background: var(--cream);
+      background: #080d24;
       clip-path: ellipse(55% 100% at 50% 100%);
     }
     .hero-badge {
@@ -96,9 +203,10 @@
     /* ===== PROGRESS ===== */
     .progress-wrap {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(13,27,42,0.97);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(8,13,36,0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.09);
       padding: 12px 24px;
     }
     .progress-inner {
@@ -112,7 +220,7 @@
     }
     .progress-fill {
       height: 100%; width: 0%;
-      background: linear-gradient(90deg, var(--leaf), var(--lime));
+      background: linear-gradient(90deg, #3a5fcc, #f5a623);
       border-radius: 100px; transition: width .5s ease;
     }
     .progress-pct {
@@ -123,17 +231,19 @@
     /* ===== CONTAINER ===== */
     .container {
       max-width: 780px; margin: 0 auto;
-      padding: 36px 20px 80px; position: relative; z-index: 1;
+      padding: 36px 20px 80px; position: relative; z-index: 3;
     }
 
     /* ===== SECTION CARD ===== */
     .section-card {
-      background: #132236;
-      border: 1px solid var(--border);
+      background: rgba(13,21,71,0.55);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.10);
       border-radius: 20px;
       padding: 34px 36px;
       margin-bottom: 26px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 8px 40px rgba(8,13,36,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
       opacity: 0; transform: translateY(20px);
       animation: rise .5s forwards;
     }
@@ -151,10 +261,10 @@
     }
     .sec-icon {
       width: 44px; height: 44px; border-radius: 12px;
-      background: linear-gradient(135deg, var(--canopy) 0%, var(--leaf) 100%);
+      background: linear-gradient(135deg, #1a2a8a 0%, #f5a623 100%);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(45,94,63,0.22);
+      box-shadow: 0 4px 16px rgba(245,166,35,0.30);
     }
     .sec-icon svg { color: #fff; }
     .sec-meta { flex: 1; }
@@ -186,16 +296,17 @@
     input[type=text], input[type=email], input[type=tel], select, textarea {
       font-family: 'DM Sans', sans-serif;
       font-size: 14px; color: #e8edf2;
-      background: #0d1b2a;
-      border: 1.5px solid var(--border);
+      background: rgba(8,13,56,0.60);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(255,255,255,0.13);
       border-radius: var(--radius);
       padding: 11px 15px; width: 100%;
       transition: var(--tr); outline: none;
       -webkit-appearance: none; appearance: none;
     }
     input:focus, select:focus, textarea:focus {
-      border-color: var(--leaf); background: #1a2a3a;
-      box-shadow: 0 0 0 3px rgba(232,160,32,0.15);
+      border-color: var(--leaf); background: rgba(26,42,120,0.70);
+      box-shadow: 0 0 0 3px rgba(245,166,35,0.18);
     }
     input::placeholder, textarea::placeholder { color: #5a7a9a; }
     select {
@@ -242,11 +353,11 @@
     .ci {
       display: flex; align-items: flex-start; gap: 11px;
       padding: 11px 15px; border-radius: 10px;
-      border: 1.5px solid transparent; background: #0d1b2a;
+      border: 1.5px solid rgba(255,255,255,0.08); background: rgba(8,13,56,0.45);
       cursor: pointer; transition: var(--tr); user-select: none;
     }
-    .ci:hover { border-color: var(--border); background: #1a2a3a; }
-    .ci:has(input:checked) { border-color: var(--leaf); background: rgba(107,184,138,0.07); }
+    .ci:hover { border-color: rgba(245,166,35,0.35); background: rgba(26,42,120,0.50); }
+    .ci:has(input:checked) { border-color: var(--leaf); background: rgba(245,166,35,0.09); }
     .ci input {
       width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px;
       accent-color: var(--leaf); -webkit-appearance: auto; appearance: auto;
@@ -279,24 +390,28 @@
     /* ===== INFO BOX ===== */
     .info-box {
       display: flex; gap: 12px;
-      background: rgba(201,168,76,0.07);
-      border: 1px solid rgba(201,168,76,0.28);
+      background: rgba(58,95,204,0.12);
+      border: 1px solid rgba(245,166,35,0.28);
       border-radius: 10px; padding: 13px 15px;
+      backdrop-filter: blur(8px);
     }
     .info-box svg { flex-shrink: 0; color: var(--gold); margin-top: 1px; }
     .info-box p { font-size: 12.5px; color: #e8c870; line-height: 1.58; }
 
     /* ===== SUBMIT SECTION ===== */
     .submit-sec {
-      background: linear-gradient(135deg, var(--forest), var(--canopy));
+      background: rgba(13,21,71,0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 20px; padding: 40px;
       text-align: center; position: relative; overflow: hidden;
-      box-shadow: 0 8px 40px rgba(26,58,42,0.22);
+      box-shadow: 0 8px 48px rgba(8,13,36,0.60), inset 0 1px 0 rgba(255,255,255,0.08);
     }
     .submit-sec::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(168,217,143,0.13) 0%, transparent 70%);
+      background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(245,166,35,0.10) 0%, transparent 70%);
     }
     .submit-sec h3 {
       font-family: 'Cormorant Garamond', serif;
@@ -305,8 +420,9 @@
     .submit-sec > p { font-size: 13px; color: rgba(255,255,255,0.62); margin-bottom: 26px; position: relative; }
     .gdpr-wrap {
       display: flex; align-items: flex-start; gap: 10px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.11);
+      background: rgba(8,13,56,0.50);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.10);
       border-radius: 10px; padding: 13px 15px;
       margin-bottom: 22px; text-align: left; position: relative;
     }
@@ -314,16 +430,16 @@
     .gdpr-wrap p { font-size: 12px; color: rgba(255,255,255,0.68); line-height: 1.6; }
     .btn-submit {
       display: inline-flex; align-items: center; gap: 10px;
-      background: linear-gradient(135deg, var(--lime), var(--leaf));
-      color: var(--forest);
+      background: linear-gradient(135deg, #f7c05a 0%, #f5a623 60%, #e8860a 100%);
+      color: #0a0f2c;
       font-family: 'DM Sans', sans-serif;
       font-size: 15px; font-weight: 700;
       border: none; border-radius: 100px;
       padding: 15px 38px; cursor: pointer;
       transition: var(--tr); position: relative;
-      box-shadow: 0 4px 20px rgba(168,217,143,0.38);
+      box-shadow: 0 4px 24px rgba(245,166,35,0.50);
     }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(168,217,143,0.48); }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(245,166,35,0.65); }
     .btn-submit:active { transform: translateY(0); }
     .btn-submit svg { transition: transform .2s; }
     .btn-submit:hover svg { transform: translateX(3px); }
@@ -335,7 +451,9 @@
 
     /* ===== SUCCESS ===== */
     #success-msg {
-      display: none; background: #132236;
+      display: none;
+      background: rgba(13,21,71,0.65);
+      backdrop-filter: blur(20px);
       border: 2px solid var(--leaf);
       border-radius: 20px; padding: 52px 32px;
       text-align: center; box-shadow: var(--shadow); margin-top: 28px;
@@ -355,6 +473,20 @@
   </style>
 </head>
 <body>
+
+<!-- ANNEAUX CONCENTRIQUES HAUT GAUCHE -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="orb orb-4"></div>
+
+<!-- ANNEAUX CONCENTRIQUES DROITE -->
+<div class="ring-r ring-r1"></div>
+<div class="ring-r ring-r2"></div>
+<div class="ring-r ring-r3"></div>
+
+<!-- LUEUR CENTRALE -->
+<div class="glow-center"></div>
 
 <!-- SVG SPRITE — icônes vectorielles sobres -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
