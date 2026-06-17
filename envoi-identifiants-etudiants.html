@@ -303,6 +303,22 @@
     renderList();
   }
 
+  function sendEmailGmail(id) {
+    const list = loadStudents();
+    const s = list.find(x => x.id === id);
+    if (!s) return;
+
+    const subject = encodeURIComponent(`Félicitations ${s.prenom} ! Votre compte GADA Training est actif`);
+    const body = encodeURIComponent(buildEmailBody(s));
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(s.email)}&su=${subject}&body=${body}`;
+
+    window.open(gmailUrl, '_blank');
+
+    s.sent = true;
+    saveStudents(list);
+    renderList();
+  }
+
   function copyPassword(id) {
     const list = loadStudents();
     const s = list.find(x => x.id === id);
@@ -331,7 +347,8 @@
         </div>
         <div class="student-actions">
           <button class="btn btn-small btn-ghost" onclick="copyPassword('${s.id}')">Copier le mot de passe</button>
-          <button class="btn btn-small btn-primary" onclick="sendEmail('${s.id}')">Envoyer l'email</button>
+          <button class="btn btn-small btn-primary" onclick="sendEmailGmail('${s.id}')">Envoyer via Gmail (web)</button>
+          <button class="btn btn-small btn-ghost" onclick="sendEmail('${s.id}')">Ouvrir dans mon app mail</button>
           <button class="btn btn-small btn-danger" onclick="deleteStudent('${s.id}')">Supprimer</button>
         </div>
       </div>
