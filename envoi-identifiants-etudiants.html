@@ -1,705 +1,368 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GADA Training — Envoi des identifiants étudiants</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #080d24;
-            --panel: rgba(13, 21, 71, 0.55);
-            --panel-solid: #0d1547;
-            --border: rgba(255, 255, 255, 0.10);
-            --gold: #f5a623;
-            --gold-soft: #f7c05a;
-            --text: #e8edf2;
-            --muted: #8a9fc0;
-            --green: #4caf7d;
-            --red: #d94f4f;
-            --radius: 12px;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 32px 18px 60px;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 60% 50% at 15% 0%, rgba(30, 60, 200, 0.16) 0%, transparent 60%),
-                radial-gradient(ellipse 50% 50% at 90% 90%, rgba(245, 166, 35, 0.06) 0%, transparent 60%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .wrap {
-            max-width: 880px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GADA Training — Envoi des identifiants étudiants</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #080d24;
+    --panel: rgba(13,21,71,0.55);
+    --panel-solid: #0d1547;
+    --border: rgba(255,255,255,0.10);
+    --gold: #f5a623;
+    --gold-soft: #f7c05a;
+    --text: #e8edf2;
+    --muted: #8a9fc0;
+    --green: #4caf7d;
+    --red: #d94f4f;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 18px 60px;
+  }
+  body::before {
+    content:'';
+    position: fixed; inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 0%, rgba(30,60,200,0.16) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 90% 90%, rgba(245,166,35,0.06) 0%, transparent 60%);
+    pointer-events:none; z-index:0;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; position:relative; z-index:1; }
 
-        .hero-header {
-            position: relative;
-            background: linear-gradient(135deg, rgba(8, 13, 36, 0.72) 0%, rgba(13, 21, 71, 0.68) 55%, rgba(26, 42, 122, 0.62) 100%), url('images/Image.png') center/cover no-repeat;
-            border-radius: 18px;
-            padding: 40px 30px 50px;
-            margin-bottom: 30px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px rgba(8, 13, 36, 0.6);
-            overflow: hidden;
-        }
-        .hero-header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: #080d24;
-            clip-path: ellipse(55% 100% at 50% 100%);
-        }
-        .hero-header .logo {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        .hero-header .logo img {
-            height: 60px;
-            width: auto;
-            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
-        }
-        .hero-header h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(26px, 4vw, 38px);
-            color: #fff;
-            font-weight: 700;
-            margin-bottom: 6px;
-            position: relative;
-        }
-        .hero-header h1 em {
-            color: var(--gold-soft);
-            font-style: normal;
-        }
-        .hero-header p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
-            max-width: 500px;
-            margin: 0 auto;
-            position: relative;
-        }
+  header { text-align:center; margin-bottom: 30px; }
+  header h1 {
+    font-family:'Cormorant Garamond', serif;
+    font-size: clamp(24px,4vw,34px);
+    color:#fff; font-weight:700; margin-bottom:6px;
+  }
+  header p { color: var(--muted); font-size: 13.5px; }
 
-        .panel {
-            background: var(--panel);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 26px 28px;
-            margin-bottom: 22px;
-            box-shadow: 0 8px 32px rgba(8, 13, 36, 0.5);
-        }
-        .panel h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 19px;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .panel .sub {
-            font-size: 12.5px;
-            color: var(--muted);
-            margin-bottom: 18px;
-        }
+  .panel {
+    background: var(--panel);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 32px rgba(8,13,36,0.5);
+  }
+  .panel h2 {
+    font-family:'Cormorant Garamond', serif;
+    font-size: 19px; color:#fff; margin-bottom: 4px;
+  }
+  .panel .sub { font-size:12.5px; color:var(--muted); margin-bottom:18px; }
 
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-        @media (max-width:620px) {
-            .row {
-                grid-template-columns: 1fr;
-            }
-        }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .row3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px; }
+  @media (max-width:620px){ .row, .row3 { grid-template-columns:1fr; } }
 
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 14px;
-        }
-        .field label {
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #dfe6f0;
-        }
-        input[type=text],
-        input[type=email] {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            color: #e8edf2;
-            background: rgba(8, 13, 56, 0.55);
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 13px;
-            outline: none;
-            transition: all .2s;
-        }
-        input:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.18);
-        }
-        input::placeholder {
-            color: #5a7a9a;
-        }
+  .field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+  .field label { font-size:12.5px; font-weight:600; color:#dfe6f0; }
+  input[type=text], input[type=email] {
+    font-family:'DM Sans',sans-serif; font-size:14px; color:#e8edf2;
+    background: rgba(8,13,56,0.55);
+    border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 10px 13px;
+    outline:none; transition: all .2s;
+  }
+  input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,166,35,0.18); }
+  input::placeholder { color:#5a7a9a; }
 
-        .pwd-preview {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: var(--gold-soft);
-            background: rgba(245, 166, 35, 0.08);
-            border: 1px dashed rgba(245, 166, 35, 0.35);
-            border-radius: 10px;
-            padding: 9px 13px;
-            font-family: 'DM Mono', monospace, monospace;
-            min-height: 38px;
-        }
+  .pwd-preview {
+    display:flex; align-items:center; gap:8px;
+    font-size: 13px; color: var(--gold-soft);
+    background: rgba(245,166,35,0.08);
+    border: 1px dashed rgba(245,166,35,0.35);
+    border-radius: 10px; padding: 9px 13px;
+    font-family: 'DM Mono', monospace, monospace;
+    min-height: 38px;
+  }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            border: none;
-            border-radius: 100px;
-            padding: 11px 24px;
-            cursor: pointer;
-            transition: all .2s;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #f7c05a, #f5a623 60%, #e8860a);
-            color: #0a0f2c;
-            box-shadow: 0 4px 18px rgba(245, 166, 35, 0.35);
-        }
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 24px rgba(245, 166, 35, 0.5);
-        }
-        .btn-ghost {
-            background: rgba(255, 255, 255, 0.06);
-            color: #dfe6f0;
-            border: 1px solid var(--border);
-        }
-        .btn-ghost:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .btn-small {
-            padding: 7px 14px;
-            font-size: 12.5px;
-        }
-        .btn-danger {
-            background: rgba(217, 79, 79, 0.12);
-            color: #ff9b9b;
-            border: 1px solid rgba(217, 79, 79, 0.3);
-        }
-        .btn-danger:hover {
-            background: rgba(217, 79, 79, 0.2);
-        }
+  .btn {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600;
+    border:none; border-radius:100px; padding:11px 24px;
+    cursor:pointer; transition: all .2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg,#f7c05a,#f5a623 60%,#e8860a);
+    color:#0a0f2c; box-shadow: 0 4px 18px rgba(245,166,35,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(245,166,35,0.5); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.06); color:#dfe6f0; border:1px solid var(--border);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+  .btn-small { padding:7px 14px; font-size:12.5px; }
+  .btn-danger { background: rgba(217,79,79,0.12); color:#ff9b9b; border:1px solid rgba(217,79,79,0.3); }
+  .btn-danger:hover { background: rgba(217,79,79,0.2); }
 
-        .btn-whatsapp {
-            background: #25d366;
-            color: #fff;
-            border: none;
-        }
-        .btn-whatsapp:hover {
-            background: #1ebe5c;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 18px rgba(37, 211, 102, 0.4);
-        }
+  .list-empty {
+    text-align:center; color:var(--muted); font-size:13.5px;
+    padding: 30px 10px;
+  }
 
-        .list-empty {
-            text-align: center;
-            color: var(--muted);
-            font-size: 13.5px;
-            padding: 30px 10px;
-        }
+  .student-card {
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    background: rgba(8,13,56,0.45);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 18px; margin-bottom:10px;
+    flex-wrap: wrap;
+  }
+  .student-info { display:flex; flex-direction:column; gap:2px; }
+  .student-name { font-size:14.5px; font-weight:600; color:#fff; }
+  .student-meta { font-size:12px; color:var(--muted); }
+  .student-meta .pwd { color: var(--gold-soft); font-family: monospace; }
+  .student-actions { display:flex; gap:8px; flex-wrap:wrap; }
 
-        .student-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            background: rgba(8, 13, 56, 0.45);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .student-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .student-name {
-            font-size: 14.5px;
-            font-weight: 600;
-            color: #fff;
-        }
-        .student-meta {
-            font-size: 12px;
-            color: var(--muted);
-        }
-        .student-meta .pwd {
-            color: var(--gold-soft);
-            font-family: monospace;
-        }
-        .student-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+  .badge-sent {
+    font-size:10.5px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;
+    color: var(--green); background: rgba(76,175,125,0.12);
+    border:1px solid rgba(76,175,125,0.3); border-radius:100px; padding:3px 9px;
+  }
 
-        .badge-sent {
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: var(--green);
-            background: rgba(76, 175, 125, 0.12);
-            border: 1px solid rgba(76, 175, 125, 0.3);
-            border-radius: 100px;
-            padding: 3px 9px;
-        }
+  .toast {
+    position: fixed; bottom: 24px; left:50%; transform: translateX(-50%) translateY(20px);
+    background:#0d1547; border:1px solid var(--gold); color:#fff;
+    padding: 12px 22px; border-radius: 100px; font-size:13.5px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    opacity:0; pointer-events:none; transition: all .3s; z-index: 50;
+  }
+  .toast.show { opacity:1; transform: translateX(-50%) translateY(0); }
 
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #0d1547;
-            border: 1px solid var(--gold);
-            color: #fff;
-            padding: 12px 22px;
-            border-radius: 100px;
-            font-size: 13.5px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            opacity: 0;
-            pointer-events: none;
-            transition: all .3s;
-            z-index: 50;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+  .search-box { margin-bottom: 16px; }
+  .search-box input { width:100%; }
 
-        .search-box {
-            margin-bottom: 16px;
-        }
-        .search-box input {
-            width: 100%;
-        }
+  .err-msg { font-size:11.5px; color:var(--red); margin-top:2px; display:none; }
 
-        .err-msg {
-            font-size: 11.5px;
-            color: var(--red);
-            margin-top: 2px;
-            display: none;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 11.5px;
-            color: var(--muted);
-            margin-top: 30px;
-        }
-        .footer-note strong {
-            color: var(--gold-soft);
-        }
-        .footer-note img {
-            height: 1.2em;
-            vertical-align: middle;
-            margin-right: 4px;
-        }
-        .whatsapp-banner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: rgba(37, 211, 102, 0.12);
-            border: 1px solid rgba(37, 211, 102, 0.25);
-            border-radius: 12px;
-            padding: 14px 20px;
-            margin-bottom: 22px;
-            flex-wrap: wrap;
-        }
-        .whatsapp-banner span {
-            font-size: 13.5px;
-            color: #e8edf2;
-        }
-        .whatsapp-banner .btn-whatsapp {
-            padding: 8px 20px;
-            font-size: 13px;
-        }
-
-        .email-preview-box {
-            display: none;
-            max-width: 880px;
-            margin: 20px auto;
-            background: rgba(8, 13, 56, 0.85);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .email-preview-box.show {
-            display: block !important;
-        }
-        .email-preview-box iframe {
-            width: 100%;
-            min-height: 500px;
-            border: none;
-            border-radius: 8px;
-            background: #fff;
-        }
-    </style>
+  .footer-note { text-align:center; font-size:11.5px; color:var(--muted); margin-top:30px; }
+</style>
 </head>
 <body>
 
-    <div class="wrap">
+<div class="wrap">
+  <header>
+    <h1>Envoi des identifiants étudiants</h1>
+    <p>Ajoutez un étudiant après son inscription sur le formulaire, puis envoyez-lui ses accès en un clic.</p>
+  </header>
 
-        <!-- En-tête avec image de couverture et logo -->
-        <header class="hero-header">
-            <div class="logo">
-                <img src="images/logo-gada.png" alt="GADA Training">
-            </div>
-            <h1>Envoi des <em>identifiants étudiants</em></h1>
-            <p>Ajoutez un étudiant après son inscription sur le formulaire, puis envoyez-lui ses accès en un clic.</p>
-        </header>
+  <!-- AJOUT ETUDIANT -->
+  <div class="panel">
+    <h2>Ajouter un étudiant</h2>
+    <div class="sub">Copiez le prénom, nom et email reçus par e-mail depuis le formulaire d'inscription (FormSubmit).</div>
 
-        <!-- Bannière WhatsApp -->
-        <div class="whatsapp-banner">
-            <span>📱 Rejoignez la communauté WhatsApp pour ne rien rater à tout moment :</span>
-            <a href="https://chat.whatsapp.com/Cs10gVyWlL277uMlYcofno" target="_blank" class="btn btn-whatsapp btn-small">🔗 Rejoindre le groupe</a>
-        </div>
-
-        <!-- AJOUT ETUDIANT -->
-        <div class="panel">
-            <h2>Ajouter un étudiant</h2>
-            <div class="sub">Copiez le prénom, nom et email reçus par e-mail depuis le formulaire d'inscription (FormSubmit).</div>
-
-            <div class="row">
-                <div class="field">
-                    <label>Prénom *</label>
-                    <input type="text" id="inPrenom" placeholder="ex. Jean-Claude" oninput="updatePwdPreview()" />
-                    <span class="err-msg" id="errPrenom">Le prénom est obligatoire.</span>
-                </div>
-                <div class="field">
-                    <label>Nom *</label>
-                    <input type="text" id="inNom" placeholder="ex. Mbandza" />
-                    <span class="err-msg" id="errNom">Le nom est obligatoire.</span>
-                </div>
-            </div>
-            <div class="field">
-                <label>Email *</label>
-                <input type="email" id="inEmail" placeholder="etudiant@email.com" />
-                <span class="err-msg" id="errEmail">Un email valide est obligatoire.</span>
-            </div>
-
-            <div class="field">
-                <label>Mot de passe généré (2026 + prénom)</label>
-                <div class="pwd-preview" id="pwdPreview">2026…</div>
-            </div>
-
-            <button class="btn btn-primary" onclick="addStudent()">+ Ajouter à la liste</button>
-        </div>
-
-        <!-- LISTE -->
-        <div class="panel">
-            <h2>Étudiants ajoutés</h2>
-            <div class="sub">Cliquez sur « Envoyer l'email » pour ouvrir votre messagerie avec le message déjà rédigé.</div>
-
-            <div class="search-box">
-                <input type="text" id="searchBox" placeholder="Rechercher un étudiant par nom ou email…" oninput="renderList()" />
-            </div>
-
-            <div id="studentList"></div>
-        </div>
-
-        <div class="footer-note">
-            <strong><img src="images/logo-gada.png" alt="GADA Training"> GADA Training</strong> — Outil interne, données conservées uniquement dans ce navigateur.
-        </div>
+    <div class="row">
+      <div class="field">
+        <label>Prénom *</label>
+        <input type="text" id="inPrenom" placeholder="ex. Jean-Claude" oninput="updatePwdPreview()"/>
+        <span class="err-msg" id="errPrenom">Le prénom est obligatoire.</span>
+      </div>
+      <div class="field">
+        <label>Nom *</label>
+        <input type="text" id="inNom" placeholder="ex. Mbandza"/>
+        <span class="err-msg" id="errNom">Le nom est obligatoire.</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Email *</label>
+      <input type="email" id="inEmail" placeholder="etudiant@email.com"/>
+      <span class="err-msg" id="errEmail">Un email valide est obligatoire.</span>
     </div>
 
-    <!-- Boîte d'aperçu de l'email -->
-    <div id="emailPreview" class="email-preview-box"></div>
+    <div class="field">
+      <label>Mot de passe généré (2026 + prénom)</label>
+      <div class="pwd-preview" id="pwdPreview">2026…</div>
+    </div>
 
-    <div class="toast" id="toast"></div>
+    <button class="btn btn-primary" onclick="addStudent()">+ Ajouter à la liste</button>
+  </div>
 
-    <script>
-        const STORAGE_KEY = 'gada_students_v1';
-        // URLs des images (même dossier que le formulaire)
-        const LOGO_URL = 'images/logo-gada.png';
-        const COVER_URL = 'images/Image.png';
+  <!-- LISTE -->
+  <div class="panel">
+    <h2>Étudiants ajoutés</h2>
+    <div class="sub">Cliquez sur « Envoyer l'email » pour ouvrir votre messagerie avec le message déjà rédigé.</div>
 
-        function loadStudents() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                return raw ? JSON.parse(raw) : [];
-            } catch (e) { return []; }
-        }
+    <div class="search-box">
+      <input type="text" id="searchBox" placeholder="Rechercher un étudiant par nom ou email…" oninput="renderList()"/>
+    </div>
 
-        function saveStudents(list) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-        }
+    <div id="studentList"></div>
+  </div>
 
-        function genPassword(prenom) {
-            const clean = prenom.trim().replace(/\s+/g, '');
-            if (!clean) return '2026…';
-            return '2026' + clean;
-        }
+  <div class="footer-note">GADA Training — Outil interne, données conservées uniquement dans ce navigateur.</div>
+</div>
 
-        function updatePwdPreview() {
-            const prenom = document.getElementById('inPrenom').value;
-            document.getElementById('pwdPreview').textContent = genPassword(prenom);
-        }
+<div class="toast" id="toast"></div>
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2600);
-        }
+<script>
+  const STORAGE_KEY = 'gada_students_v1';
 
-        function addStudent() {
-            const prenom = document.getElementById('inPrenom').value.trim();
-            const nom = document.getElementById('inNom').value.trim();
-            const email = document.getElementById('inEmail').value.trim();
+  function loadStudents() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch(e) { return []; }
+  }
+  function saveStudents(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
 
-            let ok = true;
-            document.getElementById('errPrenom').style.display = prenom ? 'none' : 'block';
-            document.getElementById('errNom').style.display = nom ? 'none' : 'block';
-            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            document.getElementById('errEmail').style.display = emailValid ? 'none' : 'block';
-            if (!prenom) ok = false;
-            if (!nom) ok = false;
-            if (!emailValid) ok = false;
-            if (!ok) return;
+  function genPassword(prenom) {
+    const clean = prenom.trim().replace(/\s+/g,'');
+    if (!clean) return '2026…';
+    return '2026' + clean;
+  }
 
-            const list = loadStudents();
-            list.push({
-                id: Date.now().toString(36),
-                prenom,
-                nom,
-                email,
-                password: genPassword(prenom),
-                sent: false
-            });
-            saveStudents(list);
+  function updatePwdPreview() {
+    const prenom = document.getElementById('inPrenom').value;
+    document.getElementById('pwdPreview').textContent = genPassword(prenom);
+  }
 
-            document.getElementById('inPrenom').value = '';
-            document.getElementById('inNom').value = '';
-            document.getElementById('inEmail').value = '';
-            updatePwdPreview();
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=> t.classList.remove('show'), 2600);
+  }
 
-            renderList();
-            showToast('Étudiant ajouté à la liste.');
-        }
+  function addStudent() {
+    const prenom = document.getElementById('inPrenom').value.trim();
+    const nom = document.getElementById('inNom').value.trim();
+    const email = document.getElementById('inEmail').value.trim();
 
-        function deleteStudent(id) {
-            if (!confirm('Supprimer cet étudiant de la liste ?')) return;
-            const list = loadStudents().filter(s => s.id !== id);
-            saveStudents(list);
-            renderList();
-        }
+    let ok = true;
+    document.getElementById('errPrenom').style.display = prenom ? 'none' : 'block';
+    document.getElementById('errNom').style.display = nom ? 'none' : 'block';
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    document.getElementById('errEmail').style.display = emailValid ? 'none' : 'block';
+    if (!prenom) ok = false;
+    if (!nom) ok = false;
+    if (!emailValid) ok = false;
+    if (!ok) return;
 
-        /**
-         * Construit l'email au format HTML avec le logo et l'image de couverture
-         */
-        function buildEmailHTML(s) {
-            return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            body { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; background: #f5f7fa; margin: 0; padding: 20px; }
-            .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
-            .cover { width: 100%; height: auto; display: block; }
-            .content { padding: 30px 32px; }
-            .logo { text-align: center; margin-bottom: 18px; }
-            .logo img { height: 50px; width: auto; }
-            h1 { font-family: 'Cormorant Garamond', 'Georgia', serif; color: #0a0f2c; font-size: 28px; margin: 0 0 6px 0; }
-            h1 span { color: #f5a623; }
-            .greeting { font-size: 18px; color: #1a2a3a; margin-bottom: 6px; }
-            .msg { color: #2d3a4a; line-height: 1.7; font-size: 15px; }
-            .msg p { margin: 10px 0; }
-            .credentials { background: #f0f4fc; border-left: 4px solid #f5a623; padding: 14px 18px; border-radius: 6px; margin: 16px 0; }
-            .credentials strong { color: #0a0f2c; }
-            .credentials .pwd { color: #c97d0e; font-weight: 700; font-family: monospace; font-size: 16px; }
-            .cta-whatsapp { background: #25d366; color: #fff; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 6px; }
-            .cta-whatsapp:hover { background: #1ebe5c; }
-            .footer { text-align: center; font-size: 12px; color: #8a9fc0; border-top: 1px solid #eef2f7; padding: 18px 32px 22px; }
-            .footer img { height: 20px; vertical-align: middle; margin-right: 6px; }
-            .footer strong { color: #0a0f2c; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <!-- IMAGE DE COUVERTURE -->
-            <img src="${COVER_URL}" alt="GADA Training - Couverture" class="cover" style="width:100%;height:auto;display:block;">
+    const list = loadStudents();
+    list.push({
+      id: Date.now().toString(36),
+      prenom, nom, email,
+      password: genPassword(prenom),
+      sent: false
+    });
+    saveStudents(list);
 
-            <div class="content">
-              <div class="logo">
-                <img src="${LOGO_URL}" alt="GADA Training">
-              </div>
+    document.getElementById('inPrenom').value = '';
+    document.getElementById('inNom').value = '';
+    document.getElementById('inEmail').value = '';
+    updatePwdPreview();
 
-              <h1>Félicitations <span>${s.prenom}</span> ! 🎉</h1>
+    renderList();
+    showToast('Étudiant ajouté à la liste.');
+  }
 
-              <div class="msg">
-                <p>Votre candidature pour rejoindre <strong>GADA Training</strong> a été acceptée.</p>
-                <p>Votre compte est désormais actif et vous pouvez vous connecter sur la plateforme avec les identifiants suivants :</p>
+  function deleteStudent(id) {
+    if (!confirm('Supprimer cet étudiant de la liste ?')) return;
+    const list = loadStudents().filter(s => s.id !== id);
+    saveStudents(list);
+    renderList();
+  }
 
-                <div class="credentials">
-                  <p><strong>📧 Email :</strong> ${s.email}</p>
-                  <p><strong>🔑 Mot de passe :</strong> <span class="pwd">${s.password}</span></p>
-                </div>
+  function buildEmailBody(s) {
+    return [
+      `Félicitations ${s.prenom} ! 🎉`,
+      `Votre candidature pour rejoindre GADA Training a été acceptée. Votre compte est désormais actif et vous pouvez vous connecter sur la plateforme avec les identifiants suivants :`,
+      ``,
+      `📧 Email : ${s.email}`,
+      `🔑 Mot de passe : ${s.password}`,
+      ``,
+      `(Pensez à modifier ce mot de passe dès votre première connexion pour sécuriser votre compte).`,
+      ``,
+      `Bienvenue dans la communauté GADA Sol ! À très bientôt pour le début des activités.`
+    ].join('\n');
+  }
 
-                <p style="font-size:13px;color:#6a7a8a;">(Pensez à modifier ce mot de passe dès votre première connexion pour sécuriser votre compte).</p>
+  function sendEmail(id) {
+    const list = loadStudents();
+    const s = list.find(x => x.id === id);
+    if (!s) return;
 
-                <p style="margin-top:18px;">Bienvenue dans la communauté <strong>GADA Sol</strong> ! À très bientôt pour le début des activités.</p>
+    const subject = encodeURIComponent(`Félicitations ${s.prenom} ! Votre compte GADA Training est actif`);
+    const body = encodeURIComponent(buildEmailBody(s));
+    const mailto = `mailto:${s.email}?subject=${subject}&body=${body}`;
 
-                <p style="margin-top:20px;">
-                  <strong>📱 Rejoignez notre groupe WhatsApp pour ne rien rater :</strong><br>
-                  <a href="https://chat.whatsapp.com/Cs10gVyWlL277uMlYcofno" class="cta-whatsapp">🔗 Rejoindre le groupe WhatsApp</a>
-                </p>
-              </div>
-            </div>
+    window.location.href = mailto;
 
-            <div class="footer">
-              <strong><img src="${LOGO_URL}" alt="GADA Training"> GADA Training</strong> — Formation spécialisée SIG · Télédétection · Agriculture Numérique
-            </div>
-          </div>
-        </body>
-        </html>
-        `;
-        }
+    s.sent = true;
+    saveStudents(list);
+    renderList();
+  }
 
-        function sendEmail(id) {
-            const list = loadStudents();
-            const s = list.find(x => x.id === id);
-            if (!s) return;
+  function sendEmailGmail(id) {
+    const list = loadStudents();
+    const s = list.find(x => x.id === id);
+    if (!s) return;
 
-            const subject = encodeURIComponent(`Félicitations ${s.prenom} ! Votre compte GADA Training est actif`);
-            const htmlBody = buildEmailHTML(s);
-            const body = encodeURIComponent(htmlBody);
-            const mailto = `mailto:${s.email}?subject=${subject}&body=${body}`;
+    const subject = encodeURIComponent(`Félicitations ${s.prenom} ! Votre compte GADA Training est actif`);
+    const body = encodeURIComponent(buildEmailBody(s));
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(s.email)}&su=${subject}&body=${body}`;
 
-            window.location.href = mailto;
+    window.open(gmailUrl, '_blank');
 
-            s.sent = true;
-            saveStudents(list);
-            renderList();
-            showToast('Email envoyé avec succès !');
-        }
+    s.sent = true;
+    saveStudents(list);
+    renderList();
+  }
 
-        function sendEmailGmail(id) {
-            const list = loadStudents();
-            const s = list.find(x => x.id === id);
-            if (!s) return;
+  function copyPassword(id) {
+    const list = loadStudents();
+    const s = list.find(x => x.id === id);
+    if (!s) return;
+    navigator.clipboard?.writeText(s.password).then(()=> showToast('Mot de passe copié.'));
+  }
 
-            const subject = encodeURIComponent(`Félicitations ${s.prenom} ! Votre compte GADA Training est actif`);
-            const htmlBody = buildEmailHTML(s);
-            const body = encodeURIComponent(htmlBody);
-            const gmailUrl =
-                `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(s.email)}&su=${subject}&body=${body}`;
+  function renderList() {
+    const list = loadStudents();
+    const q = document.getElementById('searchBox').value.trim().toLowerCase();
+    const filtered = q
+      ? list.filter(s => (s.prenom+' '+s.nom+' '+s.email).toLowerCase().includes(q))
+      : list;
 
-            window.open(gmailUrl, '_blank');
+    const container = document.getElementById('studentList');
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="list-empty">${list.length === 0 ? 'Aucun étudiant ajouté pour le moment.' : 'Aucun résultat pour cette recherche.'}</div>`;
+      return;
+    }
 
-            s.sent = true;
-            saveStudents(list);
-            renderList();
-            showToast('Email ouvert dans Gmail !');
-        }
+    container.innerHTML = filtered.slice().reverse().map(s => `
+      <div class="student-card">
+        <div class="student-info">
+          <div class="student-name">${escapeHtml(s.prenom)} ${escapeHtml(s.nom)} ${s.sent ? '<span class="badge-sent">Envoyé</span>' : ''}</div>
+          <div class="student-meta">${escapeHtml(s.email)} &nbsp;·&nbsp; mot de passe : <span class="pwd">${escapeHtml(s.password)}</span></div>
+        </div>
+        <div class="student-actions">
+          <button class="btn btn-small btn-ghost" onclick="copyPassword('${s.id}')">Copier le mot de passe</button>
+          <button class="btn btn-small btn-primary" onclick="sendEmailGmail('${s.id}')">Envoyer via Gmail (web)</button>
+          <button class="btn btn-small btn-ghost" onclick="sendEmail('${s.id}')">Ouvrir dans mon app mail</button>
+          <button class="btn btn-small btn-danger" onclick="deleteStudent('${s.id}')">Supprimer</button>
+        </div>
+      </div>
+    `).join('');
+  }
 
-        function copyPassword(id) {
-            const list = loadStudents();
-            const s = list.find(x => x.id === id);
-            if (!s) return;
-            navigator.clipboard?.writeText(s.password).then(() => showToast('Mot de passe copié.'));
-        }
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
 
-        function previewEmail(id) {
-            const list = loadStudents();
-            const s = list.find(x => x.id === id);
-            if (!s) return;
-
-            const previewBox = document.getElementById('emailPreview');
-            previewBox.innerHTML = buildEmailHTML(s);
-            previewBox.classList.toggle('show');
-
-            // Scroll vers l'aperçu
-            if (previewBox.classList.contains('show')) {
-                previewBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        function renderList() {
-            const list = loadStudents();
-            const q = document.getElementById('searchBox').value.trim().toLowerCase();
-            const filtered = q ?
-                list.filter(s => (s.prenom + ' ' + s.nom + ' ' + s.email).toLowerCase().includes(q)) :
-                list;
-
-            const container = document.getElementById('studentList');
-            if (filtered.length === 0) {
-                container.innerHTML =
-                    `<div class="list-empty">${list.length === 0 ? 'Aucun étudiant ajouté pour le moment.' : 'Aucun résultat pour cette recherche.'}</div>`;
-                return;
-            }
-
-            container.innerHTML = filtered.slice().reverse().map(s => `
-          <div class="student-card">
-            <div class="student-info">
-              <div class="student-name">${escapeHtml(s.prenom)} ${escapeHtml(s.nom)} ${s.sent ? '<span class="badge-sent">✅ Envoyé</span>' : ''}</div>
-              <div class="student-meta">${escapeHtml(s.email)} &nbsp;·&nbsp; mot de passe : <span class="pwd">${escapeHtml(s.password)}</span></div>
-            </div>
-            <div class="student-actions">
-              <button class="btn btn-small btn-ghost" onclick="copyPassword('${s.id}')">📋 Copier</button>
-              <button class="btn btn-small btn-primary" onclick="sendEmailGmail('${s.id}')">📧 Gmail</button>
-              <button class="btn btn-small btn-ghost" onclick="sendEmail('${s.id}')">📨 Mail</button>
-              <button class="btn btn-small btn-ghost" onclick="previewEmail('${s.id}')">👁️ Aperçu</button>
-              <button class="btn btn-small btn-danger" onclick="deleteStudent('${s.id}')">🗑️</button>
-            </div>
-          </div>
-        `).join('');
-        }
-
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        updatePwdPreview();
-        renderList();
-    </script>
+  updatePwdPreview();
+  renderList();
+</script>
 </body>
 </html>
