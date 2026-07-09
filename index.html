@@ -948,6 +948,13 @@
         <div class="admin-post-section" style="margin-bottom: 24px;">
             <div class="card-header"><h4><i class="fa-solid fa-bullhorn"></i> Publier une annonce pour tous les clients</h4></div>
             <div class="admin-publish-buttons">
+    <button class="admin-publish-btn"
+            onclick="migrateBase64ToCloudinary()"
+            style="background:linear-gradient(135deg,#0d2b4e,#1a3a5e);
+                   color:white;border-color:#e8a020;">
+        <i class="fa-solid fa-rotate" style="color:#e8a020"></i>
+        Migrer anciens fichiers → Cloudinary
+    </button>
                 <button class="admin-publish-btn" onclick="openAdminGlobalPost('text')"><i class="fa-solid fa-paragraph"></i> Texte</button>
                 <button class="admin-publish-btn" onclick="openAdminGlobalPost('photo')"><i class="fa-regular fa-image"></i> Photo</button>
                 <button class="admin-publish-btn" onclick="openAdminGlobalPost('document')"><i class="fa-regular fa-file"></i> Document</button>
@@ -1138,6 +1145,294 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const storage = firebase.storage();
+
+// ============ CLOUDINARY CONFIG ============
+const CLOUDINARY_CLOUD_NAME = 'my0kljzg'; // ← mettez votre vrai nom ici
+const CLOUDINARY_UPLOAD_PRESET = 'gada_uploads';
+
+async function uploadToCloudinary(file, onProgress) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('folder', 'gada-tfc');
+
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST',
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`);
+
+        xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable && onProgress) {
+                onProgress(Math.round((e.loaded / e.total) * 100));
+            }
+        };
+
+        xhr.onload = () => {
+            const data = JSON.parse(xhr.responseText);
+            if (data.secure_url) {
+                resolve({ url: data.secure_url, publicId: data.public_id });
+            } else {
+                reject(new Error(data.error?.message || 'Upload échoué'));
+            }
+        };
+
+        xhr.onerror = () => reject(new Error('Erreur réseau'));
+        xhr.send(formData);
+    });
+}
+// ==========================================
+
+// ============ MIGRATION BASE64 → CLOUDINARY ============
+async function migrateBase64ToCloudinary() {
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+        toast('Accès réservé à l\'administrateur'); return;
+    }
+
+    const confirmed = confirm(
+        '🔄 MIGRATION DES ANCIENS FICHIERS\n\n' +
+        'Ce script va :\n' +
+        '1. Lire tous les anciens fichiers Base64 dans Firebase\n' +
+        '2. Les envoyer vers Cloudinary\n' +
+        '3. Remplacer les URLs dans Firebase\n\n' +
+        'Durée estimée : 2 à 10 minutes selon le nombre de fichiers.\n' +
+        'Ne fermez pas l\'onglet pendant la migration.\n\n' +
+        'Continuer ?'
+    );
+    if (!confirmed) return;
+
+    // Créer le panneau de progression
+    const panel = document.createElement('div');
+    panel.id = 'migrationPanel';
+    panel.style.cssText = `
+        position:fixed; inset:0; background:rgba(0,0,0,0.85);
+        z-index:99999; display:flex; align-items:center; justify-content:center;
+    `;
+    panel.innerHTML = `
+        <div style="background:white;border-radius:0;border-left:6px solid #e8a020;
+                    padding:32px;width:520px;max-width:95%;max-height:80vh;overflow-y:auto;">
+            <h3 style="color:#0d2b4e;margin-bottom:16px;font-size:1.1rem;">
+                <i class="fa-solid fa-rotate"></i> Migration en cours...
+            </h3>
+            <div id="migBar" style="background:#dde3ec;border-radius:10px;
+                                    overflow:hidden;margin-bottom:12px;">
+                <div id="migFill" style="height:8px;background:#0d2b4e;
+                                         width:0%;transition:width 0.3s;"></div>
+            </div>
+            <div id="migStats" style="font-size:0.78rem;color:#6b7a8d;
+                                      margin-bottom:12px;">Initialisation...</div>
+            <div id="migLog" style="font-size:0.72rem;font-family:monospace;
+                background:#f4f6f9;padding:12px;border-radius:8px;
+                max-height:300px;overflow-y:auto;line-height:1.8;"></div>
+        </div>
+    `;
+    document.body.appendChild(panel);
+
+    const log = (msg, color = '#0d2b4e') => {
+        const logDiv = document.getElementById('migLog');
+        if (logDiv) {
+            logDiv.innerHTML += `<div style="color:${color}">${msg}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    };
+
+    const setProgress = (current, total) => {
+        const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+        const fill = document.getElementById('migFill');
+        const stats = document.getElementById('migStats');
+        if (fill) fill.style.width = pct + '%';
+        if (stats) stats.textContent = `${current}/${total} traités (${pct}%)`;
+    };
+
+    let totalMigrated = 0;
+    let totalSkipped = 0;
+    let totalErrors = 0;
+
+    // Convertir Base64 en File pour Cloudinary
+    function base64ToFile(base64String, fileName) {
+        const arr = base64String.split(',');
+        const mimeMatch = arr[0].match(/:(.*?);/);
+        const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+        return new File([u8arr], fileName || 'file', { type: mime });
+    }
+
+    // Migrer un seul nœud
+    async function migrateDoc(ref, url, name) {
+        if (!url || !url.startsWith('data:')) {
+            totalSkipped++;
+            return;
+        }
+        try {
+            log(`  ⬆ ${name}...`, '#1a3a5e');
+            const file = base64ToFile(url, name);
+            const result = await uploadToCloudinary(file, null);
+            await ref.update({
+                url: result.url,
+                cloudinaryId: result.publicId,
+                migratedAt: Date.now()
+            });
+            log(`  ✅ OK : ${name}`, '#166534');
+            totalMigrated++;
+        } catch (err) {
+            log(`  ❌ Erreur : ${name} — ${err.message}`, '#dc2626');
+            totalErrors++;
+        }
+        await new Promise(r => setTimeout(r, 400));
+    }
+
+    try {
+        log('📊 Analyse en cours...', '#0d2b4e');
+
+        // ── ÉTAPE 1 : Clients TFC ──
+        log('\n📁 Documents TFC...', '#0d2b4e');
+        const clientsSnap = await db.ref('tfc_clients').once('value');
+        const clients = [];
+        clientsSnap.forEach(c => clients.push({ id: c.key, ...c.val() }));
+
+        let processed = 0;
+        const total = clients.length;
+
+        for (const client of clients) {
+            log(`\n👤 Client : ${client.name || client.id}`, '#0d2b4e');
+
+            // Documents
+            const docsSnap = await db.ref(`tfc_clients/${client.id}/documents`).once('value');
+            for (const [docId, doc] of Object.entries(docsSnap.val() || {})) {
+                await migrateDoc(
+                    db.ref(`tfc_clients/${client.id}/documents/${docId}`),
+                    doc.url, doc.name || docId
+                );
+            }
+
+            // Travaux étudiants
+            const worksSnap = await db.ref(`tfc_clients/${client.id}/student_works`).once('value');
+            for (const [wId, w] of Object.entries(worksSnap.val() || {})) {
+                await migrateDoc(
+                    db.ref(`tfc_clients/${client.id}/student_works/${wId}`),
+                    w.url, w.name || wId
+                );
+            }
+
+            // Travaux partagés
+            const sharedSnap = await db.ref(`tfc_clients/${client.id}/shared_works`).once('value');
+            for (const [sId, s] of Object.entries(sharedSnap.val() || {})) {
+                if (s.fileUrl && s.fileUrl.startsWith('data:')) {
+                    try {
+                        log(`  ⬆ Travail partagé : ${s.title || sId}...`, '#1a3a5e');
+                        const file = base64ToFile(s.fileUrl, s.fileName || sId);
+                        const result = await uploadToCloudinary(file, null);
+                        await db.ref(`tfc_clients/${client.id}/shared_works/${sId}`).update({
+                            fileUrl: result.url,
+                            cloudinaryId: result.publicId,
+                            migratedAt: Date.now()
+                        });
+                        log(`  ✅ OK : ${s.title || sId}`, '#166534');
+                        totalMigrated++;
+                    } catch (err) {
+                        log(`  ❌ Erreur : ${err.message}`, '#dc2626');
+                        totalErrors++;
+                    }
+                    await new Promise(r => setTimeout(r, 400));
+                } else { totalSkipped++; }
+            }
+
+            // Avatar client
+            if (client.avatar && client.avatar.startsWith('data:')) {
+                try {
+                    log(`  ⬆ Avatar : ${client.name}...`, '#1a3a5e');
+                    const file = base64ToFile(client.avatar, `avatar_${client.id}.jpg`);
+                    const result = await uploadToCloudinary(file, null);
+                    await db.ref(`tfc_clients/${client.id}`).update({
+                        avatar: result.url,
+                        avatarCloudinaryId: result.publicId,
+                        migratedAt: Date.now()
+                    });
+                    log(`  ✅ Avatar migré : ${client.name}`, '#166534');
+                    totalMigrated++;
+                } catch (err) {
+                    log(`  ❌ Erreur avatar : ${err.message}`, '#dc2626');
+                    totalErrors++;
+                }
+                await new Promise(r => setTimeout(r, 400));
+            }
+
+            processed++;
+            setProgress(processed, total);
+        }
+
+        // ── ÉTAPE 2 : Posts du feed ──
+        log('\n📰 Posts du feed...', '#0d2b4e');
+        const postsSnap = await db.ref('user_projects').once('value');
+        for (const [postId, post] of Object.entries(postsSnap.val() || {})) {
+            await migrateDoc(
+                db.ref(`user_projects/${postId}`),
+                post.url, post.postTitle || post.fileName || postId
+            );
+        }
+
+        // ── ÉTAPE 3 : Avatars apprenants ──
+        log('\n👤 Avatars apprenants...', '#0d2b4e');
+        const profilesSnap = await db.ref('user_profiles').once('value');
+        for (const [uid, profile] of Object.entries(profilesSnap.val() || {})) {
+            if (profile.avatar && profile.avatar.startsWith('data:')) {
+                try {
+                    log(`  ⬆ Avatar : ${profile.fullName}...`, '#1a3a5e');
+                    const file = base64ToFile(profile.avatar, `avatar_${uid}.jpg`);
+                    const result = await uploadToCloudinary(file, null);
+                    await db.ref(`user_profiles/${uid}`).update({
+                        avatar: result.url,
+                        avatarCloudinaryId: result.publicId,
+                        migratedAt: Date.now()
+                    });
+                    log(`  ✅ OK : ${profile.fullName}`, '#166534');
+                    totalMigrated++;
+                } catch (err) {
+                    log(`  ❌ Erreur : ${err.message}`, '#dc2626');
+                    totalErrors++;
+                }
+                await new Promise(r => setTimeout(r, 400));
+            } else { totalSkipped++; }
+        }
+
+        // ── RÉSUMÉ ──
+        setProgress(1, 1);
+        log('\n══════════════════════════════', '#0d2b4e');
+        log(`✅ Migrés : ${totalMigrated}`, '#166534');
+        log(`⏭ Ignorés (déjà OK) : ${totalSkipped}`, '#6b7a8d');
+        log(`❌ Erreurs : ${totalErrors}`,
+            totalErrors > 0 ? '#dc2626' : '#6b7a8d');
+        log('══════════════════════════════', '#0d2b4e');
+
+        // Bouton fermer
+        const h3 = panel.querySelector('h3');
+        if (h3) {
+            h3.innerHTML = `<i class="fa-solid fa-circle-check"
+                style="color:#166534"></i> Migration terminée !`;
+            h3.style.color = '#166534';
+        }
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Fermer';
+        closeBtn.style.cssText = `
+            margin-top:16px;width:100%;padding:12px;
+            background:#0d2b4e;color:white;border:none;
+            border-left:4px solid #e8a020;border-radius:8px;
+            font-weight:700;cursor:pointer;font-size:0.9rem;
+        `;
+        closeBtn.onclick = () => panel.remove();
+        panel.querySelector('div').appendChild(closeBtn);
+
+        toast(`✅ Migration terminée ! ${totalMigrated} fichiers migrés.`, 5000);
+
+    } catch (err) {
+        console.error('Erreur migration:', err);
+        log(`\n💥 Erreur critique : ${err.message}`, '#dc2626');
+        toast('Erreur pendant la migration : ' + err.message);
+    }
+}
+// ======================================================
 
 // =================================================================
 // À MODIFIER SI VOUS CHANGEZ DE PROVIDER IA
@@ -1726,27 +2021,20 @@ function uploadAvatar(input){
     toast('Téléchargement de la photo...', 2000);
     
     const reader = new FileReader();
-    reader.onload = function(e) {
-        const imageUrl = e.target.result;
-        
+    uploadToCloudinary(file, null).then(result => {
         db.ref('user_profiles/' + currentUser.uid).update({
-            avatar: imageUrl
+            avatar: result.url,
+            avatarCloudinaryId: result.publicId
         }).then(() => {
-            currentProfile.avatar = imageUrl;
+            currentProfile.avatar = result.url;
             updateProfileUI();
-            updateAllPostAvatars(currentUser.uid, imageUrl);
-            toast('Photo de profil mise à jour !');
-        }).catch(error => {
-            console.error(error);
-            toast('Erreur lors de la sauvegarde');
+            updateAllPostAvatars(currentUser.uid, result.url);
+            toast('✅ Photo de profil mise à jour !');
         });
-    };
-    
-    reader.onerror = function() {
-        toast('Erreur lors de la lecture du fichier');
-    };
-    
-    reader.readAsDataURL(file);
+    }).catch(error => {
+        console.error(error);
+        toast('Erreur lors de la sauvegarde');
+    });
 }
 
 // Édition du profil
@@ -1993,31 +2281,33 @@ async function updatePost(postId) {
     
     const file = document.getElementById('postFile')?.files[0];
     if (file && (composeMode === 'doc' || composeMode === 'photo')) {
-        const maxSize = composeMode === 'photo' ? 2000000 : 5000000;
-        if (file.size > maxSize) { toast(`Fichier trop volumineux (max ${composeMode === 'photo' ? '2' : '5'}MB)`); return; }
-        
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            updates.url = e.target.result;
+        if (file.size > 50 * 1024 * 1024) {
+            toast('Fichier trop volumineux (max 50MB)'); return;
+        }
+        toast('Envoi du fichier...', 2000);
+        try {
+            const result = await uploadToCloudinary(file, null);
+            updates.url = result.url;
             updates.fileName = file.name;
             updates.fileType = file.type;
-            
-            try {
-                await db.ref(`user_projects/${postId}`).update(updates);
-                toast('Publication modifiée avec succès !');
-                closeCompose();
-                
-                const snapshot = await db.ref(`user_projects/${postId}`).once('value');
-                const post = { _key: postId, ...snapshot.val() };
-                const postElement = document.getElementById(`post-${postId}`);
-                if (postElement) {
-                    postElement.outerHTML = buildPostHtml(post);
-                    listenLikes(postId);
-                    listenComments(postId);
-                }
-            } catch (error) { console.error(error); toast('Erreur lors de la modification'); }
-        };
-        reader.readAsDataURL(file);
+            updates.cloudinaryId = result.publicId;
+
+            await db.ref(`user_projects/${postId}`).update(updates);
+            toast('✅ Publication modifiée avec succès !');
+            closeCompose();
+
+            const snapshot = await db.ref(`user_projects/${postId}`).once('value');
+            const post = { _key: postId, ...snapshot.val() };
+            const postElement = document.getElementById(`post-${postId}`);
+            if (postElement) {
+                postElement.outerHTML = buildPostHtml(post);
+                listenLikes(postId);
+                listenComments(postId);
+            }
+        } catch (error) {
+            console.error(error);
+            toast('Erreur lors de la modification');
+        }
     } else {
         const existingUrl = document.getElementById('existingFileUrl')?.value;
         if (existingUrl) updates.url = existingUrl;
@@ -2119,11 +2409,13 @@ function submitPost(){
         if(composeMode==='doc'||composeMode==='photo'){
             const file=document.getElementById('postFile')?.files[0];
             if(!file){ toast('Sélectionnez un fichier'); return; }
-            const maxSize=composeMode==='photo'?2000000:5000000;
-            if(file.size>maxSize){ toast(`Fichier trop volumineux (max ${composeMode==='photo'?'2':'5'}MB)`); return; }
-            const r=new FileReader();
-            r.onload=e=>savePost({type:composeMode,fileName:file.name,url:e.target.result,fileType:file.type});
-            r.readAsDataURL(file);
+            if(file.size > 50 * 1024 * 1024){ toast('Fichier trop volumineux (max 50MB)'); return; }
+            toast('Envoi du fichier...', 2000);
+            uploadToCloudinary(file, null).then(result => {
+                savePost({type:composeMode, fileName:file.name,
+                         url:result.url, cloudinaryId:result.publicId,
+                         fileType:file.type});
+            }).catch(err => { toast('Erreur upload: ' + err.message); });
         } else {
             const url=document.getElementById('postUrl')?.value.trim();
             if(!url||!url.startsWith('http')){ toast('Entrez un lien valide (http://...)'); return; }
@@ -2311,32 +2603,44 @@ async function uploadTfcDocumentWithStorage(fileInput) {
     if (!currentTfcClientId) return;
     const file = fileInput.files[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { toast('Fichier trop volumineux (max 10MB)'); return; }
+    if (file.size > 50 * 1024 * 1024) { toast('Fichier trop volumineux (max 50MB)'); return; }
 
     const progressDiv = document.getElementById('tfcUploadProgress');
     const progressFill = document.getElementById('tfcProgressFill');
     const progressText = document.getElementById('tfcProgressText');
     if (progressDiv) progressDiv.style.display = 'block';
     if (progressFill) progressFill.style.width = '0%';
-    if (progressText) progressText.textContent = 'Préparation...';
+    if (progressText) progressText.textContent = 'Envoi vers Cloudinary...';
 
-    const reader = new FileReader();
-    reader.onload = async function(e) {
+    try {
+        const result = await uploadToCloudinary(file, (percent) => {
+            if (progressFill) progressFill.style.width = percent + '%';
+            if (progressText) progressText.textContent = `${percent}% téléversé...`;
+        });
+
         const docId = Date.now().toString();
-        const docData = { id: docId, name: file.name, type: file.type, size: file.size, url: e.target.result, uploadedAt: Date.now(), uploadedBy: 'client', status: 'attente', feedback: null };
-        
-        try {
-            await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).set(docData);
-            await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({ type: 'new_document', message: `${currentTfcClientData.name} a déposé un document : ${file.name}`, timestamp: Date.now(), read: false });
-            toast('Document déposé avec succès');
-            if (progressDiv) progressDiv.style.display = 'none';
-            fileInput.value = '';
-            loadClientDocuments();
-        } catch (error) { console.error(error); toast('Erreur: ' + error.message); if (progressDiv) progressDiv.style.display = 'none'; }
-    };
-    reader.onprogress = function(event) { if (event.lengthComputable && progressFill) { const percent = (event.loaded / event.total) * 100; progressFill.style.width = percent + '%'; if (progressText) progressText.textContent = `${Math.round(percent)}% encodage...`; } };
-    reader.onerror = function() { toast('Erreur lors de la lecture du fichier'); if (progressDiv) progressDiv.style.display = 'none'; };
-    reader.readAsDataURL(file);
+        const docData = {
+            id: docId, name: file.name, type: file.type, size: file.size,
+            url: result.url, cloudinaryId: result.publicId,
+            uploadedAt: Date.now(), uploadedBy: 'client',
+            status: 'attente', feedback: null
+        };
+
+        await db.ref(`tfc_clients/${currentTfcClientId}/documents/${docId}`).set(docData);
+        await db.ref(`tfc_clients/${currentTfcClientId}/notifications`).push({
+            type: 'new_document',
+            message: `${currentTfcClientData.name} a déposé un document : ${file.name}`,
+            timestamp: Date.now(), read: false
+        });
+        toast('✅ Document déposé avec succès !');
+        if (progressDiv) progressDiv.style.display = 'none';
+        fileInput.value = '';
+        loadClientDocuments();
+    } catch (error) {
+        console.error(error);
+        toast('Erreur upload: ' + error.message);
+        if (progressDiv) progressDiv.style.display = 'none';
+    }
 }
 
 // Charger les documents du client (temps réel)
@@ -2519,22 +2823,38 @@ async function uploadStudentWork(fileInput) {
     if (progressFill) progressFill.style.width = '0%';
     if (progressText) progressText.textContent = 'Préparation...';
 
-    const reader = new FileReader();
-    reader.onload = async function(e) {
+    try {
+        const result = await uploadToCloudinary(file, (percent) => {
+            if (progressFill) progressFill.style.width = percent + '%';
+            if (progressText) progressText.textContent = `${percent}% téléversé...`;
+        });
+
         const workId = Date.now().toString();
-        const workData = { id: workId, name: file.name, type: file.type, size: file.size, url: e.target.result, uploadedAt: Date.now(), status: 'pending', feedback: null, feedbackDate: null };
-        
-        try {
-            await db.ref(`tfc_clients/${currentTfcClientId}/student_works/${workId}`).set(workData);
-            await db.ref('admin_notifications').push({ type: 'new_student_work', clientId: currentTfcClientId, clientName: currentTfcClientData.name, workName: file.name, message: `${currentTfcClientData.name} a déposé un nouveau travail : ${file.name}`, timestamp: Date.now(), read: false });
-            toast('Travail déposé avec succès !');
-            if (progressDiv) progressDiv.style.display = 'none';
-            fileInput.value = '';
-            await loadStudentWorks();
-        } catch (error) { console.error(error); toast('Erreur: ' + error.message); if (progressDiv) progressDiv.style.display = 'none'; }
-    };
-    reader.onerror = function() { toast('Erreur lors de la lecture du fichier'); if (progressDiv) progressDiv.style.display = 'none'; };
-    reader.readAsDataURL(file);
+        const workData = {
+            id: workId, name: file.name, type: file.type, size: file.size,
+            url: result.url, cloudinaryId: result.publicId,
+            uploadedAt: Date.now(), status: 'pending',
+            feedback: null, feedbackDate: null
+        };
+
+        await db.ref(`tfc_clients/${currentTfcClientId}/student_works/${workId}`).set(workData);
+        await db.ref('admin_notifications').push({
+            type: 'new_student_work',
+            clientId: currentTfcClientId,
+            clientName: currentTfcClientData.name,
+            workName: file.name,
+            message: `${currentTfcClientData.name} a déposé un nouveau travail : ${file.name}`,
+            timestamp: Date.now(), read: false
+        });
+        toast('✅ Travail déposé avec succès !');
+        if (progressDiv) progressDiv.style.display = 'none';
+        fileInput.value = '';
+        await loadStudentWorks();
+    } catch (error) {
+        console.error(error);
+        toast('Erreur upload: ' + error.message);
+        if (progressDiv) progressDiv.style.display = 'none';
+    }
 }
 
 // Charger les travaux étudiants (temps réel)
@@ -2740,16 +3060,18 @@ async function saveTfcClientProfile() {
 async function uploadTfcAvatar(input) {
     if (!input.files[0] || !currentTfcClientId) return;
     const file = input.files[0];
-    if (file.size > 2 * 1024 * 1024) { toast('Image trop lourde (max 2MB)'); return; }
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        const url = e.target.result;
-        await db.ref(`tfc_clients/${currentTfcClientId}/avatar`).set(url);
-        currentTfcClientData.avatar = url;
-        document.getElementById('tfcClientAvatar').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
-        toast('Photo de profil mise à jour');
-    };
-    reader.readAsDataURL(file);
+    if (file.size > 5 * 1024 * 1024) { toast('Image trop lourde (max 5MB)'); return; }
+    toast('Envoi de la photo...', 2000);
+    try {
+        const result = await uploadToCloudinary(file, null);
+        await db.ref(`tfc_clients/${currentTfcClientId}`).update({
+            avatar: result.url, avatarCloudinaryId: result.publicId
+        });
+        currentTfcClientData.avatar = result.url;
+        document.getElementById('tfcClientAvatar').innerHTML =
+            `<img src="${result.url}" style="width:100%;height:100%;object-fit:cover">`;
+        toast('✅ Photo de profil mise à jour');
+    } catch (error) { toast('Erreur: ' + error.message); }
 }
 
 // Publications TFC
@@ -2813,21 +3135,28 @@ async function submitTfcPost() {
     const postData = { authorId: currentTfcClientId, authorName: currentTfcClientData.name, authorUniv: currentTfcClientData.university, authorAvatar: currentTfcClientData.avatar || null, postTitle: postTitle, postSubtitle: postSubtitle, content: content, type: currentTfcPostType, timestamp: Date.now(), likes: 0, commentsCount: 0 };
     
     if ((currentTfcPostType === 'photo' || currentTfcPostType === 'document') && tfcPostMediaFile) {
-        const maxSize = currentTfcPostType === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024;
-        if (tfcPostMediaFile.size > maxSize) { toast(`Fichier trop volumineux (max ${currentTfcPostType === 'photo' ? '5' : '20'}MB)`); return; }
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            try {
-                if (currentTfcPostType === 'photo') { postData.mediaUrl = e.target.result; postData.mediaType = 'image'; }
-                else { postData.fileUrl = e.target.result; postData.fileName = tfcPostMediaFile.name; }
-                await db.ref('tfc_posts').push(postData);
-                toast('Publication partagée avec succès !');
-                closeTfcCompose();
-                showTfcSection('feed');
-            } catch (error) { console.error(error); toast('Erreur: ' + error.message); }
-        };
-        reader.onerror = function() { toast('Erreur lors de la lecture du fichier'); };
-        reader.readAsDataURL(tfcPostMediaFile);
+        if (tfcPostMediaFile.size > 50 * 1024 * 1024) {
+            toast('Fichier trop volumineux (max 50MB)'); return;
+        }
+        toast('Envoi du fichier...', 2000);
+        try {
+            const result = await uploadToCloudinary(tfcPostMediaFile, null);
+            if (currentTfcPostType === 'photo') {
+                postData.mediaUrl = result.url;
+                postData.mediaType = 'image';
+            } else {
+                postData.fileUrl = result.url;
+                postData.fileName = tfcPostMediaFile.name;
+            }
+            postData.cloudinaryId = result.publicId;
+            await db.ref('tfc_posts').push(postData);
+            toast('✅ Publication partagée avec succès !');
+            closeTfcCompose();
+            showTfcSection('feed');
+        } catch (error) {
+            console.error(error);
+            toast('Erreur: ' + error.message);
+        }
         return;
     }
     
@@ -3093,29 +3422,28 @@ async function saveAdminDocEdit(clientId, docId) {
     const newName = document.getElementById('editAdminDocName')?.value.trim();
     const newFile = document.getElementById('editAdminDocFile')?.files[0];
     if (!newName) { toast('Le nom est obligatoire'); return; }
+
     const updates = { name: newName, editedAt: Date.now() };
+
     try {
         if (newFile) {
-            if (newFile.size > 10 * 1024 * 1024) { toast('Fichier trop volumineux (max 10MB)'); return; }
-            toast('Traitement...', 1500);
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                updates.url = e.target.result;
-                updates.type = newFile.type;
-                await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update(updates);
-                toast('✅ Document modifié avec succès !');
-                document.getElementById('editAdminDocModal')?.remove();
-                loadAdminDocuments(clientId);
-            };
-            reader.onerror = () => toast('Erreur lecture fichier');
-            reader.readAsDataURL(newFile);
-        } else {
-            await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update(updates);
-            toast('✅ Document modifié avec succès !');
-            document.getElementById('editAdminDocModal')?.remove();
-            loadAdminDocuments(clientId);
+            if (newFile.size > 50 * 1024 * 1024) {
+                toast('Fichier trop volumineux (max 50MB)'); return;
+            }
+            toast('Envoi du fichier...', 2000);
+            const result = await uploadToCloudinary(newFile, null);
+            updates.url = result.url;
+            updates.type = newFile.type;
+            updates.cloudinaryId = result.publicId;
         }
-    } catch(e) { console.error(e); toast('Erreur : ' + e.message); }
+        await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update(updates);
+        toast('✅ Document modifié avec succès !');
+        document.getElementById('editAdminDocModal')?.remove();
+        loadAdminDocuments(clientId);
+    } catch(e) {
+        console.error(e);
+        toast('Erreur : ' + e.message);
+    }
 }
 
 async function deleteAdminDocument(clientId, docId, docName) {
@@ -3157,17 +3485,25 @@ async function uploadTfcDocumentAdmin(fileInput) {
     if (!currentAdminClientId) return;
     const file = fileInput.files[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { toast('Trop volumineux (max 10MB)'); return; }
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        const docData = { id: Date.now().toString(), name: file.name, type: file.type, size: file.size, url: e.target.result, uploadedAt: Date.now(), uploadedBy: 'admin', status: 'valide', feedback: null };
+    if (file.size > 50 * 1024 * 1024) { toast('Trop volumineux (max 50MB)'); return; }
+    toast('Envoi en cours...', 2000);
+    try {
+        const result = await uploadToCloudinary(file, null);
+        const docData = {
+            id: Date.now().toString(), name: file.name,
+            type: file.type, size: file.size,
+            url: result.url, cloudinaryId: result.publicId,
+            uploadedAt: Date.now(), uploadedBy: 'admin',
+            status: 'valide', feedback: null
+        };
         await db.ref(`tfc_clients/${currentAdminClientId}/documents/${docData.id}`).set(docData);
-        toast('Document déposé');
+        toast('✅ Document déposé');
         fileInput.value = '';
         loadAdminDocuments(currentAdminClientId);
-    };
-    reader.onerror = function() { toast('Erreur lors de la lecture du fichier'); };
-    reader.readAsDataURL(file);
+    } catch (error) {
+        console.error(error);
+        toast('Erreur: ' + error.message);
+    }
 }
 
 function openFeedbackModal(clientId, docId, docName) {
@@ -3312,21 +3648,35 @@ async function submitAdminTfcPost() {
     if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') { toast('Veuillez écrire quelque chose'); return; }
     const postData = { authorId: 'admin', authorName: currentProfile.fullName || 'Formateur', authorUniv: 'GADA Training', authorAvatar: currentProfile.avatar || null, content: content, type: adminTfcPostType, timestamp: Date.now(), isGlobal: true, likes: 0, commentsCount: 0 };
     if ((adminTfcPostType === 'photo' || adminTfcPostType === 'document') && adminTfcPostMediaFile) {
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            try {
-                if (adminTfcPostType === 'photo') { postData.mediaUrl = e.target.result; }
-                else { postData.fileUrl = e.target.result; postData.fileName = adminTfcPostMediaFile.name; }
-                await db.ref('tfc_posts').push(postData);
-                const clientsSnapshot = await db.ref('tfc_clients').once('value');
-                clientsSnapshot.forEach(client => { db.ref(`tfc_clients/${client.key}/notifications`).push({ type: 'admin_announcement', message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`, timestamp: Date.now(), read: false }); });
-                toast('Annonce publiée pour tous les clients !');
-                closeAdminTfcPost();
-                if (currentTfcClientId) loadTfcPosts();
-            } catch (error) { console.error(error); toast('Erreur: ' + error.message); }
-        };
-        reader.onerror = function() { toast('Erreur lors de la lecture du fichier'); };
-        reader.readAsDataURL(adminTfcPostMediaFile);
+        if (adminTfcPostMediaFile.size > 50 * 1024 * 1024) {
+            toast('Fichier trop volumineux (max 50MB)'); return;
+        }
+        toast('Envoi du fichier...', 2000);
+        try {
+            const result = await uploadToCloudinary(adminTfcPostMediaFile, null);
+            if (adminTfcPostType === 'photo') {
+                postData.mediaUrl = result.url;
+            } else {
+                postData.fileUrl = result.url;
+                postData.fileName = adminTfcPostMediaFile.name;
+            }
+            postData.cloudinaryId = result.publicId;
+            await db.ref('tfc_posts').push(postData);
+            const clientsSnapshot = await db.ref('tfc_clients').once('value');
+            clientsSnapshot.forEach(client => {
+                db.ref(`tfc_clients/${client.key}/notifications`).push({
+                    type: 'admin_announcement',
+                    message: `Nouvelle annonce de l'encadreur: ${content.substring(0, 100)}...`,
+                    timestamp: Date.now(), read: false
+                });
+            });
+            toast('✅ Annonce publiée pour tous les clients !');
+            closeAdminTfcPost();
+            if (currentTfcClientId) loadTfcPosts();
+        } catch (error) {
+            console.error(error);
+            toast('Erreur: ' + error.message);
+        }
         return;
     }
     if (adminTfcPostType === 'link') {
@@ -3483,49 +3833,30 @@ async function saveEditSharedWork(clientId, workId, oldFileName, hasFile) {
     if (!title) { toast('Le titre est obligatoire'); return; }
 
     const updates = {
-        title: title,
-        description: description || '',
-        link: link || null,
-        editedAt: Date.now(),
-        edited: true
+        title: title, description: description || '',
+        link: link || null, editedAt: Date.now(), edited: true
     };
 
     try {
         if (newFile) {
-            // Nouveau fichier sélectionné
-            if (newFile.size > 20 * 1024 * 1024) { toast('Fichier trop volumineux (max 20MB)'); return; }
-            toast('Traitement du fichier...', 2000);
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                updates.fileUrl = e.target.result;
-                updates.fileName = newFile.name;
-                await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).update(updates);
-                toast('✅ Travail modifié avec succès !');
-                document.getElementById('editSharedWorkModal')?.remove();
-                // Notifier le client
-                await db.ref(`tfc_clients/${clientId}/notifications`).push({
-                    type: 'shared_work_updated',
-                    message: `Le travail partagé "${title}" a été mis à jour`,
-                    timestamp: Date.now(),
-                    read: false
-                });
-                loadSharedWorks();
-            };
-            reader.onerror = () => toast('Erreur lecture fichier');
-            reader.readAsDataURL(newFile);
-        } else {
-            // Pas de nouveau fichier
-            await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).update(updates);
-            toast('✅ Travail modifié avec succès !');
-            document.getElementById('editSharedWorkModal')?.remove();
-            await db.ref(`tfc_clients/${clientId}/notifications`).push({
-                type: 'shared_work_updated',
-                message: `Le travail partagé "${title}" a été mis à jour`,
-                timestamp: Date.now(),
-                read: false
-            });
-            loadSharedWorks();
+            if (newFile.size > 50 * 1024 * 1024) {
+                toast('Fichier trop volumineux (max 50MB)'); return;
+            }
+            toast('Envoi du fichier...', 2000);
+            const result = await uploadToCloudinary(newFile, null);
+            updates.fileUrl = result.url;
+            updates.fileName = newFile.name;
+            updates.cloudinaryId = result.publicId;
         }
+        await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).update(updates);
+        toast('✅ Travail modifié avec succès !');
+        document.getElementById('editSharedWorkModal')?.remove();
+        await db.ref(`tfc_clients/${clientId}/notifications`).push({
+            type: 'shared_work_updated',
+            message: `Le travail partagé "${title}" a été mis à jour`,
+            timestamp: Date.now(), read: false
+        });
+        loadSharedWorks();
     } catch (error) {
         console.error(error);
         toast('Erreur : ' + error.message);
@@ -3536,30 +3867,45 @@ async function submitSharedWork() {
     const title = document.getElementById('shareWorkTitle').value.trim();
     const description = document.getElementById('shareWorkDescription').value.trim();
     const link = document.getElementById('shareWorkLink').value.trim();
-    if (!title && !description && !shareWorkFile && !link) { toast('Veuillez ajouter au moins un titre, une description, un fichier ou un lien'); return; }
-    toast('Envoi du travail en cours...', false);
-    const workData = { id: Date.now().toString(), title: title || 'Travail partagé', description: description || '', link: link || null, sharedBy: currentProfile.fullName || currentUser.email.split('@')[0], sharedByEmail: currentUser.email, sharedAt: Date.now(), read: false };
+    if (!title && !description && !shareWorkFile && !link) {
+        toast('Veuillez ajouter au moins un titre, une description, un fichier ou un lien');
+        return;
+    }
+    toast('Envoi du travail en cours...', 2000);
+
+    const workData = {
+        id: Date.now().toString(),
+        title: title || 'Travail partagé',
+        description: description || '',
+        link: link || null,
+        sharedBy: currentProfile.fullName || currentUser.email.split('@')[0],
+        sharedByEmail: currentUser.email,
+        sharedAt: Date.now(), read: false
+    };
+
     try {
         if (shareWorkFile) {
-            if (shareWorkFile.size > 20 * 1024 * 1024) { toast('Fichier trop volumineux (max 20MB)'); return; }
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                workData.fileUrl = e.target.result;
-                workData.fileName = shareWorkFile.name;
-                await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
-                await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({ type: 'shared_work', message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`, workId: workData.id, timestamp: Date.now(), read: false });
-                toast(`Travail partagé avec succès à ${currentShareClientName} !`);
-                closeShareWorkModal();
-            };
-            reader.onerror = function() { toast('Erreur lors de la lecture du fichier'); };
-            reader.readAsDataURL(shareWorkFile);
-            return;
+            if (shareWorkFile.size > 50 * 1024 * 1024) {
+                toast('Fichier trop volumineux (max 50MB)'); return;
+            }
+            const result = await uploadToCloudinary(shareWorkFile, null);
+            workData.fileUrl = result.url;
+            workData.fileName = shareWorkFile.name;
+            workData.cloudinaryId = result.publicId;
         }
+
         await db.ref(`tfc_clients/${currentShareClientId}/shared_works/${workData.id}`).set(workData);
-        await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({ type: 'shared_work', message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`, workId: workData.id, timestamp: Date.now(), read: false });
-        toast(`Travail partagé avec succès à ${currentShareClientName} !`);
+        await db.ref(`tfc_clients/${currentShareClientId}/notifications`).push({
+            type: 'shared_work',
+            message: `Nouveau travail partagé : "${workData.title}" par ${workData.sharedBy}`,
+            workId: workData.id, timestamp: Date.now(), read: false
+        });
+        toast(`✅ Travail partagé avec succès à ${currentShareClientName} !`);
         closeShareWorkModal();
-    } catch (error) { console.error(error); toast('Erreur: ' + error.message); }
+    } catch (error) {
+        console.error(error);
+        toast('Erreur: ' + error.message);
+    }
 }
 
 // Gestion complète des TFC
