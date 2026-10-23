@@ -4128,7 +4128,7 @@ function toggleClientTab(clientId, tab) {
 // MODULE REÇUS FORMATION ASAFR 2026-2027  (v2 : versements + export Excel)
 // =================================================================
 const REC_DB = 'formation_receipts';
-const REC_BANNER = new URL('images/Bandeau_de_logos_corrige_FormaSIG.png', location.href).href;
+const REC_BANNER = 'images/Bandeau_de_logos_corrige_FormaSIG.png';
 const REC_F = {
     titre: 'Recherche Scientifique, Analyse de Données et Intelligence Artificielle',
     sous: "Appliquées à l'Action Humanitaire et au Développement — Du Terrain à la Décision",
@@ -4400,7 +4400,12 @@ function recReceiptHTML(r) {
     const vs = recVersements(r);
     const vRows = vs.map((v, i) => `<tr><td>${i + 1}</td><td>${esc(recFmtDate(v.date))}</td><td>${esc(v.mode || '—')}</td><td>${esc(v.ref || '—')}</td><td style="font-weight:700;color:#166534">$${v.montant}</td></tr>`).join('');
     return `<div class="rcp-doc" id="rcp-inner">
-        <img class="rcp-banner" src="${REC_BANNER}" alt="Partenaires" onerror="this.style.display='none'">
+        <div class="rcp-banner-wrap" style="text-align:center;background:#fff;padding:10px 0;border-bottom:2px solid #0a5a42;">
+    <img class="rcp-banner" src="${REC_BANNER}" alt="Logos FormaSIG & Partenaires" style="max-width:100%;height:auto;display:block;margin:0 auto;" onerror="this.style.display='none';document.getElementById('recLogoFallback').style.display='block';">
+    <div id="recLogoFallback" style="display:none;font-weight:800;color:#0a5a42;font-size:16px;padding:10px;">
+        GADA TRAINING · CEH · ASAFR · FormaSIG
+    </div>
+</div>
         <div class="rcp-band">
             <div><h2>REÇU DE PAIEMENT</h2><div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:4px">Formation intensive · Cohortes 2026-2027</div></div>
             <div><div class="rcp-num">N° ${esc(r.num)}</div><p>${esc(ds)}</p></div>
