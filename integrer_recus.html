@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Intégrer le module Reçus dans index.html</title>
+<style>
+body{font-family:Segoe UI,Arial,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;color:#0d2b4e}
+h1{font-size:1.3rem;border-left:6px solid #f9d21a;padding-left:12px}
+.box{background:#f4f8f6;border-left:4px solid #0a5a42;padding:14px 16px;margin:16px 0;font-size:.9rem;line-height:1.6}
+button{background:#0a5a42;color:#fff;border:none;padding:12px 22px;font-weight:700;border-radius:6px;cursor:pointer;font-size:.95rem}
+button:disabled{opacity:.4;cursor:not-allowed}
+pre{background:#111;color:#d6ffe0;padding:14px;border-radius:6px;font-size:.8rem;white-space:pre-wrap;min-height:60px}
+a.dl{display:none;margin-top:14px;background:#f9d21a;color:#000;padding:12px 22px;font-weight:700;border-radius:6px;text-decoration:none}
+</style>
+</head>
+<body>
+<h1>Intégrer le module « Reçus formation » dans votre index.html</h1>
+<div class="box">
+1. Choisissez votre fichier <b>index.html</b> actuel (copie de sécurité conseillée).<br>
+2. Cliquez sur « Intégrer ».<br>
+3. Téléchargez le fichier complet obtenu (<b>index_avec_recus.html</b>), renommez-le <b>index.html</b> et remplacez l'ancien.<br>
+Tout se passe dans votre navigateur : rien n'est envoyé sur internet.
+</div>
+<input type="file" id="f" accept=".html,.htm">
+<p><button id="go" disabled>Intégrer le module</button></p>
+<pre id="log">En attente du fichier…</pre>
+<a class="dl" id="dl">⬇ Télécharger index_avec_recus.html</a>
+
+<script type="text/plain" id="snip-css">/* ==================== REÇUS FORMATION ASAFR ==================== */
+.rcp-doc{font-family:'Plus Jakarta Sans',sans-serif;background:#fff;color:#1f2937;max-width:800px;margin:0 auto}
+.rcp-banner{display:block;width:100%;height:auto;background:#fff}
+.rcp-band{background:#0a5a42;border-left:8px solid #f9d21a;padding:22px 32px;display:flex;justify-content:space-between;align-items:center;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-band h2{font-size:26px;font-weight:800;letter-spacing:3px}
+.rcp-band p{font-size:12px;color:rgba(255,255,255,.8);margin-top:4px;text-align:right}
+.rcp-band .rcp-num{font-size:15px;font-weight:800;color:#f9d21a;text-align:right}
+.rcp-body{padding:26px 32px}
+.rcp-formation{border-left:5px solid #f9d21a;padding-left:14px;margin-bottom:22px}
+.rcp-formation small{font-size:11px;font-weight:700;color:#0a5a42;text-transform:uppercase;letter-spacing:.5px}
+.rcp-formation h3{font-size:16px;font-weight:800;color:#0a5a42;margin:4px 0}
+.rcp-formation p{font-size:12px;color:#555;font-style:italic}
+.rcp-client{display:flex;justify-content:space-between;gap:20px;margin-bottom:22px;padding-bottom:18px;border-bottom:2px dashed #ddd}
+.rcp-client-name{font-size:19px;font-weight:800;color:#c0392b;margin-bottom:6px}
+.rcp-client p{font-size:12.5px;color:#555;margin-bottom:3px}
+.rcp-pill{display:inline-block;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.rcp-table th{background:#0a5a42;color:#fff;padding:11px 12px;font-size:11.5px;text-align:left;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-table th:not(:first-child),.rcp-table td:not(:first-child){text-align:center}
+.rcp-table td{padding:13px 12px;font-size:12.5px;border-bottom:1px solid #eee}
+.rcp-table .rcp-total td{background:#f9d21a;color:#0a3d2e;font-weight:800;font-size:13.5px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-infos{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;background:#f4f8f6;padding:14px 16px;border-radius:6px;margin-bottom:22px;font-size:12px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-infos b{color:#0a5a42}
+.rcp-sign{display:flex;justify-content:space-between;margin:26px 0 8px}
+.rcp-sign div{width:42%;text-align:center;font-size:12px;font-weight:700;color:#0a5a42}
+.rcp-sign span{display:block;border-top:1.5px solid #0a5a42;margin-top:55px;padding-top:6px;font-weight:600;color:#555}
+.rcp-note{font-size:11px;color:#777;text-align:center;margin-top:10px;font-style:italic}
+.rcp-footer{background:#0a5a42;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;gap:12px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-footer p{font-size:11.5px;color:rgba(255,255,255,.85);margin-bottom:2px}
+.rcp-footer p:first-child{font-weight:700;color:#f9d21a}
+.rcp-bar{height:8px;background:linear-gradient(90deg,#f9d21a 0%,#0a5a42 100%);print-color-adjust:exact;-webkit-print-color-adjust:exact}</script>
+<script type="text/plain" id="snip-html"><div id="recusPanel" style="display:none">
+    <div class="topbar" style="position:sticky;top:0;z-index:100;">
+        <span class="topbar-logo"><span>Reçus · Formation ASAFR 2026-2027</span></span>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-user"><div class="user-av"><i class="fa-solid fa-receipt"></i></div><span id="recUserName">…</span></div>
+        <button class="btn-quit" id="recBtnBack" onclick="closeRecusPanel()" style="margin-right:10px;"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+        <button class="btn-quit" onclick="recLogout()"><i class="fa-solid fa-right-from-bracket"></i> Quitter</button>
+    </div>
+    <div style="max-width:1200px;margin:20px auto;padding:0 20px;">
+        <div class="inv-stats">
+            <div class="inv-stat"><div class="inv-stat-num" id="rec-st-count">0</div><div class="inv-stat-label">Reçus émis</div></div>
+            <div class="inv-stat"><div class="inv-stat-num" id="rec-st-paid" style="color:#0a5a42">$0</div><div class="inv-stat-label">Total encaissé</div></div>
+            <div class="inv-stat"><div class="inv-stat-num" id="rec-st-rest" style="color:#c0392b">$0</div><div class="inv-stat-label">Reste à percevoir</div></div>
+        </div>
+        <div class="inv-tabs">
+            <button class="inv-tab active" id="rec-tab-list" onclick="recShowTab('list')"><i class="fa-solid fa-table-list"></i> Liste des reçus</button>
+            <button class="inv-tab" id="rec-tab-new" onclick="recShowTab('new')"><i class="fa-solid fa-plus"></i> Nouveau reçu</button>
+            <button class="inv-tab" id="rec-tab-preview" onclick="recShowTab('preview')"><i class="fa-solid fa-eye"></i> Aperçu &amp; Impression</button>
+        </div>
+
+        <div id="rec-section-list">
+            <div class="card">
+                <div class="card-header"><h4><i class="fa-solid fa-users"></i> Participants ayant payé</h4></div>
+                <div style="display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap">
+                    <input type="text" id="rec-search" placeholder="🔍 Rechercher un participant..." oninput="recRenderList()" style="flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--card);color:var(--text)">
+                    <select id="rec-filter" onchange="recRenderList()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--card);color:var(--text)"><option value="">Tous les statuts</option><option value="Soldé">✅ Soldé</option><option value="Partiel">🟡 Partiel</option></select>
+                    <button class="inv-btn inv-btn-gold" onclick="recExportExcel()"><i class="fa-solid fa-file-excel"></i> Exporter Excel</button>
+                </div>
+                <div style="overflow-x:auto"><table class="inv-clients-table"><thead><tr><th>N° Reçu</th><th>Participant</th><th>Cohorte</th><th>Catégorie</th><th>Payé</th><th>Reste</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="rec-tbody"></tbody></table></div>
+            </div>
+        </div>
+
+        <div id="rec-section-new" style="display:none">
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-header"><h4><i class="fa-solid fa-user"></i> Participant</h4></div>
+                <div class="inv-form-grid">
+                    <div class="inv-form-group"><label class="inv-label">Nom complet *</label><input class="inv-input" id="rec-f-nom" placeholder="Ex: Jean MUKENDI"></div>
+                    <div class="inv-form-group"><label class="inv-label">Téléphone</label><input class="inv-input" id="rec-f-tel" placeholder="+243 ..."></div>
+                    <div class="inv-form-group"><label class="inv-label">Email</label><input class="inv-input" id="rec-f-email" type="email" placeholder="participant@email.com"></div>
+                    <div class="inv-form-group"><label class="inv-label">Institution / Organisation</label><input class="inv-input" id="rec-f-inst" placeholder="Ex: UNIGOM, ONG ..."></div>
+                    <div class="inv-form-group"><label class="inv-label">Cohorte *</label>
+                        <select class="inv-input" id="rec-f-cohorte"><option value="1">Cohorte 1 : Recherche Scientifique &amp; Ingénierie des Données</option><option value="2">Cohorte 2 : Analyse de Données, SIG &amp; IA</option><option value="1+2">Cohortes 1 &amp; 2 (parcours complet)</option></select></div>
+                    <div class="inv-form-group"><label class="inv-label">Catégorie *</label>
+                        <select class="inv-input" id="rec-f-cat" onchange="recCategoryChange()"><option>Étudiant / Chercheur</option><option>Professionnel</option></select></div>
+                </div>
+            </div>
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-header"><h4><i class="fa-solid fa-dollar-sign"></i> Paiement</h4></div>
+                <div class="inv-form-grid">
+                    <div class="inv-form-group"><label class="inv-label">Montant dû ($) *</label><input class="inv-input" id="rec-f-du" type="number" min="0" value="20" oninput="recCalc()"></div>
+                    <div class="inv-form-group"><label class="inv-label">Montant payé ($) *</label><input class="inv-input" id="rec-f-paye" type="number" min="0" oninput="recCalc()"></div>
+                    <div class="inv-form-group"><label class="inv-label">Reste ($) — auto</label><input class="inv-input" id="rec-f-reste" readonly style="background:var(--bg);font-weight:700;color:#c0392b"></div>
+                    <div class="inv-form-group"><label class="inv-label">Statut — auto</label><input class="inv-input" id="rec-f-statut" readonly style="background:var(--bg);font-weight:700"></div>
+                    <div class="inv-form-group"><label class="inv-label">Mode de paiement</label>
+                        <select class="inv-input" id="rec-f-mode"><option>Espèces</option><option>Mobile Money</option><option>Virement bancaire</option><option>Autre</option></select></div>
+                    <div class="inv-form-group"><label class="inv-label">Référence transaction</label><input class="inv-input" id="rec-f-ref" placeholder="N° transaction (optionnel)"></div>
+                    <div class="inv-form-group"><label class="inv-label">Date du paiement</label><input class="inv-input" id="rec-f-date" type="date"></div>
+                    <div class="inv-form-group"><label class="inv-label">Remarque</label><input class="inv-input" id="rec-f-notes" placeholder="Optionnel"></div>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;padding-bottom:24px;flex-wrap:wrap">
+                <button class="inv-btn inv-btn-navy" style="background:#0a5a42" onclick="recSave()"><i class="fa-solid fa-receipt"></i> Générer le reçu</button>
+                <button class="inv-btn" style="background:var(--bg);color:var(--muted);border:1.5px solid var(--border)" onclick="recInitForm()"><i class="fa-solid fa-rotate-left"></i> Réinitialiser</button>
+            </div>
+        </div>
+
+        <div id="rec-section-preview" style="display:none">
+            <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+                <button class="inv-btn inv-btn-navy" style="background:#0a5a42" onclick="recPrint()"><i class="fa-solid fa-print"></i> Imprimer / Exporter PDF</button>
+                <button class="inv-btn inv-btn-gold" id="rec-btn-complete" style="display:none" onclick="recOpenComplete()"><i class="fa-solid fa-coins"></i> Compléter le paiement</button>
+                <button class="inv-btn" style="background:#25d366;color:#fff" onclick="recWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Envoyer par WhatsApp</button>
+                <button class="inv-btn" style="background:var(--bg);color:var(--muted);border:1.5px solid var(--border)" onclick="recShowTab('list')"><i class="fa-solid fa-list"></i> Retour à la liste</button>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-md);background:#fff">
+                <div id="rec-printable"><div style="text-align:center;padding:60px 20px;color:var(--muted)">Aucun reçu sélectionné.</div></div>
+            </div>
+        </div>
+    </div>
+</div></script>
+<script type="text/plain" id="snip-const">const ADMIN_EMAIL = "gadasolution.rdc@gmail.com";
+// Comptes qui n'ont accès QU'À la section Reçus de la formation
+const REC_ONLY_EMAILS = ["mpasakandolo44@gmail.com"];
+function isAllowedEmail(email){
+    email = (email||'').toLowerCase();
+    return ELIGIBLE.includes(email) || REC_ONLY_EMAILS.includes(email);
+}
+function isRecOnlyUser(){
+    return !!(currentUser && REC_ONLY_EMAILS.includes((currentUser.email||'').toLowerCase()) && currentUser.email !== ADMIN_EMAIL);
+}
+function isRecAdmin(){ return !!(currentUser && currentUser.email === ADMIN_EMAIL); }</script>
+<script type="text/plain" id="snip-js">// =================================================================
+// MODULE REÇUS FORMATION ASAFR 2026-2027  (v2 : versements + export Excel)
+// =================================================================
+const REC_DB = 'formation_receipts';
+const REC_BANNER = new URL('images/Bandeau_de_logos_corrige_FormaSIG.png', location.href).href;
+const REC_F = {
+    titre: 'Recherche Scientifique, Analyse de Données et Intelligence Artificielle',
+    sous: "Appliquées à l'Action Humanitaire et au Développement — Du Terrain à la Décision",
+    periode: 'Du 2 novembre au 29 décembre 2026',
+    horaires: 'Lundi · Mardi · Vendredi, 08h00 – 12h00',
+    format: 'Hybride · 26 séances · 104 heures',
+    lieu: "ASAFR, Q. Kyeshero, Av. de l'Unité n°1, Goma",
+    cohortes: {
+        '1': 'Cohorte 1 : Recherche Scientifique & Ingénierie des Données',
+        '2': 'Cohorte 2 : Analyse de Données, SIG & IA',
+        '1+2': 'Cohortes 1 & 2 (parcours complet)'
+    },
+    tarifs: { 'Étudiant / Chercheur': 20, 'Professionnel': 30 }
+};
+let recList = [], recCurrent = null, recListener = null;
+
+// ---------- Accès / navigation ----------
+function openRecOnlyView() {
+    document.getElementById('app').style.display = 'none';
+    openRecusPanel(true);
+}
+function openRecusPanel(only) {
+    if (!isRecAdmin() && !isRecOnlyUser()) { toast('Accès non autorisé'); return; }
+    document.getElementById('app').style.display = 'none';
+    const adm = document.getElementById('adminTfcPanel'); if (adm) adm.style.display = 'none';
+    document.getElementById('recusPanel').style.display = 'block';
+    document.getElementById('recBtnBack').style.display = only ? 'none' : 'inline-flex';
+    document.getElementById('recUserName').textContent = currentUser.email + (isRecAdmin() ? ' (Admin)' : '');
+    recInitForm(); recStart(); recShowTab('list');
+}
+function closeRecusPanel() {
+    document.getElementById('recusPanel').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+}
+function recLogout() {
+    if (recListener) { db.ref(REC_DB).off('value', recListener); recListener = null; }
+    document.getElementById('recusPanel').style.display = 'none';
+    firebase.auth().signOut();
+}
+function recShowTab(tab) {
+    ['list', 'new', 'preview'].forEach(t => {
+        document.getElementById('rec-section-' + t).style.display = t === tab ? 'block' : 'none';
+        document.getElementById('rec-tab-' + t).classList.toggle('active', t === tab);
+    });
+}
+function recStart() {
+    if (recListener) db.ref(REC_DB).off('value', recListener);
+    recListener = snap => {
+        recList = [];
+        snap.forEach(c => recList.push(c.val()));
+        recList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        recRenderList();
+    };
+    db.ref(REC_DB).on('value', recListener);
+}
+
+// ---------- Utilitaires ----------
+function recFmtDate(d) {
+    if (!d) return '—';
+    const x = new Date(d + 'T12:00:00');
+    return isNaN(x) ? d : x.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+function recVersements(r) {
+    const v = r.versements;
+    if (v) {
+        const a = Array.isArray(v) ? v : Object.values(v);
+        if (a.length) return a;
+    }
+    // Anciens reçus (sans historique) : un seul versement
+    return [{ montant: +r.paye || 0, date: r.date || '', mode: r.mode || '', ref: r.ref || '', ts: r.createdAt || 0 }];
+}
+
+// ---------- Formulaire nouveau reçu ----------
+function recInitForm() {
+    ['rec-f-nom','rec-f-tel','rec-f-email','rec-f-inst','rec-f-paye','rec-f-ref','rec-f-notes'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+    document.getElementById('rec-f-cat').value = 'Étudiant / Chercheur';
+    document.getElementById('rec-f-cohorte').value = '1';
+    document.getElementById('rec-f-mode').value = 'Espèces';
+    document.getElementById('rec-f-date').value = new Date().toISOString().split('T')[0];
+    recCategoryChange();
+}
+function recCategoryChange() {
+    document.getElementById('rec-f-du').value = REC_F.tarifs[document.getElementById('rec-f-cat').value] || 0;
+    recCalc();
+}
+function recCalc() {
+    const du = parseFloat(document.getElementById('rec-f-du').value) || 0;
+    const paye = parseFloat(document.getElementById('rec-f-paye').value) || 0;
+    const reste = Math.max(0, du - paye);
+    document.getElementById('rec-f-reste').value = reste;
+    document.getElementById('rec-f-statut').value = (du > 0 && reste <= 0) ? 'Soldé' : 'Partiel';
+}
+async function recSave() {
+    if (!isRecAdmin() && !isRecOnlyUser()) return;
+    const g = id => document.getElementById(id).value.trim();
+    const nom = g('rec-f-nom');
+    const du = parseFloat(g('rec-f-du')) || 0;
+    const paye = parseFloat(g('rec-f-paye')) || 0;
+    if (!nom) { toast('Le nom est obligatoire'); return; }
+    if (paye <= 0) { toast('Entrez le montant payé'); return; }
+    if (paye > du) { toast('Le montant payé dépasse le montant dû'); return; }
+    try {
+        const cnt = await db.ref('formation_receipts_counter').transaction(n => (n || 0) + 1);
+        const seq = cnt.snapshot.val();
+        const ref = db.ref(REC_DB).push();
+        const reste = Math.max(0, du - paye);
+        const data = {
+            id: ref.key,
+            num: 'REC-ASAFR-' + String(seq).padStart(4, '0'),
+            nom, tel: g('rec-f-tel'), email: g('rec-f-email'), inst: g('rec-f-inst'),
+            cohorte: g('rec-f-cohorte'), categorie: g('rec-f-cat'),
+            du, paye, reste, statut: reste <= 0 ? 'Soldé' : 'Partiel',
+            mode: g('rec-f-mode'), ref: g('rec-f-ref'), date: g('rec-f-date'), notes: g('rec-f-notes'),
+            versements: [{ montant: paye, date: g('rec-f-date'), mode: g('rec-f-mode'), ref: g('rec-f-ref'), ts: Date.now(), par: currentUser.email }],
+            emisPar: currentUser.email, createdAt: Date.now()
+        };
+        await ref.set(data);
+        toast('✅ Reçu ' + data.num + ' généré');
+        recView(data.id, data);
+    } catch (e) { console.error(e); toast('Erreur : ' + e.message); }
+}
+
+// ---------- Liste ----------
+function recRenderList() {
+    const q = (document.getElementById('rec-search')?.value || '').toLowerCase();
+    const f = document.getElementById('rec-filter')?.value || '';
+    document.getElementById('rec-st-count').textContent = recList.length;
+    document.getElementById('rec-st-paid').textContent = '$' + recList.reduce((a, r) => a + (+r.paye || 0), 0);
+    document.getElementById('rec-st-rest').textContent = '$' + recList.reduce((a, r) => a + (+r.reste || 0), 0);
+    const rows = recList.filter(r => ((r.nom || '').toLowerCase().includes(q) || (r.num || '').toLowerCase().includes(q)) && (!f || r.statut === f));
+    const tb = document.getElementById('rec-tbody');
+    if (!rows.length) { tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted)">Aucun reçu.</td></tr>'; return; }
+    tb.innerHTML = rows.map(r => {
+        const sc = r.statut === 'Soldé' ? 'inv-sold' : 'inv-partial';
+        const nbV = recVersements(r).length;
+        return `<tr><td style="font-weight:700;color:#0a5a42">${esc(r.num)}</td><td><strong>${esc(r.nom)}</strong>${r.tel ? `<br><small style="color:var(--muted)">${esc(r.tel)}</small>` : ''}</td><td style="font-size:12px">${esc(REC_F.cohortes[r.cohorte] || r.cohorte)}</td><td style="font-size:12px">${esc(r.categorie)}</td><td style="font-weight:700;color:#0a5a42">$${r.paye}${nbV > 1 ? `<br><small style="color:var(--muted);font-weight:400">${nbV} versements</small>` : ''}</td><td style="font-weight:700;color:#c0392b">$${r.reste}</td><td><span class="inv-status ${sc}">${esc(r.statut)}</span></td><td><div class="inv-actions-row"><button class="inv-btn inv-btn-navy inv-btn-sm" style="background:#0a5a42" onclick="recView('${r.id}')" title="Voir / imprimer"><i class="fa-solid fa-eye"></i></button>${r.reste > 0 ? `<button class="inv-btn inv-btn-gold inv-btn-sm" onclick="recOpenComplete('${r.id}')" title="Compléter le paiement"><i class="fa-solid fa-coins"></i></button>` : ''}${isRecAdmin() ? `<button class="inv-btn inv-btn-red inv-btn-sm" onclick="recDelete('${r.id}')" title="Supprimer"><i class="fa-solid fa-trash"></i></button>` : ''}</div></td></tr>`;
+    }).join('');
+}
+function recView(id, obj) {
+    const r = obj || recList.find(x => x.id === id);
+    if (!r) return;
+    recCurrent = r;
+    document.getElementById('rec-printable').innerHTML = recReceiptHTML(r);
+    const bc = document.getElementById('rec-btn-complete');
+    if (bc) bc.style.display = r.reste > 0 ? 'inline-flex' : 'none';
+    recShowTab('preview');
+}
+async function recDelete(id) {
+    if (!isRecAdmin()) { toast('Réservé à l\'administrateur'); return; }
+    const r = recList.find(x => x.id === id);
+    if (!r || !confirm(`Supprimer le reçu ${r.num} de "${r.nom}" ?`)) return;
+    await db.ref(REC_DB + '/' + id).remove();
+    toast('Reçu supprimé');
+}
+
+// ---------- Compléter le paiement (versement supplémentaire) ----------
+function recOpenComplete(id) {
+    const r = id ? recList.find(x => x.id === id) : recCurrent;
+    if (!r) { toast('Sélectionnez un reçu'); return; }
+    if (r.reste <= 0) { toast('Ce reçu est déjà soldé'); return; }
+    const old = document.getElementById('recCompleteModal'); if (old) old.remove();
+    const m = document.createElement('div');
+    m.id = 'recCompleteModal';
+    m.className = 'modal-overlay active';
+    m.innerHTML = `<div class="modal-box" style="max-width:480px;">
+        <div class="modal-top"><h3><i class="fa-solid fa-coins"></i> Compléter le paiement</h3><button class="modal-close" onclick="document.getElementById('recCompleteModal').remove()">×</button></div>
+        <div style="background:#f4f8f6;border-left:4px solid #f9d21a;padding:12px 14px;margin-bottom:16px;font-size:0.82rem;line-height:1.7;color:#0d2b4e;">
+            <strong>${esc(r.nom)}</strong> · ${esc(r.num)}<br>
+            Montant dû : <strong>$${r.du}</strong> · Déjà payé : <strong style="color:#166534">$${r.paye}</strong><br>
+            Reste à payer : <strong style="color:#c0392b">$${r.reste}</strong>
+        </div>
+        <div class="form-field"><label>Montant du nouveau versement ($) *</label><input type="number" id="recc-montant" min="1" max="${r.reste}" value="${r.reste}"></div>
+        <div class="form-field"><label>Mode de paiement</label><select id="recc-mode" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-left:3px solid #0d2b4e;font-family:inherit;font-size:0.9rem;"><option>Espèces</option><option>Mobile Money</option><option>Virement bancaire</option><option>Autre</option></select></div>
+        <div class="form-field"><label>Référence transaction</label><input type="text" id="recc-ref" placeholder="Optionnel"></div>
+        <div class="form-field"><label>Date du versement</label><input type="date" id="recc-date" value="${new Date().toISOString().split('T')[0]}"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+            <button class="btn-submit-post" style="flex:2;background:#0a5a42;border-left-color:#f9d21a;" onclick="recConfirmComplete('${r.id}')"><i class="fa-solid fa-check"></i> Enregistrer le versement</button>
+            <button style="flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;color:#0d2b4e" onclick="document.getElementById('recCompleteModal').remove()">Annuler</button>
+        </div>
+    </div>`;
+    document.body.appendChild(m);
+    m.addEventListener('click', e => { if (e.target === m) m.remove(); });
+}
+async function recConfirmComplete(id) {
+    if (!isRecAdmin() && !isRecOnlyUser()) return;
+    const montant = parseFloat(document.getElementById('recc-montant').value) || 0;
+    const mode = document.getElementById('recc-mode').value;
+    const ref = document.getElementById('recc-ref').value.trim();
+    const date = document.getElementById('recc-date').value;
+    if (montant <= 0) { toast('Entrez un montant valide'); return; }
+    let err = null;
+    try {
+        const res = await db.ref(REC_DB + '/' + id).transaction(cur => {
+            if (!cur) return cur;
+            const reste = +cur.reste || 0;
+            if (montant > reste) { err = 'Le montant dépasse le reste à payer ($' + reste + ')'; return; } // annule
+            const vs = recVersements(cur).slice();
+            vs.push({ montant, date, mode, ref, ts: Date.now(), par: currentUser.email });
+            cur.versements = vs;
+            cur.paye = (+cur.paye || 0) + montant;
+            cur.reste = Math.max(0, (+cur.du || 0) - cur.paye);
+            cur.statut = cur.reste <= 0 ? 'Soldé' : 'Partiel';
+            cur.updatedAt = Date.now();
+            return cur;
+        });
+        if (err) { toast(err); return; }
+        if (!res.committed) { toast('Opération annulée'); return; }
+        document.getElementById('recCompleteModal')?.remove();
+        const r = res.snapshot.val();
+        toast(r.statut === 'Soldé' ? '✅ Paiement soldé !' : '✅ Versement enregistré');
+        recView(id, r);
+    } catch (e) { console.error(e); toast('Erreur : ' + e.message); }
+}
+
+// ---------- Export Excel ----------
+function recLoadXLSX() {
+    return new Promise((resolve, reject) => {
+        if (window.XLSX) return resolve();
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Bibliothèque Excel indisponible (vérifiez la connexion)'));
+        document.head.appendChild(s);
+    });
+}
+async function recExportExcel() {
+    if (!isRecAdmin() && !isRecOnlyUser()) return;
+    if (!recList.length) { toast('Aucun reçu à exporter'); return; }
+    try { await recLoadXLSX(); } catch (e) { toast(e.message); return; }
+    const sorted = recList.slice().sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+    const rows = sorted.map(r => ({
+        'N° Reçu': r.num, 'Date': r.date || '', 'Nom complet': r.nom, 'Téléphone': r.tel || '',
+        'Email': r.email || '', 'Institution': r.inst || '',
+        'Cohorte': REC_F.cohortes[r.cohorte] || r.cohorte, 'Catégorie': r.categorie,
+        'Montant dû ($)': +r.du || 0, 'Payé ($)': +r.paye || 0, 'Reste ($)': +r.reste || 0,
+        'Statut': r.statut, 'Nb versements': recVersements(r).length, 'Remarque': r.notes || ''
+    }));
+    const sum = k => sorted.reduce((a, r) => a + (+r[k] || 0), 0);
+    const total = {};
+    Object.keys(rows[0]).forEach(k => total[k] = '');
+    total['Nom complet'] = 'TOTAL';
+    total['Montant dû ($)'] = sum('du'); total['Payé ($)'] = sum('paye'); total['Reste ($)'] = sum('reste');
+    rows.push(total);
+
+    const vrows = [];
+    sorted.forEach(r => recVersements(r).forEach((v, i) => vrows.push({
+        'N° Reçu': r.num, 'Nom complet': r.nom, 'Versement n°': i + 1,
+        'Date': v.date || '', 'Montant ($)': +v.montant || 0,
+        'Mode': v.mode || '', 'Référence': v.ref || '', 'Enregistré par': v.par || r.emisPar || ''
+    })));
+
+    const wb = XLSX.utils.book_new();
+    const ws1 = XLSX.utils.json_to_sheet(rows);
+    ws1['!cols'] = [{wch:16},{wch:12},{wch:28},{wch:16},{wch:26},{wch:24},{wch:46},{wch:20},{wch:14},{wch:10},{wch:10},{wch:10},{wch:14},{wch:30}];
+    XLSX.utils.book_append_sheet(wb, ws1, 'Reçus');
+    const ws2 = XLSX.utils.json_to_sheet(vrows);
+    ws2['!cols'] = [{wch:16},{wch:28},{wch:13},{wch:12},{wch:12},{wch:18},{wch:20},{wch:28}];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Versements');
+    XLSX.writeFile(wb, 'Recus_Formation_ASAFR_' + new Date().toISOString().split('T')[0] + '.xlsx');
+    toast('✅ Export Excel téléchargé');
+}
+
+// ---------- Reçu (HTML imprimable) ----------
+function recReceiptHTML(r) {
+    const ds = recFmtDate(r.date);
+    const solde = r.reste <= 0;
+    const pill = solde ? 'background:#dcfce7;color:#166534' : 'background:#fef3c7;color:#92400e';
+    const vs = recVersements(r);
+    const vRows = vs.map((v, i) => `<tr><td>${i + 1}</td><td>${esc(recFmtDate(v.date))}</td><td>${esc(v.mode || '—')}</td><td>${esc(v.ref || '—')}</td><td style="font-weight:700;color:#166534">$${v.montant}</td></tr>`).join('');
+    return `<div class="rcp-doc" id="rcp-inner">
+        <img class="rcp-banner" src="${REC_BANNER}" alt="Partenaires" onerror="this.style.display='none'">
+        <div class="rcp-band">
+            <div><h2>REÇU DE PAIEMENT</h2><div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:4px">Formation intensive · Cohortes 2026-2027</div></div>
+            <div><div class="rcp-num">N° ${esc(r.num)}</div><p>${esc(ds)}</p></div>
+        </div>
+        <div class="rcp-body">
+            <div class="rcp-formation"><small>Formation</small><h3>${esc(REC_F.titre)}</h3><p>${esc(REC_F.sous)}</p></div>
+            <div class="rcp-client">
+                <div><div class="rcp-client-name">${esc((r.nom || '').toUpperCase())}</div>
+                    ${r.tel ? `<p><strong>Téléphone :</strong> ${esc(r.tel)}</p>` : ''}
+                    ${r.email ? `<p><strong>Email :</strong> ${esc(r.email)}</p>` : ''}
+                    ${r.inst ? `<p><strong>Institution :</strong> ${esc(r.inst)}</p>` : ''}
+                </div>
+                <div style="text-align:right"><p style="font-size:12.5px"><strong>Reçu n°</strong> ${esc(r.num)}</p><p style="font-size:12.5px"><strong>Date :</strong> ${esc(ds)}</p><div class="rcp-pill" style="${pill}">${esc(r.statut)}</div></div>
+            </div>
+            <table class="rcp-table"><thead><tr><th style="width:34%">DÉSIGNATION</th><th>MONTANT DÛ</th><th>PAYÉ</th><th>RESTE</th></tr></thead><tbody>
+                <tr><td><strong>Frais de formation</strong><br><small style="color:#666">${esc(REC_F.cohortes[r.cohorte] || r.cohorte)}<br>Catégorie : ${esc(r.categorie)}</small></td><td>$${r.du}</td><td style="font-weight:700;color:#166534">$${r.paye}</td><td style="font-weight:700;color:#c0392b">$${r.reste}</td></tr>
+                <tr class="rcp-total"><td>TOTAL</td><td>$${r.du}</td><td>$${r.paye}</td><td>$${r.reste}</td></tr>
+            </tbody></table>
+            <div style="font-size:11.5px;font-weight:800;color:#0a5a42;margin:0 0 6px">HISTORIQUE DES VERSEMENTS</div>
+            <table class="rcp-table"><thead><tr><th style="width:8%">N°</th><th>DATE</th><th>MODE</th><th>RÉFÉRENCE</th><th>MONTANT</th></tr></thead><tbody>
+                ${vRows}
+                <tr class="rcp-total"><td colspan="4" style="text-align:right">TOTAL VERSÉ</td><td>$${r.paye}</td></tr>
+            </tbody></table>
+            <div class="rcp-infos">
+                <div><b>Période :</b> ${esc(REC_F.periode)}</div>
+                <div><b>Horaires :</b> ${esc(REC_F.horaires)}</div>
+                <div><b>Format :</b> ${esc(REC_F.format)}</div>
+                <div><b>Lieu :</b> ${esc(REC_F.lieu)}</div>
+                <div style="grid-column:1/-1"><b>Certification :</b> Brevet / Certificat de Formation cosigné</div>
+                ${r.notes ? `<div style="grid-column:1/-1"><b>Remarque :</b> ${esc(r.notes)}</div>` : ''}
+            </div>
+            <div class="rcp-sign"><div>Le / La participant(e)<span>Signature</span></div><div>Le Responsable de la formation<span>Signature &amp; cachet</span></div></div>
+            <div class="rcp-note">Ce reçu fait foi de paiement. Merci de le conserver.</div>
+        </div>
+        <div class="rcp-footer">
+            <div><p>Contacts de la formation</p><p>cehmdgadaasafr@gmail.com</p><p>+243 995 093 024 (WhatsApp)</p></div>
+            <div style="text-align:right"><p>www.gadatraining.org</p><p>geomindsafrica.com</p><p>www.hopelandcongo.org</p></div>
+        </div>
+        <div class="rcp-bar"></div>
+    </div>`;
+}
+function recPrint() {
+    const inner = document.getElementById('rcp-inner');
+    if (!inner) { toast('Sélectionnez d\'abord un reçu'); return; }
+    const styles = Array.from(document.querySelectorAll('style')).map(s => s.outerHTML).join('');
+    const w = window.open('', '_blank', 'width=900,height=800');
+    w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Reçu ${recCurrent ? recCurrent.num + ' — ' + recCurrent.nom : ''}</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">${styles}<style>body{background:#fff!important;min-height:0}@page{margin:0;size:A4}</style></head><body>${inner.outerHTML}</body></html>`);
+    w.document.close();
+    setTimeout(() => { w.focus(); w.print(); }, 900);
+}
+function recWhatsApp() {
+    if (!recCurrent) { toast('Sélectionnez d\'abord un reçu'); return; }
+    const r = recCurrent;
+    const ds = r.date ? new Date(r.date + 'T12:00:00').toLocaleDateString('fr-FR') : '';
+    const nbV = recVersements(r).length;
+    const msg = `Bonjour ${r.nom},\n\nVoici votre reçu de paiement — Formation intensive Recherche Scientifique, Analyse de Données et IA (2026-2027).\n\n🧾 *Reçu n° ${r.num}*\n📅 Date : ${ds}\n━━━━━━━━━━━━━━\n💰 Montant dû : *$${r.du}*\n✅ Total payé : *$${r.paye}*${nbV > 1 ? ` (${nbV} versements)` : ''}\n⏳ Reste : *$${r.reste}*\n📊 Statut : *${r.statut}*\n━━━━━━━━━━━━━━\n📍 ${REC_F.lieu}\n🗓 ${REC_F.periode}\n\nMerci pour votre confiance !\n🎓 *GADA Training · CEH · ASAFR*\n📞 +243 995 093 024`;
+    window.open('https://wa.me/' + (r.tel || '').replace(/\D/g, '') + '?text=' + encodeURIComponent(msg), '_blank');
+}
+// ===== FIN MODULE REÇUS FORMATION =====</script>
+
+<script>
+const $ = id => document.getElementById(id);
+const S = id => $(id).textContent.replace(/^\s*\n/, '').replace(/\s+$/, '');
+const logEl = $('log');
+const log = m => { logEl.textContent += '\n' + m; };
+
+$('f').onchange = () => { $('go').disabled = !$('f').files.length; logEl.textContent = $('f').files.length ? 'Fichier : ' + $('f').files[0].name : 'En attente du fichier…'; };
+
+function count(text, find) { return text.split(find).length - 1; }
+function apply(text, label, find, repl, expected) {
+    const n = count(text, find);
+    if (n !== expected) { log('❌ ' + label + ' : ancre trouvée ' + n + ' fois (attendu ' + expected + ')'); return null; }
+    log('✅ ' + label + (expected > 1 ? ' (' + n + ' occurrences)' : ''));
+    return text.split(find).join(repl);   // split/join : aucun caractère spécial interprété
+}
+
+$('go').onclick = async () => {
+    logEl.textContent = 'Lecture du fichier…';
+    $('dl').style.display = 'none';
+    let t = await $('f').files[0].text();
+
+    if (t.includes('id="recusPanel"')) { log('⚠ Ce fichier contient déjà le module Reçus. Utilisez votre ancien index.html (sans module).'); return; }
+
+    // --- Remplacements sur le code existant ---
+    const A_CSS   = '/* ==================== COULEURS FACTURE ==================== */';
+    const A_HTML  = '<!-- ==================== MODAL AJOUT CLIENT ==================== -->';
+    const A_CONST = 'const ADMIN_EMAIL = "gadasolution.rdc@gmail.com";';
+    const A_JS    = '// Restauration de session client TFC depuis sessionStorage';
+
+    const steps = [
+        ['Autoriser l\'email reçus (4 endroits)', '!ELIGIBLE.includes(', '!isAllowedEmail(', 4],
+        ['Accès limité pour le compte reçus', 'loadProfile();', 'if (isRecOnlyUser()) { openRecOnlyView(); return; }\n        loadProfile();', 1],
+        ['Masquer ce compte dans la liste des membres',
+            "snap.forEach(c=>{const m=c.val(); existingMembers.push(m); existingEmails.add(m.email);});",
+            "snap.forEach(c=>{const m=c.val(); if(REC_ONLY_EMAILS.includes((m.email||'').toLowerCase())) return; existingMembers.push(m); existingEmails.add(m.email);});", 1],
+        ['Bouton « Reçus formation » (barre admin)', '<button class="btn-quit" id="btnInstallApp"',
+            '<button class="btn-quit" id="btnRecus" onclick="openRecusPanel(false)" style="display:none;background:linear-gradient(135deg,#0a5a42,#c9a800);color:white;margin-right:10px;"><i class="fa-solid fa-receipt"></i> Reçus formation</button>\n        <button class="btn-quit" id="btnInstallApp"', 1],
+        ['Afficher le bouton uniquement à l\'admin', "if (btnAdmin) btnAdmin.style.display = isAdmin ? 'flex' : 'none';",
+            "if (btnAdmin) btnAdmin.style.display = isAdmin ? 'flex' : 'none';\n        const btnRecus = document.getElementById('btnRecus');\n        if (btnRecus) btnRecus.style.display = isAdmin ? 'flex' : 'none';", 1],
+        ['CSS des reçus', A_CSS, S('snip-css') + '\n        ' + A_CSS, 1],
+        ['Panneau HTML des reçus', A_HTML, '<!-- ==================== PANNEAU REÇUS FORMATION ==================== -->\n' + S('snip-html') + '\n\n' + A_HTML, 1],
+        ['Constantes d\'accès', A_CONST, S('snip-const'), 1],
+        ['JavaScript du module (versements + Excel)', A_JS, S('snip-js') + '\n\n' + A_JS, 1]
+    ];
+
+    for (const [label, find, repl, exp] of steps) {
+        t = apply(t, label, find, repl, exp);
+        if (t === null) { log('\nArrêt : aucun fichier généré. Vérifiez que vous utilisez bien votre index.html d\'origine.'); return; }
+    }
+
+    // --- Contrôles finaux ---
+    const checks = ['function recSave', 'function recOpenComplete', 'function recExportExcel', 'id="recusPanel"', 'function isAllowedEmail', 'id="btnRecus"'];
+    const missing = checks.filter(c => !t.includes(c));
+    if (missing.length) { log('❌ Contrôle final : éléments manquants → ' + missing.join(', ')); return; }
+    log('✅ Contrôle final réussi');
+
+    const blob = new Blob([t], { type: 'text/html;charset=utf-8' });
+    const a = $('dl');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index_avec_recus.html';
+    a.style.display = 'inline-block';
+    log('\n🎉 Terminé. Téléchargez le fichier ci-dessous.');
+};
+</script>
+</body>
+</html>

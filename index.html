@@ -400,6 +400,15 @@
 .rcp-sign div{width:42%;text-align:center;font-size:12px;font-weight:700;color:#0a5a42}
 .rcp-sign span{display:block;border-top:1.5px solid #0a5a42;margin-top:55px;padding-top:6px;font-weight:600;color:#555}
 .rcp-note{font-size:11px;color:#777;text-align:center;margin-top:10px;font-style:italic}
+.rcp-band>div:last-child{text-align:right}
+.rcp-original{display:inline-block;margin-top:8px;border:2px solid #f9d21a;color:#f9d21a;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:1.5px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:110px;font-weight:800;letter-spacing:10px;color:#0a5a42;opacity:.05;pointer-events:none;white-space:nowrap;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.rcp-seal-row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:18px 0 8px;break-inside:avoid;page-break-inside:avoid}
+.rcp-auth{font-size:11px;color:#555;line-height:1.7;border:1.5px dashed #0a5a42;border-radius:8px;padding:8px 14px}
+.rcp-auth b{display:block;color:#0a5a42;font-size:12px;text-transform:uppercase;letter-spacing:1px}
+.rcp-auth strong{font-family:monospace;color:#0a3d2e;font-size:13px;letter-spacing:1px}
+.rcp-seal{width:130px;height:130px;object-fit:contain;display:block}
+.rcp-table tr,.rcp-infos{break-inside:avoid;page-break-inside:avoid}
 .rcp-footer{background:#0a5a42;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;gap:12px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .rcp-footer p{font-size:11.5px;color:rgba(255,255,255,.85);margin-bottom:2px}
 .rcp-footer p:first-child{font-weight:700;color:#f9d21a}
@@ -1170,6 +1179,7 @@
         <div id="rec-section-preview" style="display:none">
             <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
                 <button class="inv-btn inv-btn-navy" style="background:#0a5a42" onclick="recPrint()"><i class="fa-solid fa-print"></i> Imprimer / Exporter PDF</button>
+                <button class="inv-btn inv-btn-gold" onclick="recExportPNG()"><i class="fa-solid fa-image"></i> Exporter en image (PNG)</button>
                 <button class="inv-btn inv-btn-gold" id="rec-btn-complete" style="display:none" onclick="recOpenComplete()"><i class="fa-solid fa-coins"></i> Compléter le paiement</button>
                 <button class="inv-btn" style="background:#25d366;color:#fff" onclick="recWhatsApp()"><i class="fa-brands fa-whatsapp"></i> Envoyer par WhatsApp</button>
                 <button class="inv-btn" style="background:var(--bg);color:var(--muted);border:1.5px solid var(--border)" onclick="recShowTab('list')"><i class="fa-solid fa-list"></i> Retour à la liste</button>
@@ -4129,6 +4139,14 @@ function toggleClientTab(clientId, tab) {
 // =================================================================
 const REC_DB = 'formation_receipts';
 const REC_BANNER = 'images/Bandeau_de_logos_corrige_FormaSIG.png';
+const REC_SEAL = 'images/sceau-asafr.png';
+function recAuthCode(r) {
+    const s = [r.num, r.nom, r.du, r.paye, r.date].join('|');
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    const b = h.toString(36).toUpperCase().padStart(7, '0');
+    return 'ASAFR-' + b.slice(0, 4) + '-' + b.slice(4);
+}
 const REC_F = {
     titre: 'Recherche Scientifique, Analyse de Données et Intelligence Artificielle',
     sous: "Appliquées à l'Action Humanitaire et au Développement — Du Terrain à la Décision",
@@ -4408,9 +4426,9 @@ function recReceiptHTML(r) {
 </div>
         <div class="rcp-band">
             <div><h2>REÇU DE PAIEMENT</h2><div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:4px">Formation intensive · Cohortes 2026-2027</div></div>
-            <div><div class="rcp-num">N° ${esc(r.num)}</div><p>${esc(ds)}</p></div>
+            <div><div class="rcp-num">N° ${esc(r.num)}</div><p>${esc(ds)}</p><div class="rcp-original">✔ REÇU ORIGINAL</div></div>
         </div>
-        <div class="rcp-body">
+        <div class="rcp-body" style="position:relative"><div class="rcp-watermark">ORIGINAL</div>
             <div class="rcp-formation"><small>Formation</small><h3>${esc(REC_F.titre)}</h3><p>${esc(REC_F.sous)}</p></div>
             <div class="rcp-client">
                 <div><div class="rcp-client-name">${esc((r.nom || '').toUpperCase())}</div>
@@ -4437,7 +4455,7 @@ function recReceiptHTML(r) {
                 <div style="grid-column:1/-1"><b>Certification :</b> Brevet / Certificat de Formation cosigné</div>
                 ${r.notes ? `<div style="grid-column:1/-1"><b>Remarque :</b> ${esc(r.notes)}</div>` : ''}
             </div>
-            <div class="rcp-sign"><div>Le / La participant(e)<span>Signature</span></div><div>Le Responsable de la formation<span>Signature &amp; cachet</span></div></div>
+            <div class="rcp-seal-row"><div class="rcp-auth"><b>✔ Document original</b>Code d'authenticité :<br><strong>${esc(recAuthCode(r))}</strong></div><img class="rcp-seal" src="${REC_SEAL}" alt="Sceau ASAFR" onerror="this.style.display='none'"></div>
             <div class="rcp-note">Ce reçu fait foi de paiement. Merci de le conserver.</div>
         </div>
         <div class="rcp-footer">
@@ -4447,7 +4465,62 @@ function recReceiptHTML(r) {
         <div class="rcp-bar"></div>
     </div>`;
 }
+function recWaitImages(root) {
+    return Promise.all(Array.from(root.querySelectorAll('img')).map(i => i.complete ? Promise.resolve() : new Promise(res => { i.onload = i.onerror = res; })));
+}
 function recPrint() {
+    const inner = document.getElementById('rcp-inner');
+    if (!inner) { toast('Sélectionnez d\'abord un reçu'); return; }
+    const styles = Array.from(document.querySelectorAll('style')).map(s => s.outerHTML).join('');
+    const titre = recCurrent ? 'Reçu ' + recCurrent.num + ' — ' + recCurrent.nom : 'Reçu';
+    const old = document.getElementById('rec-print-frame'); if (old) old.remove();
+    const fr = document.createElement('iframe');
+    fr.id = 'rec-print-frame';
+    fr.style.cssText = 'position:fixed;right:0;bottom:0;width:210mm;height:297mm;border:0;opacity:0;pointer-events:none';
+    document.body.appendChild(fr);
+    const d = fr.contentWindow.document;
+    d.open();
+    d.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><base href="' + document.baseURI + '"><title>' + esc(titre) + '</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">' + styles + '<style>html,body{background:#fff!important;min-height:0!important;margin:0;padding:0}.rcp-doc{max-width:none!important;width:100%}@page{margin:0;size:A4}@media print{body *{visibility:visible!important}}</style></head><body>' + inner.outerHTML + '</body></html>');
+    d.close();
+    let lance = false;
+    const go = async () => {
+        if (lance) return; lance = true;
+        await recWaitImages(d.body);
+        try { await d.fonts.ready; } catch (e) {}
+        const titreOrig = document.title;
+        document.title = titre;
+        fr.contentWindow.onafterprint = () => { document.title = titreOrig; setTimeout(() => fr.remove(), 500); };
+        setTimeout(() => { fr.contentWindow.focus(); fr.contentWindow.print(); }, 300);
+    };
+    fr.onload = go;
+    setTimeout(go, 1500);
+}
+async function recExportPNG() {
+    const inner = document.getElementById('rcp-inner');
+    if (!inner) { toast('Sélectionnez d\'abord un reçu'); return; }
+    try {
+        if (typeof html2canvas === 'undefined') {
+            await new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+        }
+        toast('Génération de l\'image…');
+        await recWaitImages(inner);
+        const canvas = await html2canvas(inner, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+        canvas.toBlob(blob => {
+            if (!blob) { toast('Export impossible : ouvrez le site en https (pas depuis un fichier local)'); return; }
+            const nom = (recCurrent ? recCurrent.num + '_' + recCurrent.nom : 'recu').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9-]+/g, '_');
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = nom + '.png';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+            toast('Reçu exporté en PNG ✅');
+        }, 'image/png');
+    } catch (e) {
+        console.error(e);
+        toast('Échec de l\'export PNG');
+    }
+}
+function recPrintOLD() {
     const inner = document.getElementById('rcp-inner');
     if (!inner) { toast('Sélectionnez d\'abord un reçu'); return; }
     const styles = Array.from(document.querySelectorAll('style')).map(s => s.outerHTML).join('');
