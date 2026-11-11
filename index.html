@@ -1626,11 +1626,13 @@ async function fetchRelevantFileContents(question) {
 const ELIGIBLE = [
     "faziliarsene2@gmail.com","josuekalegamire4@gmail.com","stevenkusinza@gmail.com",
     "stevenamampa7@gmail.com","stevenamampa15@gmail.com","lukunatowangevehugues2006@gmail.com",
-    "niyoyitakasomo@gmail.com","hwabalygie@gmail.com","gadasolution.rdc@gmail.com"
+    "niyoyitakasomo@gmail.com","hwabalygie@gmail.com","gadasolution.rdc@gmail.com","menerse19@gmail.com"
 ];
 const ADMIN_EMAIL = "gadasolution.rdc@gmail.com";
 // Comptes qui n'ont accès QU'À la section Reçus de la formation
 const REC_ONLY_EMAILS = ["mpasakandolo44@gmail.com"];
+// Super-viewers : voient les panneaux admin en lecture seule (sans pouvoir modifier)
+const SUPER_VIEWERS = ["menerse19@gmail.com"];
 function isAllowedEmail(email){
     email = (email||'').toLowerCase();
     return ELIGIBLE.includes(email) || REC_ONLY_EMAILS.includes(email);
@@ -1639,6 +1641,9 @@ function isRecOnlyUser(){
     return !!(currentUser && REC_ONLY_EMAILS.includes((currentUser.email||'').toLowerCase()) && currentUser.email !== ADMIN_EMAIL);
 }
 function isRecAdmin(){ return !!(currentUser && currentUser.email === ADMIN_EMAIL); }
+function isSuperViewer(){ return !!(currentUser && SUPER_VIEWERS.includes((currentUser.email||'').toLowerCase())); }
+function canSeeAdmin(){ return !!(currentUser && (currentUser.email === ADMIN_EMAIL || isSuperViewer())); }
+function canEditAdmin(){ return !!(currentUser && currentUser.email === ADMIN_EMAIL); }
 
 // =================================================================
 // SECTION 4: DONNÉES DES SEMAINES DE FORMATION
@@ -1748,12 +1753,12 @@ function invSave(){localStorage.setItem('gada_inv_clients',JSON.stringify(invCli
 function invInitForm(){const t=new Date();const df=document.getElementById('inv-f-date');const nf=document.getElementById('inv-f-num');if(df)df.value=t.toISOString().split('T')[0];if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');}
 function invCalcReste(){const m=parseFloat(document.getElementById('inv-f-montant').value)||0;const p=parseFloat(document.getElementById('inv-f-paye').value)||0;const r=Math.max(0,m-p);const rf=document.getElementById('inv-f-reste');const sf=document.getElementById('inv-f-statut');if(rf)rf.value=r;if(sf){if(r<=0&&m>0)sf.value='Soldé';else if(p>0&&r>0)sf.value='Partiel';else if(p===0&&m>0)sf.value='Impayé';}}
 function showInvTab(tab){['list','new-client','preview'].forEach(t=>{const s=document.getElementById('inv-section-'+t);const b=document.getElementById('inv-tab-'+t);if(s)s.style.display=t===tab?'block':'none';if(b)b.classList.toggle('active',t===tab);});if(tab==='list')renderInvClients();}
-function invSaveClient(){const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Le nom est obligatoire');return;}const data={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim()||('FAC-'+String(invClients.length+1).padStart(3,'0')),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim(),savedAt:Date.now()};if(editingInvIdx!==null){invClients[editingInvIdx]=data;editingInvIdx=null;toast('✅ Client modifié !');}else{invClients.push(data);toast('✅ Client enregistré !');}invSave();invUpdateStats();const nf=document.getElementById('inv-f-num');if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');showInvTab('list');}
+function invSaveClient(){if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Le nom est obligatoire');return;}const data={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim()||('FAC-'+String(invClients.length+1).padStart(3,'0')),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim(),savedAt:Date.now()};if(editingInvIdx!==null){invClients[editingInvIdx]=data;editingInvIdx=null;toast('✅ Client modifié !');}else{invClients.push(data);toast('✅ Client enregistré !');}invSave();invUpdateStats();const nf=document.getElementById('inv-f-num');if(nf)nf.value='FAC-'+String(invClients.length+1).padStart(3,'0');showInvTab('list');}
 function invResetForm(){['inv-f-nom','inv-f-tel','inv-f-inst','inv-f-fac','inv-f-fil','inv-f-email','inv-f-theme','inv-f-montant','inv-f-paye','inv-f-reste','inv-f-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const sel=document.getElementById('inv-f-statut');if(sel)sel.value='Partiel';editingInvIdx=null;invInitForm();toast('Formulaire réinitialisé');}
 function renderInvClients(){const search=(document.getElementById('inv-search')?.value||'').toLowerCase();const fs=(document.getElementById('inv-filter-status')?.value||'');const filtered=invClients.filter(c=>((c.nom||'').toLowerCase().includes(search)||(c.inst||'').toLowerCase().includes(search))&&(!fs||c.statut===fs));const badge=document.getElementById('inv-count-badge');if(badge)badge.textContent=invClients.length+' client'+(invClients.length>1?'s':'');const tbody=document.getElementById('inv-tbody');if(!tbody)return;if(!filtered.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">Aucun client trouvé.</td></tr>';return;}tbody.innerHTML=filtered.map(c=>{const idx=invClients.indexOf(c);const sc=c.statut==='Soldé'?'inv-sold':c.statut==='Partiel'?'inv-partial':'inv-unpaid';return`<tr><td style="font-weight:700;color:#0d2b4e">${esc(c.num||'—')}</td><td><strong>${esc(c.nom)}</strong>${c.email?`<br><small style="color:var(--muted)">${esc(c.email)}</small>`:''}</td><td style="font-size:12px">${esc(c.inst||'—')}</td><td style="font-size:12px">${esc(c.fil||'—')}</td><td style="font-weight:700">$${c.montant}</td><td style="color:var(--green);font-weight:700">$${c.paye}</td><td style="color:#c0392b;font-weight:700">$${c.reste}</td><td><span class="inv-status ${sc}">${esc(c.statut)}</span></td><td><div class="inv-actions-row"><button class="inv-btn inv-btn-navy inv-btn-sm" onclick="invViewClient(${idx})" title="Voir"><i class="fa-solid fa-eye"></i></button><button class="inv-btn inv-btn-sm" style="background:#e8a020;color:#000" onclick="invEditClient(${idx})" title="Modifier"><i class="fa-solid fa-pen"></i></button><button class="inv-btn inv-btn-red inv-btn-sm" onclick="invDeleteClient(${idx})" title="Supprimer"><i class="fa-solid fa-trash"></i></button></div></td></tr>`;}).join('');invUpdateStats();}
 function invUpdateStats(){const t=document.getElementById('inv-total-clients');const c=document.getElementById('inv-total-collected');const p=document.getElementById('inv-total-pending');if(t)t.textContent=invClients.length;if(c)c.textContent='$'+invClients.reduce((a,x)=>a+(parseFloat(x.paye)||0),0);if(p)p.textContent='$'+invClients.reduce((a,x)=>a+(parseFloat(x.reste)||0),0);}
 function invEditClient(idx){const c=invClients[idx];if(!c)return;editingInvIdx=idx;const tl=document.getElementById('inv-form-title-label');if(tl)tl.textContent='Modifier la facture de '+c.nom;const fields={'inv-f-nom':c.nom,'inv-f-tel':c.tel,'inv-f-inst':c.inst,'inv-f-fac':c.fac,'inv-f-fil':c.fil,'inv-f-email':c.email,'inv-f-theme':c.theme,'inv-f-montant':c.montant,'inv-f-paye':c.paye,'inv-f-reste':c.reste,'inv-f-num':c.num,'inv-f-date':c.date,'inv-f-notes':c.notes};Object.entries(fields).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val||'';});const sel=document.getElementById('inv-f-statut');if(sel)sel.value=c.statut;showInvTab('new-client');document.getElementById('inv-section-new-client')?.scrollIntoView({behavior:'smooth'});}
-function invDeleteClient(idx){const c=invClients[idx];if(!c)return;if(confirm(`Supprimer la facture de "${c.nom}" ?`)){invClients.splice(idx,1);invSave();renderInvClients();toast('Client supprimé');}}
+function invDeleteClient(idx){if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}const c=invClients[idx];if(!c)return;if(confirm(`Supprimer la facture de "${c.nom}" ?`)){invClients.splice(idx,1);invSave();renderInvClients();toast('Client supprimé');}}
 function invViewClient(idx){currentInvData=invClients[idx];invRenderInvoice(currentInvData);showInvTab('preview');document.getElementById('inv-msg-zone').style.display='none';}
 function invPreview(){const nom=document.getElementById('inv-f-nom').value.trim();if(!nom){toast('Remplissez au moins le nom');return;}currentInvData={nom,tel:document.getElementById('inv-f-tel').value.trim(),inst:document.getElementById('inv-f-inst').value.trim(),fac:document.getElementById('inv-f-fac').value.trim(),fil:document.getElementById('inv-f-fil').value.trim(),email:document.getElementById('inv-f-email').value.trim(),theme:document.getElementById('inv-f-theme').value.trim(),montant:parseFloat(document.getElementById('inv-f-montant').value)||0,paye:parseFloat(document.getElementById('inv-f-paye').value)||0,reste:parseFloat(document.getElementById('inv-f-reste').value)||0,statut:document.getElementById('inv-f-statut').value,num:document.getElementById('inv-f-num').value.trim(),date:document.getElementById('inv-f-date').value,notes:document.getElementById('inv-f-notes').value.trim()};invRenderInvoice(currentInvData);showInvTab('preview');document.getElementById('inv-msg-zone').style.display='none';}
 function invPrefillFromClientId(id,name,tel,inst,theme,email){editingInvIdx=null;const tl=document.getElementById('inv-form-title-label');if(tl)tl.textContent='Nouveau client — Informations';const mp={'inv-f-nom':name,'inv-f-tel':tel,'inv-f-inst':inst,'inv-f-email':email,'inv-f-theme':theme};Object.entries(mp).forEach(([fid,val])=>{const el=document.getElementById(fid);if(el)el.value=val||'';});showInvTab('new-client');document.getElementById('inv-section-new-client')?.scrollIntoView({behavior:'smooth'});toast('Données de '+name+' chargées — complétez la facturation');}
@@ -2023,10 +2028,11 @@ function updateProfileUI(){
     const avatarUrl = currentProfile.avatar;
     
     document.getElementById('topName').textContent = name + (isAdmin ? ' (Formateur)' : '');
+        const canSee = isAdmin || isSuperViewer();
         const btnAdmin = document.getElementById('btnAdminTfc');
-        if (btnAdmin) btnAdmin.style.display = isAdmin ? 'flex' : 'none';
+        if (btnAdmin) btnAdmin.style.display = canSee ? 'flex' : 'none';
         const btnRecus = document.getElementById('btnRecus');
-        if (btnRecus) btnRecus.style.display = isAdmin ? 'flex' : 'none';
+        if (btnRecus) btnRecus.style.display = canSee ? 'flex' : 'none';
     
     // Mise à jour des avatars
     ['topAvatar', 'composeAv'].forEach(id => { 
@@ -3400,6 +3406,7 @@ async function editTfcPost(postId) {
 }
 
 async function saveEditTfcPost(postId) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const title = document.getElementById('editTfcTitle')?.value.trim();
     const subtitle = document.getElementById('editTfcSubtitle')?.value.trim();
     const content = document.getElementById('editTfcContent')?.value.trim();
@@ -3415,8 +3422,8 @@ async function saveEditTfcPost(postId) {
 // =================================================================
 
 function switchToTFC() {
-    // Vérification administrateur RENFORCÉE
-    if (!currentUser || currentUser.email !== ADMIN_EMAIL) {
+    // Vérification : admin complet OU super-viewer (lecture seule)
+    if (!currentUser || (currentUser.email !== ADMIN_EMAIL && !isSuperViewer())) {
         toast('Accès réservé au formateur');
         // Masquer explicitement le panneau admin au cas où
         document.getElementById('adminTfcPanel').style.display = 'none';
@@ -3490,14 +3497,17 @@ async function loadAdminDocuments(clientId) {
     </div>
     <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
         <button onclick="downloadDoc('${doc.url}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Télécharger"><i class="fa-solid fa-download"></i></button>
+        ${canEditAdmin() ? `
         <button onclick="editAdminDocumentModal('${clientId}','${doc.id}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Modifier" style="color:var(--blue);"><i class="fa-solid fa-pen"></i></button>
         <button onclick="openFeedbackModal('${clientId}','${doc.id}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Donner un retour" style="color:#e8a020;"><i class="fa-solid fa-comment-dots"></i></button>
         <button onclick="deleteAdminDocumentAnimated('${clientId}','${doc.id}','${esc(doc.name).replace(/'/g,"\\'")}')" class="tfc-btn-icon" title="Supprimer" style="color:#dc2626;"><i class="fa-solid fa-trash"></i></button>
+        ` : ''}
     </div>
 </div>`).join('');
 }
 
 async function editAdminDocument(clientId, docId, docName) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const newName = prompt("Modifier le nom du document :", docName);
     if (newName && newName.trim()) {
         await db.ref(`tfc_clients/${clientId}/documents/${docId}`).update({ name: newName.trim() });
@@ -3555,6 +3565,7 @@ function editAdminDocumentModal(clientId, docId, docName) {
 }
 
 async function saveAdminDocEdit(clientId, docId) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const newName = document.getElementById('editAdminDocName')?.value.trim();
     const newFile = document.getElementById('editAdminDocFile')?.files[0];
     if (!newName) { toast('Le nom est obligatoire'); return; }
@@ -3583,6 +3594,7 @@ async function saveAdminDocEdit(clientId, docId) {
 }
 
 async function deleteAdminDocument(clientId, docId, docName) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     if (!confirm(`Supprimer le document "${docName}" ?`)) return;
     await db.ref(`tfc_clients/${clientId}/documents/${docId}`).remove();
     toast('Document supprimé');
@@ -3590,6 +3602,7 @@ async function deleteAdminDocument(clientId, docId, docName) {
 }
 
 async function deleteAdminDocumentAnimated(clientId, docId, docName) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     if (!confirm(`Supprimer définitivement le document "${docName}" ?\n\nCette action est irréversible.`)) return;
     try {
         const el = document.getElementById(`admin-doc-${docId}`);
@@ -3618,6 +3631,7 @@ async function deleteAdminDocumentAnimated(clientId, docId, docName) {
 }
 
 async function uploadTfcDocumentAdmin(fileInput) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     if (!currentAdminClientId) return;
     const file = fileInput.files[0];
     if (!file) return;
@@ -3643,6 +3657,7 @@ async function uploadTfcDocumentAdmin(fileInput) {
 }
 
 function openFeedbackModal(clientId, docId, docName) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const feedback = prompt(`Retour sur "${docName}":\n(Validé / À corriger / Commentaires)`);
     if (feedback && feedback.trim()) {
         const status = feedback.toLowerCase().includes('valid') ? 'valide' : feedback.toLowerCase().includes('corrig') ? 'correction' : 'attente';
@@ -3680,6 +3695,7 @@ async function loadAdminChat(clientId) {
 }
 
 function sendTfcMessageAdmin() {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const input = document.getElementById('adminChatInput');
     const text = input.value.trim();
     if (!text || !currentAdminClientId) return;
@@ -3696,11 +3712,12 @@ async function loadAdminStudentWorks(clientId) {
         snapshot.forEach(child => works.push({ id: child.key, ...child.val() }));
         works.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
         if (works.length === 0) { container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Aucun travail déposé par l\'étudiant</div>'; return; }
-        container.innerHTML = works.map(work => `<div class="doc-item" style="border-bottom: 1px solid var(--border); padding: 12px;"><div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;"><div style="flex: 1;"><div style="font-weight: 700;">${esc(work.name)}</div><div style="font-size: 0.7rem; color: var(--muted);">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div><span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}</span>${work.feedback ? `<div style="margin-top: 8px; padding: 6px; background: var(--blue-pale); border-radius: 6px; font-size: 0.75rem;"><strong>Retour donné:</strong><br>${esc(work.feedback)}</div>` : ''}</div><div style="display: flex; gap: 8px;"><a href="${work.url}" target="_blank" class="file-dl" style="padding: 4px 8px;"><i class="fa-solid fa-download"></i></a><button onclick="openStudentWorkFeedback('${clientId}', '${work.id}', '${esc(work.name)}')" class="file-dl" style="padding: 4px 8px; background: var(--blue-pale);">✏️ Évaluer</button></div></div></div>`).join('');
+        container.innerHTML = works.map(work => `<div class="doc-item" style="border-bottom: 1px solid var(--border); padding: 12px;"><div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;"><div style="flex: 1;"><div style="font-weight: 700;">${esc(work.name)}</div><div style="font-size: 0.7rem; color: var(--muted);">Déposé le ${new Date(work.uploadedAt).toLocaleString()}</div><span class="student-work-status ${work.status === 'approved' ? 'work-status-approved' : work.status === 'revision' ? 'work-status-revision' : 'work-status-pending'}" style="display: inline-block; margin-top: 6px;">${work.status === 'approved' ? 'Validé' : work.status === 'revision' ? 'À corriger' : 'En attente'}</span>${work.feedback ? `<div style="margin-top: 8px; padding: 6px; background: var(--blue-pale); border-radius: 6px; font-size: 0.75rem;"><strong>Retour donné:</strong><br>${esc(work.feedback)}</div>` : ''}</div><div style="display: flex; gap: 8px;"><a href="${work.url}" target="_blank" class="file-dl" style="padding: 4px 8px;"><i class="fa-solid fa-download"></i></a>${canEditAdmin() ? `<button onclick="openStudentWorkFeedback('${clientId}', '${work.id}', '${esc(work.name)}')" class="file-dl" style="padding: 4px 8px; background: var(--blue-pale);">✏️ Évaluer</button>` : ''}</div></div></div>`).join('');
     } catch (error) { console.error('Erreur:', error); container.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Erreur de chargement</div>'; }
 }
 
 function openStudentWorkFeedback(clientId, workId, workName) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const feedback = prompt(`Évaluation du travail "${workName}" :\n\nChoisissez le statut et laissez un commentaire.\n\nStatuts possibles:\n- VALIDE: Travail accepté\n- REVISION: À corriger\n- (vide): En attente\n\nEntrez votre commentaire (précisez le statut):`);
     if (feedback && feedback.trim()) {
         let status = 'pending';
@@ -3719,6 +3736,7 @@ function openAddClientModal() { document.getElementById('addClientModal').classL
 function closeAddClientModal() { document.getElementById('addClientModal').classList.remove('active'); }
 
 async function createTfcClient() {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const name = document.getElementById('newClientName').value.trim();
     const university = document.getElementById('newClientUniv').value.trim();
     const topic = document.getElementById('newClientTopic').value.trim();
@@ -3780,6 +3798,7 @@ function previewAdminTfcMedia(input, type) {
 function closeAdminTfcPost() { document.getElementById('adminTfcPostOverlay').classList.remove('active'); adminTfcPostMediaFile = null; }
 
 async function submitAdminTfcPost() {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const content = document.getElementById('adminTfcPostContent').value.trim();
     if (!content && !adminTfcPostMediaFile && adminTfcPostType !== 'link') { toast('Veuillez écrire quelque chose'); return; }
     const postData = { authorId: 'admin', authorName: currentProfile.fullName || 'Formateur', authorUniv: 'GADA Training', authorAvatar: currentProfile.avatar || null, content: content, type: adminTfcPostType, timestamp: Date.now(), isGlobal: true, likes: 0, commentsCount: 0 };
@@ -3857,6 +3876,7 @@ document.getElementById('shareWorkFile')?.addEventListener('change', function(e)
 });
 
 async function deleteSharedWork(clientId, workId, workTitle) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     if (!confirm(`Supprimer le travail partagé "${workTitle}" ?\n\nCette action est irréversible.`)) return;
     try {
         await db.ref(`tfc_clients/${clientId}/shared_works/${workId}`).remove();
@@ -3961,6 +3981,7 @@ async function editSharedWork(clientId, workId) {
 }
 
 async function saveEditSharedWork(clientId, workId, oldFileName, hasFile) {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const title = document.getElementById('editSWTitle')?.value.trim();
     const description = document.getElementById('editSWDesc')?.value.trim();
     const link = document.getElementById('editSWLink')?.value.trim();
@@ -4000,6 +4021,7 @@ async function saveEditSharedWork(clientId, workId, oldFileName, hasFile) {
 }
 
 async function submitSharedWork() {
+    if(!canEditAdmin()){toast('⛔ Lecture seule — accès administrateur requis');return;}
     const title = document.getElementById('shareWorkTitle').value.trim();
     const description = document.getElementById('shareWorkDescription').value.trim();
     const link = document.getElementById('shareWorkLink').value.trim();
@@ -4169,7 +4191,7 @@ function openRecOnlyView() {
     openRecusPanel(true);
 }
 function openRecusPanel(only) {
-    if (!isRecAdmin() && !isRecOnlyUser()) { toast('Accès non autorisé'); return; }
+    if (!isRecAdmin() && !isRecOnlyUser() && !isSuperViewer()) { toast('Accès non autorisé'); return; }
     document.getElementById('app').style.display = 'none';
     const adm = document.getElementById('adminTfcPanel'); if (adm) adm.style.display = 'none';
     document.getElementById('recusPanel').style.display = 'block';
